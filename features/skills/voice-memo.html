@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Voice Memo — SensForge</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; max-width: 375px; margin: 0 auto; min-height: 100vh; }
+  .page-label { position: fixed; top: 10px; left: 12px; font-size: 11px; color: #aaa; z-index: 100; }
+  .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; }
+  .nav-back { font-size: 22px; color: #f96400; cursor: pointer; text-decoration: none; line-height: 1; padding: 0 4px; }
+  .nav-title { font-size: 17px; font-weight: 600; color: #1a1a1a; }
+  .nav-spacer { width: 36px; }
+
+  /* State tabs */
+  .state-tabs { display: flex; gap: 0; margin: 16px 16px 0; border: 1.5px solid #eee; border-radius: 10px; overflow: hidden; background: #fff; }
+  .state-tab {
+    flex: 1; padding: 10px 6px; text-align: center;
+    font-size: 12px; font-weight: 600; color: #999;
+    background: #fff; cursor: pointer; border-right: 1px solid #eee;
+    transition: all 0.15s;
+  }
+  .state-tab:last-child { border-right: none; }
+  .state-tab.active { color: #f96400; box-shadow: inset 0 -2px 0 #f96400; }
+
+  /* Panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .memo-card {
+    background: #fff; border-radius: 12px; margin: 14px 16px; padding: 28px 20px;
+    border: 1px solid #eee; text-align: center;
+  }
+
+  /* Waveform animation */
+  .waveform { display: flex; align-items: center; justify-content: center; gap: 4px; height: 56px; margin-bottom: 20px; }
+  .bar {
+    width: 4px; background: #f96400; border-radius: 3px;
+    animation: wave 0.8s ease-in-out infinite alternate;
+  }
+  .bar:nth-child(1) { height: 16px; animation-delay: 0s; }
+  .bar:nth-child(2) { height: 32px; animation-delay: 0.1s; }
+  .bar:nth-child(3) { height: 48px; animation-delay: 0.2s; }
+  .bar:nth-child(4) { height: 24px; animation-delay: 0.3s; }
+  .bar:nth-child(5) { height: 40px; animation-delay: 0.4s; }
+  .bar:nth-child(6) { height: 18px; animation-delay: 0.5s; }
+  .bar:nth-child(7) { height: 36px; animation-delay: 0.15s; }
+  .bar:nth-child(8) { height: 52px; animation-delay: 0.25s; }
+  .bar:nth-child(9) { height: 28px; animation-delay: 0.35s; }
+  .bar:nth-child(10) { height: 44px; animation-delay: 0.05s; }
+  @keyframes wave {
+    0% { transform: scaleY(0.4); opacity: 0.6; }
+    100% { transform: scaleY(1); opacity: 1; }
+  }
+
+  /* Static waveform for paused/playback */
+  .waveform-static { display: flex; align-items: center; justify-content: center; gap: 4px; height: 56px; margin-bottom: 20px; }
+  .waveform-static .bar { animation: none; }
+
+  .timer { font-size: 32px; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; letter-spacing: 1px; }
+
+  .memo-btn {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: #f96400; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto;
+    box-shadow: 0 4px 12px rgba(249,100,0,0.3);
+  }
+  .memo-btn:active { transform: scale(0.95); }
+  .memo-btn svg { width: 26px; height: 26px; fill: #fff; }
+
+  .memo-sub { font-size: 13px; color: #999; margin-top: 12px; }
+
+  .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; max-width: 375px; margin: 0 auto; padding: 12px 16px 24px; background: #f5f5f5; border-top: 1px solid #eee; }
+  .save-btn {
+    display: block; width: 100%; background: #f96400; color: #fff; border: none;
+    border-radius: 10px; padding: 14px; font-size: 16px; font-weight: 700;
+    cursor: pointer; text-align: center; text-decoration: none;
+  }
+  .save-btn:active { opacity: 0.85; }
+
+  .back-testbed { text-align: center; padding: 10px 0 80px; }
+  .back-testbed a { font-size: 12px; color: #aaa; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<span class="page-label">P7</span>
+
+<div class="top-nav">
+  <a class="nav-back" onclick="history.back()" href="#">‹</a>
+  <span class="nav-title">Voice Memo</span>
+  <div class="nav-spacer"></div>
+</div>
+
+<!-- State Tabs -->
+<div class="state-tabs">
+  <div class="state-tab active" onclick="switchPanel('recording')">Recording</div>
+  <div class="state-tab" onclick="switchPanel('paused')">Paused</div>
+  <div class="state-tab" onclick="switchPanel('playback')">Playback</div>
+</div>
+
+<!-- Panel: Recording -->
+<div class="panel active" id="panel-recording">
+  <div class="memo-card">
+    <div class="waveform">
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <div class="timer" id="recTimer">0:04</div>
+    <button class="memo-btn" onclick="switchPanel('paused')">
+      <!-- Pause icon -->
+      <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+    </button>
+    <div class="memo-sub">Tap to pause</div>
+  </div>
+</div>
+
+<!-- Panel: Paused -->
+<div class="panel" id="panel-paused">
+  <div class="memo-card">
+    <div class="waveform-static">
+      <div class="bar" style="height:16px;background:#ddd;"></div>
+      <div class="bar" style="height:32px;background:#ddd;"></div>
+      <div class="bar" style="height:48px;background:#f96400;"></div>
+      <div class="bar" style="height:24px;background:#ddd;"></div>
+      <div class="bar" style="height:40px;background:#ddd;"></div>
+      <div class="bar" style="height:18px;background:#ddd;"></div>
+      <div class="bar" style="height:36px;background:#f96400;"></div>
+      <div class="bar" style="height:52px;background:#ddd;"></div>
+      <div class="bar" style="height:28px;background:#ddd;"></div>
+      <div class="bar" style="height:44px;background:#ddd;"></div>
+    </div>
+    <div class="timer">0:04</div>
+    <button class="memo-btn" onclick="switchPanel('recording')">
+      <!-- Mic icon -->
+      <svg viewBox="0 0 24 24"><path d="M12 1a4 4 0 0 1 4 4v6a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 19v4M8 23h8" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+    </button>
+    <div class="memo-sub">Tap to continue recording</div>
+  </div>
+</div>
+
+<!-- Panel: Playback -->
+<div class="panel" id="panel-playback">
+  <div class="memo-card">
+    <div class="waveform-static">
+      <div class="bar" style="height:16px;background:#f96400;"></div>
+      <div class="bar" style="height:32px;background:#f96400;"></div>
+      <div class="bar" style="height:48px;background:#f96400;"></div>
+      <div class="bar" style="height:24px;background:#ddd;"></div>
+      <div class="bar" style="height:40px;background:#ddd;"></div>
+      <div class="bar" style="height:18px;background:#f96400;"></div>
+      <div class="bar" style="height:36px;background:#f96400;"></div>
+      <div class="bar" style="height:52px;background:#ddd;"></div>
+      <div class="bar" style="height:28px;background:#f96400;"></div>
+      <div class="bar" style="height:44px;background:#ddd;"></div>
+    </div>
+    <div class="timer">0:04</div>
+    <button class="memo-btn" id="playBtn" onclick="togglePlay(this)">
+      <!-- Play icon -->
+      <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="#fff"/></svg>
+    </button>
+    <div class="memo-sub">Tap to play memo</div>
+  </div>
+</div>
+
+<div class="back-testbed"><a href="../../index.html">← Back to Testbed</a></div>
+
+<div class="bottom-bar">
+  <a class="save-btn" id="saveBtn" href="#">Save Memo →</a>
+</div>
+
+<script>
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const trigger = params.get('trigger') || '';
+  const device = params.get('device') || '';
+
+  document.getElementById('saveBtn').href =
+    'select-action.html?trigger=' + encodeURIComponent(trigger) +
+    '&device=' + encodeURIComponent(device);
+
+  // Timer simulation for recording panel
+  let sec = 4;
+  setInterval(function() {
+    sec++;
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    const el = document.getElementById('recTimer');
+    if (el && document.getElementById('panel-recording').classList.contains('active')) {
+      el.textContent = m + ':' + (s < 10 ? '0' + s : s);
+    }
+  }, 1000);
+
+  window.switchPanel = function(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.state-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    const idx = { recording: 0, paused: 1, playback: 2 }[name];
+    document.querySelectorAll('.state-tab')[idx].classList.add('active');
+  };
+
+  let playing = false;
+  window.togglePlay = function(btn) {
+    playing = !playing;
+    const memo = btn.querySelector('div');
+    if (playing) {
+      btn.innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1" fill="#fff"/><rect x="14" y="4" width="4" height="16" rx="1" fill="#fff"/></svg>';
+      btn.nextElementSibling.textContent = 'Playing...';
+    } else {
+      btn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="#fff"/></svg>';
+      btn.nextElementSibling.textContent = 'Tap to play memo';
+    }
+  };
+})();
+</script>
+</body>
+</html>
