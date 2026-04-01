@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SensForge UI Testbed</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f1b2d;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #fff;
+    }
+
+    /* Header */
+    .site-header {
+      padding: 48px 32px 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .site-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .site-header h1 span {
+      color: #00b4d8;
+    }
+
+    .site-header p {
+      font-size: 14px;
+      color: #7a9bb5;
+    }
+
+    /* Main content */
+    .main {
+      padding: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #7a9bb5;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    /* Feature grid */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* Feature card */
+    .feature-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.3);
+    }
+
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #e0f7fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    /* Editable name */
+    .card-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #0f1b2d;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 2px 4px;
+      margin: -2px -4px;
+      transition: background 0.15s;
+      display: inline-block;
+      min-width: 10px;
+    }
+
+    .card-name:hover {
+      background: #f0f8fc;
+    }
+
+    .card-name-input {
+      font-size: 17px;
+      font-weight: 700;
+      color: #0f1b2d;
+      border: 2px solid #00b4d8;
+      border-radius: 6px;
+      padding: 2px 6px;
+      outline: none;
+      width: 100%;
+      background: #f0fafe;
+      font-family: inherit;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: #7a9bb5;
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .card-tag {
+      font-size: 11px;
+      font-weight: 600;
+      background: #f0f4f8;
+      color: #7a9bb5;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .preview-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #00b4d8;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .preview-btn:hover { background: #009fc2; }
+    .preview-btn:active { transform: scale(0.97); }
+
+    /* Edit hint */
+    .edit-hint {
+      font-size: 11px;
+      color: #b0c4d4;
+      margin-top: -4px;
+    }
+
+    /* Empty state for more cards */
+    .add-feature-card {
+      background: rgba(255,255,255,0.04);
+      border: 2px dashed rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #4a6580;
+      min-height: 180px;
+      cursor: default;
+    }
+
+    .add-feature-card .plus-icon {
+      font-size: 28px;
+      opacity: 0.4;
+    }
+
+    .add-feature-card p {
+      font-size: 13px;
+      opacity: 0.5;
+    }
+
+    /* Footer */
+    .site-footer {
+      text-align: center;
+      padding: 40px 32px;
+      font-size: 12px;
+      color: #3a5470;
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>SensForge <span>UI Testbed</span></h1>
+  <p>Internal prototype previews</p>
+</header>
+
+<main class="main">
+  <p class="section-title">Feature Prototypes</p>
+
+  <div class="feature-grid" id="featureGrid">
+
+    <!-- Card: Camera Skills -->
+    <div class="feature-card" data-card-id="camera-skills">
+      <div class="card-icon">🎯</div>
+      <div>
+        <span class="card-name" onclick="startEdit(this)" title="Click to rename">Camera Skills</span>
+      </div>
+      <p class="card-desc">Configure smart detection rules — if X detected → do Y</p>
+      <div class="card-footer">
+        <span class="card-tag">UI Prototype</span>
+        <a href="features/skills/index.html" class="preview-btn">Preview →</a>
+      </div>
+    </div>
+
+    <!-- Placeholder -->
+    <div class="add-feature-card">
+      <div class="plus-icon">＋</div>
+      <p>More prototypes coming soon</p>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  SensForge Internal · UI Testbed · Not for external distribution
+</footer>
+
+<script>
+  // Load saved names from localStorage
+  document.querySelectorAll('[data-card-id]').forEach(card => {
+    const id = card.dataset.cardId;
+    const saved = localStorage.getItem('card-name-' + id);
+    if (saved) {
+      const nameEl = card.querySelector('.card-name');
+      if (nameEl) nameEl.textContent = saved;
+    }
+  });
+
+  function startEdit(nameEl) {
+    const card = nameEl.closest('[data-card-id]');
+    const id = card.dataset.cardId;
+    const currentName = nameEl.textContent;
+
+    // Replace span with input
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'card-name-input';
+    input.value = currentName;
+    nameEl.replaceWith(input);
+    input.focus();
+    input.select();
+
+    function saveEdit() {
+      const newName = input.value.trim() || currentName;
+      localStorage.setItem('card-name-' + id, newName);
+
+      // Replace input back with span
+      const span = document.createElement('span');
+      span.className = 'card-name';
+      span.textContent = newName;
+      span.title = 'Click to rename';
+      span.onclick = function() { startEdit(this); };
+      input.replaceWith(span);
+    }
+
+    input.addEventListener('blur', saveEdit);
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        input.blur();
+      }
+      if (e.key === 'Escape') {
+        input.value = currentName;
+        input.blur();
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
