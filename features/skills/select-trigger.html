@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Select a Trigger — SensForge</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; max-width: 375px; margin: 0 auto; min-height: 100vh; }
+  .page-label { position: fixed; top: 10px; left: 12px; font-size: 11px; color: #aaa; z-index: 100; }
+  .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; }
+  .nav-back { font-size: 22px; color: #f96400; cursor: pointer; text-decoration: none; line-height: 1; padding: 0 4px; }
+  .nav-title { font-size: 17px; font-weight: 600; color: #1a1a1a; }
+  .nav-spacer { width: 36px; }
+
+  .list-section { background: #fff; margin: 12px; border-radius: 12px; overflow: hidden; border: 1px solid #eee; }
+  .trigger-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 15px 16px; border-bottom: 1px solid #f0f0f0;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .trigger-row:last-child { border-bottom: none; }
+  .trigger-row:active, .trigger-row.selected { background: #fff3ec; }
+  .trigger-name { font-size: 15px; color: #1a1a1a; font-weight: 500; }
+  .radio-circle {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid #ddd; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .radio-inner { width: 11px; height: 11px; border-radius: 50%; background: transparent; transition: background 0.15s; }
+  .trigger-row.selected .radio-circle { border-color: #f96400; }
+  .trigger-row.selected .radio-inner { background: #f96400; }
+
+  .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; max-width: 375px; margin: 0 auto; padding: 12px 16px 24px; background: #f5f5f5; border-top: 1px solid #eee; }
+  .next-btn {
+    display: block; width: 100%; background: #f96400; color: #fff; border: none;
+    border-radius: 10px; padding: 14px; font-size: 16px; font-weight: 700;
+    cursor: pointer; text-align: center; text-decoration: none; opacity: 0.4;
+    pointer-events: none; transition: opacity 0.2s;
+  }
+  .next-btn.active { opacity: 1; pointer-events: auto; }
+  .next-btn:active { opacity: 0.8; }
+
+  .back-testbed { text-align: center; padding: 8px 0 80px; }
+  .back-testbed a { font-size: 12px; color: #aaa; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<span class="page-label">P2</span>
+
+<div class="top-nav">
+  <a class="nav-back" onclick="history.back()" href="#">‹</a>
+  <span class="nav-title">Select a Trigger</span>
+  <div class="nav-spacer"></div>
+</div>
+
+<div class="list-section">
+  <div class="trigger-row" data-trigger="Person Detected" onclick="selectTrigger(this)">
+    <span class="trigger-name">Person Detected</span>
+    <div class="radio-circle"><div class="radio-inner"></div></div>
+  </div>
+  <div class="trigger-row" data-trigger="Person Coming Home" onclick="selectTrigger(this)">
+    <span class="trigger-name">Person Coming Home</span>
+    <div class="radio-circle"><div class="radio-inner"></div></div>
+  </div>
+  <div class="trigger-row" data-trigger="Person Near Car or Driveway" onclick="selectTrigger(this)">
+    <span class="trigger-name">Person Near Car or Driveway</span>
+    <div class="radio-circle"><div class="radio-inner"></div></div>
+  </div>
+  <div class="trigger-row" data-trigger="Motion Detected" onclick="selectTrigger(this)">
+    <span class="trigger-name">Motion Detected</span>
+    <div class="radio-circle"><div class="radio-inner"></div></div>
+  </div>
+  <div class="trigger-row" data-trigger="Vehicle Detected" onclick="selectTrigger(this)">
+    <span class="trigger-name">Vehicle Detected</span>
+    <div class="radio-circle"><div class="radio-inner"></div></div>
+  </div>
+  <div class="trigger-row" data-trigger="Package Delivered" onclick="selectTrigger(this)">
+    <span class="trigger-name">Package Delivered</span>
+    <div class="radio-circle"><div class="radio-inner"></div></div>
+  </div>
+</div>
+
+<div class="back-testbed"><a href="../../index.html">← Back to Testbed</a></div>
+
+<div class="bottom-bar">
+  <a class="next-btn" id="nextBtn" href="#">Next →</a>
+</div>
+
+<script>
+  let selected = null;
+  function selectTrigger(row) {
+    document.querySelectorAll('.trigger-row').forEach(r => r.classList.remove('selected'));
+    row.classList.add('selected');
+    selected = row.dataset.trigger;
+    const btn = document.getElementById('nextBtn');
+    btn.classList.add('active');
+    btn.href = 'trigger-details.html?trigger=' + encodeURIComponent(selected);
+  }
+</script>
+</body>
+</html>
