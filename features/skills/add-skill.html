@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Skill — SensForge</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f1b2d;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      background: #0f1b2d;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Testbed back link */
+    .testbed-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 20px 0;
+      font-size: 12px;
+      color: #7a9bb5;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .testbed-back:hover { color: #00b4d8; }
+
+    /* Header */
+    .header {
+      padding: 16px 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .back-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #fff;
+      font-size: 18px;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .back-btn:active { background: rgba(255,255,255,0.15); }
+
+    .header-text h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .header-text p {
+      font-size: 13px;
+      color: #7a9bb5;
+      margin-top: 2px;
+    }
+
+    /* Step indicator */
+    .step-bar {
+      padding: 20px 20px 24px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .step {
+      height: 4px;
+      border-radius: 2px;
+      flex: 1;
+    }
+    .step.active { background: #00b4d8; }
+    .step.inactive { background: rgba(255,255,255,0.12); }
+
+    .step-label {
+      font-size: 12px;
+      color: #7a9bb5;
+      padding: 0 20px 16px;
+    }
+    .step-label span { color: #00b4d8; font-weight: 600; }
+
+    /* Section label */
+    .section-label {
+      padding: 0 20px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #7a9bb5;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    /* Trigger grid */
+    .trigger-grid {
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .trigger-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 22px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      border: 2px solid transparent;
+      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    }
+
+    .trigger-card:active { transform: scale(0.96); }
+    .trigger-card.selected {
+      border-color: #00b4d8;
+      box-shadow: 0 0 0 3px rgba(0,180,216,0.25), 0 4px 16px rgba(0,0,0,0.18);
+    }
+
+    .trigger-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .trigger-icon-wrap.person  { background: #e0f7fa; }
+    .trigger-icon-wrap.package { background: #fff3e0; }
+    .trigger-icon-wrap.vehicle { background: #f3e5f5; }
+    .trigger-icon-wrap.animal  { background: #e8f5e9; }
+    .trigger-icon-wrap.motion  { background: #fce4ec; }
+    .trigger-icon-wrap.sound   { background: #e8eaf6; }
+
+    .trigger-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f1b2d;
+      text-align: center;
+    }
+
+    .trigger-sub {
+      font-size: 11px;
+      color: #7a9bb5;
+      text-align: center;
+      margin-top: -4px;
+    }
+
+    /* Info tip */
+    .info-tip {
+      margin: 20px 20px 0;
+      background: rgba(0,180,216,0.1);
+      border: 1px solid rgba(0,180,216,0.25);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .info-tip .tip-icon { font-size: 16px; margin-top: 1px; }
+    .info-tip p { font-size: 12px; color: #7ab8cc; line-height: 1.5; }
+
+    /* Continue button */
+    .continue-btn {
+      margin: 24px 20px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #00b4d8;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .continue-btn.enabled {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .continue-btn:active { transform: scale(0.97); background: #009fc2; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <a href="../../index.html" class="testbed-back">← Back to Testbed</a>
+
+  <div class="header">
+    <a href="index.html" class="back-btn">&#8592;</a>
+    <div class="header-text">
+      <h1>Add Skill</h1>
+      <p>Choose what to detect</p>
+    </div>
+  </div>
+
+  <div class="step-bar">
+    <div class="step active"></div>
+    <div class="step inactive"></div>
+    <div class="step inactive"></div>
+  </div>
+  <div class="step-label"><span>Step 1 of 3</span> — Pick a Trigger</div>
+
+  <p class="section-label">What should trigger this skill?</p>
+
+  <div class="trigger-grid">
+    <a href="#" class="trigger-card" data-trigger="person" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=person')">
+      <div class="trigger-icon-wrap person">🧍</div>
+      <div class="trigger-name">Person</div>
+      <div class="trigger-sub">Human detected</div>
+    </a>
+
+    <a href="#" class="trigger-card" data-trigger="package" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=package')">
+      <div class="trigger-icon-wrap package">📦</div>
+      <div class="trigger-name">Package</div>
+      <div class="trigger-sub">Delivery arrived</div>
+    </a>
+
+    <a href="#" class="trigger-card" data-trigger="vehicle" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=vehicle')">
+      <div class="trigger-icon-wrap vehicle">🚗</div>
+      <div class="trigger-name">Vehicle</div>
+      <div class="trigger-sub">Car or truck</div>
+    </a>
+
+    <a href="#" class="trigger-card" data-trigger="animal" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=animal')">
+      <div class="trigger-icon-wrap animal">🐾</div>
+      <div class="trigger-name">Animal</div>
+      <div class="trigger-sub">Pet or wildlife</div>
+    </a>
+
+    <a href="#" class="trigger-card" data-trigger="motion" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=motion')">
+      <div class="trigger-icon-wrap motion">🌀</div>
+      <div class="trigger-name">Motion</div>
+      <div class="trigger-sub">Any movement</div>
+    </a>
+
+    <a href="#" class="trigger-card" data-trigger="sound" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=sound')">
+      <div class="trigger-icon-wrap sound">🔊</div>
+      <div class="trigger-name">Sound</div>
+      <div class="trigger-sub">Noise detected</div>
+    </a>
+  </div>
+
+  <div class="info-tip">
+    <span class="tip-icon">💡</span>
+    <p>AI detection requires a SensForge Pro subscription. Motion and Sound work on all plans.</p>
+  </div>
+
+  <a href="#" class="continue-btn" id="continueBtn">
+    Continue →
+  </a>
+</div>
+
+<script>
+  let selectedHref = null;
+
+  function selectTrigger(e, card, href) {
+    e.preventDefault();
+    document.querySelectorAll('.trigger-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedHref = href;
+    const btn = document.getElementById('continueBtn');
+    btn.classList.add('enabled');
+    btn.href = href;
+  }
+</script>
+</body>
+</html>
