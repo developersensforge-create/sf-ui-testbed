@@ -5,346 +5,236 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>My Skills — SensForge</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; max-width: 375px; margin: 0 auto; min-height: 100vh; }
+  .page-label { position: fixed; top: 10px; left: 12px; font-size: 11px; color: #aaa; z-index: 100; }
+  .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #fff; border-bottom: 1px solid #eee; }
+  .top-nav .back-link { font-size: 13px; color: #f96400; text-decoration: none; }
+  .top-nav h1 { font-size: 17px; font-weight: 600; color: #1a1a1a; }
+  .top-nav .spacer { width: 60px; }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-    background: #f5f5f5;
-    color: #1a1a1a;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-  }
+  .section { background: #fff; margin: 12px 0; padding: 16px; }
+  .section-title { font-size: 13px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
 
-  .phone {
-    width: 375px;
-    min-height: 100vh;
-    background: #f5f5f5;
-    position: relative;
-    overflow-x: hidden;
+  /* Template builder */
+  .template-card { background: #fff; border-radius: 12px; padding: 16px; margin: 12px; border: 1px solid #eee; }
+  .template-title { font-size: 13px; color: #666; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+  .if-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .if-label { font-size: 15px; color: #999; font-weight: 500; min-width: 60px; }
+  .trigger-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 2px solid #f96400; border-radius: 20px;
+    padding: 6px 14px; font-size: 14px; font-weight: 600; color: #f96400;
+    background: #fff; cursor: pointer; text-decoration: none;
+    transition: background 0.15s;
   }
+  .trigger-pill:hover { background: #fff3ec; }
+  .trigger-pill.filled { background: #fff3ec; }
+  .trigger-pill.disabled { border-color: #ddd; color: #bbb; cursor: not-allowed; pointer-events: none; }
+  .action-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .on-row { display: flex; align-items: center; gap: 10px; padding-left: 70px; flex-wrap: wrap; }
+  .on-label { font-size: 14px; color: #999; }
 
-  /* Status bar */
-  .status-bar {
-    background: #fff;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-    font-size: 12px;
-    font-weight: 600;
+  .activate-btn {
+    display: block; width: 100%; margin-top: 16px;
+    background: #f96400; color: #fff; border: none;
+    border-radius: 10px; padding: 14px; font-size: 16px; font-weight: 700;
+    cursor: pointer; text-align: center;
   }
+  .activate-btn:active { opacity: 0.85; }
 
-  /* Nav header */
-  .nav-header {
-    background: #fff;
-    height: 52px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    border-bottom: 1px solid #ebebeb;
-  }
-  .nav-header .back-btn {
-    position: absolute;
-    left: 16px;
-    font-size: 22px;
-    color: #1a1a1a;
-    text-decoration: none;
-    line-height: 1;
-  }
-  .nav-header h1 {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1a1a1a;
-  }
-
-  /* Back to testbed link */
-  .testbed-link {
-    display: block;
-    text-align: center;
-    padding: 8px;
-    font-size: 12px;
-    color: #f96400;
-    text-decoration: none;
-    background: #fff;
-    border-bottom: 1px solid #ebebeb;
-  }
-
-  /* Section wrapper */
-  .section {
-    background: #fff;
-    margin: 12px 0;
-    border-radius: 0;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px 12px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .section-header .section-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .section-header .chevron {
-    font-size: 16px;
-    color: #999;
-    transition: transform 0.2s;
-  }
-  .section-header .chevron.open { transform: rotate(180deg); }
-
-  /* New Skill Template form */
-  .skill-form {
-    padding: 14px 16px;
-  }
-  .skill-form input[type="text"] {
-    width: 100%;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 14px;
-    color: #1a1a1a;
-    background: #fafafa;
-    outline: none;
-    margin-bottom: 10px;
-  }
-  .skill-form input[type="text"]::placeholder { color: #bbb; }
-  .dropdowns-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-  .dropdowns-row select {
-    flex: 1;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 10px 10px;
-    font-size: 13px;
-    color: #555;
-    background: #fafafa;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    outline: none;
-  }
-  .btn-orange {
-    display: block;
-    width: 100%;
-    background: #f96400;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 13px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-  }
-  .btn-orange:active { opacity: 0.85; }
-
-  /* Skill cards */
+  /* Active skills */
+  .skills-list { padding: 0 12px 20px; }
   .skill-card {
-    padding: 14px 16px;
-    border-bottom: 1px solid #f0f0f0;
+    background: #fff; border-radius: 12px; padding: 14px 16px;
+    margin-bottom: 10px; border: 1px solid #eee;
   }
-  .skill-card:last-child { border-bottom: none; }
+  .skill-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .skill-name { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+  .toggle-wrap { display: flex; align-items: center; }
+  .toggle { position: relative; width: 44px; height: 24px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; inset: 0; background: #ddd; border-radius: 12px; cursor: pointer; transition: 0.2s;
+  }
+  .toggle-slider:before {
+    content: ''; position: absolute; width: 18px; height: 18px;
+    background: #fff; border-radius: 50%; left: 3px; top: 3px; transition: 0.2s;
+  }
+  .toggle input:checked + .toggle-slider { background: #f96400; }
+  .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+  .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .tag { font-size: 11px; color: #f96400; background: #fff3ec; border-radius: 8px; padding: 3px 8px; }
+  .skill-footer { display: flex; align-items: center; justify-content: space-between; }
+  .skill-detail { font-size: 12px; color: #999; }
+  .edit-link { font-size: 13px; color: #f96400; text-decoration: none; font-weight: 600; }
 
-  .skill-card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 6px;
-  }
-  .skill-card-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1a1a1a;
-    flex: 1;
-  }
-  /* Toggle */
-  .toggle {
-    width: 44px;
-    height: 26px;
-    background: #f96400;
-    border-radius: 13px;
-    position: relative;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-  .toggle::after {
-    content: '';
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    background: #fff;
-    border-radius: 50%;
-    top: 2px;
-    left: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-  }
-  .toggle.off {
-    background: #ccc;
-  }
-  .toggle.off::after { left: 2px; }
-
-  .skill-desc {
-    font-size: 13px;
-    color: #666;
-    line-height: 1.5;
-    margin-bottom: 10px;
-  }
-
-  .skill-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .tags {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    flex: 1;
-  }
-  .tag {
-    border: 1.5px solid #f96400;
-    color: #f96400;
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: 11px;
-    font-weight: 500;
-  }
-  .edit-link {
-    font-size: 13px;
-    color: #f96400;
-    text-decoration: none;
-    font-weight: 500;
-    margin-left: 10px;
-  }
-
-  /* Pagination dots */
-  .pagination {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-    padding: 20px 0 32px;
-  }
-  .dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #ccc;
-  }
-  .dot.active { background: #f96400; }
-
-  /* Spacer */
-  .spacer { height: 12px; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 0; }
+  .section-header h2 { font-size: 16px; font-weight: 700; color: #1a1a1a; }
 </style>
 </head>
 <body>
-<div class="phone">
-  <!-- Status Bar -->
-  <div class="status-bar">
-    <span>9:41</span>
-    <span>●●●</span>
-  </div>
 
-  <!-- Nav Header -->
-  <div class="nav-header">
-    <a href="../../index.html" class="back-btn">←</a>
-    <h1>My Skills</h1>
-  </div>
+<span class="page-label">P1</span>
 
-  <a href="../../index.html" class="testbed-link">← Back to Testbed</a>
-
+<div class="top-nav">
+  <a href="../../index.html" class="back-link">← Testbed</a>
+  <h1>My Skills</h1>
   <div class="spacer"></div>
+</div>
 
-  <!-- New Skill Template section -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-title">New Skill Template</span>
-      <span class="chevron open">⌄</span>
+<!-- Template Builder Card -->
+<div class="template-card">
+  <div class="template-title">New Skill</div>
+
+  <!-- If row -->
+  <div class="if-row">
+    <span class="if-label">If</span>
+    <a id="triggerPill" href="select-trigger.html" class="trigger-pill">select a trigger ▼</a>
+  </div>
+
+  <!-- Then do row -->
+  <div class="action-row">
+    <span class="if-label">then do</span>
+    <a id="actionPill" href="#" class="trigger-pill disabled">select an action ▼</a>
+  </div>
+
+  <!-- On device row (only shown in state C) -->
+  <div class="on-row" id="onRow" style="display:none;">
+    <span class="on-label">on</span>
+    <span id="devicePill" class="trigger-pill filled" style="pointer-events:none;"></span>
+  </div>
+
+  <!-- Activate button (state C only) -->
+  <button class="activate-btn" id="activateBtn" style="display:none;" onclick="activateSkill()">Activate Now</button>
+</div>
+
+<!-- Active Skills Section -->
+<div class="section-header">
+  <h2>Active Skills</h2>
+</div>
+
+<div class="skills-list" id="skillsList">
+  <!-- Default skills -->
+  <div class="skill-card">
+    <div class="skill-card-header">
+      <span class="skill-name">My Dog Kitchen Alarm</span>
+      <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
     </div>
-    <div class="skill-form">
-      <input type="text" placeholder="Skill name...">
-      <div class="dropdowns-row">
-        <a href="add-skill.html" style="flex:1; text-decoration:none;">
-          <select style="width:100%; pointer-events:none;">
-            <option>Select a trigger ▼</option>
-          </select>
-        </a>
-        <select>
-          <option>Turn on ▼</option>
-          <option>Turn off</option>
-        </select>
-      </div>
-      <div class="dropdowns-row" style="margin-bottom:14px;">
-        <select style="flex:1;">
-          <option>Select action ▼</option>
-          <option>Send notification</option>
-          <option>Play message</option>
-          <option>Record</option>
-        </select>
-      </div>
-      <a href="configure-skill.html" class="btn-orange">Save</a>
+    <div class="skill-tags">
+      <span class="tag">Person Detected</span>
+      <span class="tag">Living Room Cam</span>
+      <span class="tag">Send Notification</span>
+    </div>
+    <div class="skill-footer">
+      <span class="skill-detail">Active since 01/09/2021</span>
+      <a href="#" class="edit-link">Edit</a>
     </div>
   </div>
 
-  <!-- Active Skills section -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-title">Active Skills</span>
-      <span class="chevron open">⌄</span>
+  <div class="skill-card">
+    <div class="skill-card-header">
+      <span class="skill-name">Driveway Delivery Message</span>
+      <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
     </div>
-
-    <!-- Card 1 -->
-    <div class="skill-card">
-      <div class="skill-card-top">
-        <span class="skill-card-name">My Dog Kitchen Alarm</span>
-        <div class="toggle"></div>
-      </div>
-      <p class="skill-desc">If my dog from a jump on the kitchen table, then send a notification to my phone</p>
-      <div class="skill-footer">
-        <div class="tags">
-          <span class="tag">Custom Skill</span>
-          <span class="tag">Sync Kitchen</span>
-        </div>
-        <a href="skill-detail.html" class="edit-link">Edit</a>
-      </div>
+    <div class="skill-tags">
+      <span class="tag">Package Delivered</span>
+      <span class="tag">FrontYard-Sentinel-01</span>
+      <span class="tag">Play Voice Memo</span>
     </div>
-
-    <!-- Card 2 -->
-    <div class="skill-card">
-      <div class="skill-card-top">
-        <span class="skill-card-name">Driveway Delivery Message</span>
-        <div class="toggle"></div>
-      </div>
-      <p class="skill-desc">If Mail carrier approaches the driveway during the day, play message through speaker.</p>
-      <div class="skill-footer">
-        <div class="tags">
-          <span class="tag">Delivery</span>
-          <span class="tag">Play Message</span>
-        </div>
-        <a href="skill-detail.html" class="edit-link">Edit</a>
-      </div>
+    <div class="skill-footer">
+      <span class="skill-detail">Active since 03/14/2022</span>
+      <a href="#" class="edit-link">Edit</a>
     </div>
-  </div>
-
-  <!-- Pagination -->
-  <div class="pagination">
-    <div class="dot active"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
   </div>
 </div>
+
+<script>
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const trigger = params.get('trigger');
+  const action = params.get('action');
+  const device = params.get('device');
+  const schedule = params.get('schedule');
+
+  const triggerPill = document.getElementById('triggerPill');
+  const actionPill = document.getElementById('actionPill');
+  const onRow = document.getElementById('onRow');
+  const devicePill = document.getElementById('devicePill');
+  const activateBtn = document.getElementById('activateBtn');
+
+  if (trigger && action && device) {
+    // State C — both filled
+    triggerPill.textContent = trigger + ' ✓';
+    triggerPill.classList.add('filled');
+    triggerPill.removeAttribute('href');
+    triggerPill.style.pointerEvents = 'none';
+
+    actionPill.textContent = action + ' ✓';
+    actionPill.classList.remove('disabled');
+    actionPill.classList.add('filled');
+    actionPill.removeAttribute('href');
+    actionPill.style.pointerEvents = 'none';
+
+    devicePill.textContent = device + ' ✓';
+    onRow.style.display = 'flex';
+    activateBtn.style.display = 'block';
+
+    // If came back with schedule=, auto-activate
+    if (schedule) {
+      setTimeout(activateSkill, 100);
+    }
+  } else if (trigger) {
+    // State B — trigger filled
+    triggerPill.textContent = trigger + ' ✓';
+    triggerPill.classList.add('filled');
+    triggerPill.removeAttribute('href');
+    triggerPill.style.pointerEvents = 'none';
+
+    actionPill.classList.remove('disabled');
+    actionPill.href = 'select-device.html?trigger=' + encodeURIComponent(trigger);
+  }
+
+  window.activateSkill = function() {
+    const t = trigger || 'Custom Trigger';
+    const a = action || 'Send Notification';
+    const d = device || 'Living Room Cam';
+    const skillName = t + ' → ' + a;
+
+    const card = document.createElement('div');
+    card.className = 'skill-card';
+    card.innerHTML = `
+      <div class="skill-card-header">
+        <span class="skill-name">${skillName}</span>
+        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+      </div>
+      <div class="skill-tags">
+        <span class="tag">${t}</span>
+        <span class="tag">${d}</span>
+        <span class="tag">${a}</span>
+      </div>
+      <div class="skill-footer">
+        <span class="skill-detail">Just activated</span>
+        <a href="#" class="edit-link">Edit</a>
+      </div>
+    `;
+    document.getElementById('skillsList').insertBefore(card, document.getElementById('skillsList').firstChild);
+
+    // Reset to state A — remove params
+    history.replaceState({}, '', 'index.html');
+    triggerPill.textContent = 'select a trigger ▼';
+    triggerPill.classList.remove('filled');
+    triggerPill.href = 'select-trigger.html';
+    triggerPill.style.pointerEvents = '';
+
+    actionPill.textContent = 'select an action ▼';
+    actionPill.classList.add('disabled');
+    actionPill.removeAttribute('href');
+
+    onRow.style.display = 'none';
+    activateBtn.style.display = 'none';
+  };
+})();
+</script>
 </body>
 </html>
