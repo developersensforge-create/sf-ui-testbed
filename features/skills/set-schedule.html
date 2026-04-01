@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Set Schedule — SensForge</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; max-width: 375px; margin: 0 auto; min-height: 100vh; }
+  .page-label { position: fixed; top: 10px; left: 12px; font-size: 11px; color: #aaa; z-index: 100; }
+  .top-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; }
+  .nav-back { font-size: 22px; color: #f96400; cursor: pointer; text-decoration: none; line-height: 1; padding: 0 4px; }
+  .nav-title { font-size: 17px; font-weight: 600; color: #1a1a1a; }
+  .nav-spacer { width: 36px; }
+
+  .content { padding: 16px 16px 100px; }
+
+  .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 14px; border: 1px solid #eee; }
+  .card-label { font-size: 13px; font-weight: 600; color: #666; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Time range */
+  .time-row { display: flex; align-items: center; gap: 10px; }
+  .time-label { font-size: 13px; color: #999; min-width: 68px; }
+  .time-select {
+    flex: 1; background: #f5f5f5; border: 1.5px solid #eee; border-radius: 8px;
+    padding: 10px 12px; font-size: 15px; font-weight: 600; color: #1a1a1a;
+    appearance: none; -webkit-appearance: none; cursor: pointer;
+    font-family: inherit; outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+    padding-right: 28px;
+  }
+  .time-select:focus { border-color: #f96400; }
+  .time-sep { font-size: 14px; color: #bbb; }
+
+  /* Repeat tabs */
+  .repeat-tabs { display: flex; gap: 0; border: 1.5px solid #eee; border-radius: 10px; overflow: hidden; }
+  .repeat-tab {
+    flex: 1; padding: 10px 4px; text-align: center;
+    font-size: 12px; font-weight: 600; color: #999;
+    background: #fff; cursor: pointer; border-right: 1px solid #eee;
+    transition: color 0.15s;
+  }
+  .repeat-tab:last-child { border-right: none; }
+  .repeat-tab.active { color: #f96400; box-shadow: inset 0 -2px 0 #f96400; }
+
+  /* Customize days */
+  .days-row { display: flex; gap: 8px; margin-top: 14px; justify-content: space-between; display: none; }
+  .days-row.visible { display: flex; }
+  .day-btn {
+    flex: 1; padding: 8px 4px; text-align: center;
+    font-size: 12px; font-weight: 600; color: #999;
+    background: #f5f5f5; border-radius: 8px; cursor: pointer;
+    border: 1.5px solid transparent;
+    user-select: none;
+  }
+  .day-btn.active { color: #f96400; border-color: #f96400; background: #fff3ec; }
+
+  .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; max-width: 375px; margin: 0 auto; padding: 12px 16px 24px; background: #f5f5f5; border-top: 1px solid #eee; }
+  .done-btn {
+    display: block; width: 100%; background: #f96400; color: #fff; border: none;
+    border-radius: 10px; padding: 14px; font-size: 16px; font-weight: 700;
+    cursor: pointer; text-align: center; text-decoration: none;
+  }
+  .done-btn:active { opacity: 0.85; }
+
+  .back-testbed { text-align: center; padding: 8px 0 10px; }
+  .back-testbed a { font-size: 12px; color: #aaa; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<span class="page-label">P6</span>
+
+<div class="top-nav">
+  <a class="nav-back" onclick="history.back()" href="#">‹</a>
+  <span class="nav-title">Set Schedule</span>
+  <div class="nav-spacer"></div>
+</div>
+
+<div class="content">
+
+  <div class="card">
+    <div class="card-label">Time Range</div>
+    <div class="time-row">
+      <span class="time-label">Start Time</span>
+      <select class="time-select" id="startTime">
+        <option value="12:00 AM">12:00 AM</option>
+        <option value="06:00 AM">06:00 AM</option>
+        <option value="07:00 AM">07:00 AM</option>
+        <option value="08:00 AM" selected>08:00 AM</option>
+        <option value="09:00 AM">09:00 AM</option>
+        <option value="10:00 AM">10:00 AM</option>
+        <option value="11:00 AM">11:00 AM</option>
+        <option value="12:00 PM">12:00 PM</option>
+        <option value="01:00 PM">01:00 PM</option>
+        <option value="02:00 PM">02:00 PM</option>
+        <option value="03:00 PM">03:00 PM</option>
+        <option value="04:00 PM">04:00 PM</option>
+        <option value="05:00 PM">05:00 PM</option>
+        <option value="06:00 PM">06:00 PM</option>
+      </select>
+    </div>
+    <div style="height:10px;"></div>
+    <div class="time-row">
+      <span class="time-label">End Time</span>
+      <select class="time-select" id="endTime">
+        <option value="06:00 PM">06:00 PM</option>
+        <option value="07:00 PM">07:00 PM</option>
+        <option value="08:00 PM">08:00 PM</option>
+        <option value="09:00 PM">09:00 PM</option>
+        <option value="10:00 PM" selected>10:00 PM</option>
+        <option value="11:00 PM">11:00 PM</option>
+        <option value="11:59 PM">11:59 PM</option>
+        <option value="12:00 AM">12:00 AM (midnight)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Repeat</div>
+    <div class="repeat-tabs">
+      <div class="repeat-tab active" data-sched="everyday" onclick="selectRepeat(this)">Everyday</div>
+      <div class="repeat-tab" data-sched="weekdays" onclick="selectRepeat(this)">Weekdays</div>
+      <div class="repeat-tab" data-sched="weekends" onclick="selectRepeat(this)">Weekends</div>
+      <div class="repeat-tab" data-sched="custom" onclick="selectRepeat(this)">Customize</div>
+    </div>
+    <div class="days-row" id="daysRow">
+      <div class="day-btn" onclick="this.classList.toggle('active')">Su</div>
+      <div class="day-btn active" onclick="this.classList.toggle('active')">Mo</div>
+      <div class="day-btn active" onclick="this.classList.toggle('active')">Tu</div>
+      <div class="day-btn active" onclick="this.classList.toggle('active')">We</div>
+      <div class="day-btn active" onclick="this.classList.toggle('active')">Th</div>
+      <div class="day-btn active" onclick="this.classList.toggle('active')">Fr</div>
+      <div class="day-btn" onclick="this.classList.toggle('active')">Sa</div>
+    </div>
+  </div>
+
+  <div class="back-testbed"><a href="../../index.html">← Back to Testbed</a></div>
+</div>
+
+<div class="bottom-bar">
+  <a class="done-btn" id="doneBtn" href="#">Done — Activate Now →</a>
+</div>
+
+<script>
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const trigger = params.get('trigger') || '';
+  const device = params.get('device') || '';
+  const action = params.get('action') || '';
+  let schedule = 'everyday';
+
+  function updateBtn() {
+    document.getElementById('doneBtn').href =
+      'index.html?trigger=' + encodeURIComponent(trigger) +
+      '&device=' + encodeURIComponent(device) +
+      '&action=' + encodeURIComponent(action) +
+      '&schedule=' + encodeURIComponent(schedule);
+  }
+
+  window.selectRepeat = function(tab) {
+    document.querySelectorAll('.repeat-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    schedule = tab.dataset.sched;
+    const daysRow = document.getElementById('daysRow');
+    if (schedule === 'custom') {
+      daysRow.classList.add('visible');
+    } else {
+      daysRow.classList.remove('visible');
+    }
+    updateBtn();
+  };
+
+  updateBtn();
+})();
+</script>
+</body>
+</html>
