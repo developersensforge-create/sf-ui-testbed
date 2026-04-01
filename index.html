@@ -194,12 +194,346 @@
       opacity: 0.5;
     }
 
+    /* Add New Feature Button */
+    .add-feature-section {
+      display: flex;
+      justify-content: center;
+      margin-top: 36px;
+    }
+
+    .add-feature-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #00b4d8 0%, #0077a8 100%);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(0,180,216,0.35);
+      letter-spacing: 0.2px;
+    }
+
+    .add-feature-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(0,180,216,0.5);
+    }
+
+    .add-feature-btn:active {
+      transform: scale(0.97);
+    }
+
     /* Footer */
     .site-footer {
       text-align: center;
       padding: 40px 32px;
       font-size: 12px;
       color: #3a5470;
+    }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 27, 45, 0.82);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #fff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      padding: 32px;
+      position: relative;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      animation: modalIn 0.2s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: #7a9bb5;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .modal-close:hover {
+      color: #0f1b2d;
+      background: #f0f4f8;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f1b2d;
+      margin-bottom: 6px;
+    }
+
+    .modal-subtitle {
+      font-size: 13px;
+      color: #7a9bb5;
+      margin-bottom: 24px;
+    }
+
+    /* Tabs */
+    .modal-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid #e8eef4;
+      margin-bottom: 24px;
+    }
+
+    .modal-tab {
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #7a9bb5;
+      padding: 8px 20px 10px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .modal-tab.active {
+      color: #00b4d8;
+      border-bottom-color: #00b4d8;
+    }
+
+    .modal-tab:hover:not(.active) {
+      color: #0f1b2d;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Form elements */
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #7a9bb5;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .form-textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 1.5px solid #e0eaf0;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #0f1b2d;
+      font-family: inherit;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.15s;
+      line-height: 1.5;
+    }
+
+    .form-textarea:focus {
+      border-color: #00b4d8;
+      background: #fff;
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: #a0b8ca;
+      margin-top: 8px;
+      margin-bottom: 20px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border: 1.5px solid #e0eaf0;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #0f1b2d;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .form-input:focus {
+      border-color: #00b4d8;
+      background: #fff;
+    }
+
+    /* Drag zone */
+    .drag-zone {
+      border: 2px dashed #00b4d8;
+      border-radius: 12px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      margin-bottom: 16px;
+      position: relative;
+      background: #f0fdff;
+    }
+
+    .drag-zone:hover,
+    .drag-zone.drag-over {
+      background: #e0f9ff;
+      border-color: #0097b8;
+    }
+
+    .drag-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drag-zone-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .drag-zone-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #00b4d8;
+      margin-bottom: 4px;
+    }
+
+    .drag-zone-sub {
+      font-size: 12px;
+      color: #7a9bb5;
+    }
+
+    /* Thumbnails */
+    .thumbnail-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .thumbnail-item {
+      position: relative;
+      width: 72px;
+      height: 72px;
+    }
+
+    .thumbnail-item img {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #e0eaf0;
+    }
+
+    .thumbnail-remove {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #ff4466;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #00b4d8 0%, #0077a8 100%);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(0,180,216,0.3);
+      margin-top: 4px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0,180,216,0.45);
+    }
+
+    .submit-btn:active {
+      transform: scale(0.98);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #0f1b2d;
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      border-left: 4px solid #00b4d8;
+      z-index: 2000;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
+      opacity: 0;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
   </style>
 </head>
@@ -235,14 +569,67 @@
     </div>
 
   </div>
+
+  <!-- Add New Feature Button -->
+  <div class="add-feature-section">
+    <button class="add-feature-btn" onclick="openModal()">
+      <span>＋</span> Add New Feature
+    </button>
+  </div>
 </main>
 
 <footer class="site-footer">
   SensForge Internal · UI Testbed · Not for external distribution
 </footer>
 
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="featureModal" onclick="handleOverlayClick(event)">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()" title="Close">×</button>
+    <div class="modal-title">Request a Feature</div>
+    <div class="modal-subtitle">Describe or upload a design — Claire will build it.</div>
+
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab('describe', this)">✏️ Describe It</button>
+      <button class="modal-tab" onclick="switchTab('upload', this)">🖼️ Upload Design</button>
+    </div>
+
+    <!-- Tab 1: Describe It -->
+    <div class="tab-panel active" id="tab-describe">
+      <label class="form-label">Feature Description</label>
+      <textarea
+        class="form-textarea"
+        id="featureDesc"
+        placeholder="Describe the UI feature you want to build..."
+      ></textarea>
+      <p class="form-hint">Be specific — what screens, what the user does, what it looks like</p>
+      <button class="submit-btn" id="submitDescBtn" onclick="submitFeature('describe')">Request Feature</button>
+    </div>
+
+    <!-- Tab 2: Upload Design -->
+    <div class="tab-panel" id="tab-upload">
+      <div class="drag-zone" id="dragZone">
+        <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFiles(this.files)" />
+        <div class="drag-zone-icon">📎</div>
+        <div class="drag-zone-text">Drag & drop images here</div>
+        <div class="drag-zone-sub">or click to browse · PNG, JPG, GIF, WebP</div>
+      </div>
+
+      <div class="thumbnail-grid" id="thumbnailGrid"></div>
+
+      <label class="form-label">Additional Notes</label>
+      <input type="text" class="form-input" id="uploadNotes" placeholder="Any additional notes..." style="margin-bottom:20px;" />
+
+      <button class="submit-btn" id="submitUploadBtn" onclick="submitFeature('upload')">Request Feature</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
 <script>
-  // Load saved names from localStorage
+  // ===== Card name editing =====
   document.querySelectorAll('[data-card-id]').forEach(card => {
     const id = card.dataset.cardId;
     const saved = localStorage.getItem('card-name-' + id);
@@ -257,7 +644,6 @@
     const id = card.dataset.cardId;
     const currentName = nameEl.textContent;
 
-    // Replace span with input
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'card-name-input';
@@ -269,8 +655,6 @@
     function saveEdit() {
       const newName = input.value.trim() || currentName;
       localStorage.setItem('card-name-' + id, newName);
-
-      // Replace input back with span
       const span = document.createElement('span');
       span.className = 'card-name';
       span.textContent = newName;
@@ -281,15 +665,157 @@
 
     input.addEventListener('blur', saveEdit);
     input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        input.blur();
-      }
-      if (e.key === 'Escape') {
-        input.value = currentName;
-        input.blur();
-      }
+      if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+      if (e.key === 'Escape') { input.value = currentName; input.blur(); }
     });
+  }
+
+  // ===== Modal =====
+  function openModal() {
+    document.getElementById('featureModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('featureModal').classList.remove('active');
+    document.body.style.overflow = '';
+    // Reset form
+    document.getElementById('featureDesc').value = '';
+    document.getElementById('uploadNotes').value = '';
+    uploadedFiles = [];
+    renderThumbnails();
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('featureModal')) closeModal();
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // ===== Tabs =====
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ===== File uploads =====
+  let uploadedFiles = [];
+
+  function handleFiles(files) {
+    Array.from(files).forEach(file => {
+      if (!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedFiles.push({ name: file.name, dataUrl: e.target.result, type: file.type });
+        renderThumbnails();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderThumbnails() {
+    const grid = document.getElementById('thumbnailGrid');
+    grid.innerHTML = '';
+    uploadedFiles.forEach((f, i) => {
+      const item = document.createElement('div');
+      item.className = 'thumbnail-item';
+      item.innerHTML = `
+        <img src="${f.dataUrl}" alt="${f.name}" title="${f.name}" />
+        <button class="thumbnail-remove" onclick="removeFile(${i})" title="Remove">×</button>
+      `;
+      grid.appendChild(item);
+    });
+  }
+
+  function removeFile(i) {
+    uploadedFiles.splice(i, 1);
+    renderThumbnails();
+  }
+
+  // Drag-and-drop
+  const dragZone = document.getElementById('dragZone');
+  dragZone.addEventListener('dragover', e => { e.preventDefault(); dragZone.classList.add('drag-over'); });
+  dragZone.addEventListener('dragleave', () => dragZone.classList.remove('drag-over'));
+  dragZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dragZone.classList.remove('drag-over');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  // ===== Submit =====
+  const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+
+  async function submitFeature(tab) {
+    const btnId = tab === 'describe' ? 'submitDescBtn' : 'submitUploadBtn';
+    const btn = document.getElementById(btnId);
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    try {
+      if (tab === 'describe') {
+        const text = document.getElementById('featureDesc').value.trim();
+        if (!text) { showToast('Please describe the feature first.', true); btn.disabled = false; btn.textContent = 'Request Feature'; return; }
+
+        await fetch(WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: `🛠️ **New UI Feature Request**\n\n**Description:**\n${text}`
+          })
+        });
+      } else {
+        const notes = document.getElementById('uploadNotes').value.trim();
+
+        if (uploadedFiles.length === 0) {
+          // Text-only from upload tab
+          const msgText = notes
+            ? `🛠️ **New UI Feature Request**\n\n**Notes:**\n${notes}`
+            : '🛠️ **New UI Feature Request**\n\n_(No description provided)_';
+          await fetch(WEBHOOK, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: msgText })
+          });
+        } else {
+          // Multipart with images
+          const form = new FormData();
+          const msgText = notes
+            ? `🛠️ **New UI Feature Request**\n\n**Notes:**\n${notes}`
+            : `🛠️ **New UI Feature Request**\n\n_(${uploadedFiles.length} image(s) attached)_`;
+          form.append('payload_json', JSON.stringify({ content: msgText }));
+
+          for (let i = 0; i < uploadedFiles.length; i++) {
+            const f = uploadedFiles[i];
+            const resp = await fetch(f.dataUrl);
+            const blob = await resp.blob();
+            form.append(`files[${i}]`, blob, f.name);
+          }
+
+          await fetch(WEBHOOK, { method: 'POST', body: form });
+        }
+      }
+
+      showToast('Feature request sent! Claire will build it soon. 🚀');
+      closeModal();
+    } catch (err) {
+      showToast('Failed to send. Please try again.', true);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Request Feature';
+    }
+  }
+
+  // ===== Toast =====
+  function showToast(msg, isError) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.borderLeftColor = isError ? '#ff4466' : '#00b4d8';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
   }
 </script>
 
