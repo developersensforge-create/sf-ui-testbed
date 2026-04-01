@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skills — SensForge</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f1b2d;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      background: #0f1b2d;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Testbed back link */
+    .testbed-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 20px 0;
+      font-size: 12px;
+      color: #7a9bb5;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .testbed-back:hover { color: #00b4d8; }
+
+    /* Header */
+    .header {
+      padding: 16px 20px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+
+    .header-badge {
+      background: #00b4d8;
+      color: #0f1b2d;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* Subtitle */
+    .subtitle {
+      padding: 0 20px 24px;
+      color: #7a9bb5;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Skills list */
+    .skills-list {
+      padding: 0 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .skill-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .skill-card:active { transform: scale(0.98); }
+
+    .skill-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .skill-icon.person  { background: #e0f7fa; }
+    .skill-icon.package { background: #fff3e0; }
+    .skill-icon.vehicle { background: #f3e5f5; }
+    .skill-icon.animal  { background: #e8f5e9; }
+    .skill-icon.motion  { background: #fce4ec; }
+    .skill-icon.sound   { background: #e8eaf6; }
+
+    .skill-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .skill-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f1b2d;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .skill-desc {
+      font-size: 12px;
+      color: #7a9bb5;
+    }
+
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #cbd5e1;
+      border-radius: 13px;
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: 3px;
+      top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.25s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .toggle input:checked + .toggle-slider { background: #00b4d8; }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    /* Section label */
+    .section-label {
+      padding: 0 20px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #7a9bb5;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      text-align: center;
+      color: #4a6580;
+    }
+
+    .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state p { font-size: 15px; line-height: 1.6; }
+
+    /* Add button */
+    .add-btn {
+      margin: 24px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #00b4d8;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .add-btn:active { transform: scale(0.97); background: #009fc2; }
+
+    .add-btn .plus {
+      width: 24px;
+      height: 24px;
+      border: 2px solid rgba(255,255,255,0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    /* Bottom nav placeholder */
+    .bottom-bar {
+      height: 20px;
+    }
+
+    /* Chevron */
+    .chevron {
+      color: #c0cdd8;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <a href="../../index.html" class="testbed-back">← Back to Testbed</a>
+
+  <div class="header">
+    <h1>Skills</h1>
+    <span class="header-badge">3 Active</span>
+  </div>
+  <p class="subtitle">Automate your camera. Set triggers and actions to stay in control.</p>
+
+  <p class="section-label">Your Skills</p>
+
+  <div class="skills-list">
+    <a href="skill-detail.html?skill=person" class="skill-card" onclick="stopToggle(event)">
+      <div class="skill-icon person">🧍</div>
+      <div class="skill-info">
+        <div class="skill-title">Person Detected</div>
+        <div class="skill-desc">Push notification · All day</div>
+      </div>
+      <label class="toggle" onclick="event.stopPropagation()">
+        <input type="checkbox" checked onchange="updateBadge()">
+        <span class="toggle-slider"></span>
+      </label>
+    </a>
+
+    <a href="skill-detail.html?skill=package" class="skill-card" onclick="stopToggle(event)">
+      <div class="skill-icon package">📦</div>
+      <div class="skill-info">
+        <div class="skill-title">Package Arrived</div>
+        <div class="skill-desc">Push notification + Record clip · All day</div>
+      </div>
+      <label class="toggle" onclick="event.stopPropagation()">
+        <input type="checkbox" checked onchange="updateBadge()">
+        <span class="toggle-slider"></span>
+      </label>
+    </a>
+
+    <a href="skill-detail.html?skill=vehicle" class="skill-card" onclick="stopToggle(event)">
+      <div class="skill-icon vehicle">🚗</div>
+      <div class="skill-info">
+        <div class="skill-title">Vehicle Detected</div>
+        <div class="skill-desc">Record clip · 10 PM – 6 AM</div>
+      </div>
+      <label class="toggle" onclick="event.stopPropagation()">
+        <input type="checkbox" checked onchange="updateBadge()">
+        <span class="toggle-slider"></span>
+      </label>
+    </a>
+
+    <a href="skill-detail.html?skill=sound" class="skill-card" onclick="stopToggle(event)">
+      <div class="skill-icon sound">🔊</div>
+      <div class="skill-info">
+        <div class="skill-title">Sound Detected</div>
+        <div class="skill-desc">Sound alarm · All day</div>
+      </div>
+      <label class="toggle" onclick="event.stopPropagation()">
+        <input type="checkbox" onchange="updateBadge()">
+        <span class="toggle-slider"></span>
+      </label>
+    </a>
+  </div>
+
+  <a href="add-skill.html" class="add-btn">
+    <span class="plus">+</span>
+    Add New Skill
+  </a>
+  <div class="bottom-bar"></div>
+</div>
+
+<script>
+  function stopToggle(e) {
+    // Let the card navigate but not when toggle is clicked
+  }
+
+  function updateBadge() {
+    const active = document.querySelectorAll('.toggle input:checked').length;
+    document.querySelector('.header-badge').textContent = active + ' Active';
+  }
+</script>
+</body>
+</html>
