@@ -1,311 +1,350 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Skills — SensForge</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>My Skills — SensForge</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      background: #0f1b2d;
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      display: flex;
-      justify-content: center;
-    }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
 
-    .app {
-      width: 100%;
-      max-width: 375px;
-      min-height: 100vh;
-      background: #0f1b2d;
-      display: flex;
-      flex-direction: column;
-    }
+  .phone {
+    width: 375px;
+    min-height: 100vh;
+    background: #f5f5f5;
+    position: relative;
+    overflow-x: hidden;
+  }
 
-    /* Header */
-    .header {
-      padding: 56px 20px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+  /* Status bar */
+  .status-bar {
+    background: #fff;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 12px;
+    font-weight: 600;
+  }
 
-    .header h1 {
-      font-size: 26px;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: -0.3px;
-    }
+  /* Nav header */
+  .nav-header {
+    background: #fff;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 1px solid #ebebeb;
+  }
+  .nav-header .back-btn {
+    position: absolute;
+    left: 16px;
+    font-size: 22px;
+    color: #1a1a1a;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .nav-header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
 
-    .header-badge {
-      background: #00b4d8;
-      color: #0f1b2d;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 20px;
-    }
+  /* Back to testbed link */
+  .testbed-link {
+    display: block;
+    text-align: center;
+    padding: 8px;
+    font-size: 12px;
+    color: #f96400;
+    text-decoration: none;
+    background: #fff;
+    border-bottom: 1px solid #ebebeb;
+  }
 
-    /* Subtitle */
-    .subtitle {
-      padding: 0 20px 24px;
-      color: #7a9bb5;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+  /* Section wrapper */
+  .section {
+    background: #fff;
+    margin: 12px 0;
+    border-radius: 0;
+  }
 
-    /* Skills list */
-    .skills-list {
-      padding: 0 20px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .section-header .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .section-header .chevron {
+    font-size: 16px;
+    color: #999;
+    transition: transform 0.2s;
+  }
+  .section-header .chevron.open { transform: rotate(180deg); }
 
-    .skill-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 16px 18px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-      cursor: pointer;
-      text-decoration: none;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
+  /* New Skill Template form */
+  .skill-form {
+    padding: 14px 16px;
+  }
+  .skill-form input[type="text"] {
+    width: 100%;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #1a1a1a;
+    background: #fafafa;
+    outline: none;
+    margin-bottom: 10px;
+  }
+  .skill-form input[type="text"]::placeholder { color: #bbb; }
+  .dropdowns-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .dropdowns-row select {
+    flex: 1;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 10px;
+    font-size: 13px;
+    color: #555;
+    background: #fafafa;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    outline: none;
+  }
+  .btn-orange {
+    display: block;
+    width: 100%;
+    background: #f96400;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+  }
+  .btn-orange:active { opacity: 0.85; }
 
-    .skill-card:active { transform: scale(0.98); }
+  /* Skill cards */
+  .skill-card {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .skill-card:last-child { border-bottom: none; }
 
-    .skill-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-    }
+  .skill-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .skill-card-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+    flex: 1;
+  }
+  /* Toggle */
+  .toggle {
+    width: 44px;
+    height: 26px;
+    background: #f96400;
+    border-radius: 13px;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: #fff;
+    border-radius: 50%;
+    top: 2px;
+    left: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle.off {
+    background: #ccc;
+  }
+  .toggle.off::after { left: 2px; }
 
-    .skill-icon.person  { background: #e0f7fa; }
-    .skill-icon.package { background: #fff3e0; }
-    .skill-icon.vehicle { background: #f3e5f5; }
-    .skill-icon.animal  { background: #e8f5e9; }
-    .skill-icon.motion  { background: #fce4ec; }
-    .skill-icon.sound   { background: #e8eaf6; }
+  .skill-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
 
-    .skill-info {
-      flex: 1;
-      min-width: 0;
-    }
+  .skill-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+  .tag {
+    border: 1.5px solid #f96400;
+    color: #f96400;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .edit-link {
+    font-size: 13px;
+    color: #f96400;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 10px;
+  }
 
-    .skill-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #0f1b2d;
-      margin-bottom: 3px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  /* Pagination dots */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 20px 0 32px;
+  }
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ccc;
+  }
+  .dot.active { background: #f96400; }
 
-    .skill-desc {
-      font-size: 12px;
-      color: #7a9bb5;
-    }
-
-    /* Toggle switch */
-    .toggle {
-      position: relative;
-      width: 44px;
-      height: 26px;
-      flex-shrink: 0;
-    }
-
-    .toggle input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-      position: absolute;
-    }
-
-    .toggle-slider {
-      position: absolute;
-      inset: 0;
-      background: #cbd5e1;
-      border-radius: 13px;
-      cursor: pointer;
-      transition: background 0.25s;
-    }
-
-    .toggle-slider::before {
-      content: '';
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      left: 3px;
-      top: 3px;
-      background: #fff;
-      border-radius: 50%;
-      transition: transform 0.25s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-
-    .toggle input:checked + .toggle-slider { background: #00b4d8; }
-    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
-
-    /* Section label */
-    .section-label {
-      padding: 0 20px 10px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #7a9bb5;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    /* Empty state */
-    .empty-state {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 60px 40px;
-      text-align: center;
-      color: #4a6580;
-    }
-
-    .empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
-    .empty-state p { font-size: 15px; line-height: 1.6; }
-
-    /* Add button */
-    .add-btn {
-      margin: 24px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: #00b4d8;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 16px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.15s;
-    }
-
-    .add-btn:active { transform: scale(0.97); background: #009fc2; }
-
-    .add-btn .plus {
-      width: 24px;
-      height: 24px;
-      border: 2px solid rgba(255,255,255,0.6);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      line-height: 1;
-    }
-
-    /* Bottom nav placeholder */
-    .bottom-bar {
-      height: 20px;
-    }
-
-    /* Chevron */
-    .chevron {
-      color: #c0cdd8;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-  </style>
+  /* Spacer */
+  .spacer { height: 12px; }
+</style>
 </head>
 <body>
-<div class="app">
-  <a href="../../index.html" style="display:block;padding:16px 20px 0;font-size:12px;color:#7a9bb5;text-decoration:none;">← Back to Testbed</a>
-  <div class="header">
-    <h1>Skills</h1>
-    <span class="header-badge">3 Active</span>
-  </div>
-  <p class="subtitle">Automate your camera. Set triggers and actions to stay in control.</p>
-
-  <p class="section-label">Your Skills</p>
-
-  <div class="skills-list">
-    <a href="skill-detail.html?skill=person" class="skill-card" onclick="stopToggle(event)">
-      <div class="skill-icon person">🧍</div>
-      <div class="skill-info">
-        <div class="skill-title">Person Detected</div>
-        <div class="skill-desc">Push notification · All day</div>
-      </div>
-      <label class="toggle" onclick="event.stopPropagation()">
-        <input type="checkbox" checked onchange="updateBadge()">
-        <span class="toggle-slider"></span>
-      </label>
-    </a>
-
-    <a href="skill-detail.html?skill=package" class="skill-card" onclick="stopToggle(event)">
-      <div class="skill-icon package">📦</div>
-      <div class="skill-info">
-        <div class="skill-title">Package Arrived</div>
-        <div class="skill-desc">Push notification + Record clip · All day</div>
-      </div>
-      <label class="toggle" onclick="event.stopPropagation()">
-        <input type="checkbox" checked onchange="updateBadge()">
-        <span class="toggle-slider"></span>
-      </label>
-    </a>
-
-    <a href="skill-detail.html?skill=vehicle" class="skill-card" onclick="stopToggle(event)">
-      <div class="skill-icon vehicle">🚗</div>
-      <div class="skill-info">
-        <div class="skill-title">Vehicle Detected</div>
-        <div class="skill-desc">Record clip · 10 PM – 6 AM</div>
-      </div>
-      <label class="toggle" onclick="event.stopPropagation()">
-        <input type="checkbox" checked onchange="updateBadge()">
-        <span class="toggle-slider"></span>
-      </label>
-    </a>
-
-    <a href="skill-detail.html?skill=sound" class="skill-card" onclick="stopToggle(event)">
-      <div class="skill-icon sound">🔊</div>
-      <div class="skill-info">
-        <div class="skill-title">Sound Detected</div>
-        <div class="skill-desc">Sound alarm · All day</div>
-      </div>
-      <label class="toggle" onclick="event.stopPropagation()">
-        <input type="checkbox" onchange="updateBadge()">
-        <span class="toggle-slider"></span>
-      </label>
-    </a>
+<div class="phone">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span>9:41</span>
+    <span>●●●</span>
   </div>
 
-  <a href="add-skill.html" class="add-btn">
-    <span class="plus">+</span>
-    Add New Skill
-  </a>
-  <div class="bottom-bar"></div>
+  <!-- Nav Header -->
+  <div class="nav-header">
+    <a href="../../index.html" class="back-btn">←</a>
+    <h1>My Skills</h1>
+  </div>
+
+  <a href="../../index.html" class="testbed-link">← Back to Testbed</a>
+
+  <div class="spacer"></div>
+
+  <!-- New Skill Template section -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">New Skill Template</span>
+      <span class="chevron open">⌄</span>
+    </div>
+    <div class="skill-form">
+      <input type="text" placeholder="Skill name...">
+      <div class="dropdowns-row">
+        <a href="add-skill.html" style="flex:1; text-decoration:none;">
+          <select style="width:100%; pointer-events:none;">
+            <option>Select a trigger ▼</option>
+          </select>
+        </a>
+        <select>
+          <option>Turn on ▼</option>
+          <option>Turn off</option>
+        </select>
+      </div>
+      <div class="dropdowns-row" style="margin-bottom:14px;">
+        <select style="flex:1;">
+          <option>Select action ▼</option>
+          <option>Send notification</option>
+          <option>Play message</option>
+          <option>Record</option>
+        </select>
+      </div>
+      <a href="configure-skill.html" class="btn-orange">Save</a>
+    </div>
+  </div>
+
+  <!-- Active Skills section -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Active Skills</span>
+      <span class="chevron open">⌄</span>
+    </div>
+
+    <!-- Card 1 -->
+    <div class="skill-card">
+      <div class="skill-card-top">
+        <span class="skill-card-name">My Dog Kitchen Alarm</span>
+        <div class="toggle"></div>
+      </div>
+      <p class="skill-desc">If my dog from a jump on the kitchen table, then send a notification to my phone</p>
+      <div class="skill-footer">
+        <div class="tags">
+          <span class="tag">Custom Skill</span>
+          <span class="tag">Sync Kitchen</span>
+        </div>
+        <a href="skill-detail.html" class="edit-link">Edit</a>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="skill-card">
+      <div class="skill-card-top">
+        <span class="skill-card-name">Driveway Delivery Message</span>
+        <div class="toggle"></div>
+      </div>
+      <p class="skill-desc">If Mail carrier approaches the driveway during the day, play message through speaker.</p>
+      <div class="skill-footer">
+        <div class="tags">
+          <span class="tag">Delivery</span>
+          <span class="tag">Play Message</span>
+        </div>
+        <a href="skill-detail.html" class="edit-link">Edit</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
 </div>
-
-<script>
-  function stopToggle(e) {
-    // Let the card navigate but not when toggle is clicked
-  }
-
-  function updateBadge() {
-    const active = document.querySelectorAll('.toggle input:checked').length;
-    document.querySelector('.header-badge').textContent = active + ' Active';
-  }
-</script>
 </body>
 </html>
