@@ -1,281 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Add Skill — SensForge</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Select a Trigger — SensForge</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      background: #0f1b2d;
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      display: flex;
-      justify-content: center;
-    }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
 
-    .app {
-      width: 100%;
-      max-width: 375px;
-      min-height: 100vh;
-      background: #0f1b2d;
-      display: flex;
-      flex-direction: column;
-    }
+  .phone {
+    width: 375px;
+    min-height: 100vh;
+    background: #f5f5f5;
+    position: relative;
+    overflow: hidden;
+  }
 
-    /* Header */
-    .header {
-      padding: 56px 20px 16px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+  /* Background page (dimmed My Skills) */
+  .bg-page {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #f5f5f5;
+    pointer-events: none;
+  }
 
-    .back-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      color: #fff;
-      font-size: 18px;
-      transition: background 0.2s;
-      flex-shrink: 0;
-    }
-    .back-btn:active { background: rgba(255,255,255,0.15); }
+  .status-bar {
+    background: #fff;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .nav-header {
+    background: #fff;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 1px solid #ebebeb;
+  }
+  .nav-header .back-btn {
+    position: absolute;
+    left: 16px;
+    font-size: 22px;
+    color: #1a1a1a;
+    text-decoration: none;
+  }
+  .nav-header h1 {
+    font-size: 18px;
+    font-weight: 700;
+  }
 
-    .header-text h1 {
-      font-size: 22px;
-      font-weight: 700;
-      color: #fff;
-    }
-    .header-text p {
-      font-size: 13px;
-      color: #7a9bb5;
-      margin-top: 2px;
-    }
+  .testbed-link {
+    display: block;
+    text-align: center;
+    padding: 8px;
+    font-size: 12px;
+    color: #f96400;
+    text-decoration: none;
+    background: #fff;
+    border-bottom: 1px solid #ebebeb;
+  }
 
-    /* Step indicator */
-    .step-bar {
-      padding: 20px 20px 24px;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
+  /* Dimmed background content */
+  .bg-content {
+    padding: 12px 0;
+    opacity: 0.35;
+    filter: blur(1px);
+    pointer-events: none;
+  }
+  .bg-section {
+    background: #fff;
+    margin-bottom: 12px;
+    padding: 14px 16px;
+  }
+  .bg-section .bg-row {
+    height: 14px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+  .bg-section .bg-row.short { width: 60%; }
+  .bg-section .bg-row.medium { width: 80%; }
 
-    .step {
-      height: 4px;
-      border-radius: 2px;
-      flex: 1;
-    }
-    .step.active { background: #00b4d8; }
-    .step.inactive { background: rgba(255,255,255,0.12); }
+  /* Dim overlay */
+  .dim-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4);
+    pointer-events: none;
+  }
 
-    .step-label {
-      font-size: 12px;
-      color: #7a9bb5;
-      padding: 0 20px 16px;
-    }
-    .step-label span { color: #00b4d8; font-weight: 600; }
+  /* Bottom sheet */
+  .bottom-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    padding-bottom: 34px;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
+  }
 
-    /* Section label */
-    .section-label {
-      padding: 0 20px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #7a9bb5;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
+  .sheet-handle {
+    width: 36px;
+    height: 4px;
+    background: #ddd;
+    border-radius: 2px;
+    margin: 10px auto 0;
+  }
 
-    /* Trigger grid */
-    .trigger-grid {
-      padding: 0 20px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+  .sheet-header {
+    padding: 14px 20px 10px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .sheet-header .sheet-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .sheet-header .sheet-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-top: 2px;
+  }
 
-    .trigger-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 22px 16px 18px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      text-decoration: none;
-      border: 2px solid transparent;
-      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-    }
+  /* Trigger list */
+  .trigger-list {
+    list-style: none;
+  }
+  .trigger-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f5f5f5;
+    cursor: pointer;
+    font-size: 15px;
+    color: #1a1a1a;
+  }
+  .trigger-item:last-child { border-bottom: none; }
+  .trigger-item:active { background: #fef6f0; }
 
-    .trigger-card:active { transform: scale(0.96); }
-    .trigger-card.selected {
-      border-color: #00b4d8;
-      box-shadow: 0 0 0 3px rgba(0,180,216,0.25), 0 4px 16px rgba(0,0,0,0.18);
-    }
+  .radio-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #e0e0e0;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .radio-dot.selected {
+    border-color: #f96400;
+    background: #f96400;
+    box-shadow: inset 0 0 0 4px #fff;
+  }
 
-    .trigger-icon-wrap {
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-    }
-
-    .trigger-icon-wrap.person  { background: #e0f7fa; }
-    .trigger-icon-wrap.package { background: #fff3e0; }
-    .trigger-icon-wrap.vehicle { background: #f3e5f5; }
-    .trigger-icon-wrap.animal  { background: #e8f5e9; }
-    .trigger-icon-wrap.motion  { background: #fce4ec; }
-    .trigger-icon-wrap.sound   { background: #e8eaf6; }
-
-    .trigger-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: #0f1b2d;
-      text-align: center;
-    }
-
-    .trigger-sub {
-      font-size: 11px;
-      color: #7a9bb5;
-      text-align: center;
-      margin-top: -4px;
-    }
-
-    /* Info tip */
-    .info-tip {
-      margin: 20px 20px 0;
-      background: rgba(0,180,216,0.1);
-      border: 1px solid rgba(0,180,216,0.25);
-      border-radius: 10px;
-      padding: 12px 14px;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    .info-tip .tip-icon { font-size: 16px; margin-top: 1px; }
-    .info-tip p { font-size: 12px; color: #7ab8cc; line-height: 1.5; }
-
-    /* Continue button */
-    .continue-btn {
-      margin: 24px 20px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: #00b4d8;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 16px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.15s;
-      opacity: 0.4;
-      pointer-events: none;
-    }
-
-    .continue-btn.enabled {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .continue-btn:active { transform: scale(0.97); background: #009fc2; }
-  </style>
+  .sheet-footer {
+    padding: 12px 20px 0;
+  }
+  .btn-orange {
+    display: block;
+    width: 100%;
+    background: #f96400;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+  }
+  .btn-orange:active { opacity: 0.85; }
+</style>
 </head>
 <body>
-<div class="app">
-  <a href="../../index.html" style="display:block;padding:16px 20px 0;font-size:12px;color:#7a9bb5;text-decoration:none;">← Back to Testbed</a>
-  <div class="header">
-    <a href="index.html" class="back-btn">&#8592;</a>
-    <div class="header-text">
-      <h1>Add Skill</h1>
-      <p>Choose what to detect</p>
+<div class="phone">
+  <!-- Background page -->
+  <div class="bg-page">
+    <div class="status-bar">
+      <span>9:41</span>
+      <span>●●●</span>
+    </div>
+    <div class="nav-header">
+      <h1>My Skills</h1>
+    </div>
+    <div class="testbed-link" style="pointer-events:none;">← Back to Testbed</div>
+    <div class="bg-content">
+      <div class="bg-section">
+        <div class="bg-row short"></div>
+        <div class="bg-row medium"></div>
+        <div class="bg-row"></div>
+        <div class="bg-row short"></div>
+      </div>
+      <div class="bg-section">
+        <div class="bg-row short"></div>
+        <div class="bg-row medium"></div>
+        <div class="bg-row"></div>
+      </div>
     </div>
   </div>
 
-  <div class="step-bar">
-    <div class="step active"></div>
-    <div class="step inactive"></div>
-    <div class="step inactive"></div>
+  <!-- Dim overlay -->
+  <div class="dim-overlay"></div>
+
+  <!-- Bottom Sheet -->
+  <div class="bottom-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-label">New Skill Template</div>
+      <div class="sheet-title">Select a Trigger</div>
+    </div>
+
+    <ul class="trigger-list">
+      <li class="trigger-item">
+        <span>Person Detected</span>
+        <div class="radio-dot selected"></div>
+      </li>
+      <li class="trigger-item">
+        <span>Person Coming Home</span>
+        <div class="radio-dot"></div>
+      </li>
+      <li class="trigger-item">
+        <span>Person Near Car or Driveway</span>
+        <div class="radio-dot"></div>
+      </li>
+      <li class="trigger-item">
+        <span>Motion Detected</span>
+        <div class="radio-dot"></div>
+      </li>
+      <li class="trigger-item">
+        <span>Vehicle Detected</span>
+        <div class="radio-dot"></div>
+      </li>
+      <li class="trigger-item">
+        <span>Package Delivered</span>
+        <div class="radio-dot"></div>
+      </li>
+    </ul>
+
+    <div class="sheet-footer">
+      <a href="configure-skill.html" class="btn-orange">Save</a>
+    </div>
   </div>
-  <div class="step-label"><span>Step 1 of 3</span> — Pick a Trigger</div>
-
-  <p class="section-label">What should trigger this skill?</p>
-
-  <div class="trigger-grid">
-    <a href="#" class="trigger-card" data-trigger="person" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=person')">
-      <div class="trigger-icon-wrap person">🧍</div>
-      <div class="trigger-name">Person</div>
-      <div class="trigger-sub">Human detected</div>
-    </a>
-
-    <a href="#" class="trigger-card" data-trigger="package" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=package')">
-      <div class="trigger-icon-wrap package">📦</div>
-      <div class="trigger-name">Package</div>
-      <div class="trigger-sub">Delivery arrived</div>
-    </a>
-
-    <a href="#" class="trigger-card" data-trigger="vehicle" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=vehicle')">
-      <div class="trigger-icon-wrap vehicle">🚗</div>
-      <div class="trigger-name">Vehicle</div>
-      <div class="trigger-sub">Car or truck</div>
-    </a>
-
-    <a href="#" class="trigger-card" data-trigger="animal" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=animal')">
-      <div class="trigger-icon-wrap animal">🐾</div>
-      <div class="trigger-name">Animal</div>
-      <div class="trigger-sub">Pet or wildlife</div>
-    </a>
-
-    <a href="#" class="trigger-card" data-trigger="motion" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=motion')">
-      <div class="trigger-icon-wrap motion">🌀</div>
-      <div class="trigger-name">Motion</div>
-      <div class="trigger-sub">Any movement</div>
-    </a>
-
-    <a href="#" class="trigger-card" data-trigger="sound" onclick="selectTrigger(event, this, 'configure-skill.html?trigger=sound')">
-      <div class="trigger-icon-wrap sound">🔊</div>
-      <div class="trigger-name">Sound</div>
-      <div class="trigger-sub">Noise detected</div>
-    </a>
-  </div>
-
-  <div class="info-tip">
-    <span class="tip-icon">💡</span>
-    <p>AI detection requires a SensForge Pro subscription. Motion and Sound work on all plans.</p>
-  </div>
-
-  <a href="#" class="continue-btn" id="continueBtn">
-    Continue →
-  </a>
 </div>
-
-<script>
-  let selectedHref = null;
-
-  function selectTrigger(e, card, href) {
-    e.preventDefault();
-    document.querySelectorAll('.trigger-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    selectedHref = href;
-    const btn = document.getElementById('continueBtn');
-    btn.classList.add('enabled');
-    btn.href = href;
-  }
-</script>
 </body>
 </html>
