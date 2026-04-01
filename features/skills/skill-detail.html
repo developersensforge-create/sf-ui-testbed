@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skill Detail — SensForge</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f1b2d;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      background: #0f1b2d;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Testbed back link */
+    .testbed-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 20px 0;
+      font-size: 12px;
+      color: #7a9bb5;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .testbed-back:hover { color: #00b4d8; }
+
+    /* Header */
+    .header {
+      padding: 16px 20px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .back-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #fff;
+      font-size: 18px;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .back-btn:active { background: rgba(255,255,255,0.15); }
+
+    .header-text h1 { font-size: 22px; font-weight: 700; color: #fff; }
+    .header-text p { font-size: 13px; color: #7a9bb5; margin-top: 2px; }
+
+    .header-delete {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 80, 80, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      color: #ff5f5f;
+      font-size: 17px;
+      transition: background 0.2s;
+    }
+    .header-delete:active { background: rgba(255,80,80,0.25); }
+
+    /* Hero card */
+    .hero-card {
+      margin: 0 20px 20px;
+      background: linear-gradient(135deg, #00b4d8 0%, #0077a8 100%);
+      border-radius: 16px;
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 8px 24px rgba(0,180,216,0.3);
+    }
+
+    .hero-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      flex-shrink: 0;
+    }
+
+    .hero-info .hero-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .hero-info .hero-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.75);
+    }
+
+    .hero-toggle {
+      position: relative;
+      width: 50px;
+      height: 28px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .hero-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .hero-toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.3);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+    .hero-toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 3px;
+      top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.25s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .hero-toggle input:checked + .hero-toggle-slider { background: rgba(255,255,255,0.5); }
+    .hero-toggle input:checked + .hero-toggle-slider::before { transform: translateX(22px); }
+
+    /* Section label */
+    .section-label {
+      padding: 0 20px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #7a9bb5;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    /* Detail card */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      margin: 0 20px 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      gap: 14px;
+      border-bottom: 1px solid #f0f4f8;
+    }
+    .detail-row:last-child { border-bottom: none; }
+
+    .detail-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+
+    .detail-icon.notif  { background: #e3f2fd; }
+    .detail-icon.record { background: #fce4ec; }
+    .detail-icon.sched  { background: #e8eaf6; }
+    .detail-icon.cam    { background: #e8f5e9; }
+
+    .detail-info { flex: 1; }
+    .detail-label { font-size: 12px; color: #7a9bb5; margin-bottom: 2px; }
+    .detail-value { font-size: 14px; font-weight: 600; color: #0f1b2d; }
+
+    .detail-badge {
+      background: #e0f7fa;
+      color: #0077a8;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    /* Activity log */
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 14px 16px;
+      gap: 12px;
+      border-bottom: 1px solid #f0f4f8;
+    }
+    .activity-item:last-child { border-bottom: none; }
+
+    .activity-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #00b4d8;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .activity-dot.dim { background: #c0d0dc; }
+
+    .activity-text {
+      flex: 1;
+      font-size: 13px;
+      color: #0f1b2d;
+      line-height: 1.4;
+    }
+    .activity-time {
+      font-size: 11px;
+      color: #7a9bb5;
+      margin-top: 2px;
+    }
+
+    /* Edit button */
+    .edit-btn {
+      margin: 8px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #00b4d8;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .edit-btn:active { transform: scale(0.97); background: #009fc2; }
+
+    .outline-btn {
+      margin: 0 20px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: transparent;
+      color: #7a9bb5;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .outline-btn:active { border-color: #ff5f5f; color: #ff5f5f; }
+
+    /* Delete confirm modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 100;
+    }
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 375px;
+      padding: 28px 24px 36px;
+    }
+
+    .modal h3 { font-size: 18px; color: #0f1b2d; margin-bottom: 8px; }
+    .modal p { font-size: 14px; color: #7a9bb5; margin-bottom: 24px; line-height: 1.5; }
+
+    .modal-btns { display: flex; gap: 12px; }
+
+    .modal-cancel {
+      flex: 1;
+      padding: 14px;
+      background: #f0f4f8;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f1b2d;
+      cursor: pointer;
+    }
+
+    .modal-delete {
+      flex: 1;
+      padding: 14px;
+      background: #ff5f5f;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <a href="../../index.html" class="testbed-back">← Back to Testbed</a>
+
+  <div class="header">
+    <div class="header-left">
+      <a href="index.html" class="back-btn">&#8592;</a>
+      <div class="header-text">
+        <h1 id="pageTitle">Skill Detail</h1>
+        <p>View &amp; edit</p>
+      </div>
+    </div>
+    <button class="header-delete" onclick="showDeleteModal()">🗑</button>
+  </div>
+
+  <div class="hero-card">
+    <div class="hero-icon" id="heroIcon">🧍</div>
+    <div class="hero-info">
+      <div class="hero-title" id="heroTitle">Person Detected</div>
+      <div class="hero-sub">Created Mar 28, 2026</div>
+    </div>
+    <label class="hero-toggle">
+      <input type="checkbox" checked>
+      <span class="hero-toggle-slider"></span>
+    </label>
+  </div>
+
+  <p class="section-label">Configuration</p>
+
+  <div class="card">
+    <div class="detail-row">
+      <div class="detail-icon cam">📷</div>
+      <div class="detail-info">
+        <div class="detail-label">Camera</div>
+        <div class="detail-value">Front Door</div>
+      </div>
+      <span class="detail-badge">Active</span>
+    </div>
+    <div class="detail-row">
+      <div class="detail-icon notif">🔔</div>
+      <div class="detail-info">
+        <div class="detail-label">Actions</div>
+        <div class="detail-value" id="actionsValue">Push Notification</div>
+      </div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-icon sched">⏰</div>
+      <div class="detail-info">
+        <div class="detail-label">Schedule</div>
+        <div class="detail-value" id="scheduleValue">All Day</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-label">Recent Activity</p>
+
+  <div class="card">
+    <div class="activity-item">
+      <div class="activity-dot"></div>
+      <div class="activity-info">
+        <div class="activity-text">Person detected at front door</div>
+        <div class="activity-time">Today, 3:42 PM — Push sent</div>
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot"></div>
+      <div class="activity-info">
+        <div class="activity-text">Person detected at front door</div>
+        <div class="activity-time">Today, 11:07 AM — Push sent</div>
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot dim"></div>
+      <div class="activity-info">
+        <div class="activity-text">Person detected at front door</div>
+        <div class="activity-time">Yesterday, 6:15 PM — Push sent</div>
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot dim"></div>
+      <div class="activity-info">
+        <div class="activity-text">Person detected at front door</div>
+        <div class="activity-time">Yesterday, 9:02 AM — Push sent</div>
+      </div>
+    </div>
+  </div>
+
+  <a href="configure-skill.html" class="edit-btn" id="editBtn">
+    ✏️ &nbsp;Edit Skill
+  </a>
+  <a href="#" class="outline-btn" onclick="showDeleteModal(); return false;">
+    Delete Skill
+  </a>
+</div>
+
+<!-- Delete confirm modal -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <h3>Delete this Skill?</h3>
+    <p>This skill will be permanently removed. Your camera will no longer respond to this trigger.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="hideDeleteModal()">Cancel</button>
+      <button class="modal-delete" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const skill = params.get('skill') || 'person';
+
+  const skillMap = {
+    person:  { icon: '🧍', title: 'Person Detected', actions: 'Push Notification', schedule: 'All Day', trigger: 'person' },
+    package: { icon: '📦', title: 'Package Arrived', actions: 'Push Notification + Record Clip', schedule: 'All Day', trigger: 'package' },
+    vehicle: { icon: '🚗', title: 'Vehicle Detected', actions: 'Record Clip', schedule: '10:00 PM – 6:00 AM', trigger: 'vehicle' },
+    animal:  { icon: '🐾', title: 'Animal Detected', actions: 'Push Notification', schedule: 'All Day', trigger: 'animal' },
+    motion:  { icon: '🌀', title: 'Motion Detected', actions: 'Push Notification + Record Clip', schedule: 'All Day', trigger: 'motion' },
+    sound:   { icon: '🔊', title: 'Sound Detected', actions: 'Sound Alarm', schedule: 'All Day', trigger: 'sound' },
+  };
+
+  const s = skillMap[skill] || skillMap.person;
+  document.getElementById('pageTitle').textContent = s.title;
+  document.getElementById('heroIcon').textContent = s.icon;
+  document.getElementById('heroTitle').textContent = s.title;
+  document.getElementById('actionsValue').textContent = s.actions;
+  document.getElementById('scheduleValue').textContent = s.schedule;
+  document.getElementById('editBtn').href = 'configure-skill.html?trigger=' + s.trigger;
+
+  function showDeleteModal() {
+    document.getElementById('deleteModal').classList.add('show');
+  }
+
+  function hideDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('show');
+  }
+
+  function confirmDelete() {
+    window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>
