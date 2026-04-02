@@ -743,7 +743,7 @@
       await fetch(WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: '🎨 **Figma Export Request**\nFeature: ' + featureName + '\nFigma URL: ' + url })
+        body: JSON.stringify({ content: '<@&1487656704463208592> 🎨 **Figma Export Request**\nFeature: ' + featureName + '\nFigma URL: ' + url })
       });
     } catch(e) {}
     showToast('Exporting to Figma... (This feature requires Claire\'s backend — request sent to #product-team)');
@@ -879,7 +879,7 @@
         await fetch(WEBHOOK, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ content: msgText })
+          body: JSON.stringify({ content: '<@&1487656704463208592> ' + msgText })
         });
       }
 
@@ -978,7 +978,7 @@
       await fetch('https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: `⏪ **Restore Request**\nReverting sf-ui-testbed to commit: ${sha}\nMessage: ${commitMsg}\nRequested by: Ruizhi via Version History panel` })
+        body: JSON.stringify({ content: '<@&1487656704463208592> ⏪ **Restore Request**\nReverting sf-ui-testbed to commit: ${sha}\nMessage: ${commitMsg}\nRequested by: Ruizhi via Version History panel` })
       });
     } catch(e) {}
     btn.textContent = '✓ Requested';
