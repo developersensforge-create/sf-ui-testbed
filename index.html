@@ -425,24 +425,24 @@
 
   // ===== Feature list persistence =====
   function loadFeatures() {
-    // Always start with DEFAULT_FEATURES, respecting user-hidden keys
-    const hidden = JSON.parse(localStorage.getItem('sf_hidden_keys') || '[]');
-    const base = DEFAULT_FEATURES.filter(f => !hidden.includes(f.key));
+    // Built-ins ALWAYS shown — cannot be hidden by localStorage state
+    const base = [...DEFAULT_FEATURES];
     try {
       const saved = localStorage.getItem('sf_features');
       if (saved) {
         const parsed = JSON.parse(saved);
+        // Only add user-created features (not in DEFAULT_FEATURES)
         parsed.forEach(f => {
-          if (hidden.includes(f.key)) return; // skip hidden
+          if (DEFAULT_FEATURES.find(d => d.key === f.key)) return; // skip built-ins (already in base)
           if (!base.find(b => b.key === f.key)) {
             base.push(f);
-          } else {
-            const idx = base.findIndex(b => b.key === f.key);
-            if (idx !== -1) base[idx] = { ...base[idx], ...f };
           }
         });
       }
-    } catch(e) {}
+    } catch(e) {
+      // Corrupt localStorage — clear it and start fresh
+      localStorage.removeItem('sf_features');
+    }
     return base;
   }
 
