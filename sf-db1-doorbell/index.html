@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SF-DB1 Doorbell — Sensforge UI Prototype</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { background: #f0f0f0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  .phone { width: 390px; min-height: 844px; background: #fff; border-radius: 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); overflow: hidden; position: relative; }
+  .screen { display: none; flex-direction: column; height: 844px; overflow-y: auto; }
+  .screen.active { display: flex; }
+
+  /* Colors */
+  :root { --orange: #F57C00; --orange-light: #FFF3E0; --gray-light: #f5f5f5; --gray: #9e9e9e; --divider: #eeeeee; }
+
+  /* Top Nav */
+  .top-nav { display: flex; align-items: center; padding: 16px 16px 12px; position: relative; background: #fff; z-index: 10; }
+  .top-nav .back { font-size: 22px; color: #333; cursor: pointer; width: 32px; }
+  .top-nav .title { flex: 1; text-align: center; font-size: 17px; font-weight: 600; color: #111; }
+  .top-nav .action { width: 32px; display: flex; justify-content: flex-end; font-size: 20px; color: #555; cursor: pointer; }
+  .status-bar { height: 44px; background: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; font-size: 12px; color: #333; font-weight: 600; }
+
+  /* Bottom Nav */
+  .bottom-nav { display: flex; background: #fff; border-top: 1px solid var(--divider); padding: 8px 0 20px; margin-top: auto; flex-shrink: 0; }
+  .bottom-nav .tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; padding: 4px 0; }
+  .bottom-nav .tab .icon { font-size: 22px; }
+  .bottom-nav .tab .label { font-size: 10px; color: var(--gray); }
+  .bottom-nav .tab.active .label { color: var(--orange); }
+  .bottom-nav .tab.active .icon { filter: none; }
+
+  /* Video area */
+  .video-area { background: #1a1a1a; width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; }
+  .video-area .watermark { position: absolute; top: 10px; left: 12px; color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+  .video-area .timestamp { position: absolute; bottom: 8px; right: 10px; color: #ff6600; font-size: 10px; font-weight: 500; }
+  .video-loading { color: rgba(255,255,255,0.5); font-size: 14px; text-align: center; }
+  .video-loading .spinner { width: 36px; height: 36px; border: 3px solid rgba(255,255,255,0.2); border-top-color: var(--orange); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Video tabs */
+  .video-tabs { display: flex; background: #fff; border-bottom: 1px solid var(--divider); flex-shrink: 0; }
+  .video-tabs .vtab { flex: 1; text-align: center; padding: 12px 0; font-size: 14px; color: var(--gray); cursor: pointer; border-bottom: 2px solid transparent; }
+  .video-tabs .vtab.active { color: #111; font-weight: 600; border-bottom-color: var(--orange); }
+
+  /* Controls strip */
+  .controls-strip { display: flex; justify-content: space-around; align-items: center; padding: 14px 16px; background: #fff; border-bottom: 1px solid var(--divider); flex-shrink: 0; }
+  .ctrl-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+  .ctrl-btn .icon { width: 44px; height: 44px; border-radius: 50%; background: var(--gray-light); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .ctrl-btn .icon.green { background: #E8F5E9; }
+  .ctrl-btn .icon.red { background: #FFEBEE; }
+  .ctrl-btn .label { font-size: 10px; color: var(--gray); }
+
+  /* List rows */
+  .list-row { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--divider); cursor: pointer; }
+  .list-row .icon { width: 36px; height: 36px; background: var(--gray-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-right: 12px; flex-shrink: 0; }
+  .list-row .content { flex: 1; }
+  .list-row .content .name { font-size: 15px; color: #111; }
+  .list-row .content .sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
+  .list-row .right { color: var(--gray); font-size: 13px; display: flex; align-items: center; gap: 6px; }
+  .list-row .chevron { color: #ccc; font-size: 14px; }
+
+  /* Toggle */
+  .toggle { width: 48px; height: 28px; border-radius: 14px; background: #ccc; position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+  .toggle.on { background: var(--orange); }
+  .toggle::after { content: ''; position: absolute; width: 22px; height: 22px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+  .toggle.on::after { left: 23px; }
+
+  /* Device card */
+  .device-card { margin: 12px 16px; background: var(--gray-light); border-radius: 12px; padding: 14px; display: flex; align-items: center; gap: 12px; }
+  .device-card .cam-icon { width: 52px; height: 52px; background: #ddd; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .device-card .info .name { font-size: 15px; font-weight: 600; color: #111; }
+  .device-card .info .sn { font-size: 12px; color: var(--gray); margin-top: 3px; }
+
+  /* Section header */
+  .section-header { padding: 16px 16px 8px; font-size: 13px; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; background: #f9f9f9; }
+
+  /* Doorbell event screen */
+  .doorbell-event { background: linear-gradient(180deg, #1a1a1a 0%, #2d1f00 100%); flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 40px 24px; }
+  .pulse-ring { width: 140px; height: 140px; border-radius: 50%; background: rgba(245,124,0,0.15); display: flex; align-items: center; justify-content: center; animation: pulse 1.5s ease-out infinite; }
+  .pulse-ring-inner { width: 100px; height: 100px; border-radius: 50%; background: rgba(245,124,0,0.3); display: flex; align-items: center; justify-content: center; animation: pulse 1.5s ease-out infinite 0.3s; }
+  .doorbell-icon { width: 72px; height: 72px; border-radius: 50%; background: var(--orange); display: flex; align-items: center; justify-content: center; font-size: 32px; }
+  @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.3); opacity: 0.3; } }
+  .event-title { font-size: 22px; font-weight: 700; color: #fff; text-align: center; }
+  .event-subtitle { font-size: 14px; color: rgba(255,255,255,0.6); text-align: center; }
+  .answer-btns { display: flex; gap: 24px; margin-top: 8px; }
+  .answer-btn { width: 70px; height: 70px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; }
+  .answer-btn .btn-icon { font-size: 26px; }
+  .answer-btn .btn-label { font-size: 11px; color: rgba(255,255,255,0.8); }
+  .answer-btn.accept { background: #4CAF50; }
+  .answer-btn.decline { background: #f44336; }
+  .ai-caption { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 16px; font-size: 13px; color: rgba(255,255,255,0.85); text-align: center; font-style: italic; max-width: 300px; }
+
+  /* Events list */
+  .event-item { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--divider); cursor: pointer; }
+  .event-item .time-col { width: 60px; font-size: 11px; color: var(--gray); text-align: right; flex-shrink: 0; padding-top: 2px; }
+  .event-item .content { flex: 1; }
+  .event-item .content .ev-title { font-size: 14px; color: #111; font-weight: 500; line-height: 1.3; }
+  .event-item .content .ev-cam { font-size: 12px; color: var(--gray); margin-top: 3px; }
+  .event-item .content .ai-tag { display: inline-block; background: var(--orange-light); color: var(--orange); font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-top: 5px; font-weight: 600; }
+  .event-item .thumb { width: 60px; height: 45px; background: #ddd; border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .date-strip { display: flex; align-items: center; padding: 12px 16px; gap: 8px; background: #fff; border-bottom: 1px solid var(--divider); }
+  .date-strip .arrow { font-size: 18px; color: var(--gray); cursor: pointer; padding: 4px 8px; }
+  .date-strip .date-label { flex: 1; text-align: center; font-size: 15px; font-weight: 600; color: #111; }
+  .filter-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #fff; border-bottom: 1px solid var(--divider); }
+  .filter-row .label { font-size: 14px; font-weight: 600; color: #111; }
+  .filter-row .filter-btn { font-size: 13px; color: var(--orange); display: flex; align-items: center; gap: 4px; cursor: pointer; }
+
+  /* Package event */
+  .pkg-card { margin: 16px; background: var(--orange-light); border-radius: 12px; padding: 16px; }
+  .pkg-card .pkg-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .pkg-card .pkg-icon { font-size: 32px; }
+  .pkg-card .pkg-title { font-size: 17px; font-weight: 700; color: #111; }
+  .pkg-card .pkg-caption { font-size: 13px; color: #555; font-style: italic; margin-bottom: 14px; }
+  .pkg-sub { padding: 10px 0; border-top: 1px solid rgba(245,124,0,0.2); display: flex; justify-content: space-between; align-items: center; }
+  .pkg-sub .sub-name { font-size: 13px; font-weight: 500; color: #333; }
+  .pkg-sub .sub-time { font-size: 12px; color: var(--gray); }
+
+  /* Chime/settings */
+  .radio-option { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--divider); cursor: pointer; }
+  .radio-option .label { flex: 1; font-size: 15px; color: #111; }
+  .radio-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; }
+  .radio-dot.checked { border-color: var(--orange); }
+  .radio-dot.checked::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--orange); }
+
+  /* Slider */
+  .slider-row { padding: 14px 16px; border-bottom: 1px solid var(--divider); }
+  .slider-row .slider-label { font-size: 13px; color: var(--gray); margin-bottom: 10px; }
+  .slider-row input[type=range] { width: 100%; accent-color: var(--orange); }
+
+  /* Buttons */
+  .btn-primary { width: calc(100% - 32px); margin: 16px; background: var(--orange); color: #fff; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; }
+  .btn-outlined { width: calc(100% - 32px); margin: 0 16px 12px; background: #fff; color: var(--orange); border: 2px solid var(--orange); border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  .btn-danger { width: calc(100% - 32px); margin: 0 16px 24px; background: #fff; color: #f44336; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; }
+
+  /* Zone placeholder */
+  .zone-placeholder { margin: 16px; background: #222; border-radius: 12px; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .zone-overlay { position: absolute; top: 20%; left: 15%; width: 70%; height: 65%; border: 2px solid var(--orange); background: rgba(245,124,0,0.15); border-radius: 4px; }
+  .zone-label { color: rgba(255,255,255,0.5); font-size: 12px; position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); }
+
+  /* Membership badge */
+  .badge { background: var(--orange-light); color: var(--orange); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+
+  .spacer { flex: 1; }
+  .scroll-area { flex: 1; overflow-y: auto; }
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN 1: LIVE VIEW -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="screen active" id="s-live">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋 88%</span></div>
+  <div class="top-nav">
+    <span class="back" onclick="goHome()">←</span>
+    <span class="title">Front Door</span>
+    <span class="action">⚙️</span>
+  </div>
+  <div class="video-area">
+    <div class="watermark">SENSFORGE</div>
+    <div class="video-loading"><div class="spinner"></div>Loading...</div>
+    <div class="timestamp">04/02/2026 09:41:00 AM</div>
+  </div>
+  <div class="controls-strip">
+    <div class="ctrl-btn" onclick="showScreen('s-doorbell-event')">
+      <div class="icon green">📞</div><div class="label">Answer</div>
+    </div>
+    <div class="ctrl-btn">
+      <div class="icon red">📵</div><div class="label">Decline</div>
+    </div>
+    <div class="ctrl-btn">
+      <div class="icon">🎙️</div><div class="label">Talk</div>
+    </div>
+    <div class="ctrl-btn">
+      <div class="icon">📸</div><div class="label">Snapshot</div>
+    </div>
+    <div class="ctrl-btn">
+      <div class="icon">🔒</div><div class="label">Privacy</div>
+    </div>
+  </div>
+  <div class="video-tabs">
+    <div class="vtab active">Live</div>
+    <div class="vtab" onclick="showScreen('s-events')">Events</div>
+    <div class="vtab">Playback</div>
+  </div>
+  <div class="scroll-area">
+    <div class="section-header">Recent Activity</div>
+    <div class="event-item" onclick="showScreen('s-doorbell-event')">
+      <div class="time-col">9:38 AM</div>
+      <div class="content">
+        <div class="ev-title">🔔 Doorbell Pressed</div>
+        <div class="ev-cam">Front Door Cam</div>
+        <div class="ai-tag">AI Description beta</div>
+      </div>
+      <div class="thumb">🔔</div>
+    </div>
+    <div class="event-item" onclick="showScreen('s-package')">
+      <div class="time-col">9:12 AM</div>
+      <div class="content">
+        <div class="ev-title">📦 Package Delivered</div>
+        <div class="ev-cam">Front Door Cam</div>
+        <div class="ai-tag">AI Description beta</div>
+      </div>
+      <div class="thumb">📦</div>
+    </div>
+    <div class="event-item">
+      <div class="time-col">8:45 AM</div>
+      <div class="content">
+        <div class="ev-title">🚶 Person Detected at Front Door</div>
+        <div class="ev-cam">Front Door Cam</div>
+        <div class="ai-tag">AI Description beta</div>
+      </div>
+      <div class="thumb">👤</div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="tab active" onclick="goHome()"><div class="icon">🏠</div><div class="label">Home</div></div>
+    <div class="tab" onclick="showScreen('s-events')"><div class="icon">📋</div><div class="label">Events</div></div>
+    <div class="tab"><div class="icon">⭐</div><div class="label">Highlights</div></div>
+    <div class="tab"><div class="icon">🛡️</div><div class="label">Security</div></div>
+    <div class="tab"><div class="icon">🏪</div><div class="label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN 2: DOORBELL PRESS EVENT -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="screen" id="s-doorbell-event">
+  <div class="status-bar" style="background:#1a1a1a;color:#fff;"><span>9:41</span><span>📶 🔋 88%</span></div>
+  <div class="top-nav" style="background:#1a1a1a;">
+    <span class="back" style="color:#fff;" onclick="showScreen('s-live')">←</span>
+    <span class="title" style="color:#fff;">Incoming Call</span>
+    <span class="action"></span>
+  </div>
+  <div class="doorbell-event">
+    <div class="pulse-ring">
+      <div class="pulse-ring-inner">
+        <div class="doorbell-icon">🔔</div>
+      </div>
+    </div>
+    <div class="event-title">Someone pressed<br>your doorbell</div>
+    <div class="event-subtitle">Front Door Cam · 9:38 AM</div>
+    <div class="ai-caption">"A visitor is at your front door — appears to be a delivery person with a package"</div>
+    <div class="answer-btns">
+      <div class="answer-btn decline" onclick="showScreen('s-live')">
+        <div class="btn-icon">📵</div>
+        <div class="btn-label">Decline</div>
+      </div>
+      <div class="answer-btn accept" onclick="showScreen('s-live')">
+        <div class="btn-icon">📞</div>
+        <div class="btn-label">Answer</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN 3: PACKAGE DETECTED -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="screen" id="s-package">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋 88%</span></div>
+  <div class="top-nav">
+    <span class="back" onclick="showScreen('s-events')">←</span>
+    <span class="title">Package Detected</span>
+    <span class="action"></span>
+  </div>
+  <div class="scroll-area">
+    <div class="video-area" style="aspect-ratio:4/3;">
+      <div class="watermark">SENSFORGE</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:48px;">📦</div>
+      <div class="timestamp">04/02/2026 09:12:43 AM</div>
+    </div>
+    <div class="pkg-card">
+      <div class="pkg-header">
+        <div class="pkg-icon">📦</div>
+        <div>
+          <div class="pkg-title">Package Delivered</div>
+          <span class="badge">AI Description beta</span>
+        </div>
+      </div>
+      <div class="pkg-caption">"A package has arrived at your front door. It appears to be a medium-sized brown box left near the entrance."</div>
+      <div class="pkg-sub">
+        <div>
+          <div class="sub-name">📦 Package Detected</div>
+          <div class="sub-time">9:12 AM · Front Door Cam</div>
+        </div>
+        <div style="color:var(--orange);font-size:12px;">First seen</div>
+      </div>
+      <div class="pkg-sub">
+        <div>
+          <div class="sub-name">⏳ Package Still Here</div>
+          <div class="sub-time">9:41 AM · Front Door Cam</div>
+        </div>
+        <div style="color:var(--gray);font-size:12px;">+29 min</div>
+      </div>
+    </div>
+    <div class="section-header">Actions</div>
+    <div class="list-row">
+      <div class="icon">🔔</div>
+      <div class="content"><div class="name">Alert After 1 Hour</div><div class="sub">Remind me if package is still outside</div></div>
+      <div class="right"><div class="toggle on"></div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">📤</div>
+      <div class="content"><div class="name">Share Clip</div></div>
+      <div class="right"><div class="chevron">›</div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">⬇️</div>
+      <div class="content"><div class="name">Download</div></div>
+      <div class="right"><div class="chevron">›</div></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="tab" onclick="goHome()"><div class="icon">🏠</div><div class="label">Home</div></div>
+    <div class="tab active" onclick="showScreen('s-events')"><div class="icon">📋</div><div class="label">Events</div></div>
+    <div class="tab"><div class="icon">⭐</div><div class="label">Highlights</div></div>
+    <div class="tab"><div class="icon">🛡️</div><div class="label">Security</div></div>
+    <div class="tab"><div class="icon">🏪</div><div class="label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN 4: EVENTS TAB -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="screen" id="s-events">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋 88%</span></div>
+  <div class="top-nav">
+    <span class="back" onclick="showScreen('s-live')">←</span>
+    <span class="title">Events</span>
+    <span class="action"></span>
+  </div>
+  <div class="date-strip">
+    <span class="arrow">‹</span>
+    <span class="date-label">April 2, 2026</span>
+    <span class="arrow">›</span>
+  </div>
+  <div class="filter-row">
+    <span class="label">Batch Management</span>
+    <span class="filter-btn">All Events ▾</span>
+  </div>
+  <div class="scroll-area">
+    <div class="event-item" onclick="showScreen('s-doorbell-event')">
+      <div class="time-col">9:38 AM</div>
+      <div class="content">
+        <div class="ev-title">🔔 Doorbell Pressed — Visitor at front door</div>
+        <div class="ev-cam">Front Door Cam</div>
+        <div class="ai-tag">AI Description beta</div>
+      </div>
+      <div class="thumb">🔔</div>
+    </div>
+    <div class="event-item" onclick="showScreen('s-package')">
+      <div class="time-col">9:12 AM</div>
+      <div class="content">
+        <div class="ev-title">📦 Package Delivered at entrance</div>
+        <div class="ev-cam">Front Door Cam</div>
+        <div class="ai-tag">AI Description beta</div>
+      </div>
+      <div class="thumb">📦</div>
+    </div>
+    <div class="event-item">
+      <div class="time-col">8:45 AM</div>
+      <div class="content">
+        <div class="ev-title">🚶 Person Walking Past Driveway</div>
+        <div class="ev-cam">Front Door Cam</div>
+        <div class="ai-tag">AI Description beta</div>
+      </div>
+      <div class="thumb">👤</div>
+    </div>
+    <div class="event-item">
+      <div class="time-col">8:12 AM</div>
+      <div class="content">
+        <div class="ev-title">🚗 Vehicle Detected in Driveway</div>
+        <div class="ev-cam">Front Door Cam</div>
+        <div class="ai-tag">AI Description beta</div>
+      </div>
+      <div class="thumb">🚗</div>
+    </div>
+    <div class="event-item">
+      <div class="time-col">7:50 AM</div>
+      <div class="content">
+        <div class="ev-title">🚶 Morning Jogger Passes By</div>
+        <div class="ev-cam">Front Door Cam</div>
+        <div class="ai-tag">AI Description beta</div>
+      </div>
+      <div class="thumb">👤</div>
+    </div>
+    <div class="event-item">
+      <div class="time-col">6:30 AM</div>
+      <div class="content">
+        <div class="ev-title">🐕 Animal Detected Near Entrance</div>
+        <div class="ev-cam">Front Door Cam</div>
+        <div class="ai-tag">AI Description beta</div>
+      </div>
+      <div class="thumb">🐕</div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="tab" onclick="goHome()"><div class="icon">🏠</div><div class="label">Home</div></div>
+    <div class="tab active"><div class="icon">📋</div><div class="label">Events</div></div>
+    <div class="tab"><div class="icon">⭐</div><div class="label">Highlights</div></div>
+    <div class="tab"><div class="icon">🛡️</div><div class="label">Security</div></div>
+    <div class="tab"><div class="icon">🏪</div><div class="label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN 5: CHIME SETTINGS -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="screen" id="s-chime">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋 88%</span></div>
+  <div class="top-nav">
+    <span class="back" onclick="showScreen('s-settings')">←</span>
+    <span class="title">Chime Settings</span>
+    <span class="action"></span>
+  </div>
+  <div class="scroll-area">
+    <div class="list-row">
+      <div class="icon">🔔</div>
+      <div class="content"><div class="name">Indoor Chime</div><div class="sub">Ring when doorbell is pressed</div></div>
+      <div class="right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="section-header">Ringtone</div>
+    <div class="radio-option" onclick="selectRingtone(this)">
+      <span class="label">Classic Ding Dong</span>
+      <div class="radio-dot checked"></div>
+    </div>
+    <div class="radio-option" onclick="selectRingtone(this)">
+      <span class="label">Modern Chime</span>
+      <div class="radio-dot"></div>
+    </div>
+    <div class="radio-option" onclick="selectRingtone(this)">
+      <span class="label">Melody 1</span>
+      <div class="radio-dot"></div>
+    </div>
+    <div class="radio-option" onclick="selectRingtone(this)">
+      <span class="label">Melody 2</span>
+      <div class="radio-dot"></div>
+    </div>
+    <div class="radio-option" onclick="selectRingtone(this)">
+      <span class="label">Custom (Record)</span>
+      <div class="radio-dot"></div>
+    </div>
+    <div class="section-header">Volume</div>
+    <div class="slider-row">
+      <div class="slider-label">Chime Volume</div>
+      <input type="range" min="0" max="100" value="70">
+    </div>
+    <div class="list-row">
+      <div class="icon">🌙</div>
+      <div class="content"><div class="name">Chime at Night</div><div class="sub">Ring between 10PM–7AM</div></div>
+      <div class="right"><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">📦</div>
+      <div class="content"><div class="name">Package Alert Chime</div><div class="sub">Ring when package is detected</div></div>
+      <div class="right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN 6: DEVICE SETTINGS -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="screen" id="s-settings">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋 88%</span></div>
+  <div class="top-nav">
+    <span class="back" onclick="showScreen('s-live')">←</span>
+    <span class="title">Settings</span>
+    <span class="action"></span>
+  </div>
+  <div class="scroll-area">
+    <div class="device-card">
+      <div class="cam-icon">🚪</div>
+      <div class="info">
+        <div class="name">Front Door Cam</div>
+        <div class="sn">SN: SFD-DB1-00142 &nbsp;📋</div>
+      </div>
+    </div>
+    <div class="list-row">
+      <div class="icon">⚡</div>
+      <div class="content"><div class="name">Device On</div></div>
+      <div class="right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="section-header">Features</div>
+    <div class="list-row" onclick="showScreen('s-detection')">
+      <div class="icon">👁️</div>
+      <div class="content"><div class="name">Smart Detection</div></div>
+      <div class="right"><span style="color:var(--gray);font-size:13px;">On</span><div class="chevron">›</div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">🤖</div>
+      <div class="content"><div class="name">AI Assistant</div></div>
+      <div class="right"><span class="badge">Beta</span><div class="chevron">›</div></div>
+    </div>
+    <div class="list-row" onclick="showScreen('s-chime')">
+      <div class="icon">🔔</div>
+      <div class="content"><div class="name">Chime Settings</div></div>
+      <div class="right"><div class="chevron">›</div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">📷</div>
+      <div class="content"><div class="name">Image Setting</div></div>
+      <div class="right"><div class="chevron">›</div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">🔔</div>
+      <div class="content"><div class="name">Notification Setting</div></div>
+      <div class="right"><div class="chevron">›</div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">💾</div>
+      <div class="content"><div class="name">Storage Setting</div></div>
+      <div class="right"><div class="chevron">›</div></div>
+    </div>
+    <div class="list-row" onclick="showScreen('s-twoway')">
+      <div class="icon">🎙️</div>
+      <div class="content"><div class="name">Two-Way Audio</div></div>
+      <div class="right"><div class="chevron">›</div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">⚙️</div>
+      <div class="content"><div class="name">Other Settings</div></div>
+      <div class="right"><div class="chevron">›</div></div>
+    </div>
+    <div style="height:16px;"></div>
+    <button class="btn-outlined">Reboot Device</button>
+    <button class="btn-danger">Delete Device</button>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN 7: SMART DETECTION -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="screen" id="s-detection">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋 88%</span></div>
+  <div class="top-nav">
+    <span class="back" onclick="showScreen('s-settings')">←</span>
+    <span class="title">Smart Detection</span>
+    <span class="action"></span>
+  </div>
+  <div class="scroll-area">
+    <div class="section-header">Detection Targets</div>
+    <div class="list-row">
+      <div class="icon">🚶</div>
+      <div class="content"><div class="name">Person Detection</div><div class="sub">Detect people in view</div></div>
+      <div class="right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">📦</div>
+      <div class="content"><div class="name">Package Detection</div><div class="sub">Detect delivered packages</div></div>
+      <div class="right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">🚗</div>
+      <div class="content"><div class="name">Vehicle Detection</div><div class="sub">Detect cars and trucks</div></div>
+      <div class="right"><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">🐕</div>
+      <div class="content"><div class="name">Animal Detection</div><div class="sub">Detect pets and animals</div></div>
+      <div class="right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="section-header">Detection Zone</div>
+    <div class="zone-placeholder">
+      <div class="zone-overlay"></div>
+      <div class="zone-label">Tap to edit zone</div>
+    </div>
+    <div class="section-header">Sensitivity</div>
+    <div class="slider-row">
+      <div class="slider-label">Detection Sensitivity · Medium</div>
+      <input type="range" min="0" max="100" value="60">
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN 8: TWO-WAY AUDIO -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="screen" id="s-twoway">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋 88%</span></div>
+  <div class="top-nav">
+    <span class="back" onclick="showScreen('s-settings')">←</span>
+    <span class="title">Two-Way Audio</span>
+    <span class="action"></span>
+  </div>
+  <div class="scroll-area">
+    <div class="list-row">
+      <div class="icon">🎙️</div>
+      <div class="content"><div class="name">Two-Way Audio</div><div class="sub">Talk and listen through the doorbell</div></div>
+      <div class="right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">🎚️</div>
+      <div class="content"><div class="name">Noise Cancellation</div><div class="sub">Reduce background noise</div></div>
+      <div class="right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="list-row">
+      <div class="icon">🔄</div>
+      <div class="content"><div class="name">Echo Suppression</div><div class="sub">Prevent echo feedback</div></div>
+      <div class="right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+    <div class="section-header">Speaker Volume</div>
+    <div class="slider-row">
+      <div class="slider-label">Doorbell Speaker Volume</div>
+      <input type="range" min="0" max="100" value="75">
+    </div>
+    <div class="section-header">Microphone</div>
+    <div class="slider-row">
+      <div class="slider-label">Microphone Sensitivity</div>
+      <input type="range" min="0" max="100" value="65">
+    </div>
+    <div style="height:8px;"></div>
+    <button class="btn-outlined">🎙️ Test Microphone</button>
+    <div style="height:24px;"></div>
+  </div>
+</div>
+
+</div><!-- end phone -->
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById(id).scrollTop = 0;
+}
+function goHome() { showScreen('s-live'); }
+function selectRingtone(el) {
+  document.querySelectorAll('.radio-option .radio-dot').forEach(d => d.classList.remove('checked'));
+  el.querySelector('.radio-dot').classList.add('checked');
+}
+</script>
+</body>
+</html>
