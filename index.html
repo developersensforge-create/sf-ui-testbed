@@ -415,7 +415,8 @@
 
   // Default features list — Camera Skills is always the first, cannot be deleted
   const DEFAULT_FEATURES = [
-    { key: 'camera-skills', name: 'Camera Skills', desc: 'Configure smart detection rules — if X detected → do Y' }
+    { key: 'camera-skills', name: 'Camera Skills', desc: 'Configure smart detection rules — if X detected → do Y' },
+    { key: 'sf-db1-doorbell', name: 'SF-DB1 Doorbell Camera', desc: 'Battery doorbell camera app UI — live view, events, chime settings, smart detection & two-way audio' }
   ];
 
   // ===== Feature list persistence =====
@@ -424,10 +425,12 @@
       const saved = localStorage.getItem('sf_features');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Always ensure camera-skills is first and non-deletable
-        if (!parsed.find(f => f.key === 'camera-skills')) {
-          parsed.unshift(DEFAULT_FEATURES[0]);
-        }
+        // Always ensure built-in prototypes are present
+        DEFAULT_FEATURES.forEach((def, i) => {
+          if (!parsed.find(f => f.key === def.key)) {
+            parsed.splice(i, 0, def);
+          }
+        });
         return parsed;
       }
     } catch(e) {}
