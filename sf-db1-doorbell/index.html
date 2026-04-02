@@ -253,7 +253,7 @@
     <span class="back" onclick="goHome()">←</span>
     <div class="device-info">
       <div class="device-name">Front Door</div>
-      <div class="device-sub"><span>🔴 LIVE</span><span>·</span><span>245 KB/s</span><span>·</span><span class="battery-low">🔋 72%</span></div>
+      <div class="device-sub"><span style="color:#ff4444;font-size:11px;font-weight:700;">● LIVE</span><span>·</span><span>245 KB/s</span><span>·</span><span class="battery-low">72%</span></div>
     </div>
     <div class="right-icons">
       <span onclick="showScreen('s-settings')">⚙️</span>
@@ -283,22 +283,29 @@
   <!-- Primary action controls -->
   <div class="primary-controls">
     <div class="ctrl" onclick="showScreen('s-ring')">
-      <div class="ctrl-icon answer">📞</div>
+      <div class="ctrl-icon answer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+      </div>
       <div class="ctrl-label">Answer</div>
     </div>
     <div class="ctrl">
-      <div class="ctrl-icon normal">📸</div>
+      <div class="ctrl-icon normal">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)"><path d="M12 15.2A3.2 3.2 0 0 1 8.8 12 3.2 3.2 0 0 1 12 8.8 3.2 3.2 0 0 1 15.2 12 3.2 3.2 0 0 1 12 15.2m0-8.2C9.24 7 7 9.24 7 12s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5m0-2.5l-1.5 2.5h3L12 4.5M9 2h6v2H9V2M21 7v14H3V7h4.5L9 4h6l1.5 3H21z"/></svg>
+      </div>
       <div class="ctrl-label">Snapshot</div>
     </div>
     <div class="ctrl">
-      <div class="ctrl-icon normal">📹</div>
+      <div class="ctrl-icon normal">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+      </div>
       <div class="ctrl-label">Record</div>
     </div>
     <div class="ctrl">
-      <div class="ctrl-icon normal">🎙️</div>
+      <div class="ctrl-icon normal">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(255,255,255,0.85)"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+      </div>
       <div class="ctrl-label">Talk</div>
     </div>
-
   </div>
 
 
@@ -374,11 +381,11 @@
   </div>
 
   <div class="bottom-nav">
-    <div class="tab active" onclick="goHome()"><div class="icon">🏠</div><div class="label">Home</div></div>
-    <div class="tab" onclick="showScreen('s-events')"><div class="icon">📋</div><div class="label">Events</div></div>
-    <div class="tab"><div class="icon">⭐</div><div class="label">Highlights</div></div>
-    <div class="tab"><div class="icon">🛡️</div><div class="label">Security</div></div>
-    <div class="tab"><div class="icon">🏪</div><div class="label">Explore</div></div>
+    <div class="tab active" onclick="goHome()"><div class="icon" style="font-size:20px;color:inherit;">⌂</div><div class="label">Home</div></div>
+    <div class="tab" onclick="showScreen('s-events')"><div class="icon" style="font-size:20px;color:inherit;">≡</div><div class="label">Events</div></div>
+    <div class="tab"><div class="icon" style="font-size:20px;color:inherit;">✦</div><div class="label">Highlights</div></div>
+    <div class="tab"><div class="icon" style="font-size:20px;color:inherit;">◈</div><div class="label">Security</div></div>
+    <div class="tab"><div class="icon" style="font-size:20px;color:inherit;">◉</div><div class="label">Explore</div></div>
   </div>
 </div>
 
@@ -563,11 +570,11 @@
   </div>
 
   <div class="bottom-nav">
-    <div class="tab" onclick="goHome()"><div class="icon">🏠</div><div class="label">Home</div></div>
-    <div class="tab active"><div class="icon">📋</div><div class="label">Events</div></div>
-    <div class="tab"><div class="icon">⭐</div><div class="label">Highlights</div></div>
-    <div class="tab"><div class="icon">🛡️</div><div class="label">Security</div></div>
-    <div class="tab"><div class="icon">🏪</div><div class="label">Explore</div></div>
+    <div class="tab" onclick="goHome()"><div class="icon" style="font-size:20px;color:inherit;">⌂</div><div class="label">Home</div></div>
+    <div class="tab active"><div class="icon" style="font-size:20px;color:inherit;">≡</div><div class="label">Events</div></div>
+    <div class="tab"><div class="icon" style="font-size:20px;color:inherit;">✦</div><div class="label">Highlights</div></div>
+    <div class="tab"><div class="icon" style="font-size:20px;color:inherit;">◈</div><div class="label">Security</div></div>
+    <div class="tab"><div class="icon" style="font-size:20px;color:inherit;">◉</div><div class="label">Explore</div></div>
   </div>
 </div>
 
