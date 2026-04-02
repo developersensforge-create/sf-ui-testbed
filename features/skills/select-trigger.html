@@ -44,7 +44,85 @@
 
   .back-testbed { text-align: center; padding: 8px 0 80px; }
   .back-testbed a { font-size: 12px; color: #aaa; text-decoration: none; }
-</style>
+
+    /* ===== Comment & Improve Section ===== */
+    .page-bottom-section {
+      max-width: 375px; margin: 0 auto;
+      padding: 0 0 40px;
+    }
+    .divider-line { border: none; border-top: 1px solid #eee; margin: 24px 16px 20px; }
+
+    .comment-section { padding: 0 16px; }
+    .comment-section-title { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+
+    .comment-textarea {
+      width: 100%; border: 1.5px solid #eee; border-radius: 10px;
+      padding: 10px 12px; font-size: 14px; color: #1a1a1a;
+      font-family: inherit; outline: none; resize: vertical;
+      min-height: 70px; background: #fafafa; transition: border-color 0.2s;
+    }
+    .comment-textarea:focus { border-color: #f96400; background: #fff; }
+
+    .comment-add-btn {
+      display: inline-block; margin-top: 8px;
+      background: #f96400; color: #fff; border: none; border-radius: 8px;
+      padding: 9px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .comment-add-btn:active { opacity: 0.85; }
+
+    .comments-list { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .comment-item {
+      background: #fff; border: 1px solid #eee; border-radius: 10px;
+      padding: 12px 14px; position: relative;
+    }
+    .comment-text { font-size: 14px; color: #1a1a1a; line-height: 1.5; margin-bottom: 4px; }
+    .comment-meta { font-size: 11px; color: #aaa; }
+    .comment-delete {
+      position: absolute; top: 10px; right: 12px;
+      background: none; border: none; font-size: 16px; cursor: pointer; color: #ccc;
+    }
+    .comment-delete:hover { color: #ff4466; }
+
+    .improve-section { padding: 16px 16px 0; }
+    .improve-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; border: 1.5px solid #f96400; border-radius: 10px;
+      color: #f96400; font-size: 14px; font-weight: 600; padding: 10px 20px;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .improve-btn:hover { background: #fff3ec; }
+
+    .improve-form {
+      display: none; margin-top: 12px;
+      border: 1.5px solid #eee; border-radius: 10px; padding: 14px;
+      background: #fafafa;
+    }
+    .improve-textarea {
+      width: 100%; border: 1.5px solid #eee; border-radius: 8px;
+      padding: 10px 12px; font-size: 14px; color: #1a1a1a;
+      font-family: inherit; outline: none; resize: vertical;
+      min-height: 70px; background: #fff; transition: border-color 0.2s;
+      margin-bottom: 8px;
+    }
+    .improve-textarea:focus { border-color: #f96400; }
+    .improve-submit-btn {
+      background: #f96400; color: #fff; border: none; border-radius: 8px;
+      padding: 9px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+
+    /* Toast for skills pages */
+    .page-toast {
+      position: fixed; bottom: 100px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #0f1b2d; color: #fff; padding: 12px 20px;
+      border-radius: 10px; font-size: 13px; font-weight: 600;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.3); border-left: 3px solid #f96400;
+      z-index: 3000; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+      opacity: 0; white-space: nowrap;
+    }
+    .page-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  </style>
 </head>
 <body>
 
@@ -120,5 +198,117 @@
     btn.href = 'trigger-details.html?trigger=' + encodeURIComponent(selected);
   }
 </script>
+
+<!-- ===== Comments + Improve Section ===== -->
+<div class="page-bottom-section">
+  <hr class="divider-line" />
+
+  <div class="comment-section">
+    <div class="comment-section-title">💬 Leave a comment on this page</div>
+    <textarea class="comment-textarea" id="commentInput" placeholder="What do you think about this page?"></textarea>
+    <br />
+    <button class="comment-add-btn" onclick="addComment()">Add Comment</button>
+    <div class="comments-list" id="commentsList"></div>
+  </div>
+
+  <div class="improve-section" style="margin-top:20px;">
+    <button class="improve-btn" onclick="toggleImproveForm()">🔄 Improve This Page</button>
+    <div class="improve-form" id="improveForm">
+      <textarea class="improve-textarea" id="improveFeedback" placeholder="What should be improved?"></textarea>
+      <button class="improve-submit-btn" onclick="submitImprove()">Submit →</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-toast" id="pageToast"></div>
+
+<script>
+(function() {
+  const PAGE_ID = 'p2';
+  const PAGE_NUM = 'P2';
+  const PAGE_TITLE = 'Select Trigger';
+  const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+
+  // ===== Comment system =====
+  function loadComments() {
+    const list = document.getElementById('commentsList');
+    if (!list) return;
+    list.innerHTML = '';
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('comments_' + PAGE_ID + '_')).sort();
+    keys.forEach(function(key) {
+      const data = JSON.parse(localStorage.getItem(key) || '{}');
+      if (!data.text) return;
+      const item = document.createElement('div');
+      item.className = 'comment-item';
+      item.innerHTML = '<div class="comment-text">' + escHtml(data.text) + '</div>' +
+        '<div class="comment-meta">' + data.time + '</div>' +
+        '<button class="comment-delete" onclick="deleteComment('' + key + '')" title="Delete">🗑️</button>';
+      list.appendChild(item);
+    });
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  window.addComment = function() {
+    const ta = document.getElementById('commentInput');
+    const text = ta.value.trim();
+    if (!text) { showPageToast('Please write a comment first.', true); return; }
+    const key = 'comments_' + PAGE_ID + '_' + Date.now();
+    const now = new Date().toLocaleString();
+    localStorage.setItem(key, JSON.stringify({ text: text, time: now }));
+    ta.value = '';
+    loadComments();
+    showPageToast('Comment saved!');
+  };
+
+  window.deleteComment = function(key) {
+    localStorage.removeItem(key);
+    loadComments();
+  };
+
+  // ===== Improve form =====
+  window.toggleImproveForm = function() {
+    const form = document.getElementById('improveForm');
+    form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    if (form.style.display === 'block') {
+      document.getElementById('improveFeedback').focus();
+    }
+  };
+
+  window.submitImprove = async function() {
+    const feedback = document.getElementById('improveFeedback').value.trim();
+    if (!feedback) { showPageToast('Please describe what should be improved.', true); return; }
+    const msg = '🔄 **Improve Request**\nFeature: Camera Skills\nPage: ' + PAGE_NUM + ' - ' + PAGE_TITLE + '\nFeedback: ' + feedback;
+    try {
+      await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: msg })
+      });
+    } catch(e) {}
+    // Set dashboard card back to building state
+    localStorage.setItem('feature-state-camera-skills', 'building');
+    localStorage.setItem('feature-state-camera-skills-start', Date.now().toString());
+    document.getElementById('improveForm').style.display = 'none';
+    document.getElementById('improveFeedback').value = '';
+    showPageToast('Improvement request sent! Claire will revise this page.');
+  };
+
+  // ===== Toast =====
+  window.showPageToast = function(msg, isError) {
+    const toast = document.getElementById('pageToast');
+    toast.textContent = msg;
+    toast.style.borderLeftColor = isError ? '#ff4466' : '#f96400';
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 3500);
+  };
+
+  loadComments();
+})();
+</script>
+
 </body>
 </html>
+
