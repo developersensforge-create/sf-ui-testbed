@@ -139,6 +139,15 @@
     }
     .page-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
+    /* Card highlight animation */
+    @keyframes highlightFade {
+      0% { background-color: #fff3ec; }
+      100% { background-color: #ffffff; }
+    }
+    .card-highlight {
+      animation: highlightFade 1.5s ease-out forwards;
+    }
+
   </style>
 </head>
 <body>
@@ -266,7 +275,7 @@
 
     // If came back with schedule=, auto-activate
     if (schedule) {
-      setTimeout(activateSkill, 100);
+      setTimeout(activateSkill, 500);
     }
   } else if (trigger) {
     // State B — trigger filled
@@ -306,6 +315,15 @@
       </div>
     `;
     document.getElementById('skillsList').insertBefore(card, document.getElementById('skillsList').firstChild);
+
+    // Scroll the new card into view smoothly
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Add highlight animation
+    card.classList.add('card-highlight');
+
+    // Show toast notification
+    showPageToast('✅ Skill activated!');
 
     // Reset to state A — remove params
     history.replaceState({}, '', 'index.html');
