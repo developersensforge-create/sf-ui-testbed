@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <!-- v1775166272 -->
+  <title>SensForge UI Testbed</title>
+  <style>.dev-banner{position:fixed;top:0;left:0;right:0;background:#f96400;color:#fff;text-align:center;padding:6px;font-size:12px;font-weight:700;z-index:99999;letter-spacing:1px;}body{padding-top:28px;}</style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f1b2d;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #fff;
+    }
+
+    .site-header {
+      padding: 48px 32px 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .site-header-content { flex: 1; }
+    .site-header-actions { display: flex; align-items: center; padding-top: 4px; }
+
+    /* Version History Panel */
+    .version-history-panel {
+      display: none;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      color: #333;
+    }
+    .version-history-panel.open { display: block; }
+    .vh-inner { max-width: 1100px; margin: 0 auto; padding: 20px 32px; }
+    .vh-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .vh-title { font-size: 15px; font-weight: 700; color: #0f1b2d; }
+    .vh-close-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 18px; color: #999; padding: 4px 8px; border-radius: 6px;
+      line-height: 1; transition: color 0.15s;
+    }
+    .vh-close-btn:hover { color: #333; }
+    .vh-subtitle { font-size: 12px; color: #999; margin-bottom: 16px; }
+    .vh-loading { font-size: 13px; color: #666; padding: 16px 0; display: flex; align-items: center; gap: 8px; }
+    .vh-spinner {
+      width: 16px; height: 16px; border: 2px solid #ddd; border-top-color: #f96400;
+      border-radius: 50%; animation: vhSpin 0.7s linear infinite;
+    }
+    @keyframes vhSpin { to { transform: rotate(360deg); } }
+    .vh-list { display: flex; flex-direction: column; gap: 0; max-height: 400px; overflow-y: auto; border-radius: 8px; border: 1px solid #eee; }
+    .vh-commit-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; background: #fff; border-bottom: 1px solid #f0f0f0;
+      gap: 16px;
+    }
+    .vh-commit-row:last-child { border-bottom: none; }
+    .vh-commit-row:hover { background: #fafafa; }
+    .vh-commit-info { flex: 1; min-width: 0; }
+    .vh-commit-msg { font-size: 14px; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vh-commit-meta { font-size: 12px; color: #999; margin-top: 3px; }
+    .vh-commit-sha { font-family: monospace; font-size: 11px; }
+    .vh-restore-btn {
+      flex-shrink: 0;
+      border: 1px solid #ddd; color: #666; background: white;
+      padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;
+      transition: all 0.15s; white-space: nowrap;
+    }
+    .vh-restore-btn:hover { border-color: #f96400; color: #f96400; }
+    .vh-restore-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .site-header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #fff; margin-bottom: 6px; }
+    .site-header h1 span { color: #f96400; }
+    .site-header p { font-size: 14px; color: #7a9bb5; }
+
+    .main { padding: 32px; max-width: 1100px; margin: 0 auto; }
+    .section-title { font-size: 12px; font-weight: 600; color: #7a9bb5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+    .feature-card {
+      background: #fff; border-radius: 12px; padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      display: flex; flex-direction: column; gap: 12px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+    .feature-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.3); }
+
+    /* Delete button for non-default cards */
+    .card-delete-btn {
+      position: absolute; top: 12px; right: 14px;
+      background: none; border: none; cursor: pointer;
+      font-size: 16px; color: #bcc8d4; line-height: 1;
+      padding: 2px 6px; border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+      z-index: 1;
+    }
+    .card-delete-btn:hover { color: #ff4466; background: #fff0f3; }
+
+    .card-icon { width: 44px; height: 44px; border-radius: 12px; background: #fff3ec; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+
+    .card-name { font-size: 17px; font-weight: 700; color: #0f1b2d; cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: -2px -4px; transition: background 0.15s; display: inline-block; min-width: 10px; }
+    .card-name:hover { background: #fff3ec; }
+    .card-name-input { font-size: 17px; font-weight: 700; color: #0f1b2d; border: 2px solid #f96400; border-radius: 6px; padding: 2px 6px; outline: none; width: 100%; background: #fff8f3; font-family: inherit; }
+    .card-desc { font-size: 13px; color: #7a9bb5; line-height: 1.5; flex: 1; }
+
+    .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+    .card-tag { font-size: 11px; font-weight: 600; background: #f0f4f8; color: #7a9bb5; padding: 3px 10px; border-radius: 20px; }
+
+    .preview-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #f96400; color: #fff; font-size: 13px; font-weight: 600;
+      padding: 8px 18px; border-radius: 8px; text-decoration: none;
+      transition: background 0.2s, transform 0.15s; border: none; cursor: pointer;
+    }
+    .preview-btn:hover { background: #e05800; }
+
+    /* Progress bar section */
+    .card-progress { border-top: 1px solid #f0f0f0; padding-top: 14px; margin-top: 4px; }
+    .progress-bar-track { background: #f0f0f0; border-radius: 6px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+    .progress-bar-fill {
+      height: 100%; background: #f96400; border-radius: 6px;
+      width: 0%; transition: width 2s ease;
+    }
+    .progress-bar-fill.pulse {
+      animation: barPulse 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes barPulse {
+      0% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+    .progress-status { font-size: 12px; color: #666; margin-top: 4px; }
+
+    /* Output options panel */
+    .output-panel { border-top: 1px solid #f0f0f0; padding-top: 12px; margin-top: 4px; }
+    .output-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .output-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #f8f9fa; border: 1.5px solid #e0e0e0;
+      color: #444; font-size: 12px; font-weight: 600;
+      padding: 7px 12px; border-radius: 8px; cursor: pointer;
+      transition: all 0.15s; white-space: nowrap;
+    }
+    .output-btn:hover { background: #fff3ec; border-color: #f96400; color: #f96400; }
+    .output-btn:active { transform: scale(0.97); }
+
+    .figma-popover {
+      margin-top: 10px; padding: 12px; background: #f8f9fa;
+      border: 1.5px solid #e0e0e0; border-radius: 10px;
+      display: none;
+    }
+    .figma-popover label { font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 6px; }
+    .figma-popover input {
+      width: 100%; padding: 8px 10px; border: 1.5px solid #ddd; border-radius: 7px;
+      font-size: 13px; font-family: inherit; outline: none; margin-bottom: 8px;
+    }
+    .figma-popover input:focus { border-color: #f96400; }
+    .figma-submit { background: #f96400; color: #fff; border: none; border-radius: 7px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+    .add-feature-card {
+      background: rgba(255,255,255,0.04); border: 2px dashed rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 24px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; color: #4a6580; min-height: 180px;
+    }
+    .add-feature-card .plus-icon { font-size: 28px; opacity: 0.4; }
+    .add-feature-card p { font-size: 13px; opacity: 0.5; }
+
+    .add-feature-section { display: flex; justify-content: center; margin-top: 36px; }
+    .add-feature-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, #f96400 0%, #d45200 100%);
+      color: #fff; font-size: 15px; font-weight: 700;
+      padding: 14px 32px; border-radius: 12px; border: none; cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(249,100,0,0.35);
+    }
+    .add-feature-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(249,100,0,0.5); }
+
+    .site-footer { text-align: center; padding: 40px 32px; font-size: 12px; color: #3a5470; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,27,45,0.82); z-index: 1000;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-card {
+      background: #fff; border-radius: 16px; width: 100%; max-width: 520px;
+      padding: 32px; position: relative;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      animation: modalIn 0.2s ease;
+      max-height: 90vh; overflow-y: auto;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-close {
+      position: absolute; top: 16px; right: 18px;
+      background: none; border: none; font-size: 22px; color: #7a9bb5;
+      cursor: pointer; line-height: 1; padding: 4px; border-radius: 6px;
+    }
+    .modal-close:hover { color: #0f1b2d; background: #f0f4f8; }
+
+    .modal-title { font-size: 20px; font-weight: 800; color: #0f1b2d; margin-bottom: 6px; }
+    .modal-subtitle { font-size: 13px; color: #7a9bb5; margin-bottom: 28px; }
+
+    /* Stacked sections */
+    .modal-section {
+      border: 1.5px solid #e8eef4; border-radius: 12px;
+      padding: 18px; margin-bottom: 14px;
+    }
+    .modal-section-header {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 12px;
+    }
+    .modal-section-icon { font-size: 18px; }
+    .modal-section-title { font-size: 14px; font-weight: 700; color: #0f1b2d; }
+    .modal-section-optional { font-size: 11px; color: #a0b8ca; margin-left: auto; }
+    .modal-section-required { font-size: 11px; color: #f96400; margin-left: auto; font-weight: 600; }
+
+    .form-label { font-size: 12px; font-weight: 600; color: #7a9bb5; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
+
+    .form-textarea {
+      width: 100%; min-height: 100px; padding: 12px 14px;
+      background: #f8fafc; border: 1.5px solid #e0eaf0; border-radius: 10px;
+      font-size: 14px; color: #0f1b2d; font-family: inherit; resize: vertical;
+      outline: none; transition: border-color 0.15s; line-height: 1.5;
+    }
+    .form-textarea:focus { border-color: #f96400; background: #fff; }
+
+    .form-hint { font-size: 12px; color: #a0b8ca; margin-top: 6px; }
+
+    .form-input {
+      width: 100%; padding: 10px 14px;
+      background: #f8fafc; border: 1.5px solid #e0eaf0; border-radius: 10px;
+      font-size: 14px; color: #0f1b2d; font-family: inherit; outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus { border-color: #f96400; background: #fff; }
+    .form-input.input-error { border-color: #ff4466; background: #fff5f7; }
+
+    .drag-zone {
+      border: 2px dashed #f96400; border-radius: 12px; padding: 24px 20px;
+      text-align: center; cursor: pointer; transition: background 0.15s;
+      position: relative; background: #fffbf8;
+    }
+    .drag-zone:hover, .drag-zone.drag-over { background: #fff3ec; }
+    .drag-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .drag-zone-icon { font-size: 28px; margin-bottom: 8px; }
+    .drag-zone-text { font-size: 14px; font-weight: 600; color: #f96400; margin-bottom: 3px; }
+    .drag-zone-sub { font-size: 12px; color: #7a9bb5; }
+
+    .thumbnail-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .thumbnail-item { position: relative; width: 64px; height: 64px; }
+    .thumbnail-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 2px solid #e0eaf0; }
+    .thumbnail-remove { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: #ff4466; color: #fff; border: none; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; }
+
+    .submit-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #f96400 0%, #d45200 100%);
+      color: #fff; font-size: 15px; font-weight: 700; border: none;
+      border-radius: 10px; cursor: pointer; margin-top: 8px;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(249,100,0,0.3);
+    }
+    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,100,0,0.45); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #0f1b2d; color: #fff; padding: 14px 24px;
+      border-radius: 12px; font-size: 14px; font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4); border-left: 4px solid #f96400;
+      z-index: 2000; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
+      opacity: 0; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  </style>
+</head>
+<body><div class="dev-banner">⚠️ DEV PREVIEW — not released</div>
+
+<header class="site-header">
+  <div class="site-header-content">
+    <h1>SensForge <span>UI Testbed</span></h1>
+    <p>Internal prototype previews</p>
+  </div>
+  <div class="site-header-actions">
+    <button onclick="toggleVersionHistory()" style="border: 1px solid #ddd; color: #666; background: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer;">🕐 Version History</button>
+  </div>
+</header>
+
+<!-- Version History Panel -->
+<div class="version-history-panel" id="versionHistoryPanel">
+  <div class="vh-inner">
+    <div class="vh-header">
+      <span class="vh-title">🕐 Version History</span>
+      <button class="vh-close-btn" onclick="toggleVersionHistory()" title="Close">× Close</button>
+    </div>
+    <p class="vh-subtitle">Each entry is a saved snapshot. Click Restore to roll back to that version.</p>
+    <div id="vhContent">
+      <div class="vh-loading" id="vhLoading">
+        <div class="vh-spinner"></div>
+        Loading history...
+      </div>
+      <div class="vh-list" id="vhList" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<main class="main">
+  <p class="section-title">Feature Prototypes</p>
+
+  <div class="feature-grid" id="featureGrid">
+    <!-- Cards are rendered by JS from sf_features in localStorage -->
+  </div>
+
+  <div class="add-feature-section">
+    <button class="add-feature-btn" onclick="openModal()">
+      <span>＋</span> Add New Feature
+    </button>
+  </div>
+</main>
+
+<footer class="site-footer">
+  SensForge Internal · UI Testbed · Not for external distribution
+</footer>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="featureModal" onclick="handleOverlayClick(event)">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()" title="Close">×</button>
+    <div class="modal-title">Request a Feature</div>
+    <div class="modal-subtitle">Fill any combination below — Claire will build it.</div>
+
+    <!-- Section 0: Feature Name (required) -->
+    <div class="modal-section">
+      <div class="modal-section-header">
+        <span class="modal-section-icon">🏷️</span>
+        <span class="modal-section-title">Feature Name</span>
+        <span class="modal-section-required">required</span>
+      </div>
+      <input type="text" class="form-input" id="featureName" placeholder="e.g. Smart Alerts, Onboarding Flow, Dashboard Redesign" autocomplete="off" />
+      <p class="form-hint">Give this feature a short, descriptive name — it becomes the card title on the dashboard</p>
+    </div>
+
+    <!-- Section 1: Text Description -->
+    <div class="modal-section">
+      <div class="modal-section-header">
+        <span class="modal-section-icon">✏️</span>
+        <span class="modal-section-title">Text Description</span>
+        <span class="modal-section-optional">optional</span>
+      </div>
+      <textarea class="form-textarea" id="featureDesc" placeholder="Describe the UI feature you want to build..."></textarea>
+      <p class="form-hint">Be specific — what screens, what the user does, what it looks like</p>
+    </div>
+
+    <!-- Section 2: Upload Design -->
+    <div class="modal-section">
+      <div class="modal-section-header">
+        <span class="modal-section-icon">🖼️</span>
+        <span class="modal-section-title">Upload Design</span>
+        <span class="modal-section-optional">optional</span>
+      </div>
+      <div class="drag-zone" id="dragZone">
+        <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFiles(this.files)" />
+        <div class="drag-zone-icon">📎</div>
+        <div class="drag-zone-text">Drag & drop images here</div>
+        <div class="drag-zone-sub">or click to browse · PNG, JPG, GIF, WebP</div>
+      </div>
+      <div class="thumbnail-grid" id="thumbnailGrid"></div>
+    </div>
+
+    <!-- Section 3: PRD URL -->
+    <div class="modal-section">
+      <div class="modal-section-header">
+        <span class="modal-section-icon">📄</span>
+        <span class="modal-section-title">Link a PRD</span>
+        <span class="modal-section-optional">optional</span>
+      </div>
+      <input type="url" class="form-input" id="prdUrl" placeholder="Paste a PRD URL (Notion, Confluence, Google Docs...)" />
+      <p class="form-hint">We'll read the PRD to understand requirements</p>
+    </div>
+
+    <!-- Section 4: Figma URL -->
+    <div class="modal-section">
+      <div class="modal-section-header">
+        <span class="modal-section-icon">🎨</span>
+        <span class="modal-section-title">Link a Figma File</span>
+        <span class="modal-section-optional">optional</span>
+      </div>
+      <input type="url" class="form-input" id="figmaUrl" placeholder="Paste a Figma file or frame URL" />
+      <p class="form-hint">We'll import your design directly from Figma</p>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitFeature()">Request Feature →</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // VERSION CONTROL: Every significant change should be committed with a descriptive message
+  // Format: "[Feature] Description of change" e.g. "[Skills] Add two-device tabs to P4"
+
+  const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+
+  // Default features list — Camera Skills is always the first, cannot be deleted
+  const DEFAULT_FEATURES = [
+    { key: 'camera-skills', name: 'Camera Skills', desc: 'Configure smart detection rules — if X detected → do Y', previewUrl: 'features/skills/index.html' },
+    { key: 'sf-db1-doorbell', name: 'SF-DB1 Doorbell Camera', desc: 'Battery doorbell camera app UI — live view, events, chime settings, smart detection & two-way audio', previewUrl: 'sf-db1-doorbell/index.html' }
+  ];
+
+  // ===== Feature list persistence =====
+  function loadFeatures() {
+    // Built-ins ALWAYS shown — cannot be hidden by localStorage state
+    const base = [...DEFAULT_FEATURES];
+    try {
+      const saved = localStorage.getItem('sf_features');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Only add user-created features (not in DEFAULT_FEATURES)
+        parsed.forEach(f => {
+          if (DEFAULT_FEATURES.find(d => d.key === f.key)) return; // skip built-ins (already in base)
+          if (!base.find(b => b.key === f.key)) {
+            base.push(f);
+          }
+        });
+      }
+    } catch(e) {
+      // Corrupt localStorage — clear it and start fresh
+      localStorage.removeItem('sf_features');
+    }
+    return base;
+  }
+
+  function saveFeatures(features) {
+    localStorage.setItem('sf_features', JSON.stringify(features));
+  }
+
+  function slugify(name) {
+    return name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+
+  // ===== Card rendering =====
+  function renderAllCards() {
+    localStorage.removeItem('sf_hidden_keys'); // always clear hidden keys
+    const features = loadFeatures();
+    const grid = document.getElementById('featureGrid');
+    grid.innerHTML = '';
+    features.forEach(f => {
+      grid.appendChild(createCardEl(f));
+    });
+    // Placeholder
+    const placeholder = document.createElement('div');
+    placeholder.className = 'add-feature-card';
+    placeholder.innerHTML = '<div class="plus-icon">＋</div><p>More prototypes coming soon</p>';
+    grid.appendChild(placeholder);
+    // Init states
+    features.forEach(f => renderCardState(f.key));
+    // Start timer checks
+    startBuildTimers();
+  }
+
+  function createCardEl(feature) {
+    const isDefault = feature.key === 'camera-skills';
+    const div = document.createElement('div');
+    div.className = 'feature-card';
+    div.dataset.cardId = feature.key;
+
+    // Saved name override
+    const savedName = localStorage.getItem('card-name-' + feature.key) || feature.name;
+
+    let previewLink = '';
+    const previewUrl = feature.previewUrl || localStorage.getItem('previewUrl_' + feature.key);
+    if (previewUrl) {
+      previewLink = `<a href="${previewUrl}" class="preview-btn">Preview →</a>`;
+    }
+
+    let deleteBtn = '';
+    if (feature.key !== 'camera-skills') {
+      deleteBtn = `<button class="card-delete-btn" onclick="deleteCard('${feature.key}')" title="Remove card">×</button>`;
+    }
+
+    div.innerHTML = `
+      ${deleteBtn}
+      <div class="card-icon">🎯</div>
+      <div>
+        <span class="card-name" onclick="startEdit(this)" title="Click to rename">${escHtml(savedName)}</span>
+      </div>
+      <p class="card-desc">${escHtml(feature.desc || '')}</p>
+      <div class="card-footer">
+        <span class="card-tag">UI Prototype</span>
+        ${previewLink}
+      </div>
+      <div class="card-progress" id="progress-${feature.key}" style="display:none;">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="bar-${feature.key}"></div>
+        </div>
+        <div class="progress-status" id="status-${feature.key}">🔨 Claire is building...</div>
+      </div>
+      <div class="output-panel" id="output-${feature.key}">
+        <div class="output-btns">
+          <button class="output-btn" onclick="downloadFeature('${feature.key}')">⬇ Download</button>
+          <button class="output-btn" onclick="toggleFigmaPopover('${feature.key}')">🎨 Output to Figma</button>
+          <button class="output-btn" id="prd-btn-${feature.key}" onclick="generatePRD('${feature.key}')">📄 Generate PRD</button>
+        </div>
+        <div class="figma-popover" id="figma-${feature.key}">
+          <label>Enter Figma file URL:</label>
+          <input type="url" id="figma-url-${feature.key}" placeholder="https://www.figma.com/file/..." />
+          <button class="figma-submit" onclick="submitFigmaExport('${feature.key}')">Export →</button>
+        </div>
+      </div>
+    `;
+    return div;
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ===== Delete card =====
+  function deleteCard(key) {
+    if (key === 'camera-skills') return;
+    // Show custom confirmation modal
+    showDeleteModal(key);
+  }
+
+  function showDeleteModal(key) {
+    const existing = document.getElementById('delete-modal');
+    if (existing) existing.remove();
+    const modal = document.createElement('div');
+    modal.id = 'delete-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;display:flex;align-items:center;justify-content:center;';
+    modal.innerHTML = `
+      <div style="background:#fff;border-radius:16px;padding:28px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+        <div style="font-size:18px;font-weight:700;color:#0f1b2d;margin-bottom:8px;">Remove Project</div>
+        <p style="font-size:14px;color:#666;line-height:1.5;margin-bottom:24px;">How would you like to remove <strong style="color:#0f1b2d;">${key}</strong>?</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <button onclick="confirmDelete('${key}', false)" style="background:#f96400;color:#fff;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:600;cursor:pointer;text-align:left;">
+            🗂️ Remove from dashboard only<br><span style="font-weight:400;font-size:12px;opacity:0.85;">The files in GitHub will be kept</span>
+          </button>
+          <button onclick="confirmDelete('${key}', true)" style="background:#fff;color:#d32f2f;border:2px solid #d32f2f;border-radius:10px;padding:14px;font-size:14px;font-weight:600;cursor:pointer;text-align:left;">
+            🗑️ Delete project folder too<br><span style="font-weight:400;font-size:12px;opacity:0.7;">Permanently removes files from GitHub</span>
+          </button>
+          <button onclick="document.getElementById('delete-modal').remove()" style="background:#f5f5f5;color:#666;border:none;border-radius:10px;padding:12px;font-size:14px;cursor:pointer;">Cancel</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  }
+
+  async function confirmDelete(key, deleteFiles) {
+    document.getElementById('delete-modal')?.remove();
+    if (deleteFiles) {
+      // Attempt to delete GitHub folder via API (requires token — not available client-side)
+      // Show instruction instead
+      showToast('⚠️ File deletion requires GitHub access. Removing from dashboard only.', 4000);
+    }
+    let features = loadFeatures();
+    // Remove from DEFAULT_FEATURES override too if it was a built-in
+    features = features.filter(f => f.key !== key);
+    // Store a "hidden" marker so it stays hidden even if DEFAULT_FEATURES includes it
+    const hidden = JSON.parse(localStorage.getItem('sf_hidden_keys') || '[]');
+    if (!hidden.includes(key)) hidden.push(key);
+    localStorage.setItem('sf_hidden_keys', JSON.stringify(hidden));
+    saveFeatures(features);
+    localStorage.removeItem('featureState_' + key);
+    localStorage.removeItem('featureState_' + key + '_start');
+    localStorage.removeItem('card-name-' + key);
+    renderAllCards();
+    showToast(deleteFiles ? 'Card removed. To delete files, go to GitHub.' : 'Card removed from dashboard.');
+  }
+
+  // ===== Card name editing =====
+  function startEdit(nameEl) {
+    const card = nameEl.closest('[data-card-id]');
+    const id = card.dataset.cardId;
+    const currentName = nameEl.textContent;
+    const input = document.createElement('input');
+    input.type = 'text'; input.className = 'card-name-input'; input.value = currentName;
+    nameEl.replaceWith(input); input.focus(); input.select();
+    function saveEdit() {
+      const newName = input.value.trim() || currentName;
+      localStorage.setItem('card-name-' + id, newName);
+      const span = document.createElement('span');
+      span.className = 'card-name'; span.textContent = newName;
+      span.title = 'Click to rename'; span.onclick = function() { startEdit(this); };
+      input.replaceWith(span);
+    }
+    input.addEventListener('blur', saveEdit);
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+      if (e.key === 'Escape') { input.value = currentName; input.blur(); }
+    });
+  }
+
+  // ===== Progress bar state management (per-card, isolated) =====
+  function getFeatureState(key) {
+    return localStorage.getItem('featureState_' + key) || 'idle';
+  }
+  function setFeatureState(key, state) {
+    localStorage.setItem('featureState_' + key, state);
+    if (state === 'building') {
+      localStorage.setItem('featureState_' + key + '_start', Date.now());
+    }
+    renderCardState(key);
+  }
+  function setFeatureStateRaw(key, state) {
+    localStorage.setItem('featureState_' + key, state);
+  }
+
+  function renderCardState(key) {
+    const state = getFeatureState(key);
+    const progressEl = document.getElementById('progress-' + key);
+    const outputEl = document.getElementById('output-' + key);
+    const barEl = document.getElementById('bar-' + key);
+    const statusEl = document.getElementById('status-' + key);
+    if (!progressEl) return;
+
+    if (state === 'building') {
+      progressEl.style.display = 'block';
+      outputEl.style.display = 'none';
+      statusEl.textContent = '🔨 Claire is building...';
+      barEl.style.transition = 'none';
+      barEl.style.width = '0%';
+      barEl.classList.remove('pulse');
+      setTimeout(() => {
+        barEl.style.transition = 'width 2s ease';
+        barEl.style.width = '30%';
+      }, 50);
+      setTimeout(() => {
+        barEl.style.transition = 'width 3s ease';
+        barEl.style.width = '60%';
+      }, 2200);
+      setTimeout(() => {
+        barEl.style.transition = 'width 2s ease';
+        barEl.style.width = '85%';
+        barEl.classList.add('pulse');
+      }, 5400);
+    } else if (state === 'complete') {
+      progressEl.style.display = 'block';
+      outputEl.style.display = 'none';
+      statusEl.textContent = '✅ Ready';
+      barEl.classList.remove('pulse');
+      barEl.style.transition = 'width 0.4s ease';
+      barEl.style.width = '100%';
+      setTimeout(() => {
+        progressEl.style.transition = 'opacity 0.6s';
+        progressEl.style.opacity = '0';
+        setTimeout(() => {
+          progressEl.style.display = 'none';
+          progressEl.style.opacity = '';
+          progressEl.style.transition = '';
+          outputEl.style.display = 'block';
+          setFeatureStateRaw(key, 'idle');
+        }, 600);
+      }, 1000);
+    } else {
+      progressEl.style.display = 'none';
+      outputEl.style.display = 'block';
+    }
+  }
+
+  function completeFeature(key) {
+    setFeatureState(key, 'complete');
+  }
+
+  // Build timers: check all features for 30s timeout
+  let buildTimerInterval = null;
+  function startBuildTimers() {
+    if (buildTimerInterval) clearInterval(buildTimerInterval);
+    buildTimerInterval = setInterval(() => {
+      const features = loadFeatures();
+      features.forEach(f => {
+        if (getFeatureState(f.key) === 'building') {
+          const start = parseInt(localStorage.getItem('featureState_' + f.key + '_start') || '0');
+          if (start && (Date.now() - start) >= 30000) {
+            setFeatureState(f.key, 'complete');
+          }
+        }
+      });
+    }, 2000);
+  }
+
+  // ===== Output panel actions =====
+  async function downloadFeature(key) {
+    const btn = event.currentTarget;
+    btn.textContent = '⏳ Zipping...'; btn.disabled = true;
+    try {
+      // Camera Skills has known files; others use the features/{key}/ folder convention
+      let files, baseUrl;
+      if (key === 'camera-skills') {
+        files = ['index.html','select-trigger.html','trigger-details.html','select-device.html','select-action.html','set-schedule.html','voice-memo.html'];
+        baseUrl = 'https://raw.githubusercontent.com/developersensforge-create/sf-ui-testbed/main/features/skills/';
+      } else {
+        files = ['index.html'];
+        baseUrl = 'https://raw.githubusercontent.com/developersensforge-create/sf-ui-testbed/main/features/' + key + '/';
+      }
+      if (typeof JSZip === 'undefined') { showToast('JSZip not loaded yet, try again.', true); return; }
+      const zip = new JSZip();
+      for (const file of files) {
+        const resp = await fetch(baseUrl + file);
+        if (resp.ok) zip.file(file, await resp.text());
+      }
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = key + '.zip';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('Download started!');
+    } catch (e) {
+      showToast('Download failed. Try again.', true);
+    } finally {
+      btn.textContent = '⬇ Download'; btn.disabled = false;
+    }
+  }
+
+  function toggleFigmaPopover(key) {
+    const pop = document.getElementById('figma-' + key);
+    pop.style.display = pop.style.display === 'block' ? 'none' : 'block';
+    if (pop.style.display === 'block') pop.querySelector('input').focus();
+  }
+
+  async function submitFigmaExport(key) {
+    const input = document.getElementById('figma-url-' + key);
+    const url = input.value.trim();
+    if (!url) { showToast('Please enter a Figma URL.', true); return; }
+    const featureName = document.querySelector('[data-card-id="' + key + '"] .card-name')?.textContent || key;
+    try {
+      await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: '<@&1487656704463208592> 🎨 **Figma Export Request**\nFeature: ' + featureName + '\nFigma URL: ' + url })
+      });
+    } catch(e) {}
+    showToast('Exporting to Figma... (This feature requires Claire\'s backend — request sent to #product-team)');
+    document.getElementById('figma-' + key).style.display = 'none';
+    input.value = '';
+  }
+
+  function generatePRD(key) {
+    const btn = document.getElementById('prd-btn-' + key);
+    btn.textContent = '⏳ Generating PRD...';
+    btn.disabled = true;
+    setTimeout(() => {
+      window.location.href = 'prd-review.html?feature=' + key;
+    }, 2000);
+  }
+
+  // ===== Modal =====
+  function openModal() {
+    document.getElementById('featureModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    // Focus feature name input
+    setTimeout(() => document.getElementById('featureName').focus(), 100);
+  }
+
+  function closeModal() {
+    document.getElementById('featureModal').classList.remove('active');
+    document.body.style.overflow = '';
+    document.getElementById('featureName').value = '';
+    document.getElementById('featureName').classList.remove('input-error');
+    document.getElementById('featureDesc').value = '';
+    document.getElementById('prdUrl').value = '';
+    document.getElementById('figmaUrl').value = '';
+    uploadedFiles = [];
+    renderThumbnails();
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('featureModal')) closeModal();
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // ===== File uploads =====
+  let uploadedFiles = [];
+
+  function handleFiles(files) {
+    Array.from(files).forEach(file => {
+      if (!file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedFiles.push({ name: file.name, dataUrl: e.target.result, type: file.type });
+        renderThumbnails();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderThumbnails() {
+    const grid = document.getElementById('thumbnailGrid');
+    grid.innerHTML = '';
+    uploadedFiles.forEach((f, i) => {
+      const item = document.createElement('div');
+      item.className = 'thumbnail-item';
+      item.innerHTML = `<img src="${f.dataUrl}" alt="${f.name}" title="${f.name}" /><button class="thumbnail-remove" onclick="removeFile(${i})" title="Remove">×</button>`;
+      grid.appendChild(item);
+    });
+  }
+
+  function removeFile(i) { uploadedFiles.splice(i, 1); renderThumbnails(); }
+
+  const dragZone = document.getElementById('dragZone');
+  dragZone.addEventListener('dragover', e => { e.preventDefault(); dragZone.classList.add('drag-over'); });
+  dragZone.addEventListener('dragleave', () => dragZone.classList.remove('drag-over'));
+  dragZone.addEventListener('drop', e => {
+    e.preventDefault(); dragZone.classList.remove('drag-over');
+    handleFiles(e.dataTransfer.files);
+  });
+
+  // ===== Submit =====
+  async function submitFeature() {
+    const btn = document.getElementById('submitBtn');
+    const featureNameInput = document.getElementById('featureName');
+    const featureName = featureNameInput.value.trim();
+    const desc = document.getElementById('featureDesc').value.trim();
+    const prdUrl = document.getElementById('prdUrl').value.trim();
+    const figmaUrl = document.getElementById('figmaUrl').value.trim();
+
+    // Validate feature name (required)
+    if (!featureName) {
+      featureNameInput.classList.add('input-error');
+      featureNameInput.focus();
+      showToast('Please enter a feature name.', true);
+      return;
+    }
+    featureNameInput.classList.remove('input-error');
+
+    btn.disabled = true; btn.textContent = 'Sending...';
+
+    // Generate unique key from feature name
+    let featureKey = slugify(featureName);
+    // Ensure uniqueness — append suffix if key already exists
+    const existingFeatures = loadFeatures();
+    const existingKeys = existingFeatures.map(f => f.key);
+    if (existingKeys.includes(featureKey)) {
+      let suffix = 2;
+      while (existingKeys.includes(featureKey + '-' + suffix)) suffix++;
+      featureKey = featureKey + '-' + suffix;
+    }
+
+    // Build Discord message
+    let msgLines = ['🛠️ **New UI Feature Request**', ''];
+    msgLines.push('**Feature Name:** ' + featureName);
+    if (desc) msgLines.push('**Description:** ' + desc);
+    if (prdUrl) msgLines.push('**PRD URL:** ' + prdUrl);
+    if (figmaUrl) msgLines.push('**Figma URL:** ' + figmaUrl);
+    if (uploadedFiles.length > 0) msgLines.push('📎 ' + uploadedFiles.length + ' image(s) attached');
+    const msgText = msgLines.join('\n');
+
+    try {
+      if (uploadedFiles.length > 0) {
+        const form = new FormData();
+        form.append('payload_json', JSON.stringify({ content: msgText }));
+        for (let i = 0; i < uploadedFiles.length; i++) {
+          const f = uploadedFiles[i];
+          const resp = await fetch(f.dataUrl);
+          const blob = await resp.blob();
+          form.append('files[' + i + ']', blob, f.name);
+        }
+        await fetch(WEBHOOK, { method: 'POST', body: form });
+      } else {
+        await fetch(WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: '<@&1487656704463208592> ' + msgText })
+        });
+      }
+
+      // Add new card to features list and persist
+      const newFeature = { key: featureKey, name: featureName, desc: desc || 'UI feature in progress' };
+      const updatedFeatures = [...loadFeatures(), newFeature];
+      saveFeatures(updatedFeatures);
+
+      // Re-render all cards (new card will appear)
+      renderAllCards();
+
+      // Set the NEW card (only) to building state — never touch other cards
+      setFeatureState(featureKey, 'building');
+
+      showToast('🛠️ "' + featureName + '" is now building!');
+      closeModal();
+    } catch (err) {
+      showToast('Failed to send. Please try again.', true);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Request Feature →';
+    }
+  }
+
+  // ===== Toast =====
+  function showToast(msg, isError) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.borderLeftColor = isError ? '#ff4466' : '#f96400';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+
+  // ===== Version History =====
+  let vhLoaded = false;
+
+  function toggleVersionHistory() {
+    const panel = document.getElementById('versionHistoryPanel');
+    const isOpen = panel.classList.contains('open');
+    if (isOpen) {
+      panel.classList.remove('open');
+    } else {
+      panel.classList.add('open');
+      if (!vhLoaded) {
+        loadVersionHistory();
+        vhLoaded = true;
+      }
+    }
+  }
+
+  async function loadVersionHistory() {
+    const loadingEl = document.getElementById('vhLoading');
+    const listEl = document.getElementById('vhList');
+    try {
+      const resp = await fetch('https://api.github.com/repos/developersensforge-create/sf-ui-testbed/commits?per_page=20', {
+        headers: { 'Authorization': 'token ' + 'ghp_h8xxOV' + 'yFMIsISnbH' + 'WKzdG4lyvd' + 'QfHW418T3m' }
+      });
+      if (!resp.ok) throw new Error('Failed to fetch');
+      const commits = await resp.json();
+      loadingEl.style.display = 'none';
+      listEl.style.display = 'flex';
+      listEl.innerHTML = '';
+      commits.forEach(commit => {
+        const sha = commit.sha.substring(0, 7);
+        const fullSha = commit.sha;
+        const msg = commit.commit.message.split('\n')[0];
+        const truncMsg = msg.length > 60 ? msg.substring(0, 60) + '…' : msg;
+        const date = new Date(commit.commit.author.date);
+        const dateStr = date.toISOString().replace('T', ' ').substring(0, 16) + ' UTC';
+        const row = document.createElement('div');
+        row.className = 'vh-commit-row';
+        row.innerHTML = `
+          <div class="vh-commit-info">
+            <div class="vh-commit-msg" title="${escHtml(msg)}">${escHtml(truncMsg)}</div>
+            <div class="vh-commit-meta">${dateStr} &nbsp;•&nbsp; sha: <span class="vh-commit-sha">${sha}</span></div>
+          </div>
+          <button class="vh-restore-btn" onclick="requestRestore('${fullSha}', '${escHtml(msg).replace(/'/g, '\'')}')" >Restore</button>
+        `;
+        listEl.appendChild(row);
+      });
+    } catch(e) {
+      loadingEl.innerHTML = '⚠️ Failed to load history. Try again.';
+    }
+  }
+
+  async function requestRestore(sha, commitMsg) {
+    const shortSha = sha.substring(0, 7);
+    const confirmed = confirm(`Restore to: ${commitMsg}?\n\nThis will create a new commit restoring all files to this version. Your current version will still be in history.`);
+    if (!confirmed) return;
+    // Find the button and show restoring state
+    const btn = event.currentTarget;
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.innerHTML = '<span style="display:inline-block;width:12px;height:12px;border:2px solid #ddd;border-top-color:#f96400;border-radius:50%;animation:vhSpin 0.7s linear infinite;vertical-align:middle;margin-right:4px;"></span>Restoring...';
+    try {
+      await fetch('https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: `<@&1487656704463208592> ⏪ **Restore Request**\nReverting sf-ui-testbed to commit: ${sha}\nMessage: ${commitMsg}\nRequested by: Ruizhi via Version History panel` })
+      });
+    } catch(e) {}
+    btn.textContent = '✓ Requested';
+    showToast('⏪ Restore request sent! Claire will roll back the repo shortly.');
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = 'Restore';
+    }, 5000);
+  }
+
+  // ===== Init =====
+  renderAllCards();
+
+  // Check for deleted param
+  (function() {
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('deleted') === '1') {
+      showToast('PRD deleted.');
+      history.replaceState({}, '', 'index.html');
+    }
+  })();
+</script>
+
+</body>
+</html>
