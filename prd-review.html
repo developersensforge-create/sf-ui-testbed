@@ -18,13 +18,21 @@
       justify-content: space-between; gap: 16px; position: sticky; top: 0; z-index: 10;
       flex-wrap: wrap;
     }
-    .header-left { display: flex; align-items: center; gap: 16px; }
+    .header-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
     .back-link {
       font-size: 14px; color: #f96400; text-decoration: none; font-weight: 600;
       display: flex; align-items: center; gap: 4px; white-space: nowrap;
     }
     .back-link:hover { opacity: 0.8; }
     .prd-title { font-size: 18px; font-weight: 800; color: #0f1b2d; }
+
+    .regen-badge {
+      display: none; background: #fff3cd; color: #856404;
+      border: 1px solid #ffc107; border-radius: 20px;
+      padding: 4px 12px; font-size: 12px; font-weight: 600;
+      align-items: center; gap: 4px;
+    }
+    .regen-badge.visible { display: inline-flex; }
 
     .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .action-btn {
@@ -36,6 +44,8 @@
     .action-btn:hover { background: #fff3ec; border-color: #f96400; color: #f96400; }
     .action-btn.danger:hover { background: #fff0f0; border-color: #ff4466; color: #ff4466; }
     .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .action-btn.primary { background: #f96400; color: #fff; border-color: #f96400; }
+    .action-btn.primary:hover { background: #e05800; border-color: #e05800; color: #fff; }
 
     /* Confluence inline prompt */
     .confluence-prompt {
@@ -53,11 +63,35 @@
     .confluence-submit { background: #f96400; color: #fff; border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
     .confluence-close { background: none; border: none; color: #999; font-size: 13px; cursor: pointer; margin-left: 8px; }
 
-    /* Main content */
+    /* Edit mode layout */
+    .edit-mode-layout {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    /* Main PRD content */
     .prd-content {
       max-width: 900px; margin: 0 auto;
       padding: 48px 32px 80px;
+      flex: 1;
     }
+    body.edit-mode .prd-content {
+      max-width: none;
+      margin: 0;
+      padding: 32px 32px 120px;
+    }
+
+    /* PRD body (editable area) */
+    #prdBody {
+      outline: none;
+      transition: border 0.2s;
+    }
+    body.edit-mode #prdBody {
+      border: 2px solid #00b4d8;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    #prdBody:focus { outline: none; }
 
     h1 { font-size: 28px; font-weight: 800; color: #0f1b2d; margin-bottom: 8px; }
     h2 { font-size: 20px; font-weight: 700; color: #0f1b2d; margin-top: 40px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #f0f0f0; }
@@ -83,38 +117,11 @@
     }
     .flow-arrow { font-size: 18px; color: #ccc; }
 
-    /* Mini page preview */
-    .page-preview-wrapper {
-      width: 132px;
-      height: 190px;
-      overflow: hidden;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      display: inline-block;
-      margin-right: 16px;
-      vertical-align: top;
-      flex-shrink: 0;
-    }
-    .page-preview-frame {
-      width: 375px;
-      transform: scale(0.35);
-      transform-origin: top left;
-      font-family: -apple-system, sans-serif;
-      background: white;
-      padding: 12px;
-    }
-
-    /* Screen section side-by-side */
-    .screen-section {
-      display: flex;
-      align-items: flex-start;
-      margin: 12px 0 20px;
-      gap: 0;
-    }
-    .screen-desc {
-      display: inline-block;
-      vertical-align: top;
-      width: calc(100% - 160px);
+    /* Screenshot placeholder */
+    .screenshot-placeholder {
+      background: #f5f5f5; border: 1.5px dashed #ccc; border-radius: 10px;
+      height: 200px; display: flex; align-items: center; justify-content: center;
+      color: #aaa; font-size: 14px; font-weight: 600; margin: 12px 0 16px;
     }
 
     /* Table */
@@ -123,8 +130,125 @@
     td { border: 1px solid #e0e0e0; padding: 10px 14px; color: #555; vertical-align: top; }
     tr:nth-child(even) td { background: #fafafa; }
 
-    /* Code/technical */
+    /* Technical note */
     .tech-note { background: #f8f9fa; border-left: 3px solid #f96400; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 8px 0; font-size: 14px; color: #555; }
+
+    /* Chat panel */
+    .chat-panel {
+      display: none;
+      width: 260px;
+      min-width: 260px;
+      border-left: 1px solid #eee;
+      padding: 16px;
+      position: sticky;
+      top: 65px;
+      height: calc(100vh - 65px);
+      flex-direction: column;
+      gap: 12px;
+      background: #fff;
+    }
+    body.edit-mode .chat-panel {
+      display: flex;
+    }
+    .chat-panel-header h4 {
+      font-size: 14px; font-weight: 700; color: #0f1b2d; margin-bottom: 4px;
+    }
+    .chat-panel-header p {
+      font-size: 11px; color: #888; line-height: 1.4; margin-bottom: 0;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 4px 0;
+      min-height: 200px;
+    }
+    .chat-bubble {
+      max-width: 90%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .chat-bubble.user {
+      align-self: flex-end;
+      background: #f96400;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-bubble.system {
+      align-self: flex-start;
+      background: #f0f0f0;
+      color: #333;
+      border-bottom-left-radius: 4px;
+    }
+    .chat-input-area {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .chat-input-area input {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+    }
+    .chat-input-area input:focus { border-color: #f96400; }
+    .chat-send-btn {
+      background: #f96400; color: #fff; border: none; border-radius: 8px;
+      padding: 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer;
+      white-space: nowrap;
+    }
+    .chat-send-btn:hover { background: #e05800; }
+
+    /* Edit mode bottom bar */
+    .edit-bottom-bar {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #fff;
+      border-top: 2px solid #e8eef4;
+      padding: 12px 32px;
+      gap: 12px;
+      z-index: 20;
+      align-items: center;
+    }
+    body.edit-mode .edit-bottom-bar {
+      display: flex;
+    }
+    .edit-bottom-bar .btn-save {
+      background: #f96400; color: #fff; border: none; border-radius: 8px;
+      padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .edit-bottom-bar .btn-save:hover { background: #e05800; }
+    .edit-bottom-bar .btn-cancel {
+      background: #f8f9fa; color: #444; border: 1.5px solid #e0e0e0; border-radius: 8px;
+      padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .edit-bottom-bar .btn-cancel:hover { background: #eee; }
+    .edit-bottom-bar .btn-regen {
+      background: #0f1b2d; color: #fff; border: none; border-radius: 8px;
+      padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-left: auto;
+    }
+    .edit-bottom-bar .btn-regen:hover { background: #1e3050; }
+    .edit-bottom-bar .btn-regen:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Regenerating note */
+    .regen-note {
+      display: none;
+      background: #fff8e1; border: 1px solid #ffd54f; border-radius: 8px;
+      padding: 10px 16px; font-size: 13px; color: #6d4c00; margin: 0 0 16px;
+    }
+    .regen-note.visible { display: block; }
 
     /* Toast */
     .toast {
@@ -139,7 +263,22 @@
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
     .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(249,100,0,0.3); border-top-color: #f96400; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 4px; }
+    .spinner-white { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 4px; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .edit-mode-layout { flex-direction: column; }
+      .chat-panel {
+        width: 100%; min-width: 0; min-height: 300px;
+        position: static; height: auto; border-left: none;
+        border-top: 1px solid #eee;
+      }
+      body.edit-mode .prd-content {
+        padding: 24px 16px 140px;
+      }
+      .page-header { padding: 12px 16px; }
+    }
   </style>
 </head>
 <body>
@@ -149,9 +288,10 @@
   <div class="header-left">
     <a href="index.html" class="back-link">← Back to Testbed</a>
     <div class="prd-title" id="prdTitleEl">PRD: Camera Skills</div>
+    <span class="regen-badge" id="regenBadge">🔄 Regenerating...</span>
   </div>
-  <div class="header-actions">
-    <button class="action-btn" id="regenBtn" onclick="regeneratePRD()">🔄 Regenerate</button>
+  <div class="header-actions" id="viewActions">
+    <button class="action-btn" id="editBtn" onclick="enterEditMode()">✏️ Edit</button>
     <button class="action-btn" onclick="downloadPRD()">⬇ Download</button>
     <button class="action-btn danger" onclick="deletePRD()">🗑️ Delete</button>
     <button class="action-btn" onclick="toggleConfluence()">📤 Export to Confluence</button>
@@ -166,367 +306,160 @@
   <button class="confluence-close" onclick="toggleConfluence()">Cancel</button>
 </div>
 
-<!-- PRD Content -->
-<div class="prd-content">
-  <h1>Camera Skills — Product Requirements Document</h1>
+<!-- Edit mode bottom bar -->
+<div class="edit-bottom-bar" id="editBottomBar">
+  <button class="btn-save" onclick="savePRD()">💾 Save</button>
+  <button class="btn-cancel" onclick="cancelEdit()">Cancel</button>
+  <button class="btn-regen" id="regenWithAiBtn" onclick="regenerateWithAI()">🔄 Regenerate with AI</button>
+</div>
 
-  <div class="meta-bar">
-    <span class="meta-item"><strong>Feature:</strong> Camera Skills</span>
-    <span class="meta-item"><strong>Status:</strong> Draft</span>
-    <span class="meta-item"><strong>Generated:</strong> <span id="genDate"></span></span>
-    <span class="meta-item"><strong>Pages:</strong> P1–P7</span>
-  </div>
+<!-- Edit mode layout wrapper -->
+<div class="edit-mode-layout">
 
-  <h2>Overview</h2>
-  <p>Camera Skills is a smart automation feature that allows SensForge camera users to configure if-then rules based on AI detection events. Users define a trigger (e.g., "Person Detected"), optional conditions (e.g., "Unknown person"), select which device to monitor, choose an action (e.g., "Send Notification"), and set a schedule — all without writing a single line of code.</p>
-  <p>The feature is designed for non-technical homeowners who want intelligent, contextual automation from their existing SensForge camera hardware.</p>
+  <!-- Main PRD content -->
+  <div class="prd-content">
 
-  <h2>User Flow</h2>
-  <div class="flow-diagram">
-    <div class="flow-row">
-      <div class="flow-step">P1<br>My Skills</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">P2<br>Select Trigger</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">P3<br>Add Conditions</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">P4<br>Select Device</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">P5<br>Select Action</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">P6<br>Set Schedule</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">P7<br>Voice Memo</div>
-    </div>
-  </div>
-  <p>Users can navigate forward through the flow and backtrack at any point. URL parameters carry selections through all pages, enabling deep-linking and bookmarking of any configuration state.</p>
+    <!-- Regenerating note (shown when waiting for Claire) -->
+    <div class="regen-note" id="regenNote">⏳ Waiting for Claire to regenerate this PRD... Check back soon.</div>
 
-  <h2>Key Screens</h2>
+    <div id="prdBody" contenteditable="false">
+      <h1>Camera Skills — Product Requirements Document</h1>
 
-  <h3>P1 — My Skills Dashboard</h3>
-  <div class="screen-section">
-    <div class="page-preview-wrapper">
-      <div class="page-preview-frame">
-        <div style="background:#f5f5f5;padding:10px;border-bottom:1px solid #eee;display:flex;align-items:center;position:relative;">
-          <span style="font-size:16px;font-weight:600;flex:1;text-align:center;">My Skills</span>
-          <span style="font-size:10px;color:#aaa;position:absolute;left:8px;">P1</span>
-        </div>
-        <div style="padding:12px;">
-          <div style="background:white;border-radius:8px;padding:10px;margin-bottom:8px;border:1px solid #eee;">
-            <div style="font-size:13px;color:#666;margin-bottom:6px;">New Skill Template</div>
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-              <span style="font-size:12px;">If</span>
-              <span style="border:1px solid #f96400;color:#f96400;border-radius:12px;padding:2px 8px;font-size:11px;">select a trigger ▼</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:12px;">then do</span>
-              <span style="border:1px solid #ccc;color:#ccc;border-radius:12px;padding:2px 8px;font-size:11px;">select an action ▼</span>
-            </div>
-          </div>
-          <div style="font-size:12px;font-weight:600;color:#1a1a1a;margin-bottom:6px;">Active Skills</div>
-          <div style="background:white;border-radius:8px;padding:8px;border:1px solid #eee;margin-bottom:6px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:11px;font-weight:600;">My Dog Kitchen Alarm</span>
-              <div style="width:28px;height:14px;background:#f96400;border-radius:7px;"></div>
-            </div>
-            <div style="font-size:10px;color:#666;margin-top:3px;">If my dog jumps on kitchen table...</div>
-            <div style="display:flex;gap:4px;margin-top:4px;">
-              <span style="border:1px solid #f96400;color:#f96400;border-radius:8px;padding:1px 6px;font-size:9px;">Custom Skill</span>
-            </div>
-          </div>
-          <div style="background:white;border-radius:8px;padding:8px;border:1px solid #eee;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:11px;font-weight:600;">Driveway Delivery</span>
-              <div style="width:28px;height:14px;background:#f96400;border-radius:7px;"></div>
-            </div>
-            <div style="font-size:10px;color:#666;margin-top:3px;">If mail carrier approaches...</div>
-          </div>
+      <div class="meta-bar">
+        <span class="meta-item"><strong>Feature:</strong> Camera Skills</span>
+        <span class="meta-item"><strong>Status:</strong> Draft</span>
+        <span class="meta-item"><strong>Generated:</strong> <span id="genDate"></span></span>
+        <span class="meta-item"><strong>Pages:</strong> P1–P7</span>
+      </div>
+
+      <h2>Overview</h2>
+      <p>Camera Skills is a smart automation feature that allows SensForge camera users to configure if-then rules based on AI detection events. Users define a trigger (e.g., "Person Detected"), optional conditions (e.g., "Unknown person"), select which device to monitor, choose an action (e.g., "Send Notification"), and set a schedule — all without writing a single line of code.</p>
+      <p>The feature is designed for non-technical homeowners who want intelligent, contextual automation from their existing SensForge camera hardware.</p>
+
+      <h2>User Flow</h2>
+      <div class="flow-diagram">
+        <div class="flow-row">
+          <div class="flow-step">P1<br>My Skills</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">P2<br>Select Trigger</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">P3<br>Add Conditions</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">P4<br>Select Device</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">P5<br>Select Action</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">P6<br>Set Schedule</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">P7<br>Voice Memo</div>
         </div>
       </div>
-    </div>
-    <div class="screen-desc">
+      <p>Users can navigate forward through the flow and backtrack at any point. URL parameters carry selections through all pages, enabling deep-linking and bookmarking of any configuration state.</p>
+
+      <h2>Key Screens</h2>
+
+      <h3>P1 — My Skills Dashboard</h3>
+      <div class="screenshot-placeholder">[ P1 Screenshot ]</div>
       <p>The main entry point. Users see their active skills in a card list, with toggles to enable/disable each rule. A template builder at the top lets users start a new If/Then rule by tapping the trigger pill. Newly activated skills appear at the top of the list and are stored in localStorage.</p>
       <ul>
         <li>If/Then template builder with pill-based inputs</li>
         <li>Active skills list with toggle, tags, and edit link</li>
         <li>Activation flow returns user here via URL params</li>
       </ul>
-    </div>
-  </div>
 
-  <h3>P2 — Select Trigger</h3>
-  <div class="screen-section">
-    <div class="page-preview-wrapper">
-      <div class="page-preview-frame">
-        <div style="background:#f5f5f5;padding:10px;border-bottom:1px solid #eee;display:flex;align-items:center;">
-          <span style="font-size:14px;">←</span>
-          <span style="font-size:16px;font-weight:600;flex:1;text-align:center;">Select a Trigger</span>
-          <span style="font-size:10px;color:#aaa;">P2</span>
-        </div>
-        <div style="padding:8px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f5f5f5;background:#fff3ec;">
-            <span style="font-size:12px;">Person Detected</span>
-            <div style="width:14px;height:14px;border-radius:50%;border:2px solid #f96400;background:#f96400;"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f5f5f5;background:white;">
-            <span style="font-size:12px;">Person Coming Home</span>
-            <div style="width:14px;height:14px;border-radius:50%;border:2px solid #ddd;background:white;"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f5f5f5;background:white;">
-            <span style="font-size:12px;">Person Near Car</span>
-            <div style="width:14px;height:14px;border-radius:50%;border:2px solid #ddd;background:white;"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f5f5f5;background:white;">
-            <span style="font-size:12px;">Motion Detected</span>
-            <div style="width:14px;height:14px;border-radius:50%;border:2px solid #ddd;background:white;"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f5f5f5;background:white;">
-            <span style="font-size:12px;">Vehicle Detected</span>
-            <div style="width:14px;height:14px;border-radius:50%;border:2px solid #ddd;background:white;"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f5f5f5;background:white;">
-            <span style="font-size:12px;">Package Delivered</span>
-            <div style="width:14px;height:14px;border-radius:50%;border:2px solid #ddd;background:white;"></div>
-          </div>
-          <button style="width:100%;background:#f96400;color:white;border:none;border-radius:8px;padding:10px;font-size:13px;margin-top:10px;">Next →</button>
-        </div>
-      </div>
-    </div>
-    <div class="screen-desc">
+      <h3>P2 — Select Trigger</h3>
+      <div class="screenshot-placeholder">[ P2 Screenshot ]</div>
       <p>Users select from 11 AI detection triggers. Single-select radio list. Once selected, the Next button activates and navigates forward, passing the trigger via URL param.</p>
       <ul>
         <li>Person Detected, Person Coming Home, Person Near Car or Driveway</li>
         <li>Motion Detected, Vehicle Detected, Package Delivered, Package Taken</li>
         <li>Familiar Face Detected, Pet Behavior, Unusual Sound Detected, Fall Detected (Elder)</li>
       </ul>
-    </div>
-  </div>
 
-  <h3>P3 — Add Conditions</h3>
-  <div class="screen-section">
-    <div class="page-preview-wrapper">
-      <div class="page-preview-frame">
-        <div style="background:#f5f5f5;padding:10px;border-bottom:1px solid #eee;">
-          <span style="font-size:16px;font-weight:600;display:block;text-align:center;">Add Conditions</span>
-          <span style="font-size:10px;color:#aaa;">P3</span>
-        </div>
-        <div style="padding:12px;">
-          <div style="background:#fff3ec;border:1px solid #f96400;border-radius:16px;padding:4px 12px;display:inline-block;font-size:12px;color:#f96400;margin-bottom:10px;">Person Detected</div>
-          <input type="text" placeholder="Type additional condition..." style="width:100%;border:1px solid #eee;border-radius:8px;padding:8px;font-size:12px;box-sizing:border-box;margin-bottom:10px;">
-          <div style="display:flex;flex-wrap:wrap;gap:6px;">
-            <span style="border:1px solid #f96400;color:#f96400;border-radius:12px;padding:3px 10px;font-size:10px;">Unknown person</span>
-            <span style="border:1px solid #f96400;color:#f96400;border-radius:12px;padding:3px 10px;font-size:10px;">My kids</span>
-            <span style="border:1px solid #f96400;color:#f96400;border-radius:12px;padding:3px 10px;font-size:10px;">A family member</span>
-          </div>
-          <button style="width:100%;background:#f96400;color:white;border:none;border-radius:8px;padding:10px;font-size:13px;margin-top:12px;">Done →</button>
-        </div>
-      </div>
-    </div>
-    <div class="screen-desc">
+      <h3>P3 — Add Conditions</h3>
+      <div class="screenshot-placeholder">[ P3 Screenshot ]</div>
       <p>Optional refinement step. Context-aware suggestions appear based on the selected trigger. Users can type a free-form condition or tap suggestion pills. Condition is passed forward via URL param.</p>
       <ul>
         <li>Free-form text input for custom conditions</li>
         <li>Dynamic suggestion pills per trigger (e.g., "Unknown person", "At night")</li>
         <li>Entirely optional — skip by tapping Done without filling</li>
       </ul>
-    </div>
-  </div>
 
-  <h3>P4 — Select Device</h3>
-  <div class="screen-section">
-    <div class="page-preview-wrapper">
-      <div class="page-preview-frame">
-        <div style="background:#f5f5f5;padding:10px;border-bottom:1px solid #eee;">
-          <span style="font-size:16px;font-weight:600;display:block;text-align:center;">Select Device</span>
-          <span style="font-size:10px;color:#aaa;">P4</span>
-        </div>
-        <div style="padding:8px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f5f5f5;">
-            <div>
-              <div style="font-size:12px;">Living Room Cam</div>
-              <div style="font-size:10px;color:#999;">Active: 01/09/2021</div>
-            </div>
-            <div style="width:32px;height:16px;background:#f96400;border-radius:8px;"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f5f5f5;">
-            <div>
-              <div style="font-size:12px;">Basement Cam</div>
-              <div style="font-size:10px;color:#999;">Active: 08/20/2021</div>
-            </div>
-            <div style="width:32px;height:16px;background:#ddd;border-radius:8px;"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f5f5f5;">
-            <div>
-              <div style="font-size:12px;">Garage V2</div>
-              <div style="font-size:10px;color:#999;">Active: 06/17/2021</div>
-            </div>
-            <div style="width:32px;height:16px;background:#ddd;border-radius:8px;"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid #f5f5f5;">
-            <div>
-              <div style="font-size:12px;">FrontYard-Sentinel-01</div>
-            </div>
-            <div style="width:32px;height:16px;background:#ddd;border-radius:8px;"></div>
-          </div>
-          <button style="width:100%;background:#f96400;color:white;border:none;border-radius:8px;padding:10px;font-size:13px;margin-top:10px;">Next →</button>
-        </div>
-      </div>
-    </div>
-    <div class="screen-desc">
+      <h3>P4 — Select Device</h3>
+      <div class="screenshot-placeholder">[ P4 Screenshot ]</div>
       <p>Users choose which camera to monitor. Device list shows name, status, and an active/inactive toggle. Living Room Cam is pre-selected as the default. Selection passes forward via URL param.</p>
-    </div>
-  </div>
 
-  <h3>P5 — Select Action</h3>
-  <div class="screen-section">
-    <div class="page-preview-wrapper">
-      <div class="page-preview-frame">
-        <div style="background:#f5f5f5;padding:10px;border-bottom:1px solid #eee;">
-          <span style="font-size:16px;font-weight:600;display:block;text-align:center;">Select Action</span>
-          <span style="font-size:10px;color:#aaa;">P5</span>
-        </div>
-        <div style="padding:8px;">
-          <div style="display:flex;align-items:center;gap:8px;padding:7px;border-bottom:1px solid #f5f5f5;">
-            <div style="width:16px;height:16px;border-radius:3px;border:2px solid #f96400;background:#f96400;display:flex;align-items:center;justify-content:center;">
-              <span style="color:white;font-size:10px;">✓</span>
-            </div>
-            <span style="font-size:11px;">🔔 Send Notification</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:7px;border-bottom:1px solid #f5f5f5;">
-            <div style="width:16px;height:16px;border-radius:3px;border:2px solid #ddd;background:white;"></div>
-            <span style="font-size:11px;">📹 Record</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:7px;border-bottom:1px solid #f5f5f5;">
-            <div style="width:16px;height:16px;border-radius:3px;border:2px solid #ddd;background:white;"></div>
-            <span style="font-size:11px;">💡 Turn on Light</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:7px;border-bottom:1px solid #f5f5f5;">
-            <div style="width:16px;height:16px;border-radius:3px;border:2px solid #ddd;background:white;"></div>
-            <span style="font-size:11px;">🎙️ Play Customized Voice</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:7px;border-bottom:1px solid #f5f5f5;">
-            <div style="width:16px;height:16px;border-radius:3px;border:2px solid #ddd;background:white;"></div>
-            <span style="font-size:11px;">🚨 Trigger Siren</span>
-          </div>
-          <div style="margin-top:8px;padding:8px;border-top:2px solid #f5f5f5;">
-            <div style="font-size:11px;color:#666;margin-bottom:4px;">What time of day?</div>
-            <div style="display:flex;gap:6px;align-items:center;font-size:11px;">
-              <span>From</span><span style="border:1px solid #eee;padding:2px 6px;border-radius:4px;">08:00 AM</span>
-              <span>to</span><span style="border:1px solid #eee;padding:2px 6px;border-radius:4px;">10:00 PM</span>
-            </div>
-          </div>
-          <button style="width:100%;background:#f96400;color:white;border:none;border-radius:8px;padding:10px;font-size:12px;margin-top:8px;">✅ Activate Now</button>
-        </div>
-      </div>
-    </div>
-    <div class="screen-desc">
+      <h3>P5 — Select Action</h3>
+      <div class="screenshot-placeholder">[ P5 Screenshot ]</div>
       <p>Users select the action triggered when the detection event occurs. Send Notification is checked by default. If "Play Customized Voice" is selected, a sub-option appears to record a voice memo (linking to P7).</p>
       <ul>
         <li>Send Notification (default), Record, Turn on Light</li>
         <li>Play Customized Voice (with voice memo sub-flow), Trigger Siren, Call Me</li>
       </ul>
-    </div>
-  </div>
 
-  <h3>P6 — Set Schedule <em style="font-size:12px;color:#aaa;font-weight:400;">(deprecated — merged into P5)</em></h3>
-  <div class="screen-section">
-    <div class="page-preview-wrapper">
-      <div class="page-preview-frame">
-        <div style="background:#f5f5f5;padding:10px;border-bottom:1px solid #eee;">
-          <span style="font-size:16px;font-weight:600;display:block;text-align:center;color:#aaa;">Set Schedule</span>
-          <span style="font-size:10px;color:#aaa;">P6</span>
-        </div>
-        <div style="padding:24px;text-align:center;">
-          <div style="width:48px;height:48px;border-radius:50%;background:#f5f5f5;border:2px dashed #ccc;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;">
-            <span style="font-size:20px;">🚫</span>
-          </div>
-          <div style="font-size:13px;font-weight:600;color:#aaa;margin-bottom:6px;">Deprecated</div>
-          <div style="font-size:11px;color:#bbb;line-height:1.5;">Schedule controls have been merged into P5 (Select Action).</div>
-        </div>
-      </div>
-    </div>
-    <div class="screen-desc">
-      <p>Users set when the skill should be active. Time range (Start/End time pickers) and repeat schedule (Everyday, Weekdays, Weekends, Custom). Custom reveals day-of-week toggles. Done — Activate Now returns to P1 and creates the skill card.</p>
-      <p><em>Note: Schedule controls have been integrated directly into P5 to reduce friction in the activation flow.</em></p>
-    </div>
-  </div>
+      <h3>P6 — Set Schedule</h3>
+      <div class="screenshot-placeholder">[ P6 Screenshot ]</div>
+      <p>Users set when the skill should be active. Time range (Start/End time pickers) and repeat schedule (Everyday, Weekdays, Weekends, Custom). Custom reveals day-of-week toggles. Done → Activate Now returns to P1 and creates the skill card.</p>
 
-  <h3>P7 — Voice Memo</h3>
-  <div class="screen-section">
-    <div class="page-preview-wrapper">
-      <div class="page-preview-frame">
-        <div style="background:#f5f5f5;padding:10px;border-bottom:1px solid #eee;">
-          <span style="font-size:16px;font-weight:600;display:block;text-align:center;">Voice Memo</span>
-          <span style="font-size:10px;color:#aaa;">P7</span>
-        </div>
-        <div style="padding:16px;text-align:center;">
-          <div style="font-size:12px;color:#666;margin-bottom:12px;">Tap to Pause</div>
-          <div style="display:flex;justify-content:center;align-items:flex-end;gap:3px;height:40px;margin-bottom:12px;">
-            <div style="width:4px;height:14px;background:#f96400;border-radius:2px;"></div>
-            <div style="width:4px;height:22px;background:#f96400;border-radius:2px;"></div>
-            <div style="width:4px;height:10px;background:#f96400;border-radius:2px;"></div>
-            <div style="width:4px;height:28px;background:#f96400;border-radius:2px;"></div>
-            <div style="width:4px;height:18px;background:#f96400;border-radius:2px;"></div>
-            <div style="width:4px;height:34px;background:#f96400;border-radius:2px;"></div>
-            <div style="width:4px;height:12px;background:#f96400;border-radius:2px;"></div>
-            <div style="width:4px;height:26px;background:#f96400;border-radius:2px;"></div>
-            <div style="width:4px;height:16px;background:#f96400;border-radius:2px;"></div>
-            <div style="width:4px;height:30px;background:#f96400;border-radius:2px;"></div>
-            <div style="width:4px;height:8px;background:#f96400;border-radius:2px;"></div>
-            <div style="width:4px;height:20px;background:#f96400;border-radius:2px;"></div>
-          </div>
-          <div style="width:44px;height:44px;background:#f96400;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;">
-            <span style="color:white;font-size:16px;">⏸</span>
-          </div>
-          <div style="font-size:13px;color:#333;">0:04</div>
-          <button style="width:100%;background:#f96400;color:white;border:none;border-radius:8px;padding:10px;font-size:12px;margin-top:12px;">Save Memo →</button>
-        </div>
-      </div>
-    </div>
-    <div class="screen-desc">
+      <h3>P7 — Voice Memo</h3>
+      <div class="screenshot-placeholder">[ P7 Screenshot ]</div>
       <p>Optional recording flow for custom voice announcements. Three states: Recording (animated waveform), Paused, and Playback. Save Memo returns to P5 with device/trigger context intact.</p>
+
+      <h2>Variable Settings</h2>
+      <table>
+        <thead>
+          <tr><th>Setting</th><th>Options</th><th>Default</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Trigger</td><td>11 detection types</td><td>Person Detected</td></tr>
+          <tr><td>Condition</td><td>Free text + context suggestions</td><td>None (optional)</td></tr>
+          <tr><td>Device</td><td>Any connected SensForge camera</td><td>Living Room Cam</td></tr>
+          <tr><td>Action</td><td>6 action types</td><td>Send Notification</td></tr>
+          <tr><td>Schedule: Repeat</td><td>Everyday / Weekdays / Weekends / Custom</td><td>Everyday</td></tr>
+          <tr><td>Schedule: Time Range</td><td>Start time + End time selectors</td><td>8:00 AM – 10:00 PM</td></tr>
+          <tr><td>Voice Memo</td><td>Record / Pause / Playback states</td><td>N/A</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Technical Notes</h2>
+      <div class="tech-note">URL parameters thread selections through all pages — each page reads query params for context and appends its selection when navigating forward.</div>
+      <div class="tech-note">Comments are stored in localStorage per page using the key pattern <code>comments_{pageId}_{timestamp}</code>. The comment system supports timestamped display and deletion.</div>
+      <div class="tech-note">Skills are stored in localStorage when Activate Now is pressed on P1. The active skills list renders from both the static HTML defaults and dynamically added localStorage entries.</div>
+      <div class="tech-note">Progress bar state on the dashboard is stored in localStorage per feature key (<code>feature-state-{key}</code>). States: idle → building → complete → idle. Auto-transitions to complete after 30s for demo purposes.</div>
+
+      <h2>Open Questions</h2>
+      <ul>
+        <li>Should skills support multiple actions (e.g., notify + record simultaneously)?</li>
+        <li>How should the app handle device offline states in the selection step?</li>
+        <li>Should the schedule step support recurring time windows (e.g., 8–10 AM and 8–10 PM)?</li>
+        <li>Is there a maximum number of active skills per user?</li>
+      </ul>
+
+      <h2>Success Metrics</h2>
+      <ul>
+        <li>Time to first skill activation &lt; 3 minutes</li>
+        <li>Skill activation completion rate &gt; 70%</li>
+        <li>Trigger selection drop-off &lt; 15%</li>
+        <li>User rating of automation flow ≥ 4.2/5</li>
+      </ul>
+    </div><!-- end #prdBody -->
+
+  </div><!-- end .prd-content -->
+
+  <!-- AI Chat Panel (visible in edit mode only) -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-panel-header">
+      <h4>💬 Feedback for AI</h4>
+      <p>Type your comments. AI will consider these when regenerating.</p>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="Type your feedback..." onkeydown="handleChatKey(event)" />
+      <button class="chat-send-btn" onclick="sendChatMessage()">Send</button>
     </div>
   </div>
 
-  <h2>Variable Settings</h2>
-  <table>
-    <thead>
-      <tr><th>Setting</th><th>Options</th><th>Default</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Trigger</td><td>11 detection types</td><td>Person Detected</td></tr>
-      <tr><td>Condition</td><td>Free text + context suggestions</td><td>None (optional)</td></tr>
-      <tr><td>Device</td><td>Any connected SensForge camera</td><td>Living Room Cam</td></tr>
-      <tr><td>Action</td><td>6 action types</td><td>Send Notification</td></tr>
-      <tr><td>Schedule: Repeat</td><td>Everyday / Weekdays / Weekends / Custom</td><td>Everyday</td></tr>
-      <tr><td>Schedule: Time Range</td><td>Start time + End time selectors</td><td>8:00 AM – 10:00 PM</td></tr>
-      <tr><td>Voice Memo</td><td>Record / Pause / Playback states</td><td>N/A</td></tr>
-    </tbody>
-  </table>
-
-  <h2>Technical Notes</h2>
-  <div class="tech-note">URL parameters thread selections through all pages — each page reads query params for context and appends its selection when navigating forward.</div>
-  <div class="tech-note">Comments are stored in localStorage per page using the key pattern <code>comments_{pageId}_{timestamp}</code>. The comment system supports timestamped display and deletion.</div>
-  <div class="tech-note">Skills are stored in localStorage when Activate Now is pressed on P1. The active skills list renders from both the static HTML defaults and dynamically added localStorage entries.</div>
-  <div class="tech-note">Progress bar state on the dashboard is stored in localStorage per feature key (<code>feature-state-{key}</code>). States: idle → building → complete → idle. Auto-transitions to complete after 30s for demo purposes.</div>
-
-  <h2>Open Questions</h2>
-  <ul>
-    <li>Should skills support multiple actions (e.g., notify + record simultaneously)?</li>
-    <li>How should the app handle device offline states in the selection step?</li>
-    <li>Should the schedule step support recurring time windows (e.g., 8–10 AM and 8–10 PM)?</li>
-    <li>Is there a maximum number of active skills per user?</li>
-  </ul>
-
-  <h2>Success Metrics</h2>
-  <ul>
-    <li>Time to first skill activation &lt; 3 minutes</li>
-    <li>Skill activation completion rate &gt; 70%</li>
-    <li>Trigger selection drop-off &lt; 15%</li>
-    <li>User rating of automation flow ≥ 4.2/5</li>
-  </ul>
-
-</div>
+</div><!-- end .edit-mode-layout -->
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -544,21 +477,160 @@
   document.getElementById('prdTitleEl').textContent = 'PRD: ' + featureName;
   document.title = 'PRD: ' + featureName + ' — SensForge';
 
-  // Check for regenerated param
-  if (params.get('regenerated') === '1') {
-    showToast('PRD Regenerated ✔');
-    history.replaceState({}, '', 'prd-review.html?feature=' + feature);
+  // Storage keys
+  const keyContent = 'prd_content_' + feature;
+  const keyChat = 'prd_chat_' + feature;
+  const keyRegen = 'prd_regenerating_' + feature;
+
+  // Track original content for cancel
+  let originalContent = null;
+
+  // ─── On page load ─────────────────────────────────────────────────
+  (function init() {
+    // Load saved PRD content if available
+    const savedContent = localStorage.getItem(keyContent);
+    if (savedContent) {
+      document.getElementById('prdBody').innerHTML = savedContent;
+    }
+
+    // Check regenerating state
+    if (localStorage.getItem(keyRegen) === 'true') {
+      document.getElementById('regenBadge').classList.add('visible');
+      document.getElementById('regenNote').classList.add('visible');
+    }
+
+    // Load chat history
+    loadChatHistory();
+  })();
+
+  // ─── Chat ─────────────────────────────────────────────────────────
+  function loadChatHistory() {
+    const msgs = getChatMessages();
+    const container = document.getElementById('chatMessages');
+    container.innerHTML = '';
+
+    if (msgs.length === 0) {
+      // Show initial system message
+      appendChatBubble('system', 'Hi! Tell me what to change in this PRD. I\'ll incorporate your feedback when you click Regenerate.');
+    } else {
+      msgs.forEach(m => appendChatBubble(m.role, m.text, false));
+    }
   }
 
-  function regeneratePRD() {
-    const btn = document.getElementById('regenBtn');
-    btn.innerHTML = '<span class="spinner"></span> Regenerating...';
+  function getChatMessages() {
+    try {
+      return JSON.parse(localStorage.getItem(keyChat) || '[]');
+    } catch(e) {
+      return [];
+    }
+  }
+
+  function saveChatMessages(msgs) {
+    localStorage.setItem(keyChat, JSON.stringify(msgs));
+  }
+
+  function appendChatBubble(role, text, save = true) {
+    const container = document.getElementById('chatMessages');
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble ' + role;
+    bubble.textContent = text;
+    container.appendChild(bubble);
+    container.scrollTop = container.scrollHeight;
+
+    if (save) {
+      const msgs = getChatMessages();
+      msgs.push({ role, text });
+      saveChatMessages(msgs);
+    }
+  }
+
+  function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    appendChatBubble('user', text, true);
+  }
+
+  function handleChatKey(e) {
+    if (e.key === 'Enter') sendChatMessage();
+  }
+
+  // ─── Edit mode ────────────────────────────────────────────────────
+  function enterEditMode() {
+    // Save original for cancel
+    originalContent = document.getElementById('prdBody').innerHTML;
+    document.body.classList.add('edit-mode');
+    document.getElementById('prdBody').contentEditable = 'true';
+    document.getElementById('prdBody').focus();
+  }
+
+  function exitEditMode() {
+    document.body.classList.remove('edit-mode');
+    document.getElementById('prdBody').contentEditable = 'false';
+  }
+
+  function savePRD() {
+    const content = document.getElementById('prdBody').innerHTML;
+    localStorage.setItem(keyContent, content);
+    originalContent = content;
+    exitEditMode();
+    showToast('PRD saved ✅');
+  }
+
+  function cancelEdit() {
+    if (originalContent !== null) {
+      document.getElementById('prdBody').innerHTML = originalContent;
+    }
+    exitEditMode();
+  }
+
+  // ─── Regenerate with AI ───────────────────────────────────────────
+  async function regenerateWithAI() {
+    const btn = document.getElementById('regenWithAiBtn');
+    btn.innerHTML = '<span class="spinner-white"></span> Sending to Claire...';
     btn.disabled = true;
-    setTimeout(() => {
-      window.location.href = 'prd-review.html?feature=' + feature + '&regenerated=1';
-    }, 2000);
+
+    const prdContent = document.getElementById('prdBody').innerText || document.getElementById('prdBody').textContent;
+    const chatMsgs = getChatMessages();
+
+    // Format chat messages
+    const chatFormatted = chatMsgs.length > 0
+      ? chatMsgs.map((m, i) => `${i + 1}. [${m.role === 'user' ? 'User' : 'System'}] ${m.text}`).join('\n')
+      : '(no feedback messages)';
+
+    const preview = prdContent.substring(0, 1000);
+    const hasMore = prdContent.length > 1000;
+
+    const discordMsg = `📝 **PRD Regenerate Request**\nFeature: **${featureName}**\n\n**AI Feedback:**\n${chatFormatted}\n\n**Current PRD Content (edited):**\n${preview}${hasMore ? '...\n_[content truncated — full text above 1000 chars]_' : ''}`;
+
+    try {
+      await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: discordMsg })
+      });
+    } catch(e) {
+      console.warn('Webhook error:', e);
+    }
+
+    // Store regenerating state
+    localStorage.setItem(keyRegen, 'true');
+
+    // Exit edit mode
+    exitEditMode();
+
+    // Show badge + note
+    document.getElementById('regenBadge').classList.add('visible');
+    document.getElementById('regenNote').classList.add('visible');
+
+    btn.innerHTML = '🔄 Regenerate with AI';
+    btn.disabled = false;
+
+    showToast('Regenerate request sent! Claire will update this PRD shortly. 🔄');
   }
 
+  // ─── View mode actions ────────────────────────────────────────────
   function downloadPRD() {
     const mdContent = `# ${featureName} — Product Requirements Document
 
@@ -647,6 +719,7 @@ Record custom voice announcement for Play Customized Voice action.
     showToast('Export request sent! Claire will publish to Confluence shortly.');
   }
 
+  // ─── Toast ────────────────────────────────────────────────────────
   function showToast(msg, isError) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
