@@ -421,18 +421,18 @@
 
   // ===== Feature list persistence =====
   function loadFeatures() {
-    // Always start with DEFAULT_FEATURES as the base (built-ins always present)
-    const base = [...DEFAULT_FEATURES];
+    // Always start with DEFAULT_FEATURES, respecting user-hidden keys
+    const hidden = JSON.parse(localStorage.getItem('sf_hidden_keys') || '[]');
+    const base = DEFAULT_FEATURES.filter(f => !hidden.includes(f.key));
     try {
       const saved = localStorage.getItem('sf_features');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Add any user-added features (not in DEFAULT_FEATURES) to the list
         parsed.forEach(f => {
+          if (hidden.includes(f.key)) return; // skip hidden
           if (!base.find(b => b.key === f.key)) {
             base.push(f);
           } else {
-            // Merge user-edited metadata back
             const idx = base.findIndex(b => b.key === f.key);
             if (idx !== -1) base[idx] = { ...base[idx], ...f };
           }
@@ -484,7 +484,7 @@
     }
 
     let deleteBtn = '';
-    if (!isDefault) {
+    if (feature.key !== 'camera-skills') {
       deleteBtn = `<button class="card-delete-btn" onclick="deleteCard('${feature.key}')" title="Remove card">×</button>`;
     }
 
@@ -528,16 +528,54 @@
   // ===== Delete card =====
   function deleteCard(key) {
     if (key === 'camera-skills') return;
-    if (!confirm('Remove this card from the dashboard?')) return;
+    // Show custom confirmation modal
+    showDeleteModal(key);
+  }
+
+  function showDeleteModal(key) {
+    const existing = document.getElementById('delete-modal');
+    if (existing) existing.remove();
+    const modal = document.createElement('div');
+    modal.id = 'delete-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;display:flex;align-items:center;justify-content:center;';
+    modal.innerHTML = `
+      <div style="background:#fff;border-radius:16px;padding:28px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+        <div style="font-size:18px;font-weight:700;color:#0f1b2d;margin-bottom:8px;">Remove Project</div>
+        <p style="font-size:14px;color:#666;line-height:1.5;margin-bottom:24px;">How would you like to remove <strong style="color:#0f1b2d;">${key}</strong>?</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <button onclick="confirmDelete('${key}', false)" style="background:#f96400;color:#fff;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:600;cursor:pointer;text-align:left;">
+            🗂️ Remove from dashboard only<br><span style="font-weight:400;font-size:12px;opacity:0.85;">The files in GitHub will be kept</span>
+          </button>
+          <button onclick="confirmDelete('${key}', true)" style="background:#fff;color:#d32f2f;border:2px solid #d32f2f;border-radius:10px;padding:14px;font-size:14px;font-weight:600;cursor:pointer;text-align:left;">
+            🗑️ Delete project folder too<br><span style="font-weight:400;font-size:12px;opacity:0.7;">Permanently removes files from GitHub</span>
+          </button>
+          <button onclick="document.getElementById('delete-modal').remove()" style="background:#f5f5f5;color:#666;border:none;border-radius:10px;padding:12px;font-size:14px;cursor:pointer;">Cancel</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  }
+
+  async function confirmDelete(key, deleteFiles) {
+    document.getElementById('delete-modal')?.remove();
+    if (deleteFiles) {
+      // Attempt to delete GitHub folder via API (requires token — not available client-side)
+      // Show instruction instead
+      showToast('⚠️ File deletion requires GitHub access. Removing from dashboard only.', 4000);
+    }
     let features = loadFeatures();
+    // Remove from DEFAULT_FEATURES override too if it was a built-in
     features = features.filter(f => f.key !== key);
+    // Store a "hidden" marker so it stays hidden even if DEFAULT_FEATURES includes it
+    const hidden = JSON.parse(localStorage.getItem('sf_hidden_keys') || '[]');
+    if (!hidden.includes(key)) hidden.push(key);
+    localStorage.setItem('sf_hidden_keys', JSON.stringify(hidden));
     saveFeatures(features);
-    // Clean up localStorage for this card
     localStorage.removeItem('featureState_' + key);
     localStorage.removeItem('featureState_' + key + '_start');
     localStorage.removeItem('card-name-' + key);
     renderAllCards();
-    showToast('Card removed.');
+    showToast(deleteFiles ? 'Card removed. To delete files, go to GitHub.' : 'Card removed from dashboard.');
   }
 
   // ===== Card name editing =====
