@@ -294,7 +294,7 @@
       await fetch(WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: msg })
+        body: JSON.stringify({ content: '<@&1487656704463208592> ' + msg })
       });
     } catch(e) {}
 
