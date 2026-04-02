@@ -454,25 +454,9 @@
     return name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
 
-  // ===== Startup: clear any corrupt cache =====
-  (function clearCorruptCache() {
-    // If sf_features exists but somehow hides built-ins, clear it
-    try {
-      localStorage.removeItem('sf_hidden_keys');
-      const saved = localStorage.getItem('sf_features');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        // If no built-ins are in saved list, it's corrupt — clear it
-        const hasBuiltins = DEFAULT_FEATURES.every(d => parsed.find(f => f.key === d.key));
-        // Don't clear user features, just ensure built-ins are never blocked
-      }
-    } catch(e) {
-      localStorage.removeItem('sf_features');
-    }
-  })();
-
   // ===== Card rendering =====
   function renderAllCards() {
+    localStorage.removeItem('sf_hidden_keys'); // always clear hidden keys
     const features = loadFeatures();
     const grid = document.getElementById('featureGrid');
     grid.innerHTML = '';
