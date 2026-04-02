@@ -639,83 +639,82 @@
     <span style="width:36px;"></span>
   </div>
   <div class="scroll-area">
-    <div class="device-card">
-      <div class="cam-icon">🚪</div>
-      <div class="info">
-        <div class="name">Front Door Cam (SF-DB1)</div>
-        <div class="sn">SN: SFD-DB1-00142 &nbsp;📋</div>
+    <!-- Device card -->
+    <div style="margin:12px;background:#fff;border-radius:12px;border:1px solid var(--divider);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
+      <img src="" style="width:48px;height:48px;border-radius:8px;background:#eee;object-fit:cover;" onerror="this.style.display='none'" />
+      <div style="width:48px;height:48px;border-radius:8px;background:#eee;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🚪</div>
+      <div style="flex:1;">
+        <div style="font-size:15px;font-weight:600;color:var(--text);">Front Door Cam (SF-DB1)</div>
+        <div style="font-size:12px;color:var(--gray);margin-top:2px;display:flex;align-items:center;gap:4px;">SN: SFD-DB1-00142 <span style="font-size:14px;cursor:pointer;">⧉</span></div>
+      </div>
+      <span style="color:#ccc;font-size:16px;">›</span>
+    </div>
+    <!-- Device On -->
+    <div style="background:#fff;border-radius:12px;margin:0 12px 10px;border:1px solid var(--divider);overflow:hidden;">
+      <div style="display:flex;align-items:center;padding:14px 16px;gap:12px;">
+        <div style="width:36px;height:36px;border-radius:9px;background:#4CAF50;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div style="flex:1;font-size:15px;font-weight:500;color:var(--text);">Device On</div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
       </div>
     </div>
-    <div class="list-row">
-      <div class="row-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    <!-- Main settings group -->
+    <div style="background:#fff;border-radius:12px;margin:0 12px 10px;border:1px solid var(--divider);overflow:hidden;">
+      <div style="display:flex;align-items:center;padding:14px 16px;gap:12px;border-bottom:1px solid var(--divider);cursor:pointer;" onclick="showScreen('s-detection')">
+        <div style="width:36px;height:36px;border-radius:9px;background:#f96400;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><rect x="2" y="14" width="4" height="8" rx="1"/><rect x="9" y="9" width="4" height="13" rx="1"/><rect x="16" y="4" width="4" height="18" rx="1"/></svg></div>
+        <div style="flex:1;font-size:15px;font-weight:500;color:var(--text);">Smart Detection</div>
+        <span style="color:var(--gray);font-size:16px;">›</span>
       </div>
-      <div class="row-content"><div class="name">Device On</div></div>
-      <div class="row-right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div style="display:flex;align-items:center;padding:14px 16px;gap:12px;cursor:pointer;">
+        <div style="width:36px;height:36px;border-radius:9px;background:#f96400;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><text x="3" y="17" font-size="11" font-weight="800" fill="white" stroke="none">AI</text></svg></div>
+        <div style="flex:1;font-size:15px;font-weight:500;color:var(--text);">AI Assistant</div>
+        <span style="background:var(--orange-light);color:var(--orange);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;">Beta</span>
+        <span style="color:var(--gray);font-size:16px;margin-left:4px;">›</span>
+      </div>
     </div>
-    <div class="list-row" onclick="showScreen('s-detection')">
-      <div class="row-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+    <!-- Settings list -->
+    <div style="background:#fff;border-radius:12px;margin:0 12px 10px;border:1px solid var(--divider);overflow:hidden;">
+      <div style="display:flex;align-items:center;padding:14px 16px;gap:12px;border-bottom:1px solid var(--divider);cursor:pointer;">
+        <div style="width:36px;height:36px;border-radius:9px;background:#555;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="white" stroke="none"/><polyline points="21 15 16 10 5 21"/></svg></div>
+        <div style="flex:1;font-size:15px;font-weight:500;color:var(--text);">Image Setting</div>
+        <span style="color:var(--gray);font-size:16px;">›</span>
       </div>
-      <div class="row-content"><div class="name">Smart Detection</div></div>
-      <div class="row-right"><span style="font-size:13px;color:var(--orange);">On</span><div class="chevron">›</div></div>
+      <div style="display:flex;align-items:center;padding:14px 16px;gap:12px;border-bottom:1px solid var(--divider);cursor:pointer;" onclick="showScreen('s-chime')">
+        <div style="width:36px;height:36px;border-radius:9px;background:#9E9E9E;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:var(--text);">Chime &amp; Ringtone</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:1px;">Classic Ding Dong · Volume 70%</div>
+        </div>
+        <span style="color:var(--gray);font-size:16px;">›</span>
+      </div>
+      <div style="display:flex;align-items:center;padding:14px 16px;gap:12px;border-bottom:1px solid var(--divider);cursor:pointer;" onclick="showScreen('s-twoway')">
+        <div style="width:36px;height:36px;border-radius:9px;background:#9E9E9E;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:var(--text);">Two-Way Audio</div>
+          <div style="font-size:12px;color:var(--gray);margin-top:1px;">Noise cancel, echo suppression on</div>
+        </div>
+        <span style="color:var(--gray);font-size:16px;">›</span>
+      </div>
+      <div style="display:flex;align-items:center;padding:14px 16px;gap:12px;border-bottom:1px solid var(--divider);cursor:pointer;">
+        <div style="width:36px;height:36px;border-radius:9px;background:#9E9E9E;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div style="flex:1;font-size:15px;font-weight:500;color:var(--text);">Notification Setting</div>
+        <span style="color:var(--gray);font-size:16px;">›</span>
+      </div>
+      <div style="display:flex;align-items:center;padding:14px 16px;gap:12px;border-bottom:1px solid var(--divider);cursor:pointer;">
+        <div style="width:36px;height:36px;border-radius:9px;background:#9E9E9E;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+        <div style="flex:1;font-size:15px;font-weight:500;color:var(--text);">Storage Setting</div>
+        <span style="color:var(--gray);font-size:16px;">›</span>
+      </div>
+      <div style="display:flex;align-items:center;padding:14px 16px;gap:12px;cursor:pointer;">
+        <div style="width:36px;height:36px;border-radius:9px;background:#9E9E9E;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></div>
+        <div style="flex:1;font-size:15px;font-weight:500;color:var(--text);">Other Settings</div>
+        <span style="color:var(--gray);font-size:16px;">›</span>
+      </div>
     </div>
-    <div class="list-row">
-      <div class="row-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </div>
-      <div class="row-content"><div class="name">AI Assistant</div></div>
-      <div class="row-right"><span class="badge">Beta</span><div class="chevron">›</div></div>
+    <div style="height:8px;"></div>
+    <div style="background:#fff;border-radius:12px;margin:0 12px;border:1px solid var(--divider);overflow:hidden;">
+      <div style="padding:16px;text-align:center;font-size:15px;font-weight:500;color:var(--text);cursor:pointer;border-bottom:1px solid var(--divider);">Reboot Device</div>
+      <div style="padding:16px;text-align:center;font-size:15px;font-weight:600;color:#f44336;cursor:pointer;">Delete Device</div>
     </div>
-    <div class="list-row">
-      <div class="row-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
-      </div>
-      <div class="row-content"><div class="name">Image Setting</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <!-- Doorbell-specific: Chime & Ringtone instead of generic Audio Setting -->
-    <div class="list-row" onclick="showScreen('s-chime')">
-      <div class="row-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      </div>
-      <div class="row-content">
-        <div class="name">Chime &amp; Ringtone</div>
-        <div class="sub">Doorbell ring · indoor chime · volume</div>
-      </div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <div class="list-row">
-      <div class="row-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-      </div>
-      <div class="row-content"><div class="name">Notification Setting</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <div class="list-row">
-      <div class="row-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-      </div>
-      <div class="row-content"><div class="name">Storage Setting</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <div class="list-row" onclick="showScreen('s-twoway')">
-      <div class="row-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-      </div>
-      <div class="row-content"><div class="name">Two-Way Audio</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <div class="list-row">
-      <div class="row-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      </div>
-      <div class="row-content"><div class="name">Other Settings</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <div style="height:16px;"></div>
-    <button class="btn-outlined">Reboot Device</button>
-    <button class="btn-danger">Delete Device</button>
     <div style="height:24px;"></div>
   </div>
 </div>
