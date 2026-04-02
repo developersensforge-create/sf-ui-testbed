@@ -192,7 +192,7 @@
 </div>
 
 <div class="context-bar">
-  <div class="context-label">Trigger &amp; device context</div>
+  <div class="context-label">Trigger &amp; device context · <span style="color:#f96400;font-weight:600;">Select one or more actions</span></div>
   <span class="context-pill" id="contextPill">If … on …</span>
 </div>
 
@@ -380,8 +380,7 @@
     document.getElementById('contextPill').textContent = pill;
   }
 
-  // Default selected: Send Notification
-  let selectedAction = 'Send Notification';
+  // Multi-select — Notification checked by default
 
   function updateNextBtn() {
     // Activate Now button handles navigation via activateNow()
@@ -398,15 +397,14 @@
   })();
 
   window.toggleAction = function(row) {
-    // Single selection behavior
-    document.querySelectorAll('.action-row').forEach(r => r.classList.remove('checked'));
-    row.classList.add('checked');
-    selectedAction = row.dataset.action;
+    // Multi-select behavior — toggle this row
+    row.classList.toggle('checked');
 
-    // Show voice sub-option if Play Customized Voice selected
+    // Show voice sub-option if Play Customized Voice is among selected
     const voiceSub = document.getElementById('voiceSub');
     const voiceMemoLink = document.getElementById('voiceMemoLink');
-    if (selectedAction === 'Play Customized Voice') {
+    const voiceRow = document.getElementById('rowVoice');
+    if (voiceRow && voiceRow.classList.contains('checked')) {
       voiceSub.style.display = 'block';
       voiceMemoLink.href = 'voice-memo.html?trigger=' + encodeURIComponent(trigger) +
                            '&device=' + encodeURIComponent(device);
@@ -432,6 +430,14 @@
 
   // ===== Activate Now =====
   window.activateNow = function() {
+    // Collect all selected actions
+    const selectedActions = Array.from(document.querySelectorAll('.action-row.checked'))
+      .map(r => r.dataset.action);
+    if (selectedActions.length === 0) {
+      showPageToast('Please select at least one action.', true);
+      return;
+    }
+
     const startTime = document.getElementById('startTime').value;
     const endTime = document.getElementById('endTime').value;
     const freq = freqRepeat.checked ? 'repeat' : 'once';
@@ -443,7 +449,7 @@
       'trigger=' + encodeURIComponent(trigger) +
       '&condition=' + encodeURIComponent(condition) +
       '&device=' + encodeURIComponent(device) +
-      '&action=' + encodeURIComponent(selectedAction) +
+      '&action=' + encodeURIComponent(selectedActions.join(', ')) +
       '&schedule=done' +
       '&startTime=' + encodeURIComponent(startTime) +
       '&endTime=' + encodeURIComponent(endTime) +
