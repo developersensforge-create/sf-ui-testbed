@@ -56,70 +56,56 @@
   .back-testbed { text-align: center; padding: 8px 0 80px; }
   .back-testbed a { font-size: 12px; color: #aaa; text-decoration: none; }
 
-    /* ===== Comment & Improve Section ===== */
-    .page-bottom-section {
+    /* ===== Dev Tools ===== */
+    .dev-tools-outer {
       max-width: 375px; margin: 0 auto;
-      padding: 0 0 40px;
+      border-top: 1px dashed #e0e0e0;
+      margin-top: 32px; padding-top: 16px;
+      text-align: center;
+      padding: 16px 16px 40px;
     }
-    .divider-line { border: none; border-top: 1px solid #eee; margin: 24px 16px 20px; }
-
-    .comment-section { padding: 0 16px; }
-    .comment-section-title { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
-
-    .comment-textarea {
-      width: 100%; border: 1.5px solid #eee; border-radius: 10px;
-      padding: 10px 12px; font-size: 14px; color: #1a1a1a;
-      font-family: inherit; outline: none; resize: vertical;
-      min-height: 70px; background: #fafafa; transition: border-color 0.2s;
+    .dev-tools-label {
+      font-size: 11px; color: #bbb; margin-bottom: 10px; text-align: center;
     }
-    .comment-textarea:focus { border-color: #f96400; background: #fff; }
-
-    .comment-add-btn {
-      display: inline-block; margin-top: 8px;
-      background: #f96400; color: #fff; border: none; border-radius: 8px;
-      padding: 9px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+    .dev-request-btn {
+      border: 1px solid #ddd; color: #888; background: white;
+      font-size: 13px; padding: 8px 16px; border-radius: 6px; cursor: pointer;
     }
-    .comment-add-btn:active { opacity: 0.85; }
-
-    .comments-list { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .comment-item {
-      background: #fff; border: 1px solid #eee; border-radius: 10px;
-      padding: 12px 14px; position: relative;
+    .dev-request-btn:hover { background: #fafafa; }
+    .dev-panel { text-align: left; margin-top: 12px; display: none; }
+    .dev-disclaimer {
+      background: #fffbeb; border-left: 3px solid #f96400; border-radius: 6px;
+      padding: 10px 14px; margin-bottom: 12px; font-size: 13px;
+      color: #7a5c00; line-height: 1.5;
     }
-    .comment-text { font-size: 14px; color: #1a1a1a; line-height: 1.5; margin-bottom: 4px; }
-    .comment-meta { font-size: 11px; color: #aaa; }
-    .comment-delete {
-      position: absolute; top: 10px; right: 12px;
-      background: none; border: none; font-size: 16px; cursor: pointer; color: #ccc;
-    }
-    .comment-delete:hover { color: #ff4466; }
-
-    .improve-section { padding: 16px 16px 0; }
-    .improve-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: #fff; border: 1.5px solid #f96400; border-radius: 10px;
-      color: #f96400; font-size: 14px; font-weight: 600; padding: 10px 20px;
-      cursor: pointer; transition: background 0.15s;
-    }
-    .improve-btn:hover { background: #fff3ec; }
-
-    .improve-form {
-      display: none; margin-top: 12px;
-      border: 1.5px solid #eee; border-radius: 10px; padding: 14px;
-      background: #fafafa;
-    }
-    .improve-textarea {
+    .dev-textarea {
       width: 100%; border: 1.5px solid #eee; border-radius: 8px;
-      padding: 10px 12px; font-size: 14px; color: #1a1a1a;
+      padding: 10px 12px; font-size: 13px; color: #1a1a1a;
       font-family: inherit; outline: none; resize: vertical;
-      min-height: 70px; background: #fff; transition: border-color 0.2s;
-      margin-bottom: 8px;
+      min-height: 70px; background: #fafafa; margin-bottom: 8px;
     }
-    .improve-textarea:focus { border-color: #f96400; }
-    .improve-submit-btn {
+    .dev-textarea:focus { border-color: #f96400; background: #fff; }
+    .dev-submit-btn {
       background: #f96400; color: #fff; border: none; border-radius: 8px;
-      padding: 9px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+      padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+      width: 100%; margin-bottom: 12px;
     }
+    .dev-prev-toggle {
+      background: none; border: none; color: #aaa; font-size: 12px;
+      cursor: pointer; padding: 4px 0; text-decoration: underline;
+    }
+    .dev-prev-list { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+    .dev-prev-item {
+      background: #fafafa; border: 1px solid #eee; border-radius: 8px;
+      padding: 10px 12px; position: relative;
+    }
+    .dev-prev-text { font-size: 13px; color: #333; margin-bottom: 2px; }
+    .dev-prev-meta { font-size: 11px; color: #aaa; }
+    .dev-prev-delete {
+      position: absolute; top: 8px; right: 10px;
+      background: none; border: none; font-size: 14px; cursor: pointer; color: #ccc;
+    }
+    .dev-prev-delete:hover { color: #ff4466; }
 
     /* Toast for skills pages */
     .page-toast {
@@ -237,24 +223,20 @@
 })();
 </script>
 
-<!-- ===== Comments + Improve Section ===== -->
-<div class="page-bottom-section">
-  <hr class="divider-line" />
-
-  <div class="comment-section">
-    <div class="comment-section-title">💬 Leave a comment on this page</div>
-    <textarea class="comment-textarea" id="commentInput" placeholder="What do you think about this page?"></textarea>
-    <br />
-    <button class="comment-add-btn" onclick="addComment()">Add Comment</button>
-    <div class="comments-list" id="commentsList"></div>
-  </div>
-
-  <div class="improve-section" style="margin-top:20px;">
-    <button class="improve-btn" onclick="toggleImproveForm()">🔄 Improve This Page</button>
-    <div class="improve-form" id="improveForm">
-      <textarea class="improve-textarea" id="improveFeedback" placeholder="What should be improved?"></textarea>
-      <button class="improve-submit-btn" onclick="submitImprove()">Submit →</button>
+<!-- ===== Dev Tools ===== -->
+<div class="dev-tools-outer" style="border-top: 1px dashed #e0e0e0; margin-top: 32px; padding-top: 16px; padding-bottom: 40px; max-width:375px; margin-left:auto; margin-right:auto;">
+  <div class="dev-tools-label">— Dev tools —</div>
+  <button class="dev-request-btn" onclick="toggleDevPanel()">🛠️ UI Improvement Request</button>
+  <div class="dev-panel" id="devPanel">
+    <div class="dev-disclaimer">
+      ⚠️ <strong>This is not part of the app UI</strong><br>
+      This section is for the Dev team only. Use it to request design changes or improvements to this page.
     </div>
+    <textarea class="dev-textarea" id="devImprovement" placeholder="Describe what should be improved on this page..."></textarea>
+    <textarea class="dev-textarea" id="devNotes" placeholder="Any additional notes... (optional)"></textarea>
+    <button class="dev-submit-btn" onclick="submitDevRequest()">Send Improvement Request →</button>
+    <button class="dev-prev-toggle" onclick="togglePrevRequests()" id="prevToggle">View past requests (0)</button>
+    <div class="dev-prev-list" id="devPrevList" style="display:none;"></div>
   </div>
 </div>
 
@@ -267,58 +249,23 @@
   const PAGE_TITLE = 'Add Conditions';
   const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
 
-  // ===== Comment system =====
-  function loadComments() {
-    const list = document.getElementById('commentsList');
-    if (!list) return;
-    list.innerHTML = '';
-    const keys = Object.keys(localStorage).filter(k => k.startsWith('comments_' + PAGE_ID + '_')).sort();
-    keys.forEach(function(key) {
-      const data = JSON.parse(localStorage.getItem(key) || '{}');
-      if (!data.text) return;
-      const item = document.createElement('div');
-      item.className = 'comment-item';
-      item.innerHTML = '<div class="comment-text">' + escHtml(data.text) + '</div>' +
-        '<div class="comment-meta">' + data.time + '</div>' +
-        '<button class="comment-delete" onclick="deleteComment('' + key + '')" title="Delete">🗑️</button>';
-      list.appendChild(item);
-    });
-  }
-
-  function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  window.addComment = function() {
-    const ta = document.getElementById('commentInput');
-    const text = ta.value.trim();
-    if (!text) { showPageToast('Please write a comment first.', true); return; }
-    const key = 'comments_' + PAGE_ID + '_' + Date.now();
-    const now = new Date().toLocaleString();
-    localStorage.setItem(key, JSON.stringify({ text: text, time: now }));
-    ta.value = '';
-    loadComments();
-    showPageToast('Comment saved!');
+  // ===== Dev panel toggle =====
+  window.toggleDevPanel = function() {
+    const panel = document.getElementById('devPanel');
+    const showing = panel.style.display === 'block';
+    panel.style.display = showing ? 'none' : 'block';
+    if (!showing) loadPrevRequests();
   };
 
-  window.deleteComment = function(key) {
-    localStorage.removeItem(key);
-    loadComments();
-  };
+  // ===== Submit dev request =====
+  window.submitDevRequest = async function() {
+    const improvement = document.getElementById('devImprovement').value.trim();
+    const notes = document.getElementById('devNotes').value.trim();
+    if (!improvement) { showPageToast('Please describe what should be improved.', true); return; }
 
-  // ===== Improve form =====
-  window.toggleImproveForm = function() {
-    const form = document.getElementById('improveForm');
-    form.style.display = form.style.display === 'block' ? 'none' : 'block';
-    if (form.style.display === 'block') {
-      document.getElementById('improveFeedback').focus();
-    }
-  };
+    let msg = '🛠️ **UI Improvement Request**\nFeature: Camera Skills\nPage: ' + PAGE_NUM + ' — ' + PAGE_TITLE + '\nImprovement: ' + improvement;
+    if (notes) msg += '\nNotes: ' + notes;
 
-  window.submitImprove = async function() {
-    const feedback = document.getElementById('improveFeedback').value.trim();
-    if (!feedback) { showPageToast('Please describe what should be improved.', true); return; }
-    const msg = '🔄 **Improve Request**\nFeature: Camera Skills\nPage: ' + PAGE_NUM + ' - ' + PAGE_TITLE + '\nFeedback: ' + feedback;
     try {
       await fetch(WEBHOOK, {
         method: 'POST',
@@ -326,13 +273,51 @@
         body: JSON.stringify({ content: msg })
       });
     } catch(e) {}
-    // Set dashboard card back to building state
-    localStorage.setItem('feature-state-camera-skills', 'building');
-    localStorage.setItem('feature-state-camera-skills-start', Date.now().toString());
-    document.getElementById('improveForm').style.display = 'none';
-    document.getElementById('improveFeedback').value = '';
-    showPageToast('Improvement request sent! Claire will revise this page.');
+
+    // Store in localStorage
+    const key = 'improvements_' + PAGE_ID + '_' + Date.now();
+    const now = new Date().toLocaleString();
+    localStorage.setItem(key, JSON.stringify({ improvement: improvement, notes: notes, time: now }));
+
+    document.getElementById('devImprovement').value = '';
+    document.getElementById('devNotes').value = '';
+    document.getElementById('devPanel').style.display = 'none';
+    showPageToast('Request sent to Dev team ✅');
   };
+
+  // ===== Previous requests =====
+  function loadPrevRequests() {
+    const list = document.getElementById('devPrevList');
+    const toggle = document.getElementById('prevToggle');
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('improvements_' + PAGE_ID + '_')).sort().reverse();
+    toggle.textContent = 'View past requests (' + keys.length + ')';
+    list.innerHTML = '';
+    keys.forEach(function(key) {
+      const data = JSON.parse(localStorage.getItem(key) || '{}');
+      const item = document.createElement('div');
+      item.className = 'dev-prev-item';
+      item.innerHTML = '<div class="dev-prev-text">' + escHtml(data.improvement || '') + '</div>' +
+        (data.notes ? '<div class="dev-prev-text" style="color:#888">' + escHtml(data.notes) + '</div>' : '') +
+        '<div class="dev-prev-meta">' + (data.time || '') + '</div>' +
+        '<button class="dev-prev-delete" onclick="deletePrevRequest(\'' + key + '\')" title="Delete">🗑️</button>';
+      list.appendChild(item);
+    });
+  }
+
+  window.togglePrevRequests = function() {
+    const list = document.getElementById('devPrevList');
+    list.style.display = list.style.display === 'none' ? 'block' : 'none';
+    loadPrevRequests();
+  };
+
+  window.deletePrevRequest = function(key) {
+    localStorage.removeItem(key);
+    loadPrevRequests();
+  };
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
 
   // ===== Toast =====
   window.showPageToast = function(msg, isError) {
@@ -342,11 +327,8 @@
     toast.classList.add('show');
     setTimeout(function() { toast.classList.remove('show'); }, 3500);
   };
-
-  loadComments();
 })();
 </script>
 
 </body>
 </html>
-
