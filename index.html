@@ -33,8 +33,20 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.25);
       display: flex; flex-direction: column; gap: 12px;
       transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
     }
     .feature-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.3); }
+
+    /* Delete button for non-default cards */
+    .card-delete-btn {
+      position: absolute; top: 12px; right: 14px;
+      background: none; border: none; cursor: pointer;
+      font-size: 16px; color: #bcc8d4; line-height: 1;
+      padding: 2px 6px; border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+      z-index: 1;
+    }
+    .card-delete-btn:hover { color: #ff4466; background: #fff0f3; }
 
     .card-icon { width: 44px; height: 44px; border-radius: 12px; background: #fff3ec; display: flex; align-items: center; justify-content: center; font-size: 22px; }
 
@@ -160,6 +172,7 @@
     .modal-section-icon { font-size: 18px; }
     .modal-section-title { font-size: 14px; font-weight: 700; color: #0f1b2d; }
     .modal-section-optional { font-size: 11px; color: #a0b8ca; margin-left: auto; }
+    .modal-section-required { font-size: 11px; color: #f96400; margin-left: auto; font-weight: 600; }
 
     .form-label { font-size: 12px; font-weight: 600; color: #7a9bb5; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
 
@@ -180,6 +193,7 @@
       transition: border-color 0.15s;
     }
     .form-input:focus { border-color: #f96400; background: #fff; }
+    .form-input.input-error { border-color: #ff4466; background: #fff5f7; }
 
     .drag-zone {
       border: 2px dashed #f96400; border-radius: 12px; padding: 24px 20px;
@@ -232,50 +246,7 @@
   <p class="section-title">Feature Prototypes</p>
 
   <div class="feature-grid" id="featureGrid">
-
-    <!-- Card: Camera Skills -->
-    <div class="feature-card" data-card-id="camera-skills">
-      <div class="card-icon">🎯</div>
-      <div>
-        <span class="card-name" onclick="startEdit(this)" title="Click to rename">Camera Skills</span>
-      </div>
-      <p class="card-desc">Configure smart detection rules — if X detected → do Y</p>
-      <div class="card-footer">
-        <span class="card-tag">UI Prototype</span>
-        <a href="features/skills/index.html" class="preview-btn">Preview →</a>
-      </div>
-
-      <!-- Progress bar section (hidden when idle) -->
-      <div class="card-progress" id="progress-camera-skills" style="display:none;">
-        <div class="progress-bar-track">
-          <div class="progress-bar-fill" id="bar-camera-skills"></div>
-        </div>
-        <div class="progress-status" id="status-camera-skills">🔨 Claire is building...</div>
-        <!-- Hidden demo button to manually complete -->
-        <button onclick="completeFeature('camera-skills')" style="display:none;" id="demo-complete-camera-skills">Complete</button>
-      </div>
-
-      <!-- Output options panel (shown when idle or complete) -->
-      <div class="output-panel" id="output-camera-skills">
-        <div class="output-btns">
-          <button class="output-btn" onclick="downloadFeature('camera-skills')">⬇ Download</button>
-          <button class="output-btn" onclick="toggleFigmaPopover('camera-skills')">🎨 Output to Figma</button>
-          <button class="output-btn" id="prd-btn-camera-skills" onclick="generatePRD('camera-skills')">📄 Generate PRD</button>
-        </div>
-        <div class="figma-popover" id="figma-camera-skills">
-          <label>Enter Figma file URL:</label>
-          <input type="url" id="figma-url-camera-skills" placeholder="https://www.figma.com/file/..." />
-          <button class="figma-submit" onclick="submitFigmaExport('camera-skills')">Export →</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Placeholder -->
-    <div class="add-feature-card">
-      <div class="plus-icon">＋</div>
-      <p>More prototypes coming soon</p>
-    </div>
-
+    <!-- Cards are rendered by JS from sf_features in localStorage -->
   </div>
 
   <div class="add-feature-section">
@@ -295,6 +266,17 @@
     <button class="modal-close" onclick="closeModal()" title="Close">×</button>
     <div class="modal-title">Request a Feature</div>
     <div class="modal-subtitle">Fill any combination below — Claire will build it.</div>
+
+    <!-- Section 0: Feature Name (required) -->
+    <div class="modal-section">
+      <div class="modal-section-header">
+        <span class="modal-section-icon">🏷️</span>
+        <span class="modal-section-title">Feature Name</span>
+        <span class="modal-section-required">required</span>
+      </div>
+      <input type="text" class="form-input" id="featureName" placeholder="e.g. Smart Alerts, Onboarding Flow, Dashboard Redesign" autocomplete="off" />
+      <p class="form-hint">Give this feature a short, descriptive name — it becomes the card title on the dashboard</p>
+    </div>
 
     <!-- Section 1: Text Description -->
     <div class="modal-section">
@@ -354,24 +336,127 @@
 
 <script>
   const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
-  const FEATURE_FILES = {
-    'camera-skills': [
-      'index.html','select-trigger.html','trigger-details.html',
-      'select-device.html','select-action.html','set-schedule.html','voice-memo.html'
-    ]
-  };
-  const FEATURE_BASE_URL = 'https://raw.githubusercontent.com/developersensforge-create/sf-ui-testbed/main/features/skills/';
+
+  // Default features list — Camera Skills is always the first, cannot be deleted
+  const DEFAULT_FEATURES = [
+    { key: 'camera-skills', name: 'Camera Skills', desc: 'Configure smart detection rules — if X detected → do Y' }
+  ];
+
+  // ===== Feature list persistence =====
+  function loadFeatures() {
+    try {
+      const saved = localStorage.getItem('sf_features');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Always ensure camera-skills is first and non-deletable
+        if (!parsed.find(f => f.key === 'camera-skills')) {
+          parsed.unshift(DEFAULT_FEATURES[0]);
+        }
+        return parsed;
+      }
+    } catch(e) {}
+    return [...DEFAULT_FEATURES];
+  }
+
+  function saveFeatures(features) {
+    localStorage.setItem('sf_features', JSON.stringify(features));
+  }
+
+  function slugify(name) {
+    return name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+
+  // ===== Card rendering =====
+  function renderAllCards() {
+    const features = loadFeatures();
+    const grid = document.getElementById('featureGrid');
+    grid.innerHTML = '';
+    features.forEach(f => {
+      grid.appendChild(createCardEl(f));
+    });
+    // Placeholder
+    const placeholder = document.createElement('div');
+    placeholder.className = 'add-feature-card';
+    placeholder.innerHTML = '<div class="plus-icon">＋</div><p>More prototypes coming soon</p>';
+    grid.appendChild(placeholder);
+    // Init states
+    features.forEach(f => renderCardState(f.key));
+    // Start timer checks
+    startBuildTimers();
+  }
+
+  function createCardEl(feature) {
+    const isDefault = feature.key === 'camera-skills';
+    const div = document.createElement('div');
+    div.className = 'feature-card';
+    div.dataset.cardId = feature.key;
+
+    // Saved name override
+    const savedName = localStorage.getItem('card-name-' + feature.key) || feature.name;
+
+    let previewLink = '';
+    if (isDefault) {
+      previewLink = `<a href="features/skills/index.html" class="preview-btn">Preview →</a>`;
+    }
+
+    let deleteBtn = '';
+    if (!isDefault) {
+      deleteBtn = `<button class="card-delete-btn" onclick="deleteCard('${feature.key}')" title="Remove card">×</button>`;
+    }
+
+    div.innerHTML = `
+      ${deleteBtn}
+      <div class="card-icon">🎯</div>
+      <div>
+        <span class="card-name" onclick="startEdit(this)" title="Click to rename">${escHtml(savedName)}</span>
+      </div>
+      <p class="card-desc">${escHtml(feature.desc || '')}</p>
+      <div class="card-footer">
+        <span class="card-tag">UI Prototype</span>
+        ${previewLink}
+      </div>
+      <div class="card-progress" id="progress-${feature.key}" style="display:none;">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="bar-${feature.key}"></div>
+        </div>
+        <div class="progress-status" id="status-${feature.key}">🔨 Claire is building...</div>
+      </div>
+      <div class="output-panel" id="output-${feature.key}">
+        <div class="output-btns">
+          <button class="output-btn" onclick="downloadFeature('${feature.key}')">⬇ Download</button>
+          <button class="output-btn" onclick="toggleFigmaPopover('${feature.key}')">🎨 Output to Figma</button>
+          <button class="output-btn" id="prd-btn-${feature.key}" onclick="generatePRD('${feature.key}')">📄 Generate PRD</button>
+        </div>
+        <div class="figma-popover" id="figma-${feature.key}">
+          <label>Enter Figma file URL:</label>
+          <input type="url" id="figma-url-${feature.key}" placeholder="https://www.figma.com/file/..." />
+          <button class="figma-submit" onclick="submitFigmaExport('${feature.key}')">Export →</button>
+        </div>
+      </div>
+    `;
+    return div;
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ===== Delete card =====
+  function deleteCard(key) {
+    if (key === 'camera-skills') return;
+    if (!confirm('Remove this card from the dashboard?')) return;
+    let features = loadFeatures();
+    features = features.filter(f => f.key !== key);
+    saveFeatures(features);
+    // Clean up localStorage for this card
+    localStorage.removeItem('featureState_' + key);
+    localStorage.removeItem('featureState_' + key + '_start');
+    localStorage.removeItem('card-name-' + key);
+    renderAllCards();
+    showToast('Card removed.');
+  }
 
   // ===== Card name editing =====
-  document.querySelectorAll('[data-card-id]').forEach(card => {
-    const id = card.dataset.cardId;
-    const saved = localStorage.getItem('card-name-' + id);
-    if (saved) {
-      const nameEl = card.querySelector('.card-name');
-      if (nameEl) nameEl.textContent = saved;
-    }
-  });
-
   function startEdit(nameEl) {
     const card = nameEl.closest('[data-card-id]');
     const id = card.dataset.cardId;
@@ -394,16 +479,19 @@
     });
   }
 
-  // ===== Progress bar state management =====
+  // ===== Progress bar state management (per-card, isolated) =====
   function getFeatureState(key) {
-    return localStorage.getItem('feature-state-' + key) || 'idle';
+    return localStorage.getItem('featureState_' + key) || 'idle';
   }
   function setFeatureState(key, state) {
-    localStorage.setItem('feature-state-' + key, state);
+    localStorage.setItem('featureState_' + key, state);
     if (state === 'building') {
-      localStorage.setItem('feature-state-' + key + '-start', Date.now());
+      localStorage.setItem('featureState_' + key + '_start', Date.now());
     }
     renderCardState(key);
+  }
+  function setFeatureStateRaw(key, state) {
+    localStorage.setItem('featureState_' + key, state);
   }
 
   function renderCardState(key) {
@@ -418,7 +506,6 @@
       progressEl.style.display = 'block';
       outputEl.style.display = 'none';
       statusEl.textContent = '🔨 Claire is building...';
-      // Animate progress
       barEl.style.transition = 'none';
       barEl.style.width = '0%';
       barEl.classList.remove('pulse');
@@ -454,52 +541,51 @@
         }, 600);
       }, 1000);
     } else {
-      // idle
       progressEl.style.display = 'none';
       outputEl.style.display = 'block';
     }
-  }
-
-  function setFeatureStateRaw(key, state) {
-    localStorage.setItem('feature-state-' + key, state);
   }
 
   function completeFeature(key) {
     setFeatureState(key, 'complete');
   }
 
-  // Auto-timer: if in building state for 30s, transition to complete
-  function checkBuildTimers() {
-    ['camera-skills'].forEach(key => {
-      if (getFeatureState(key) === 'building') {
-        const start = parseInt(localStorage.getItem('feature-state-' + key + '-start') || '0');
-        if (start && (Date.now() - start) >= 30000) {
-          setFeatureState(key, 'complete');
+  // Build timers: check all features for 30s timeout
+  let buildTimerInterval = null;
+  function startBuildTimers() {
+    if (buildTimerInterval) clearInterval(buildTimerInterval);
+    buildTimerInterval = setInterval(() => {
+      const features = loadFeatures();
+      features.forEach(f => {
+        if (getFeatureState(f.key) === 'building') {
+          const start = parseInt(localStorage.getItem('featureState_' + f.key + '_start') || '0');
+          if (start && (Date.now() - start) >= 30000) {
+            setFeatureState(f.key, 'complete');
+          }
         }
-      }
-    });
+      });
+    }, 2000);
   }
-
-  // Init all cards
-  ['camera-skills'].forEach(key => renderCardState(key));
-  setInterval(checkBuildTimers, 2000);
 
   // ===== Output panel actions =====
   async function downloadFeature(key) {
-    const files = FEATURE_FILES[key];
-    if (!files || typeof JSZip === 'undefined') {
-      showToast('JSZip not loaded yet, try again.', true); return;
-    }
     const btn = event.currentTarget;
     btn.textContent = '⏳ Zipping...'; btn.disabled = true;
     try {
+      // Camera Skills has known files; others use the features/{key}/ folder convention
+      let files, baseUrl;
+      if (key === 'camera-skills') {
+        files = ['index.html','select-trigger.html','trigger-details.html','select-device.html','select-action.html','set-schedule.html','voice-memo.html'];
+        baseUrl = 'https://raw.githubusercontent.com/developersensforge-create/sf-ui-testbed/main/features/skills/';
+      } else {
+        files = ['index.html'];
+        baseUrl = 'https://raw.githubusercontent.com/developersensforge-create/sf-ui-testbed/main/features/' + key + '/';
+      }
+      if (typeof JSZip === 'undefined') { showToast('JSZip not loaded yet, try again.', true); return; }
       const zip = new JSZip();
       for (const file of files) {
-        const url = FEATURE_BASE_URL + file;
-        const resp = await fetch(url);
-        if (resp.ok) {
-          zip.file(file, await resp.text());
-        }
+        const resp = await fetch(baseUrl + file);
+        if (resp.ok) zip.file(file, await resp.text());
       }
       const blob = await zip.generateAsync({ type: 'blob' });
       const a = document.createElement('a');
@@ -518,9 +604,7 @@
   function toggleFigmaPopover(key) {
     const pop = document.getElementById('figma-' + key);
     pop.style.display = pop.style.display === 'block' ? 'none' : 'block';
-    if (pop.style.display === 'block') {
-      pop.querySelector('input').focus();
-    }
+    if (pop.style.display === 'block') pop.querySelector('input').focus();
   }
 
   async function submitFigmaExport(key) {
@@ -553,11 +637,15 @@
   function openModal() {
     document.getElementById('featureModal').classList.add('active');
     document.body.style.overflow = 'hidden';
+    // Focus feature name input
+    setTimeout(() => document.getElementById('featureName').focus(), 100);
   }
 
   function closeModal() {
     document.getElementById('featureModal').classList.remove('active');
     document.body.style.overflow = '';
+    document.getElementById('featureName').value = '';
+    document.getElementById('featureName').classList.remove('input-error');
     document.getElementById('featureDesc').value = '';
     document.getElementById('prdUrl').value = '';
     document.getElementById('figmaUrl').value = '';
@@ -612,17 +700,37 @@
   // ===== Submit =====
   async function submitFeature() {
     const btn = document.getElementById('submitBtn');
+    const featureNameInput = document.getElementById('featureName');
+    const featureName = featureNameInput.value.trim();
     const desc = document.getElementById('featureDesc').value.trim();
     const prdUrl = document.getElementById('prdUrl').value.trim();
     const figmaUrl = document.getElementById('figmaUrl').value.trim();
 
-    if (!desc && !prdUrl && !figmaUrl && uploadedFiles.length === 0) {
-      showToast('Please fill at least one section.', true); return;
+    // Validate feature name (required)
+    if (!featureName) {
+      featureNameInput.classList.add('input-error');
+      featureNameInput.focus();
+      showToast('Please enter a feature name.', true);
+      return;
     }
+    featureNameInput.classList.remove('input-error');
 
     btn.disabled = true; btn.textContent = 'Sending...';
 
+    // Generate unique key from feature name
+    let featureKey = slugify(featureName);
+    // Ensure uniqueness — append suffix if key already exists
+    const existingFeatures = loadFeatures();
+    const existingKeys = existingFeatures.map(f => f.key);
+    if (existingKeys.includes(featureKey)) {
+      let suffix = 2;
+      while (existingKeys.includes(featureKey + '-' + suffix)) suffix++;
+      featureKey = featureKey + '-' + suffix;
+    }
+
+    // Build Discord message
     let msgLines = ['🛠️ **New UI Feature Request**', ''];
+    msgLines.push('**Feature Name:** ' + featureName);
     if (desc) msgLines.push('**Description:** ' + desc);
     if (prdUrl) msgLines.push('**PRD URL:** ' + prdUrl);
     if (figmaUrl) msgLines.push('**Figma URL:** ' + figmaUrl);
@@ -648,10 +756,18 @@
         });
       }
 
-      // Trigger building state on Camera Skills card
-      setFeatureState('camera-skills', 'building');
+      // Add new card to features list and persist
+      const newFeature = { key: featureKey, name: featureName, desc: desc || 'UI feature in progress' };
+      const updatedFeatures = [...loadFeatures(), newFeature];
+      saveFeatures(updatedFeatures);
 
-      showToast('Request sent! Building now...');
+      // Re-render all cards (new card will appear)
+      renderAllCards();
+
+      // Set the NEW card (only) to building state — never touch other cards
+      setFeatureState(featureKey, 'building');
+
+      showToast('🛠️ "' + featureName + '" is now building!');
       closeModal();
     } catch (err) {
       showToast('Failed to send. Please try again.', true);
@@ -668,6 +784,9 @@
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 4000);
   }
+
+  // ===== Init =====
+  renderAllCards();
 
   // Check for deleted param
   (function() {
