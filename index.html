@@ -421,20 +421,25 @@
 
   // ===== Feature list persistence =====
   function loadFeatures() {
+    // Always start with DEFAULT_FEATURES as the base (built-ins always present)
+    const base = [...DEFAULT_FEATURES];
     try {
       const saved = localStorage.getItem('sf_features');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Always ensure built-in prototypes are present
-        DEFAULT_FEATURES.forEach((def, i) => {
-          if (!parsed.find(f => f.key === def.key)) {
-            parsed.splice(i, 0, def);
+        // Add any user-added features (not in DEFAULT_FEATURES) to the list
+        parsed.forEach(f => {
+          if (!base.find(b => b.key === f.key)) {
+            base.push(f);
+          } else {
+            // Merge user-edited metadata back
+            const idx = base.findIndex(b => b.key === f.key);
+            if (idx !== -1) base[idx] = { ...base[idx], ...f };
           }
         });
-        return parsed;
       }
     } catch(e) {}
-    return [...DEFAULT_FEATURES];
+    return base;
   }
 
   function saveFeatures(features) {
