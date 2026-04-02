@@ -77,13 +77,8 @@
     <div class="card-label">Additional condition (optional)</div>
     <input type="text" class="condition-input" id="conditionInput" placeholder="Type additional condition here...">
 
-    <div class="suggestions-label">Quick add</div>
-    <div class="pills-row">
-      <span class="suggestion-pill" onclick="addSuggestion(this, 'Driveway Delivery')">Driveway Delivery</span>
-      <span class="suggestion-pill" onclick="addSuggestion(this, 'My Dog')">My Dog</span>
-      <span class="suggestion-pill" onclick="addSuggestion(this, 'My Family')">My Family</span>
-      <span class="suggestion-pill" onclick="addSuggestion(this, 'Night time')">Night time</span>
-    </div>
+    <div class="suggestions-label" id="suggestionsLabel" style="display:none;">Quick add</div>
+    <div class="pills-row" id="pillsRow"></div>
   </div>
 </div>
 
@@ -95,22 +90,73 @@
 
 <script>
 (function() {
+  const triggerSuggestions = {
+    "Person Detected": ["Unknown person", "My kids", "A family member name"],
+    "Person Coming Home": ["My kids", "A family member name"],
+    "Person Near Car or Driveway": ["At night", "Stay too long"],
+    "Motion Detected": ["In my backyard", "At night"],
+    "Vehicle Detected": ["On my driveway", "Unknown Vehicle"],
+    "Package Delivered": ["On my frontdoor", "On my driveway"],
+    "Package Taken": ["By Family Member", "By Unknown Person", "Away from home"],
+    "Familiar Face Detected": [],
+    "Pet Behavior": ["Playing Toilet Paper", "Getting in Couch"],
+    "Unusual Sound Detected": ["Dog Bark too long", "Kids Cry too long"],
+    "Fall Detected": ["Elder People", "A family member name"],
+    "Fall Detected (Elder)": ["Elder People", "A family member name"]
+  };
+
   const params = new URLSearchParams(window.location.search);
   const trigger = params.get('trigger') || 'Unknown Trigger';
-  document.getElementById('triggerPill').textContent = trigger;
-  document.getElementById('doneBtn').href = 'index.html?trigger=' + encodeURIComponent(trigger);
-})();
 
-function addSuggestion(el, text) {
-  el.classList.toggle('active');
-  const input = document.getElementById('conditionInput');
-  const current = input.value.trim();
-  if (el.classList.contains('active')) {
-    input.value = current ? current + ', ' + text : text;
-  } else {
-    input.value = input.value.replace(', ' + text, '').replace(text + ', ', '').replace(text, '').trim().replace(/^,|,$/, '').trim();
+  document.getElementById('triggerPill').textContent = trigger;
+
+  // Find suggestions (case-insensitive match)
+  const triggerKey = Object.keys(triggerSuggestions).find(
+    k => k.toLowerCase() === trigger.toLowerCase()
+  );
+  const suggestions = triggerKey !== undefined ? triggerSuggestions[triggerKey] : null;
+
+  const pillsRow = document.getElementById('pillsRow');
+  const suggestionsLabel = document.getElementById('suggestionsLabel');
+
+  if (suggestions && suggestions.length > 0) {
+    suggestionsLabel.style.display = 'block';
+    suggestions.forEach(function(text) {
+      const pill = document.createElement('span');
+      pill.className = 'suggestion-pill';
+      pill.textContent = text;
+      pill.onclick = function() { fillSuggestion(pill, text); };
+      pillsRow.appendChild(pill);
+    });
   }
-}
+
+  // Update done button href dynamically based on input
+  function updateDoneBtn() {
+    const condition = document.getElementById('conditionInput').value.trim();
+    let href = 'index.html?trigger=' + encodeURIComponent(trigger);
+    if (condition) {
+      href += '&condition=' + encodeURIComponent(condition);
+    }
+    document.getElementById('doneBtn').href = href;
+  }
+
+  document.getElementById('conditionInput').addEventListener('input', updateDoneBtn);
+  updateDoneBtn();
+
+  window.fillSuggestion = function(el, text) {
+    // Toggle active state
+    const wasActive = el.classList.contains('active');
+    document.querySelectorAll('.suggestion-pill').forEach(p => p.classList.remove('active'));
+    const input = document.getElementById('conditionInput');
+    if (!wasActive) {
+      el.classList.add('active');
+      input.value = text;
+    } else {
+      input.value = '';
+    }
+    updateDoneBtn();
+  };
+})();
 </script>
 </body>
 </html>
