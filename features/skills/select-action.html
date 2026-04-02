@@ -89,23 +89,28 @@
     <span class="action-emoji">🔔</span>
     <span class="action-name">Send Notification</span>
   </div>
-  <div class="action-row" data-action="Record Clip" onclick="toggleAction(this)">
+  <div class="action-row" data-action="Record" onclick="toggleAction(this)">
     <div class="checkbox-wrap"><span class="checkmark">✓</span></div>
     <span class="action-emoji">📹</span>
-    <span class="action-name">Record Clip</span>
+    <span class="action-name">Record</span>
   </div>
   <div class="action-row" data-action="Turn on Light" onclick="toggleAction(this)">
     <div class="checkbox-wrap"><span class="checkmark">✓</span></div>
     <span class="action-emoji">💡</span>
     <span class="action-name">Turn on Light</span>
   </div>
-  <div class="action-row" data-action="Play a Voice Memo" onclick="toggleAction(this)" id="rowVoice">
+  <div class="action-row" data-action="Play Customized Voice" onclick="toggleAction(this)" id="rowVoice">
     <div class="checkbox-wrap"><span class="checkmark">✓</span></div>
     <span class="action-emoji">🎙️</span>
-    <span class="action-name">Play a Voice Memo</span>
+    <span class="action-name">Play Customized Voice</span>
   </div>
   <div id="voiceSub" class="voice-sub">
-    <a class="voice-sub-link" id="voiceMemoLink" href="#">🎙️ Record memo →</a>
+    <a class="voice-sub-link" id="voiceMemoLink" href="voice-memo.html">🎙️ Record memo →</a>
+  </div>
+  <div class="action-row" data-action="Trigger Siren" onclick="toggleAction(this)">
+    <div class="checkbox-wrap"><span class="checkmark">✓</span></div>
+    <span class="action-emoji">🚨</span>
+    <span class="action-name">Trigger Siren</span>
   </div>
   <div class="action-row" data-action="Call Me" onclick="toggleAction(this)">
     <div class="checkbox-wrap"><span class="checkmark">✓</span></div>
@@ -125,6 +130,7 @@
   const params = new URLSearchParams(window.location.search);
   const trigger = params.get('trigger') || '';
   const device = params.get('device') || '';
+  const condition = params.get('condition') || '';
 
   if (trigger || device) {
     let pill = '';
@@ -138,9 +144,10 @@
 
   function updateNextBtn() {
     const btn = document.getElementById('nextBtn');
-    btn.href = 'set-schedule.html?trigger=' + encodeURIComponent(trigger) +
+    btn.href = 'index.html?trigger=' + encodeURIComponent(trigger) +
                '&device=' + encodeURIComponent(device) +
-               '&action=' + encodeURIComponent(selectedAction);
+               '&action=' + encodeURIComponent(selectedAction) +
+               (condition ? '&condition=' + encodeURIComponent(condition) : '');
   }
 
   window.toggleAction = function(row) {
@@ -149,10 +156,10 @@
     row.classList.add('checked');
     selectedAction = row.dataset.action;
 
-    // Show voice sub-option if voice memo selected
+    // Show voice sub-option if Play Customized Voice selected
     const voiceSub = document.getElementById('voiceSub');
     const voiceMemoLink = document.getElementById('voiceMemoLink');
-    if (selectedAction === 'Play a Voice Memo') {
+    if (selectedAction === 'Play Customized Voice') {
       voiceSub.style.display = 'block';
       voiceMemoLink.href = 'voice-memo.html?trigger=' + encodeURIComponent(trigger) +
                            '&device=' + encodeURIComponent(device);
