@@ -419,8 +419,8 @@
 
   // Default features list — Camera Skills is always the first, cannot be deleted
   const DEFAULT_FEATURES = [
-    { key: 'camera-skills', name: 'Camera Skills', desc: 'Configure smart detection rules — if X detected → do Y' },
-    { key: 'sf-db1-doorbell', name: 'SF-DB1 Doorbell Camera', desc: 'Battery doorbell camera app UI — live view, events, chime settings, smart detection & two-way audio' }
+    { key: 'camera-skills', name: 'Camera Skills', desc: 'Configure smart detection rules — if X detected → do Y', previewUrl: 'features/skills/index.html' },
+    { key: 'sf-db1-doorbell', name: 'SF-DB1 Doorbell Camera', desc: 'Battery doorbell camera app UI — live view, events, chime settings, smart detection & two-way audio', previewUrl: 'sf-db1-doorbell/index.html' }
   ];
 
   // ===== Feature list persistence =====
@@ -483,8 +483,9 @@
     const savedName = localStorage.getItem('card-name-' + feature.key) || feature.name;
 
     let previewLink = '';
-    if (isDefault) {
-      previewLink = `<a href="features/skills/index.html" class="preview-btn">Preview →</a>`;
+    const previewUrl = feature.previewUrl || localStorage.getItem('previewUrl_' + feature.key);
+    if (previewUrl) {
+      previewLink = `<a href="${previewUrl}" class="preview-btn">Preview →</a>`;
     }
 
     let deleteBtn = '';
