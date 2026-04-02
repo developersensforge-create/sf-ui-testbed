@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Select Device — SensForge</title>
+<title>Select Device – SensForge</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; max-width: 375px; margin: 0 auto; min-height: 100vh; }
@@ -13,6 +13,12 @@
   .nav-title { font-size: 17px; font-weight: 600; color: #1a1a1a; }
   .nav-spacer { width: 36px; }
 
+  /* Tab bar */
+  .tab-bar { display: flex; background: #fff; border-bottom: 1px solid #eee; position: sticky; top: 53px; z-index: 9; }
+  .tab-item { flex: 1; text-align: center; padding: 12px 8px 11px; font-size: 14px; font-weight: 600; color: #999; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; user-select: none; }
+  .tab-item.active { color: #1a1a1a; border-bottom: 2px solid #f96400; }
+
+  /* Context bar */
   .context-bar { padding: 14px 16px 10px; }
   .context-label { font-size: 12px; color: #999; margin-bottom: 6px; }
   .context-pill {
@@ -30,6 +36,7 @@
   }
   .device-row:last-child { border-bottom: none; }
   .device-row.selected { background: #fff3ec; }
+  .device-row.disabled { opacity: 0.4; pointer-events: none; }
   .device-info { flex: 1; }
   .device-name { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 2px; }
   .device-sub { font-size: 12px; color: #999; }
@@ -47,6 +54,12 @@
   .toggle input:checked + .toggle-slider { background: #f96400; }
   .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
 
+  /* Orange checkbox */
+  .cb-wrap { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex-shrink: 0; }
+  .cb-orange { width: 20px; height: 20px; border: 2px solid #f96400; border-radius: 5px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .cb-orange.checked { background: #f96400; }
+  .cb-orange.checked::after { content: ''; display: block; width: 5px; height: 9px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translateY(-1px); }
+
   .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; max-width: 375px; margin: 0 auto; padding: 12px 16px 24px; background: #f5f5f5; border-top: 1px solid #eee; }
   .next-btn {
     display: block; width: 100%; background: #f96400; color: #fff; border: none;
@@ -59,70 +72,124 @@
   .back-testbed { text-align: center; padding: 10px 0 80px; }
   .back-testbed a { font-size: 12px; color: #aaa; text-decoration: none; }
 
-    /* ===== Dev Tools ===== */
-    .dev-tools-outer {
-      max-width: 375px; margin: 0 auto;
-      border-top: 1px dashed #e0e0e0;
-      margin-top: 32px; padding-top: 16px;
-      text-align: center;
-      padding: 16px 16px 40px;
-    }
-    .dev-tools-label {
-      font-size: 11px; color: #bbb; margin-bottom: 10px; text-align: center;
-    }
-    .dev-request-btn {
-      border: 1px solid #ddd; color: #888; background: white;
-      font-size: 13px; padding: 8px 16px; border-radius: 6px; cursor: pointer;
-    }
-    .dev-request-btn:hover { background: #fafafa; }
-    .dev-panel { text-align: left; margin-top: 12px; display: none; }
-    .dev-disclaimer {
-      background: #fffbeb; border-left: 3px solid #f96400; border-radius: 6px;
-      padding: 10px 14px; margin-bottom: 12px; font-size: 13px;
-      color: #7a5c00; line-height: 1.5;
-    }
-    .dev-textarea {
-      width: 100%; border: 1.5px solid #eee; border-radius: 8px;
-      padding: 10px 12px; font-size: 13px; color: #1a1a1a;
-      font-family: inherit; outline: none; resize: vertical;
-      min-height: 70px; background: #fafafa; margin-bottom: 8px;
-    }
-    .dev-textarea:focus { border-color: #f96400; background: #fff; }
-    .dev-submit-btn {
-      background: #f96400; color: #fff; border: none; border-radius: 8px;
-      padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
-      width: 100%; margin-bottom: 12px;
-    }
-    .dev-prev-toggle {
-      background: none; border: none; color: #aaa; font-size: 12px;
-      cursor: pointer; padding: 4px 0; text-decoration: underline;
-    }
-    .dev-prev-list { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
-    .dev-prev-item {
-      background: #fafafa; border: 1px solid #eee; border-radius: 8px;
-      padding: 10px 12px; position: relative;
-    }
-    .dev-prev-text { font-size: 13px; color: #333; margin-bottom: 2px; }
-    .dev-prev-meta { font-size: 11px; color: #aaa; }
-    .dev-prev-delete {
-      position: absolute; top: 8px; right: 10px;
-      background: none; border: none; font-size: 14px; cursor: pointer; color: #ccc;
-    }
-    .dev-prev-delete:hover { color: #ff4466; }
+  /* ====== Trigger Devices Tab ====== */
+  .trigger-section { padding: 14px 12px; }
+  .trigger-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .trigger-info-text { font-size: 12px; color: #999; flex: 1; }
+  .edit-btn {
+    background: none; border: 1.5px solid #ccc; border-radius: 8px;
+    color: #888; font-size: 12px; font-weight: 600; padding: 5px 10px;
+    cursor: pointer; white-space: nowrap; transition: border-color 0.15s;
+  }
+  .edit-btn:hover { border-color: #aaa; }
 
-    /* Toast for skills pages */
-    .page-toast {
-      position: fixed; bottom: 100px; left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: #0f1b2d; color: #fff; padding: 12px 20px;
-      border-radius: 10px; font-size: 13px; font-weight: 600;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.3); border-left: 3px solid #f96400;
-      z-index: 3000; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
-      opacity: 0; white-space: nowrap;
-    }
-    .page-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  /* All Devices pill */
+  .all-devices-view { display: flex; flex-direction: column; align-items: center; padding: 8px 0 4px; }
+  .all-devices-pill {
+    display: flex; align-items: center; gap: 8px;
+    border: 2px solid #f96400; border-radius: 14px;
+    padding: 14px 24px; font-size: 16px; font-weight: 700; color: #f96400;
+    background: #fff3ec; margin-bottom: 8px;
+  }
+  .all-devices-pill .check-mark { color: #f96400; font-size: 18px; }
+  .all-devices-sub { font-size: 12px; color: #999; text-align: center; }
 
-  </style>
+  /* Saved pills */
+  .saved-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .saved-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    border: 1.5px solid #f96400; border-radius: 20px;
+    padding: 6px 12px; font-size: 13px; font-weight: 600; color: #f96400;
+    background: #fff3ec;
+  }
+
+  /* Edit mode */
+  .trigger-edit-section { display: none; }
+  .all-option-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; background: #fff; border-radius: 12px;
+    border: 1.5px solid #eee; margin-bottom: 10px; cursor: pointer;
+  }
+  .all-option-label { font-size: 15px; font-weight: 700; color: #1a1a1a; flex: 1; }
+  .save-btn {
+    display: block; width: 100%; background: #f96400; color: #fff; border: none;
+    border-radius: 10px; padding: 14px; font-size: 16px; font-weight: 700;
+    cursor: pointer; text-align: center; margin-top: 14px;
+    transition: opacity 0.2s;
+  }
+  .save-btn:active { opacity: 0.85; }
+  .cancel-btn {
+    display: block; width: 100%; background: none; border: 1.5px solid #ccc; color: #888;
+    border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 600;
+    cursor: pointer; text-align: center; margin-top: 8px;
+    transition: opacity 0.2s;
+  }
+  .cancel-btn:active { opacity: 0.7; }
+
+  /* ====== Dev Tools ====== */
+  .dev-tools-outer {
+    max-width: 375px; margin: 0 auto;
+    border-top: 1px dashed #e0e0e0;
+    margin-top: 32px; padding-top: 16px;
+    text-align: center;
+    padding: 16px 16px 40px;
+  }
+  .dev-tools-label {
+    font-size: 11px; color: #bbb; margin-bottom: 10px; text-align: center;
+  }
+  .dev-request-btn {
+    border: 1px solid #ddd; color: #888; background: white;
+    font-size: 13px; padding: 8px 16px; border-radius: 6px; cursor: pointer;
+  }
+  .dev-request-btn:hover { background: #fafafa; }
+  .dev-panel { text-align: left; margin-top: 12px; display: none; }
+  .dev-disclaimer {
+    background: #fffbeb; border-left: 3px solid #f96400; border-radius: 6px;
+    padding: 10px 14px; margin-bottom: 12px; font-size: 13px;
+    color: #7a5c00; line-height: 1.5;
+  }
+  .dev-textarea {
+    width: 100%; border: 1.5px solid #eee; border-radius: 8px;
+    padding: 10px 12px; font-size: 13px; color: #1a1a1a;
+    font-family: inherit; outline: none; resize: vertical;
+    min-height: 70px; background: #fafafa; margin-bottom: 8px;
+  }
+  .dev-textarea:focus { border-color: #f96400; background: #fff; }
+  .dev-submit-btn {
+    background: #f96400; color: #fff; border: none; border-radius: 8px;
+    padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+    width: 100%; margin-bottom: 12px;
+  }
+  .dev-prev-toggle {
+    background: none; border: none; color: #aaa; font-size: 12px;
+    cursor: pointer; padding: 4px 0; text-decoration: underline;
+  }
+  .dev-prev-list { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+  .dev-prev-item {
+    background: #fafafa; border: 1px solid #eee; border-radius: 8px;
+    padding: 10px 12px; position: relative;
+  }
+  .dev-prev-text { font-size: 13px; color: #333; margin-bottom: 2px; }
+  .dev-prev-meta { font-size: 11px; color: #aaa; }
+  .dev-prev-delete {
+    position: absolute; top: 8px; right: 10px;
+    background: none; border: none; font-size: 14px; cursor: pointer; color: #ccc;
+  }
+  .dev-prev-delete:hover { color: #ff4466; }
+
+  /* Toast */
+  .page-toast {
+    position: fixed; bottom: 100px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #0f1b2d; color: #fff; padding: 12px 20px;
+    border-radius: 10px; font-size: 13px; font-weight: 600;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.3); border-left: 3px solid #f96400;
+    z-index: 3000; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+    opacity: 0; white-space: nowrap;
+  }
+  .page-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+</style>
 </head>
 <body>
 
@@ -134,103 +201,172 @@
   <div class="nav-spacer"></div>
 </div>
 
-<div class="context-bar">
-  <div class="context-label">Trigger context</div>
-  <span class="context-pill" id="contextPill">If …</span>
+<!-- Tab Bar -->
+<div class="tab-bar">
+  <div class="tab-item" id="tab-trigger" onclick="switchTab('trigger')">Trigger Devices</div>
+  <div class="tab-item active" id="tab-action" onclick="switchTab('action')">Action Devices</div>
 </div>
 
-<div class="list-section" id="deviceList">
-  <div class="device-row" data-device="Living Room Cam" onclick="selectDevice(this)">
-    <div class="device-info">
-      <div class="device-name">Living Room Cam</div>
-      <div class="device-sub">Active since 01/09/2021</div>
-    </div>
-    <label class="toggle" onclick="event.stopPropagation()">
-      <input type="checkbox" checked>
-      <span class="toggle-slider"></span>
-    </label>
+<!-- ===== ACTION DEVICES PANEL (default) ===== -->
+<div id="panel-action">
+  <div class="context-bar">
+    <div class="context-label">Trigger context</div>
+    <span class="context-pill" id="contextPill">If …</span>
   </div>
-  <div class="device-row" data-device="Basement Cam" onclick="selectDevice(this)">
-    <div class="device-info">
-      <div class="device-name">Basement Cam</div>
-      <div class="device-sub">Active since 08/20/2021</div>
+
+  <div class="list-section" id="deviceList">
+    <div class="device-row" data-device="Living Room Cam" onclick="selectDevice(this)">
+      <div class="device-info">
+        <div class="device-name">Living Room Cam</div>
+        <div class="device-sub">Active since 01/09/2021</div>
+      </div>
+      <label class="toggle" onclick="event.stopPropagation()">
+        <input type="checkbox" checked>
+        <span class="toggle-slider"></span>
+      </label>
     </div>
-    <label class="toggle" onclick="event.stopPropagation()">
-      <input type="checkbox">
-      <span class="toggle-slider"></span>
-    </label>
+    <div class="device-row" data-device="Basement Cam" onclick="selectDevice(this)">
+      <div class="device-info">
+        <div class="device-name">Basement Cam</div>
+        <div class="device-sub">Active since 08/20/2021</div>
+      </div>
+      <label class="toggle" onclick="event.stopPropagation()">
+        <input type="checkbox">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="device-row" data-device="Garage V2" onclick="selectDevice(this)">
+      <div class="device-info">
+        <div class="device-name">Garage V2</div>
+        <div class="device-sub">Active since 06/17/2021</div>
+      </div>
+      <label class="toggle" onclick="event.stopPropagation()">
+        <input type="checkbox">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="device-row" data-device="FrontYard-Sentinel-01" onclick="selectDevice(this)">
+      <div class="device-info">
+        <div class="device-name">FrontYard-Sentinel-01</div>
+        <div class="device-sub"></div>
+      </div>
+      <label class="toggle" onclick="event.stopPropagation()">
+        <input type="checkbox">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="device-row" data-device="LivingRoom-Watch-02" onclick="selectDevice(this)">
+      <div class="device-info">
+        <div class="device-name">LivingRoom-Watch-02</div>
+        <div class="device-sub"></div>
+      </div>
+      <label class="toggle" onclick="event.stopPropagation()">
+        <input type="checkbox">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
   </div>
-  <div class="device-row" data-device="Garage V2" onclick="selectDevice(this)">
-    <div class="device-info">
-      <div class="device-name">Garage V2</div>
-      <div class="device-sub">Active since 06/17/2021</div>
-    </div>
-    <label class="toggle" onclick="event.stopPropagation()">
-      <input type="checkbox">
-      <span class="toggle-slider"></span>
-    </label>
-  </div>
-  <div class="device-row" data-device="FrontYard-Sentinel-01" onclick="selectDevice(this)">
-    <div class="device-info">
-      <div class="device-name">FrontYard-Sentinel-01</div>
-      <div class="device-sub"></div>
-    </div>
-    <label class="toggle" onclick="event.stopPropagation()">
-      <input type="checkbox">
-      <span class="toggle-slider"></span>
-    </label>
-  </div>
-  <div class="device-row" data-device="LivingRoom-Watch-02" onclick="selectDevice(this)">
-    <div class="device-info">
-      <div class="device-name">LivingRoom-Watch-02</div>
-      <div class="device-sub"></div>
-    </div>
-    <label class="toggle" onclick="event.stopPropagation()">
-      <input type="checkbox">
-      <span class="toggle-slider"></span>
-    </label>
+
+  <div class="back-testbed"><a href="../../index.html">↖ Back to Testbed</a></div>
+
+  <div class="bottom-bar">
+    <a class="next-btn" id="nextBtn" href="#">Next →</a>
   </div>
 </div>
 
-<div class="back-testbed"><a href="../../index.html">← Back to Testbed</a></div>
+<!-- ===== TRIGGER DEVICES PANEL ===== -->
+<div id="panel-trigger" style="display:none;">
+  <div class="trigger-section">
 
-<div class="bottom-bar">
-  <a class="next-btn" id="nextBtn" href="#">Next →</a>
+    <!-- VIEW MODE -->
+    <div id="trigger-view">
+      <div class="trigger-header">
+        <div class="trigger-info-text">Trigger devices detect the event that starts your skill.</div>
+        <button class="edit-btn" onclick="enterEditMode()">✏️ Edit</button>
+      </div>
+      <!-- Saved display (updated after save) -->
+      <div id="trigger-saved-display" class="all-devices-view">
+        <div class="all-devices-pill">
+          <span>📹 All Devices</span>
+          <span class="check-mark">✓</span>
+        </div>
+        <div class="all-devices-sub">Your skill will trigger from any connected camera.</div>
+      </div>
+    </div>
+
+    <!-- EDIT MODE -->
+    <div id="trigger-edit" class="trigger-edit-section">
+      <div class="trigger-header" style="margin-bottom:14px;">
+        <div class="trigger-info-text" style="font-weight:600;color:#1a1a1a;font-size:14px;">Choose trigger devices</div>
+      </div>
+
+      <!-- All Devices option -->
+      <div class="all-option-row" id="allDevicesRow" onclick="toggleAllDevices()">
+        <div class="cb-wrap">
+          <div class="cb-orange checked" id="allDevicesCb"></div>
+        </div>
+        <div class="all-option-label">📹 All Devices</div>
+      </div>
+
+      <!-- Individual cameras -->
+      <div class="list-section" id="triggerDeviceList" style="margin:0 0 4px 0;">
+        <div class="device-row disabled" data-tdevice="Living Room Cam" onclick="toggleTriggerDevice(this)">
+          <div class="device-info">
+            <div class="device-name">Living Room Cam</div>
+            <div class="device-sub">Active since 01/09/2021</div>
+          </div>
+          <div class="cb-wrap">
+            <div class="cb-orange" id="tcb-Living Room Cam"></div>
+          </div>
+        </div>
+        <div class="device-row disabled" data-tdevice="Basement Cam" onclick="toggleTriggerDevice(this)">
+          <div class="device-info">
+            <div class="device-name">Basement Cam</div>
+            <div class="device-sub">Active since 08/20/2021</div>
+          </div>
+          <div class="cb-wrap">
+            <div class="cb-orange" id="tcb-Basement Cam"></div>
+          </div>
+        </div>
+        <div class="device-row disabled" data-tdevice="Garage V2" onclick="toggleTriggerDevice(this)">
+          <div class="device-info">
+            <div class="device-name">Garage V2</div>
+            <div class="device-sub">Active since 06/17/2021</div>
+          </div>
+          <div class="cb-wrap">
+            <div class="cb-orange" id="tcb-Garage V2"></div>
+          </div>
+        </div>
+        <div class="device-row disabled" data-tdevice="FrontYard-Sentinel-01" onclick="toggleTriggerDevice(this)">
+          <div class="device-info">
+            <div class="device-name">FrontYard-Sentinel-01</div>
+            <div class="device-sub"></div>
+          </div>
+          <div class="cb-wrap">
+            <div class="cb-orange" id="tcb-FrontYard-Sentinel-01"></div>
+          </div>
+        </div>
+        <div class="device-row disabled" data-tdevice="LivingRoom-Watch-02" onclick="toggleTriggerDevice(this)">
+          <div class="device-info">
+            <div class="device-name">LivingRoom-Watch-02</div>
+            <div class="device-sub"></div>
+          </div>
+          <div class="cb-wrap">
+            <div class="cb-orange" id="tcb-LivingRoom-Watch-02"></div>
+          </div>
+        </div>
+      </div>
+
+      <button class="save-btn" onclick="saveTriggerDevices()">💾 Save</button>
+      <button class="cancel-btn" onclick="cancelEditMode()">Cancel</button>
+    </div>
+
+  </div>
+
+  <div style="height:80px;"></div><!-- spacer for no bottom bar on this tab -->
 </div>
 
-<script>
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const trigger = params.get('trigger') || '';
-  const condition = params.get('condition') || '';
-
-  if (trigger) {
-    document.getElementById('contextPill').textContent = 'If ' + trigger;
-  }
-
-  // Default: Living Room Cam is pre-selected (toggle is ON by default)
-  let selectedDevice = 'Living Room Cam';
-  const btn = document.getElementById('nextBtn');
-
-  function updateBtn() {
-    btn.href = 'select-action.html?trigger=' + encodeURIComponent(trigger) +
-               '&device=' + encodeURIComponent(selectedDevice) +
-               (condition ? '&condition=' + encodeURIComponent(condition) : '');
-  }
-
-  // Always enabled — Living Room Cam pre-selected
-  updateBtn();
-
-  window.selectDevice = function(row) {
-    document.querySelectorAll('.device-row').forEach(r => r.classList.remove('selected'));
-    row.classList.add('selected');
-    selectedDevice = row.dataset.device;
-    updateBtn();
-  };
-})();
-</script>
-
-<!-- ===== Dev Tools ===== -->
+<!-- Dev Tools -->
 <div class="dev-tools-outer" style="border-top: 1px dashed #e0e0e0; margin-top: 32px; padding-top: 16px; padding-bottom: 40px; max-width:375px; margin-left:auto; margin-right:auto;">
   <div class="dev-tools-label">— Dev tools —</div>
   <button class="dev-request-btn" onclick="toggleDevPanel()">🛠️ UI Improvement Request</button>
@@ -251,12 +387,175 @@
 
 <script>
 (function() {
+  const params = new URLSearchParams(window.location.search);
+  const trigger = params.get('trigger') || '';
+  const condition = params.get('condition') || '';
+  const featureKey = params.get('feature') || 'default';
+
+  if (trigger) {
+    document.getElementById('contextPill').textContent = 'If ' + trigger;
+  }
+
+  // ===== Action Devices tab logic =====
+  let selectedDevice = 'Living Room Cam';
+  const btn = document.getElementById('nextBtn');
+
+  function updateBtn() {
+    btn.href = 'select-action.html?trigger=' + encodeURIComponent(trigger) +
+               '&device=' + encodeURIComponent(selectedDevice) +
+               (condition ? '&condition=' + encodeURIComponent(condition) : '');
+  }
+  updateBtn();
+
+  window.selectDevice = function(row) {
+    document.querySelectorAll('#deviceList .device-row').forEach(r => {
+      r.classList.remove('selected');
+      r.querySelector('input[type=checkbox]').checked = false;
+    });
+    row.classList.add('selected');
+    row.querySelector('input[type=checkbox]').checked = true;
+    selectedDevice = row.dataset.device;
+    updateBtn();
+  };
+
+  // Pre-select Living Room Cam row
+  const firstRow = document.querySelector('#deviceList .device-row');
+  firstRow.classList.add('selected');
+
+  // ===== Tab switching =====
+  window.switchTab = function(tab) {
+    document.getElementById('tab-action').classList.toggle('active', tab === 'action');
+    document.getElementById('tab-trigger').classList.toggle('active', tab === 'trigger');
+    document.getElementById('panel-action').style.display = tab === 'action' ? 'block' : 'none';
+    document.getElementById('panel-trigger').style.display = tab === 'trigger' ? 'block' : 'none';
+  };
+
+  // ===== Trigger Devices: view/edit mode =====
+  let allDevicesSelected = true;
+  let selectedTriggerDevices = new Set();
+
+  // Load saved state from localStorage
+  const storageKey = 'triggerDevices_' + featureKey;
+  const saved = localStorage.getItem(storageKey);
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      renderTriggerView(data);
+    } catch(e) {}
+  }
+
+  function renderTriggerView(data) {
+    const display = document.getElementById('trigger-saved-display');
+    if (!data || data.allDevices) {
+      display.innerHTML =
+        '<div class="all-devices-pill"><span>📹 All Devices</span><span class="check-mark">✓</span></div>' +
+        '<div class="all-devices-sub">Your skill will trigger from any connected camera.</div>';
+    } else {
+      const cameras = data.cameras || [];
+      if (cameras.length === 0) {
+        display.innerHTML =
+          '<div class="all-devices-pill"><span>📹 All Devices</span><span class="check-mark">✓</span></div>' +
+          '<div class="all-devices-sub">Your skill will trigger from any connected camera.</div>';
+      } else {
+        let pillsHtml = '<div class="saved-pills">';
+        cameras.forEach(function(cam) {
+          pillsHtml += '<span class="saved-pill">📹 ' + escHtml(cam) + '</span>';
+        });
+        pillsHtml += '</div>';
+        display.innerHTML = pillsHtml;
+      }
+    }
+  }
+
+  window.enterEditMode = function() {
+    // Restore edit state from storage or defaults
+    const savedRaw = localStorage.getItem(storageKey);
+    let savedData = null;
+    try { savedData = savedRaw ? JSON.parse(savedRaw) : null; } catch(e){}
+
+    if (savedData && !savedData.allDevices && savedData.cameras && savedData.cameras.length > 0) {
+      allDevicesSelected = false;
+      selectedTriggerDevices = new Set(savedData.cameras);
+    } else {
+      allDevicesSelected = true;
+      selectedTriggerDevices = new Set();
+    }
+
+    refreshEditUI();
+    document.getElementById('trigger-view').style.display = 'none';
+    document.getElementById('trigger-edit').style.display = 'block';
+  };
+
+  window.cancelEditMode = function() {
+    document.getElementById('trigger-edit').style.display = 'none';
+    document.getElementById('trigger-view').style.display = 'block';
+  };
+
+  window.toggleAllDevices = function() {
+    allDevicesSelected = !allDevicesSelected;
+    if (allDevicesSelected) selectedTriggerDevices.clear();
+    refreshEditUI();
+  };
+
+  window.toggleTriggerDevice = function(row) {
+    if (allDevicesSelected) return;
+    const dev = row.dataset.tdevice;
+    if (selectedTriggerDevices.has(dev)) {
+      selectedTriggerDevices.delete(dev);
+    } else {
+      selectedTriggerDevices.add(dev);
+    }
+    refreshEditUI();
+  };
+
+  function refreshEditUI() {
+    // All Devices checkbox
+    const allCb = document.getElementById('allDevicesCb');
+    if (allDevicesSelected) {
+      allCb.classList.add('checked');
+    } else {
+      allCb.classList.remove('checked');
+    }
+
+    // Individual cameras
+    document.querySelectorAll('#triggerDeviceList .device-row').forEach(function(row) {
+      const dev = row.dataset.tdevice;
+      const cb = document.getElementById('tcb-' + dev);
+      if (allDevicesSelected) {
+        row.classList.add('disabled');
+        if (cb) cb.classList.remove('checked');
+      } else {
+        row.classList.remove('disabled');
+        if (cb) {
+          if (selectedTriggerDevices.has(dev)) {
+            cb.classList.add('checked');
+          } else {
+            cb.classList.remove('checked');
+          }
+        }
+      }
+    });
+  }
+
+  window.saveTriggerDevices = function() {
+    const data = allDevicesSelected
+      ? { allDevices: true }
+      : { allDevices: false, cameras: Array.from(selectedTriggerDevices) };
+
+    localStorage.setItem(storageKey, JSON.stringify(data));
+    renderTriggerView(data);
+
+    document.getElementById('trigger-edit').style.display = 'none';
+    document.getElementById('trigger-view').style.display = 'block';
+    showPageToast('Trigger devices saved ✅');
+  };
+
+  // ===== Dev Tools =====
   const PAGE_ID = 'p4';
   const PAGE_NUM = 'P4';
   const PAGE_TITLE = 'Select Device';
   const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
 
-  // ===== Dev panel toggle =====
   window.toggleDevPanel = function() {
     const panel = document.getElementById('devPanel');
     const showing = panel.style.display === 'block';
@@ -264,13 +563,12 @@
     if (!showing) loadPrevRequests();
   };
 
-  // ===== Submit dev request =====
   window.submitDevRequest = async function() {
     const improvement = document.getElementById('devImprovement').value.trim();
     const notes = document.getElementById('devNotes').value.trim();
     if (!improvement) { showPageToast('Please describe what should be improved.', true); return; }
 
-    let msg = '🛠️ **UI Improvement Request**\nFeature: Camera Skills\nPage: ' + PAGE_NUM + ' — ' + PAGE_TITLE + '\nImprovement: ' + improvement;
+    let msg = '🛠️ **UI Improvement Request**\nFeature: Camera Skills\nPage: ' + PAGE_NUM + ' – ' + PAGE_TITLE + '\nImprovement: ' + improvement;
     if (notes) msg += '\nNotes: ' + notes;
 
     try {
@@ -281,7 +579,6 @@
       });
     } catch(e) {}
 
-    // Store in localStorage
     const key = 'improvements_' + PAGE_ID + '_' + Date.now();
     const now = new Date().toLocaleString();
     localStorage.setItem(key, JSON.stringify({ improvement: improvement, notes: notes, time: now }));
@@ -289,10 +586,9 @@
     document.getElementById('devImprovement').value = '';
     document.getElementById('devNotes').value = '';
     document.getElementById('devPanel').style.display = 'none';
-    showPageToast('Request sent to Dev team ✅');
+    showPageToast('Request sent to Dev team ✔');
   };
 
-  // ===== Previous requests =====
   function loadPrevRequests() {
     const list = document.getElementById('devPrevList');
     const toggle = document.getElementById('prevToggle');
