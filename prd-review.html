@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRD Review — SensForge</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fff; color: #1a1a1a; min-height: 100vh;
+    }
+
+    /* Header */
+    .page-header {
+      background: #fff; border-bottom: 1px solid #e8eef4;
+      padding: 16px 32px; display: flex; align-items: center;
+      justify-content: space-between; gap: 16px; position: sticky; top: 0; z-index: 10;
+      flex-wrap: wrap;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .back-link {
+      font-size: 14px; color: #f96400; text-decoration: none; font-weight: 600;
+      display: flex; align-items: center; gap: 4px; white-space: nowrap;
+    }
+    .back-link:hover { opacity: 0.8; }
+    .prd-title { font-size: 18px; font-weight: 800; color: #0f1b2d; }
+
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .action-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 1.5px solid #e0e0e0; background: #f8f9fa;
+      color: #444; transition: all 0.15s; white-space: nowrap;
+    }
+    .action-btn:hover { background: #fff3ec; border-color: #f96400; color: #f96400; }
+    .action-btn.danger:hover { background: #fff0f0; border-color: #ff4466; color: #ff4466; }
+    .action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Confluence inline prompt */
+    .confluence-prompt {
+      display: none; position: fixed; top: 70px; right: 32px;
+      background: #fff; border: 1.5px solid #e0e0e0; border-radius: 12px;
+      padding: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      z-index: 100; width: 320px;
+    }
+    .confluence-prompt label { font-size: 12px; font-weight: 600; color: #666; display: block; margin-bottom: 8px; }
+    .confluence-prompt input {
+      width: 100%; padding: 9px 12px; border: 1.5px solid #ddd; border-radius: 8px;
+      font-size: 13px; font-family: inherit; outline: none; margin-bottom: 10px;
+    }
+    .confluence-prompt input:focus { border-color: #f96400; }
+    .confluence-submit { background: #f96400; color: #fff; border: none; border-radius: 8px; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .confluence-close { background: none; border: none; color: #999; font-size: 13px; cursor: pointer; margin-left: 8px; }
+
+    /* Main content */
+    .prd-content {
+      max-width: 900px; margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    h1 { font-size: 28px; font-weight: 800; color: #0f1b2d; margin-bottom: 8px; }
+    h2 { font-size: 20px; font-weight: 700; color: #0f1b2d; margin-top: 40px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #f0f0f0; }
+    h3 { font-size: 16px; font-weight: 700; color: #0f1b2d; margin-top: 28px; margin-bottom: 10px; }
+    p { font-size: 15px; color: #444; line-height: 1.7; margin-bottom: 12px; }
+    ul, ol { padding-left: 24px; margin-bottom: 12px; }
+    li { font-size: 15px; color: #444; line-height: 1.7; margin-bottom: 4px; }
+
+    .meta-bar { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 32px; }
+    .meta-item { font-size: 13px; color: #999; }
+    .meta-item strong { color: #666; }
+
+    /* Flow diagram */
+    .flow-diagram {
+      background: #f8f9fa; border: 1.5px solid #e8eef4; border-radius: 12px;
+      padding: 24px; margin: 20px 0; overflow-x: auto;
+    }
+    .flow-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .flow-step {
+      background: #fff; border: 2px solid #f96400; border-radius: 8px;
+      padding: 8px 14px; font-size: 13px; font-weight: 600; color: #f96400;
+      white-space: nowrap;
+    }
+    .flow-arrow { font-size: 18px; color: #ccc; }
+
+    /* Screenshot placeholder */
+    .screenshot-placeholder {
+      background: #f5f5f5; border: 1.5px dashed #ccc; border-radius: 10px;
+      height: 200px; display: flex; align-items: center; justify-content: center;
+      color: #aaa; font-size: 14px; font-weight: 600; margin: 12px 0 16px;
+    }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    th { background: #f8f9fa; border: 1px solid #e0e0e0; padding: 10px 14px; text-align: left; font-weight: 600; color: #444; }
+    td { border: 1px solid #e0e0e0; padding: 10px 14px; color: #555; vertical-align: top; }
+    tr:nth-child(even) td { background: #fafafa; }
+
+    /* Code/technical */
+    .tech-note { background: #f8f9fa; border-left: 3px solid #f96400; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 8px 0; font-size: 14px; color: #555; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #0f1b2d; color: #fff; padding: 14px 24px;
+      border-radius: 12px; font-size: 14px; font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4); border-left: 4px solid #f96400;
+      z-index: 2000; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
+      opacity: 0; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(249,100,0,0.3); border-top-color: #f96400; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 4px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="page-header">
+  <div class="header-left">
+    <a href="index.html" class="back-link">← Back to Testbed</a>
+    <div class="prd-title" id="prdTitleEl">PRD: Camera Skills</div>
+  </div>
+  <div class="header-actions">
+    <button class="action-btn" id="regenBtn" onclick="regeneratePRD()">🔄 Regenerate</button>
+    <button class="action-btn" onclick="downloadPRD()">⬇ Download</button>
+    <button class="action-btn danger" onclick="deletePRD()">🗑️ Delete</button>
+    <button class="action-btn" onclick="toggleConfluence()">📤 Export to Confluence</button>
+  </div>
+</div>
+
+<!-- Confluence inline prompt -->
+<div class="confluence-prompt" id="confluencePrompt">
+  <label>Enter Confluence parent page URL:</label>
+  <input type="url" id="confluenceUrl" placeholder="https://yourteam.atlassian.net/wiki/..." />
+  <button class="confluence-submit" onclick="submitConfluenceExport()">Export →</button>
+  <button class="confluence-close" onclick="toggleConfluence()">Cancel</button>
+</div>
+
+<!-- PRD Content -->
+<div class="prd-content">
+  <h1>Camera Skills — Product Requirements Document</h1>
+
+  <div class="meta-bar">
+    <span class="meta-item"><strong>Feature:</strong> Camera Skills</span>
+    <span class="meta-item"><strong>Status:</strong> Draft</span>
+    <span class="meta-item"><strong>Generated:</strong> <span id="genDate"></span></span>
+    <span class="meta-item"><strong>Pages:</strong> P1–P7</span>
+  </div>
+
+  <h2>Overview</h2>
+  <p>Camera Skills is a smart automation feature that allows SensForge camera users to configure if-then rules based on AI detection events. Users define a trigger (e.g., "Person Detected"), optional conditions (e.g., "Unknown person"), select which device to monitor, choose an action (e.g., "Send Notification"), and set a schedule — all without writing a single line of code.</p>
+  <p>The feature is designed for non-technical homeowners who want intelligent, contextual automation from their existing SensForge camera hardware.</p>
+
+  <h2>User Flow</h2>
+  <div class="flow-diagram">
+    <div class="flow-row">
+      <div class="flow-step">P1<br>My Skills</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">P2<br>Select Trigger</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">P3<br>Add Conditions</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">P4<br>Select Device</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">P5<br>Select Action</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">P6<br>Set Schedule</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">P7<br>Voice Memo</div>
+    </div>
+  </div>
+  <p>Users can navigate forward through the flow and backtrack at any point. URL parameters carry selections through all pages, enabling deep-linking and bookmarking of any configuration state.</p>
+
+  <h2>Key Screens</h2>
+
+  <h3>P1 — My Skills Dashboard</h3>
+  <div class="screenshot-placeholder">[ P1 Screenshot ]</div>
+  <p>The main entry point. Users see their active skills in a card list, with toggles to enable/disable each rule. A template builder at the top lets users start a new If/Then rule by tapping the trigger pill. Newly activated skills appear at the top of the list and are stored in localStorage.</p>
+  <ul>
+    <li>If/Then template builder with pill-based inputs</li>
+    <li>Active skills list with toggle, tags, and edit link</li>
+    <li>Activation flow returns user here via URL params</li>
+  </ul>
+
+  <h3>P2 — Select Trigger</h3>
+  <div class="screenshot-placeholder">[ P2 Screenshot ]</div>
+  <p>Users select from 11 AI detection triggers. Single-select radio list. Once selected, the Next button activates and navigates forward, passing the trigger via URL param.</p>
+  <ul>
+    <li>Person Detected, Person Coming Home, Person Near Car or Driveway</li>
+    <li>Motion Detected, Vehicle Detected, Package Delivered, Package Taken</li>
+    <li>Familiar Face Detected, Pet Behavior, Unusual Sound Detected, Fall Detected (Elder)</li>
+  </ul>
+
+  <h3>P3 — Add Conditions</h3>
+  <div class="screenshot-placeholder">[ P3 Screenshot ]</div>
+  <p>Optional refinement step. Context-aware suggestions appear based on the selected trigger. Users can type a free-form condition or tap suggestion pills. Condition is passed forward via URL param.</p>
+  <ul>
+    <li>Free-form text input for custom conditions</li>
+    <li>Dynamic suggestion pills per trigger (e.g., "Unknown person", "At night")</li>
+    <li>Entirely optional — skip by tapping Done without filling</li>
+  </ul>
+
+  <h3>P4 — Select Device</h3>
+  <div class="screenshot-placeholder">[ P4 Screenshot ]</div>
+  <p>Users choose which camera to monitor. Device list shows name, status, and an active/inactive toggle. Living Room Cam is pre-selected as the default. Selection passes forward via URL param.</p>
+
+  <h3>P5 — Select Action</h3>
+  <div class="screenshot-placeholder">[ P5 Screenshot ]</div>
+  <p>Users select the action triggered when the detection event occurs. Send Notification is checked by default. If "Play Customized Voice" is selected, a sub-option appears to record a voice memo (linking to P7).</p>
+  <ul>
+    <li>Send Notification (default), Record, Turn on Light</li>
+    <li>Play Customized Voice (with voice memo sub-flow), Trigger Siren, Call Me</li>
+  </ul>
+
+  <h3>P6 — Set Schedule</h3>
+  <div class="screenshot-placeholder">[ P6 Screenshot ]</div>
+  <p>Users set when the skill should be active. Time range (Start/End time pickers) and repeat schedule (Everyday, Weekdays, Weekends, Custom). Custom reveals day-of-week toggles. Done — Activate Now returns to P1 and creates the skill card.</p>
+
+  <h3>P7 — Voice Memo</h3>
+  <div class="screenshot-placeholder">[ P7 Screenshot ]</div>
+  <p>Optional recording flow for custom voice announcements. Three states: Recording (animated waveform), Paused, and Playback. Save Memo returns to P5 with device/trigger context intact.</p>
+
+  <h2>Variable Settings</h2>
+  <table>
+    <thead>
+      <tr><th>Setting</th><th>Options</th><th>Default</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Trigger</td><td>11 detection types</td><td>Person Detected</td></tr>
+      <tr><td>Condition</td><td>Free text + context suggestions</td><td>None (optional)</td></tr>
+      <tr><td>Device</td><td>Any connected SensForge camera</td><td>Living Room Cam</td></tr>
+      <tr><td>Action</td><td>6 action types</td><td>Send Notification</td></tr>
+      <tr><td>Schedule: Repeat</td><td>Everyday / Weekdays / Weekends / Custom</td><td>Everyday</td></tr>
+      <tr><td>Schedule: Time Range</td><td>Start time + End time selectors</td><td>8:00 AM – 10:00 PM</td></tr>
+      <tr><td>Voice Memo</td><td>Record / Pause / Playback states</td><td>N/A</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Technical Notes</h2>
+  <div class="tech-note">URL parameters thread selections through all pages — each page reads query params for context and appends its selection when navigating forward.</div>
+  <div class="tech-note">Comments are stored in localStorage per page using the key pattern <code>comments_{pageId}_{timestamp}</code>. The comment system supports timestamped display and deletion.</div>
+  <div class="tech-note">Skills are stored in localStorage when Activate Now is pressed on P1. The active skills list renders from both the static HTML defaults and dynamically added localStorage entries.</div>
+  <div class="tech-note">Progress bar state on the dashboard is stored in localStorage per feature key (<code>feature-state-{key}</code>). States: idle → building → complete → idle. Auto-transitions to complete after 30s for demo purposes.</div>
+
+  <h2>Open Questions</h2>
+  <ul>
+    <li>Should skills support multiple actions (e.g., notify + record simultaneously)?</li>
+    <li>How should the app handle device offline states in the selection step?</li>
+    <li>Should the schedule step support recurring time windows (e.g., 8–10 AM and 8–10 PM)?</li>
+    <li>Is there a maximum number of active skills per user?</li>
+  </ul>
+
+  <h2>Success Metrics</h2>
+  <ul>
+    <li>Time to first skill activation &lt; 3 minutes</li>
+    <li>Skill activation completion rate &gt; 70%</li>
+    <li>Trigger selection drop-off &lt; 15%</li>
+    <li>User rating of automation flow ≥ 4.2/5</li>
+  </ul>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+
+  // Set generated date
+  document.getElementById('genDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+  // Read feature from URL
+  const params = new URLSearchParams(window.location.search);
+  const feature = params.get('feature') || 'camera-skills';
+  const featureName = feature.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  document.getElementById('prdTitleEl').textContent = 'PRD: ' + featureName;
+  document.title = 'PRD: ' + featureName + ' — SensForge';
+
+  // Check for regenerated param
+  if (params.get('regenerated') === '1') {
+    showToast('PRD Regenerated ✅');
+    history.replaceState({}, '', 'prd-review.html?feature=' + feature);
+  }
+
+  function regeneratePRD() {
+    const btn = document.getElementById('regenBtn');
+    btn.innerHTML = '<span class="spinner"></span> Regenerating...';
+    btn.disabled = true;
+    setTimeout(() => {
+      window.location.href = 'prd-review.html?feature=' + feature + '&regenerated=1';
+    }, 2000);
+  }
+
+  function downloadPRD() {
+    const mdContent = `# ${featureName} — Product Requirements Document
+
+## Overview
+Camera Skills is a smart automation feature that allows SensForge camera users to configure if-then rules based on AI detection events.
+
+## User Flow
+P1 My Skills → P2 Select Trigger → P3 Add Conditions → P4 Select Device → P5 Select Action → P6 Set Schedule → P7 Voice Memo
+
+## Key Screens
+
+### P1 — My Skills Dashboard
+The main entry point. Users see existing skills and can create new ones using the If/Then template.
+
+### P2 — Select Trigger
+Users select from 11 detection triggers: Person Detected, Person Coming Home, Person Near Car or Driveway, Motion Detected, Vehicle Detected, Package Delivered, Package Taken, Familiar Face Detected, Pet Behavior, Unusual Sound Detected, Fall Detected (Elder).
+
+### P3 — Add Conditions
+Optional refinement step. Context-aware suggestions appear based on selected trigger.
+
+### P4 — Select Device
+Users select which camera to monitor. Living Room Cam is pre-selected.
+
+### P5 — Select Action
+Users select: Send Notification, Record, Turn on Light, Play Customized Voice, Trigger Siren, Call Me.
+
+### P6 — Set Schedule
+Time range pickers + Everyday/Weekdays/Weekends/Custom repeat.
+
+### P7 — Voice Memo
+Record custom voice announcement for Play Customized Voice action.
+
+## Variable Settings
+| Setting | Options | Default |
+|---------|---------|---------|
+| Trigger | 11 types | Person Detected |
+| Condition | Free text + suggestions | None |
+| Device | Any connected camera | Living Room Cam |
+| Action | 6 types | Send Notification |
+| Schedule | Everyday/Weekdays/Weekends/Custom | Everyday |
+| Time Range | Start/End time | 8AM–10PM |
+
+## Technical Notes
+- URL params thread selections through all pages
+- Comments stored in localStorage per page
+- Skills stored in localStorage on Activate Now
+- Progress bar state stored in localStorage per feature key
+`;
+    const blob = new Blob([mdContent], { type: 'text/markdown' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = feature + '-prd.md';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('PRD downloaded!');
+  }
+
+  function deletePRD() {
+    if (confirm('Delete this PRD? This cannot be undone.')) {
+      window.location.href = 'index.html?deleted=1';
+    }
+  }
+
+  function toggleConfluence() {
+    const prompt = document.getElementById('confluencePrompt');
+    prompt.style.display = prompt.style.display === 'block' ? 'none' : 'block';
+    if (prompt.style.display === 'block') {
+      prompt.querySelector('input').focus();
+    }
+  }
+
+  async function submitConfluenceExport() {
+    const url = document.getElementById('confluenceUrl').value.trim();
+    if (!url) { showToast('Please enter a Confluence page URL.', true); return; }
+    try {
+      await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: '📤 **Confluence Export Request**\nPRD: ' + featureName + '\nParent page: ' + url + '\nClaire will handle this export.'
+        })
+      });
+    } catch(e) {}
+    document.getElementById('confluencePrompt').style.display = 'none';
+    document.getElementById('confluenceUrl').value = '';
+    showToast('Export request sent! Claire will publish to Confluence shortly.');
+  }
+
+  function showToast(msg, isError) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.borderLeftColor = isError ? '#ff4466' : '#f96400';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+</script>
+
+</body>
+</html>
