@@ -979,7 +979,7 @@
       await fetch('https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: '<@&1487656704463208592> ⏪ **Restore Request**\nReverting sf-ui-testbed to commit: ${sha}\nMessage: ${commitMsg}\nRequested by: Ruizhi via Version History panel` })
+        body: JSON.stringify({ content: `<@&1487656704463208592> ⏪ **Restore Request**\nReverting sf-ui-testbed to commit: ${sha}\nMessage: ${commitMsg}\nRequested by: Ruizhi via Version History panel` })
       });
     } catch(e) {}
     btn.textContent = '✓ Requested';
