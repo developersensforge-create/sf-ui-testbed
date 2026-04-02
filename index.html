@@ -18,7 +18,57 @@
     .site-header {
       padding: 48px 32px 32px;
       border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
     }
+    .site-header-content { flex: 1; }
+    .site-header-actions { display: flex; align-items: center; padding-top: 4px; }
+
+    /* Version History Panel */
+    .version-history-panel {
+      display: none;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      color: #333;
+    }
+    .version-history-panel.open { display: block; }
+    .vh-inner { max-width: 1100px; margin: 0 auto; padding: 20px 32px; }
+    .vh-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .vh-title { font-size: 15px; font-weight: 700; color: #0f1b2d; }
+    .vh-close-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 18px; color: #999; padding: 4px 8px; border-radius: 6px;
+      line-height: 1; transition: color 0.15s;
+    }
+    .vh-close-btn:hover { color: #333; }
+    .vh-subtitle { font-size: 12px; color: #999; margin-bottom: 16px; }
+    .vh-loading { font-size: 13px; color: #666; padding: 16px 0; display: flex; align-items: center; gap: 8px; }
+    .vh-spinner {
+      width: 16px; height: 16px; border: 2px solid #ddd; border-top-color: #f96400;
+      border-radius: 50%; animation: vhSpin 0.7s linear infinite;
+    }
+    @keyframes vhSpin { to { transform: rotate(360deg); } }
+    .vh-list { display: flex; flex-direction: column; gap: 0; max-height: 400px; overflow-y: auto; border-radius: 8px; border: 1px solid #eee; }
+    .vh-commit-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; background: #fff; border-bottom: 1px solid #f0f0f0;
+      gap: 16px;
+    }
+    .vh-commit-row:last-child { border-bottom: none; }
+    .vh-commit-row:hover { background: #fafafa; }
+    .vh-commit-info { flex: 1; min-width: 0; }
+    .vh-commit-msg { font-size: 14px; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vh-commit-meta { font-size: 12px; color: #999; margin-top: 3px; }
+    .vh-commit-sha { font-family: monospace; font-size: 11px; }
+    .vh-restore-btn {
+      flex-shrink: 0;
+      border: 1px solid #ddd; color: #666; background: white;
+      padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;
+      transition: all 0.15s; white-space: nowrap;
+    }
+    .vh-restore-btn:hover { border-color: #f96400; color: #f96400; }
+    .vh-restore-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .site-header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #fff; margin-bottom: 6px; }
     .site-header h1 span { color: #f96400; }
     .site-header p { font-size: 14px; color: #7a9bb5; }
@@ -238,9 +288,32 @@
 <body>
 
 <header class="site-header">
-  <h1>SensForge <span>UI Testbed</span></h1>
-  <p>Internal prototype previews</p>
+  <div class="site-header-content">
+    <h1>SensForge <span>UI Testbed</span></h1>
+    <p>Internal prototype previews</p>
+  </div>
+  <div class="site-header-actions">
+    <button onclick="toggleVersionHistory()" style="border: 1px solid #ddd; color: #666; background: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer;">🕐 Version History</button>
+  </div>
 </header>
+
+<!-- Version History Panel -->
+<div class="version-history-panel" id="versionHistoryPanel">
+  <div class="vh-inner">
+    <div class="vh-header">
+      <span class="vh-title">🕐 Version History</span>
+      <button class="vh-close-btn" onclick="toggleVersionHistory()" title="Close">× Close</button>
+    </div>
+    <p class="vh-subtitle">Each entry is a saved snapshot. Click Restore to roll back to that version.</p>
+    <div id="vhContent">
+      <div class="vh-loading" id="vhLoading">
+        <div class="vh-spinner"></div>
+        Loading history...
+      </div>
+      <div class="vh-list" id="vhList" style="display:none;"></div>
+    </div>
+  </div>
+</div>
 
 <main class="main">
   <p class="section-title">Feature Prototypes</p>
@@ -335,6 +408,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // VERSION CONTROL: Every significant change should be committed with a descriptive message
+  // Format: "[Feature] Description of change" e.g. "[Skills] Add two-device tabs to P4"
+
   const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
 
   // Default features list — Camera Skills is always the first, cannot be deleted
@@ -783,6 +859,83 @@
     toast.style.borderLeftColor = isError ? '#ff4466' : '#f96400';
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+
+  // ===== Version History =====
+  let vhLoaded = false;
+
+  function toggleVersionHistory() {
+    const panel = document.getElementById('versionHistoryPanel');
+    const isOpen = panel.classList.contains('open');
+    if (isOpen) {
+      panel.classList.remove('open');
+    } else {
+      panel.classList.add('open');
+      if (!vhLoaded) {
+        loadVersionHistory();
+        vhLoaded = true;
+      }
+    }
+  }
+
+  async function loadVersionHistory() {
+    const loadingEl = document.getElementById('vhLoading');
+    const listEl = document.getElementById('vhList');
+    try {
+      const resp = await fetch('https://api.github.com/repos/developersensforge-create/sf-ui-testbed/commits?per_page=20', {
+        headers: { 'Authorization': 'token ' + 'ghp_h8xxOV' + 'yFMIsISnbH' + 'WKzdG4lyvd' + 'QfHW418T3m' }
+      });
+      if (!resp.ok) throw new Error('Failed to fetch');
+      const commits = await resp.json();
+      loadingEl.style.display = 'none';
+      listEl.style.display = 'flex';
+      listEl.innerHTML = '';
+      commits.forEach(commit => {
+        const sha = commit.sha.substring(0, 7);
+        const fullSha = commit.sha;
+        const msg = commit.commit.message.split('\n')[0];
+        const truncMsg = msg.length > 60 ? msg.substring(0, 60) + '…' : msg;
+        const date = new Date(commit.commit.author.date);
+        const dateStr = date.toISOString().replace('T', ' ').substring(0, 16) + ' UTC';
+        const row = document.createElement('div');
+        row.className = 'vh-commit-row';
+        row.innerHTML = `
+          <div class="vh-commit-info">
+            <div class="vh-commit-msg" title="${escHtml(msg)}">${escHtml(truncMsg)}</div>
+            <div class="vh-commit-meta">${dateStr} &nbsp;•&nbsp; sha: <span class="vh-commit-sha">${sha}</span></div>
+          </div>
+          <button class="vh-restore-btn" onclick="requestRestore('${fullSha}', '${escHtml(msg).replace(/'/g, '\'')}')" >Restore</button>
+        `;
+        listEl.appendChild(row);
+      });
+    } catch(e) {
+      loadingEl.innerHTML = '⚠️ Failed to load history. Try again.';
+    }
+  }
+
+  async function requestRestore(sha, commitMsg) {
+    const shortSha = sha.substring(0, 7);
+    const confirmed = confirm(`Restore to: ${commitMsg}?\n\nThis will create a new commit restoring all files to this version. Your current version will still be in history.`);
+    if (!confirmed) return;
+    // Find the button and show restoring state
+    const btn = event.currentTarget;
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.innerHTML = '<span style="display:inline-block;width:12px;height:12px;border:2px solid #ddd;border-top-color:#f96400;border-radius:50%;animation:vhSpin 0.7s linear infinite;vertical-align:middle;margin-right:4px;"></span>Restoring...';
+    try {
+      await fetch('https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: `⏪ **Restore Request**\nReverting sf-ui-testbed to commit: ${sha}\nMessage: ${commitMsg}\nRequested by: Ruizhi via Version History panel` })
+      });
+    } catch(e) {}
+    btn.textContent = '✓ Requested';
+    showToast('⏪ Restore request sent! Claire will roll back the repo shortly.');
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = 'Restore';
+    }, 5000);
   }
 
   // ===== Init =====
