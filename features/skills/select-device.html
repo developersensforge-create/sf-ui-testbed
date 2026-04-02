@@ -51,10 +51,10 @@
   .next-btn {
     display: block; width: 100%; background: #f96400; color: #fff; border: none;
     border-radius: 10px; padding: 14px; font-size: 16px; font-weight: 700;
-    cursor: pointer; text-align: center; text-decoration: none; opacity: 0.4;
-    pointer-events: none; transition: opacity 0.2s;
+    cursor: pointer; text-align: center; text-decoration: none;
+    transition: opacity 0.2s;
   }
-  .next-btn.active { opacity: 1; pointer-events: auto; }
+  .next-btn:active { opacity: 0.85; }
 
   .back-testbed { text-align: center; padding: 10px 0 80px; }
   .back-testbed a { font-size: 12px; color: #aaa; text-decoration: none; }
@@ -138,19 +138,30 @@
 (function() {
   const params = new URLSearchParams(window.location.search);
   const trigger = params.get('trigger') || '';
+  const condition = params.get('condition') || '';
+
   if (trigger) {
     document.getElementById('contextPill').textContent = 'If ' + trigger;
   }
 
-  let selectedDevice = null;
+  // Default: Living Room Cam is pre-selected (toggle is ON by default)
+  let selectedDevice = 'Living Room Cam';
+  const btn = document.getElementById('nextBtn');
+
+  function updateBtn() {
+    btn.href = 'select-action.html?trigger=' + encodeURIComponent(trigger) +
+               '&device=' + encodeURIComponent(selectedDevice) +
+               (condition ? '&condition=' + encodeURIComponent(condition) : '');
+  }
+
+  // Always enabled — Living Room Cam pre-selected
+  updateBtn();
 
   window.selectDevice = function(row) {
     document.querySelectorAll('.device-row').forEach(r => r.classList.remove('selected'));
     row.classList.add('selected');
     selectedDevice = row.dataset.device;
-    const btn = document.getElementById('nextBtn');
-    btn.classList.add('active');
-    btn.href = 'select-action.html?trigger=' + encodeURIComponent(trigger) + '&device=' + encodeURIComponent(selectedDevice);
+    updateBtn();
   };
 })();
 </script>
