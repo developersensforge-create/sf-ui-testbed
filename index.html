@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <!-- v2026-04-02-1701 -->
+  <!-- v1775166272 -->
   <title>SensForge UI Testbed</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
@@ -453,6 +453,23 @@
   function slugify(name) {
     return name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
+
+  // ===== Startup: clear any corrupt cache =====
+  (function clearCorruptCache() {
+    // If sf_features exists but somehow hides built-ins, clear it
+    try {
+      localStorage.removeItem('sf_hidden_keys');
+      const saved = localStorage.getItem('sf_features');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // If no built-ins are in saved list, it's corrupt — clear it
+        const hasBuiltins = DEFAULT_FEATURES.every(d => parsed.find(f => f.key === d.key));
+        // Don't clear user features, just ensure built-ins are never blocked
+      }
+    } catch(e) {
+      localStorage.removeItem('sf_features');
+    }
+  })();
 
   // ===== Card rendering =====
   function renderAllCards() {
