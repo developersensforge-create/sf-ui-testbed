@@ -19,7 +19,7 @@
   /* Template builder */
   .template-card { background: #fff; border-radius: 12px; padding: 16px; margin: 12px; border: 1px solid #eee; }
   .template-title { font-size: 13px; color: #666; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
-  .if-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .if-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
   .if-label { font-size: 15px; color: #999; font-weight: 500; min-width: 60px; }
   .trigger-pill {
     display: inline-flex; align-items: center; gap: 6px;
@@ -31,6 +31,10 @@
   .trigger-pill:hover { background: #fff3ec; }
   .trigger-pill.filled { background: #fff3ec; }
   .trigger-pill.disabled { border-color: #ddd; color: #bbb; cursor: not-allowed; pointer-events: none; }
+  .condition-line {
+    font-size: 13px; color: #888; font-style: italic;
+    margin-left: 20px; margin-bottom: 8px; display: none;
+  }
   .action-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
   .on-row { display: flex; align-items: center; gap: 10px; padding-left: 70px; flex-wrap: wrap; }
   .on-label { font-size: 14px; color: #999; }
@@ -93,6 +97,9 @@
     <a id="triggerPill" href="select-trigger.html" class="trigger-pill">select a trigger ▼</a>
   </div>
 
+  <!-- Condition line (shown when condition param is present) -->
+  <div class="condition-line" id="conditionLine"></div>
+
   <!-- Then do row -->
   <div class="action-row">
     <span class="if-label">then do</span>
@@ -153,6 +160,7 @@
 (function() {
   const params = new URLSearchParams(window.location.search);
   const trigger = params.get('trigger');
+  const condition = params.get('condition');
   const action = params.get('action');
   const device = params.get('device');
   const schedule = params.get('schedule');
@@ -162,21 +170,33 @@
   const onRow = document.getElementById('onRow');
   const devicePill = document.getElementById('devicePill');
   const activateBtn = document.getElementById('activateBtn');
+  const conditionLine = document.getElementById('conditionLine');
+
+  function showCondition(text) {
+    if (text) {
+      conditionLine.textContent = '\u201c' + text + '\u201d';
+      conditionLine.style.display = 'block';
+    } else {
+      conditionLine.style.display = 'none';
+    }
+  }
 
   if (trigger && action && device) {
     // State C — both filled
-    triggerPill.textContent = trigger + ' ✓';
+    triggerPill.textContent = trigger + ' \u2713';
     triggerPill.classList.add('filled');
     triggerPill.removeAttribute('href');
     triggerPill.style.pointerEvents = 'none';
 
-    actionPill.textContent = action + ' ✓';
+    showCondition(condition);
+
+    actionPill.textContent = action + ' \u2713';
     actionPill.classList.remove('disabled');
     actionPill.classList.add('filled');
     actionPill.removeAttribute('href');
     actionPill.style.pointerEvents = 'none';
 
-    devicePill.textContent = device + ' ✓';
+    devicePill.textContent = device + ' \u2713';
     onRow.style.display = 'flex';
     activateBtn.style.display = 'block';
 
@@ -186,20 +206,23 @@
     }
   } else if (trigger) {
     // State B — trigger filled
-    triggerPill.textContent = trigger + ' ✓';
+    triggerPill.textContent = trigger + ' \u2713';
     triggerPill.classList.add('filled');
     triggerPill.removeAttribute('href');
     triggerPill.style.pointerEvents = 'none';
 
+    showCondition(condition);
+
     actionPill.classList.remove('disabled');
-    actionPill.href = 'select-device.html?trigger=' + encodeURIComponent(trigger);
+    actionPill.href = 'select-device.html?trigger=' + encodeURIComponent(trigger) +
+      (condition ? '&condition=' + encodeURIComponent(condition) : '');
   }
 
   window.activateSkill = function() {
     const t = trigger || 'Custom Trigger';
     const a = action || 'Send Notification';
     const d = device || 'Living Room Cam';
-    const skillName = t + ' → ' + a;
+    const skillName = t + ' \u2192 ' + a;
 
     const card = document.createElement('div');
     card.className = 'skill-card';
@@ -222,12 +245,14 @@
 
     // Reset to state A — remove params
     history.replaceState({}, '', 'index.html');
-    triggerPill.textContent = 'select a trigger ▼';
+    triggerPill.textContent = 'select a trigger \u25bc';
     triggerPill.classList.remove('filled');
     triggerPill.href = 'select-trigger.html';
     triggerPill.style.pointerEvents = '';
 
-    actionPill.textContent = 'select an action ▼';
+    conditionLine.style.display = 'none';
+
+    actionPill.textContent = 'select an action \u25bc';
     actionPill.classList.add('disabled');
     actionPill.removeAttribute('href');
 
