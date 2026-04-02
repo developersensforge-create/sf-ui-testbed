@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SensForge UI Testbed</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -14,527 +15,210 @@
       color: #fff;
     }
 
-    /* Header */
     .site-header {
       padding: 48px 32px 32px;
       border-bottom: 1px solid rgba(255,255,255,0.07);
     }
+    .site-header h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #fff; margin-bottom: 6px; }
+    .site-header h1 span { color: #f96400; }
+    .site-header p { font-size: 14px; color: #7a9bb5; }
 
-    .site-header h1 {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: #fff;
-      margin-bottom: 6px;
-    }
+    .main { padding: 32px; max-width: 1100px; margin: 0 auto; }
+    .section-title { font-size: 12px; font-weight: 600; color: #7a9bb5; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
 
-    .site-header h1 span {
-      color: #00b4d8;
-    }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 
-    .site-header p {
-      font-size: 14px;
-      color: #7a9bb5;
-    }
-
-    /* Main content */
-    .main {
-      padding: 32px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .section-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: #7a9bb5;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 20px;
-    }
-
-    /* Feature grid */
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    /* Feature card */
     .feature-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 24px;
+      background: #fff; border-radius: 12px; padding: 24px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      display: flex; flex-direction: column; gap: 12px;
       transition: transform 0.15s, box-shadow 0.15s;
     }
+    .feature-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.3); }
 
-    .feature-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(0,0,0,0.3);
-    }
+    .card-icon { width: 44px; height: 44px; border-radius: 12px; background: #fff3ec; display: flex; align-items: center; justify-content: center; font-size: 22px; }
 
-    .card-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: #e0f7fa;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
+    .card-name { font-size: 17px; font-weight: 700; color: #0f1b2d; cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: -2px -4px; transition: background 0.15s; display: inline-block; min-width: 10px; }
+    .card-name:hover { background: #fff3ec; }
+    .card-name-input { font-size: 17px; font-weight: 700; color: #0f1b2d; border: 2px solid #f96400; border-radius: 6px; padding: 2px 6px; outline: none; width: 100%; background: #fff8f3; font-family: inherit; }
+    .card-desc { font-size: 13px; color: #7a9bb5; line-height: 1.5; flex: 1; }
 
-    /* Editable name */
-    .card-name {
-      font-size: 17px;
-      font-weight: 700;
-      color: #0f1b2d;
-      cursor: pointer;
-      border-radius: 6px;
-      padding: 2px 4px;
-      margin: -2px -4px;
-      transition: background 0.15s;
-      display: inline-block;
-      min-width: 10px;
-    }
-
-    .card-name:hover {
-      background: #f0f8fc;
-    }
-
-    .card-name-input {
-      font-size: 17px;
-      font-weight: 700;
-      color: #0f1b2d;
-      border: 2px solid #00b4d8;
-      border-radius: 6px;
-      padding: 2px 6px;
-      outline: none;
-      width: 100%;
-      background: #f0fafe;
-      font-family: inherit;
-    }
-
-    .card-desc {
-      font-size: 13px;
-      color: #7a9bb5;
-      line-height: 1.5;
-      flex: 1;
-    }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 4px;
-    }
-
-    .card-tag {
-      font-size: 11px;
-      font-weight: 600;
-      background: #f0f4f8;
-      color: #7a9bb5;
-      padding: 3px 10px;
-      border-radius: 20px;
-    }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+    .card-tag { font-size: 11px; font-weight: 600; background: #f0f4f8; color: #7a9bb5; padding: 3px 10px; border-radius: 20px; }
 
     .preview-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #00b4d8;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 18px;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.15s;
-      border: none;
-      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #f96400; color: #fff; font-size: 13px; font-weight: 600;
+      padding: 8px 18px; border-radius: 8px; text-decoration: none;
+      transition: background 0.2s, transform 0.15s; border: none; cursor: pointer;
     }
+    .preview-btn:hover { background: #e05800; }
 
-    .preview-btn:hover { background: #009fc2; }
-    .preview-btn:active { transform: scale(0.97); }
-
-    /* Edit hint */
-    .edit-hint {
-      font-size: 11px;
-      color: #b0c4d4;
-      margin-top: -4px;
+    /* Progress bar section */
+    .card-progress { border-top: 1px solid #f0f0f0; padding-top: 14px; margin-top: 4px; }
+    .progress-bar-track { background: #f0f0f0; border-radius: 6px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+    .progress-bar-fill {
+      height: 100%; background: #f96400; border-radius: 6px;
+      width: 0%; transition: width 2s ease;
     }
+    .progress-bar-fill.pulse {
+      animation: barPulse 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes barPulse {
+      0% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+    .progress-status { font-size: 12px; color: #666; margin-top: 4px; }
 
-    /* Empty state for more cards */
+    /* Output options panel */
+    .output-panel { border-top: 1px solid #f0f0f0; padding-top: 12px; margin-top: 4px; }
+    .output-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .output-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #f8f9fa; border: 1.5px solid #e0e0e0;
+      color: #444; font-size: 12px; font-weight: 600;
+      padding: 7px 12px; border-radius: 8px; cursor: pointer;
+      transition: all 0.15s; white-space: nowrap;
+    }
+    .output-btn:hover { background: #fff3ec; border-color: #f96400; color: #f96400; }
+    .output-btn:active { transform: scale(0.97); }
+
+    .figma-popover {
+      margin-top: 10px; padding: 12px; background: #f8f9fa;
+      border: 1.5px solid #e0e0e0; border-radius: 10px;
+      display: none;
+    }
+    .figma-popover label { font-size: 11px; font-weight: 600; color: #666; display: block; margin-bottom: 6px; }
+    .figma-popover input {
+      width: 100%; padding: 8px 10px; border: 1.5px solid #ddd; border-radius: 7px;
+      font-size: 13px; font-family: inherit; outline: none; margin-bottom: 8px;
+    }
+    .figma-popover input:focus { border-color: #f96400; }
+    .figma-submit { background: #f96400; color: #fff; border: none; border-radius: 7px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
     .add-feature-card {
-      background: rgba(255,255,255,0.04);
-      border: 2px dashed rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      color: #4a6580;
-      min-height: 180px;
-      cursor: default;
+      background: rgba(255,255,255,0.04); border: 2px dashed rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 24px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; color: #4a6580; min-height: 180px;
     }
+    .add-feature-card .plus-icon { font-size: 28px; opacity: 0.4; }
+    .add-feature-card p { font-size: 13px; opacity: 0.5; }
 
-    .add-feature-card .plus-icon {
-      font-size: 28px;
-      opacity: 0.4;
-    }
-
-    .add-feature-card p {
-      font-size: 13px;
-      opacity: 0.5;
-    }
-
-    /* Add New Feature Button */
-    .add-feature-section {
-      display: flex;
-      justify-content: center;
-      margin-top: 36px;
-    }
-
+    .add-feature-section { display: flex; justify-content: center; margin-top: 36px; }
     .add-feature-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(135deg, #00b4d8 0%, #0077a8 100%);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      padding: 14px 32px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, #f96400 0%, #d45200 100%);
+      color: #fff; font-size: 15px; font-weight: 700;
+      padding: 14px 32px; border-radius: 12px; border: none; cursor: pointer;
       transition: transform 0.15s, box-shadow 0.2s;
-      box-shadow: 0 4px 20px rgba(0,180,216,0.35);
-      letter-spacing: 0.2px;
+      box-shadow: 0 4px 20px rgba(249,100,0,0.35);
     }
+    .add-feature-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(249,100,0,0.5); }
 
-    .add-feature-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(0,180,216,0.5);
-    }
-
-    .add-feature-btn:active {
-      transform: scale(0.97);
-    }
-
-    /* Footer */
-    .site-footer {
-      text-align: center;
-      padding: 40px 32px;
-      font-size: 12px;
-      color: #3a5470;
-    }
+    .site-footer { text-align: center; padding: 40px 32px; font-size: 12px; color: #3a5470; }
 
     /* ===== MODAL ===== */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 27, 45, 0.82);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,27,45,0.82); z-index: 1000;
+      align-items: center; justify-content: center; padding: 20px;
     }
-
-    .modal-overlay.active {
-      display: flex;
-    }
+    .modal-overlay.active { display: flex; }
 
     .modal-card {
-      background: #fff;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 480px;
-      padding: 32px;
-      position: relative;
+      background: #fff; border-radius: 16px; width: 100%; max-width: 520px;
+      padding: 32px; position: relative;
       box-shadow: 0 24px 64px rgba(0,0,0,0.5);
       animation: modalIn 0.2s ease;
+      max-height: 90vh; overflow-y: auto;
     }
-
     @keyframes modalIn {
       from { opacity: 0; transform: translateY(16px) scale(0.97); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 18px;
-      background: none;
-      border: none;
-      font-size: 22px;
-      color: #7a9bb5;
-      cursor: pointer;
-      line-height: 1;
-      padding: 4px;
-      border-radius: 6px;
-      transition: color 0.15s, background 0.15s;
+      position: absolute; top: 16px; right: 18px;
+      background: none; border: none; font-size: 22px; color: #7a9bb5;
+      cursor: pointer; line-height: 1; padding: 4px; border-radius: 6px;
     }
+    .modal-close:hover { color: #0f1b2d; background: #f0f4f8; }
 
-    .modal-close:hover {
-      color: #0f1b2d;
-      background: #f0f4f8;
-    }
+    .modal-title { font-size: 20px; font-weight: 800; color: #0f1b2d; margin-bottom: 6px; }
+    .modal-subtitle { font-size: 13px; color: #7a9bb5; margin-bottom: 28px; }
 
-    .modal-title {
-      font-size: 20px;
-      font-weight: 800;
-      color: #0f1b2d;
-      margin-bottom: 6px;
+    /* Stacked sections */
+    .modal-section {
+      border: 1.5px solid #e8eef4; border-radius: 12px;
+      padding: 18px; margin-bottom: 14px;
     }
+    .modal-section-header {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 12px;
+    }
+    .modal-section-icon { font-size: 18px; }
+    .modal-section-title { font-size: 14px; font-weight: 700; color: #0f1b2d; }
+    .modal-section-optional { font-size: 11px; color: #a0b8ca; margin-left: auto; }
 
-    .modal-subtitle {
-      font-size: 13px;
-      color: #7a9bb5;
-      margin-bottom: 24px;
-    }
-
-    /* Tabs */
-    .modal-tabs {
-      display: flex;
-      gap: 0;
-      border-bottom: 2px solid #e8eef4;
-      margin-bottom: 24px;
-    }
-
-    .modal-tab {
-      background: none;
-      border: none;
-      font-size: 14px;
-      font-weight: 600;
-      color: #7a9bb5;
-      padding: 8px 20px 10px;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      transition: color 0.15s, border-color 0.15s;
-    }
-
-    .modal-tab.active {
-      color: #00b4d8;
-      border-bottom-color: #00b4d8;
-    }
-
-    .modal-tab:hover:not(.active) {
-      color: #0f1b2d;
-    }
-
-    .tab-panel {
-      display: none;
-    }
-
-    .tab-panel.active {
-      display: block;
-    }
-
-    /* Form elements */
-    .form-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #7a9bb5;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 8px;
-      display: block;
-    }
+    .form-label { font-size: 12px; font-weight: 600; color: #7a9bb5; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
 
     .form-textarea {
-      width: 100%;
-      min-height: 120px;
-      padding: 12px 14px;
-      background: #f8fafc;
-      border: 1.5px solid #e0eaf0;
-      border-radius: 10px;
-      font-size: 14px;
-      color: #0f1b2d;
-      font-family: inherit;
-      resize: vertical;
-      outline: none;
-      transition: border-color 0.15s;
-      line-height: 1.5;
+      width: 100%; min-height: 100px; padding: 12px 14px;
+      background: #f8fafc; border: 1.5px solid #e0eaf0; border-radius: 10px;
+      font-size: 14px; color: #0f1b2d; font-family: inherit; resize: vertical;
+      outline: none; transition: border-color 0.15s; line-height: 1.5;
     }
+    .form-textarea:focus { border-color: #f96400; background: #fff; }
 
-    .form-textarea:focus {
-      border-color: #00b4d8;
-      background: #fff;
-    }
-
-    .form-hint {
-      font-size: 12px;
-      color: #a0b8ca;
-      margin-top: 8px;
-      margin-bottom: 20px;
-    }
+    .form-hint { font-size: 12px; color: #a0b8ca; margin-top: 6px; }
 
     .form-input {
-      width: 100%;
-      padding: 10px 14px;
-      background: #f8fafc;
-      border: 1.5px solid #e0eaf0;
-      border-radius: 10px;
-      font-size: 14px;
-      color: #0f1b2d;
-      font-family: inherit;
-      outline: none;
+      width: 100%; padding: 10px 14px;
+      background: #f8fafc; border: 1.5px solid #e0eaf0; border-radius: 10px;
+      font-size: 14px; color: #0f1b2d; font-family: inherit; outline: none;
       transition: border-color 0.15s;
     }
+    .form-input:focus { border-color: #f96400; background: #fff; }
 
-    .form-input:focus {
-      border-color: #00b4d8;
-      background: #fff;
-    }
-
-    /* Drag zone */
     .drag-zone {
-      border: 2px dashed #00b4d8;
-      border-radius: 12px;
-      padding: 32px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-      margin-bottom: 16px;
-      position: relative;
-      background: #f0fdff;
+      border: 2px dashed #f96400; border-radius: 12px; padding: 24px 20px;
+      text-align: center; cursor: pointer; transition: background 0.15s;
+      position: relative; background: #fffbf8;
     }
+    .drag-zone:hover, .drag-zone.drag-over { background: #fff3ec; }
+    .drag-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .drag-zone-icon { font-size: 28px; margin-bottom: 8px; }
+    .drag-zone-text { font-size: 14px; font-weight: 600; color: #f96400; margin-bottom: 3px; }
+    .drag-zone-sub { font-size: 12px; color: #7a9bb5; }
 
-    .drag-zone:hover,
-    .drag-zone.drag-over {
-      background: #e0f9ff;
-      border-color: #0097b8;
-    }
+    .thumbnail-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .thumbnail-item { position: relative; width: 64px; height: 64px; }
+    .thumbnail-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; border: 2px solid #e0eaf0; }
+    .thumbnail-remove { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: #ff4466; color: #fff; border: none; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; }
 
-    .drag-zone input[type="file"] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
-    }
-
-    .drag-zone-icon {
-      font-size: 32px;
-      margin-bottom: 10px;
-    }
-
-    .drag-zone-text {
-      font-size: 14px;
-      font-weight: 600;
-      color: #00b4d8;
-      margin-bottom: 4px;
-    }
-
-    .drag-zone-sub {
-      font-size: 12px;
-      color: #7a9bb5;
-    }
-
-    /* Thumbnails */
-    .thumbnail-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .thumbnail-item {
-      position: relative;
-      width: 72px;
-      height: 72px;
-    }
-
-    .thumbnail-item img {
-      width: 72px;
-      height: 72px;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 2px solid #e0eaf0;
-    }
-
-    .thumbnail-remove {
-      position: absolute;
-      top: -6px;
-      right: -6px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #ff4466;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-    }
-
-    /* Submit button */
     .submit-btn {
-      width: 100%;
-      padding: 13px;
-      background: linear-gradient(135deg, #00b4d8 0%, #0077a8 100%);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #f96400 0%, #d45200 100%);
+      color: #fff; font-size: 15px; font-weight: 700; border: none;
+      border-radius: 10px; cursor: pointer; margin-top: 8px;
       transition: transform 0.15s, box-shadow 0.2s;
-      box-shadow: 0 4px 16px rgba(0,180,216,0.3);
-      margin-top: 4px;
+      box-shadow: 0 4px 16px rgba(249,100,0,0.3);
     }
-
-    .submit-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(0,180,216,0.45);
-    }
-
-    .submit-btn:active {
-      transform: scale(0.98);
-    }
-
-    .submit-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,100,0,0.45); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
     /* Toast */
     .toast {
-      position: fixed;
-      bottom: 32px;
-      left: 50%;
+      position: fixed; bottom: 32px; left: 50%;
       transform: translateX(-50%) translateY(80px);
-      background: #0f1b2d;
-      color: #fff;
-      padding: 14px 24px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      border-left: 4px solid #00b4d8;
-      z-index: 2000;
-      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
-      opacity: 0;
-      white-space: nowrap;
+      background: #0f1b2d; color: #fff; padding: 14px 24px;
+      border-radius: 12px; font-size: 14px; font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4); border-left: 4px solid #f96400;
+      z-index: 2000; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
+      opacity: 0; white-space: nowrap;
     }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
   </style>
 </head>
 <body>
@@ -560,6 +244,30 @@
         <span class="card-tag">UI Prototype</span>
         <a href="features/skills/index.html" class="preview-btn">Preview →</a>
       </div>
+
+      <!-- Progress bar section (hidden when idle) -->
+      <div class="card-progress" id="progress-camera-skills" style="display:none;">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="bar-camera-skills"></div>
+        </div>
+        <div class="progress-status" id="status-camera-skills">🔨 Claire is building...</div>
+        <!-- Hidden demo button to manually complete -->
+        <button onclick="completeFeature('camera-skills')" style="display:none;" id="demo-complete-camera-skills">Complete</button>
+      </div>
+
+      <!-- Output options panel (shown when idle or complete) -->
+      <div class="output-panel" id="output-camera-skills">
+        <div class="output-btns">
+          <button class="output-btn" onclick="downloadFeature('camera-skills')">⬇ Download</button>
+          <button class="output-btn" onclick="toggleFigmaPopover('camera-skills')">🎨 Output to Figma</button>
+          <button class="output-btn" id="prd-btn-camera-skills" onclick="generatePRD('camera-skills')">📄 Generate PRD</button>
+        </div>
+        <div class="figma-popover" id="figma-camera-skills">
+          <label>Enter Figma file URL:</label>
+          <input type="url" id="figma-url-camera-skills" placeholder="https://www.figma.com/file/..." />
+          <button class="figma-submit" onclick="submitFigmaExport('camera-skills')">Export →</button>
+        </div>
+      </div>
     </div>
 
     <!-- Placeholder -->
@@ -570,7 +278,6 @@
 
   </div>
 
-  <!-- Add New Feature Button -->
   <div class="add-feature-section">
     <button class="add-feature-btn" onclick="openModal()">
       <span>＋</span> Add New Feature
@@ -587,41 +294,58 @@
   <div class="modal-card">
     <button class="modal-close" onclick="closeModal()" title="Close">×</button>
     <div class="modal-title">Request a Feature</div>
-    <div class="modal-subtitle">Describe or upload a design — Claire will build it.</div>
+    <div class="modal-subtitle">Fill any combination below — Claire will build it.</div>
 
-    <div class="modal-tabs">
-      <button class="modal-tab active" onclick="switchTab('describe', this)">✏️ Describe It</button>
-      <button class="modal-tab" onclick="switchTab('upload', this)">🖼️ Upload Design</button>
-    </div>
-
-    <!-- Tab 1: Describe It -->
-    <div class="tab-panel active" id="tab-describe">
-      <label class="form-label">Feature Description</label>
-      <textarea
-        class="form-textarea"
-        id="featureDesc"
-        placeholder="Describe the UI feature you want to build..."
-      ></textarea>
+    <!-- Section 1: Text Description -->
+    <div class="modal-section">
+      <div class="modal-section-header">
+        <span class="modal-section-icon">✏️</span>
+        <span class="modal-section-title">Text Description</span>
+        <span class="modal-section-optional">optional</span>
+      </div>
+      <textarea class="form-textarea" id="featureDesc" placeholder="Describe the UI feature you want to build..."></textarea>
       <p class="form-hint">Be specific — what screens, what the user does, what it looks like</p>
-      <button class="submit-btn" id="submitDescBtn" onclick="submitFeature('describe')">Request Feature</button>
     </div>
 
-    <!-- Tab 2: Upload Design -->
-    <div class="tab-panel" id="tab-upload">
+    <!-- Section 2: Upload Design -->
+    <div class="modal-section">
+      <div class="modal-section-header">
+        <span class="modal-section-icon">🖼️</span>
+        <span class="modal-section-title">Upload Design</span>
+        <span class="modal-section-optional">optional</span>
+      </div>
       <div class="drag-zone" id="dragZone">
         <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFiles(this.files)" />
         <div class="drag-zone-icon">📎</div>
         <div class="drag-zone-text">Drag & drop images here</div>
         <div class="drag-zone-sub">or click to browse · PNG, JPG, GIF, WebP</div>
       </div>
-
       <div class="thumbnail-grid" id="thumbnailGrid"></div>
-
-      <label class="form-label">Additional Notes</label>
-      <input type="text" class="form-input" id="uploadNotes" placeholder="Any additional notes..." style="margin-bottom:20px;" />
-
-      <button class="submit-btn" id="submitUploadBtn" onclick="submitFeature('upload')">Request Feature</button>
     </div>
+
+    <!-- Section 3: PRD URL -->
+    <div class="modal-section">
+      <div class="modal-section-header">
+        <span class="modal-section-icon">📄</span>
+        <span class="modal-section-title">Link a PRD</span>
+        <span class="modal-section-optional">optional</span>
+      </div>
+      <input type="url" class="form-input" id="prdUrl" placeholder="Paste a PRD URL (Notion, Confluence, Google Docs...)" />
+      <p class="form-hint">We'll read the PRD to understand requirements</p>
+    </div>
+
+    <!-- Section 4: Figma URL -->
+    <div class="modal-section">
+      <div class="modal-section-header">
+        <span class="modal-section-icon">🎨</span>
+        <span class="modal-section-title">Link a Figma File</span>
+        <span class="modal-section-optional">optional</span>
+      </div>
+      <input type="url" class="form-input" id="figmaUrl" placeholder="Paste a Figma file or frame URL" />
+      <p class="form-hint">We'll import your design directly from Figma</p>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitFeature()">Request Feature →</button>
   </div>
 </div>
 
@@ -629,6 +353,15 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+  const FEATURE_FILES = {
+    'camera-skills': [
+      'index.html','select-trigger.html','trigger-details.html',
+      'select-device.html','select-action.html','set-schedule.html','voice-memo.html'
+    ]
+  };
+  const FEATURE_BASE_URL = 'https://raw.githubusercontent.com/developersensforge-create/sf-ui-testbed/main/features/skills/';
+
   // ===== Card name editing =====
   document.querySelectorAll('[data-card-id]').forEach(card => {
     const id = card.dataset.cardId;
@@ -643,31 +376,177 @@
     const card = nameEl.closest('[data-card-id]');
     const id = card.dataset.cardId;
     const currentName = nameEl.textContent;
-
     const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'card-name-input';
-    input.value = currentName;
-    nameEl.replaceWith(input);
-    input.focus();
-    input.select();
-
+    input.type = 'text'; input.className = 'card-name-input'; input.value = currentName;
+    nameEl.replaceWith(input); input.focus(); input.select();
     function saveEdit() {
       const newName = input.value.trim() || currentName;
       localStorage.setItem('card-name-' + id, newName);
       const span = document.createElement('span');
-      span.className = 'card-name';
-      span.textContent = newName;
-      span.title = 'Click to rename';
-      span.onclick = function() { startEdit(this); };
+      span.className = 'card-name'; span.textContent = newName;
+      span.title = 'Click to rename'; span.onclick = function() { startEdit(this); };
       input.replaceWith(span);
     }
-
     input.addEventListener('blur', saveEdit);
     input.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
       if (e.key === 'Escape') { input.value = currentName; input.blur(); }
     });
+  }
+
+  // ===== Progress bar state management =====
+  function getFeatureState(key) {
+    return localStorage.getItem('feature-state-' + key) || 'idle';
+  }
+  function setFeatureState(key, state) {
+    localStorage.setItem('feature-state-' + key, state);
+    if (state === 'building') {
+      localStorage.setItem('feature-state-' + key + '-start', Date.now());
+    }
+    renderCardState(key);
+  }
+
+  function renderCardState(key) {
+    const state = getFeatureState(key);
+    const progressEl = document.getElementById('progress-' + key);
+    const outputEl = document.getElementById('output-' + key);
+    const barEl = document.getElementById('bar-' + key);
+    const statusEl = document.getElementById('status-' + key);
+    if (!progressEl) return;
+
+    if (state === 'building') {
+      progressEl.style.display = 'block';
+      outputEl.style.display = 'none';
+      statusEl.textContent = '🔨 Claire is building...';
+      // Animate progress
+      barEl.style.transition = 'none';
+      barEl.style.width = '0%';
+      barEl.classList.remove('pulse');
+      setTimeout(() => {
+        barEl.style.transition = 'width 2s ease';
+        barEl.style.width = '30%';
+      }, 50);
+      setTimeout(() => {
+        barEl.style.transition = 'width 3s ease';
+        barEl.style.width = '60%';
+      }, 2200);
+      setTimeout(() => {
+        barEl.style.transition = 'width 2s ease';
+        barEl.style.width = '85%';
+        barEl.classList.add('pulse');
+      }, 5400);
+    } else if (state === 'complete') {
+      progressEl.style.display = 'block';
+      outputEl.style.display = 'none';
+      statusEl.textContent = '✅ Ready';
+      barEl.classList.remove('pulse');
+      barEl.style.transition = 'width 0.4s ease';
+      barEl.style.width = '100%';
+      setTimeout(() => {
+        progressEl.style.transition = 'opacity 0.6s';
+        progressEl.style.opacity = '0';
+        setTimeout(() => {
+          progressEl.style.display = 'none';
+          progressEl.style.opacity = '';
+          progressEl.style.transition = '';
+          outputEl.style.display = 'block';
+          setFeatureStateRaw(key, 'idle');
+        }, 600);
+      }, 1000);
+    } else {
+      // idle
+      progressEl.style.display = 'none';
+      outputEl.style.display = 'block';
+    }
+  }
+
+  function setFeatureStateRaw(key, state) {
+    localStorage.setItem('feature-state-' + key, state);
+  }
+
+  function completeFeature(key) {
+    setFeatureState(key, 'complete');
+  }
+
+  // Auto-timer: if in building state for 30s, transition to complete
+  function checkBuildTimers() {
+    ['camera-skills'].forEach(key => {
+      if (getFeatureState(key) === 'building') {
+        const start = parseInt(localStorage.getItem('feature-state-' + key + '-start') || '0');
+        if (start && (Date.now() - start) >= 30000) {
+          setFeatureState(key, 'complete');
+        }
+      }
+    });
+  }
+
+  // Init all cards
+  ['camera-skills'].forEach(key => renderCardState(key));
+  setInterval(checkBuildTimers, 2000);
+
+  // ===== Output panel actions =====
+  async function downloadFeature(key) {
+    const files = FEATURE_FILES[key];
+    if (!files || typeof JSZip === 'undefined') {
+      showToast('JSZip not loaded yet, try again.', true); return;
+    }
+    const btn = event.currentTarget;
+    btn.textContent = '⏳ Zipping...'; btn.disabled = true;
+    try {
+      const zip = new JSZip();
+      for (const file of files) {
+        const url = FEATURE_BASE_URL + file;
+        const resp = await fetch(url);
+        if (resp.ok) {
+          zip.file(file, await resp.text());
+        }
+      }
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = key + '.zip';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast('Download started!');
+    } catch (e) {
+      showToast('Download failed. Try again.', true);
+    } finally {
+      btn.textContent = '⬇ Download'; btn.disabled = false;
+    }
+  }
+
+  function toggleFigmaPopover(key) {
+    const pop = document.getElementById('figma-' + key);
+    pop.style.display = pop.style.display === 'block' ? 'none' : 'block';
+    if (pop.style.display === 'block') {
+      pop.querySelector('input').focus();
+    }
+  }
+
+  async function submitFigmaExport(key) {
+    const input = document.getElementById('figma-url-' + key);
+    const url = input.value.trim();
+    if (!url) { showToast('Please enter a Figma URL.', true); return; }
+    const featureName = document.querySelector('[data-card-id="' + key + '"] .card-name')?.textContent || key;
+    try {
+      await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: '🎨 **Figma Export Request**\nFeature: ' + featureName + '\nFigma URL: ' + url })
+      });
+    } catch(e) {}
+    showToast('Exporting to Figma... (This feature requires Claire\'s backend — request sent to #product-team)');
+    document.getElementById('figma-' + key).style.display = 'none';
+    input.value = '';
+  }
+
+  function generatePRD(key) {
+    const btn = document.getElementById('prd-btn-' + key);
+    btn.textContent = '⏳ Generating PRD...';
+    btn.disabled = true;
+    setTimeout(() => {
+      window.location.href = 'prd-review.html?feature=' + key;
+    }, 2000);
   }
 
   // ===== Modal =====
@@ -679,9 +558,9 @@
   function closeModal() {
     document.getElementById('featureModal').classList.remove('active');
     document.body.style.overflow = '';
-    // Reset form
     document.getElementById('featureDesc').value = '';
-    document.getElementById('uploadNotes').value = '';
+    document.getElementById('prdUrl').value = '';
+    document.getElementById('figmaUrl').value = '';
     uploadedFiles = [];
     renderThumbnails();
   }
@@ -693,14 +572,6 @@
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeModal();
   });
-
-  // ===== Tabs =====
-  function switchTab(name, btn) {
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('tab-' + name).classList.add('active');
-    btn.classList.add('active');
-  }
 
   // ===== File uploads =====
   let uploadedFiles = [];
@@ -723,89 +594,69 @@
     uploadedFiles.forEach((f, i) => {
       const item = document.createElement('div');
       item.className = 'thumbnail-item';
-      item.innerHTML = `
-        <img src="${f.dataUrl}" alt="${f.name}" title="${f.name}" />
-        <button class="thumbnail-remove" onclick="removeFile(${i})" title="Remove">×</button>
-      `;
+      item.innerHTML = `<img src="${f.dataUrl}" alt="${f.name}" title="${f.name}" /><button class="thumbnail-remove" onclick="removeFile(${i})" title="Remove">×</button>`;
       grid.appendChild(item);
     });
   }
 
-  function removeFile(i) {
-    uploadedFiles.splice(i, 1);
-    renderThumbnails();
-  }
+  function removeFile(i) { uploadedFiles.splice(i, 1); renderThumbnails(); }
 
-  // Drag-and-drop
   const dragZone = document.getElementById('dragZone');
   dragZone.addEventListener('dragover', e => { e.preventDefault(); dragZone.classList.add('drag-over'); });
   dragZone.addEventListener('dragleave', () => dragZone.classList.remove('drag-over'));
   dragZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dragZone.classList.remove('drag-over');
+    e.preventDefault(); dragZone.classList.remove('drag-over');
     handleFiles(e.dataTransfer.files);
   });
 
   // ===== Submit =====
-  const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+  async function submitFeature() {
+    const btn = document.getElementById('submitBtn');
+    const desc = document.getElementById('featureDesc').value.trim();
+    const prdUrl = document.getElementById('prdUrl').value.trim();
+    const figmaUrl = document.getElementById('figmaUrl').value.trim();
 
-  async function submitFeature(tab) {
-    const btnId = tab === 'describe' ? 'submitDescBtn' : 'submitUploadBtn';
-    const btn = document.getElementById(btnId);
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
+    if (!desc && !prdUrl && !figmaUrl && uploadedFiles.length === 0) {
+      showToast('Please fill at least one section.', true); return;
+    }
+
+    btn.disabled = true; btn.textContent = 'Sending...';
+
+    let msgLines = ['🛠️ **New UI Feature Request**', ''];
+    if (desc) msgLines.push('**Description:** ' + desc);
+    if (prdUrl) msgLines.push('**PRD URL:** ' + prdUrl);
+    if (figmaUrl) msgLines.push('**Figma URL:** ' + figmaUrl);
+    if (uploadedFiles.length > 0) msgLines.push('📎 ' + uploadedFiles.length + ' image(s) attached');
+    const msgText = msgLines.join('\n');
 
     try {
-      if (tab === 'describe') {
-        const text = document.getElementById('featureDesc').value.trim();
-        if (!text) { showToast('Please describe the feature first.', true); btn.disabled = false; btn.textContent = 'Request Feature'; return; }
-
+      if (uploadedFiles.length > 0) {
+        const form = new FormData();
+        form.append('payload_json', JSON.stringify({ content: msgText }));
+        for (let i = 0; i < uploadedFiles.length; i++) {
+          const f = uploadedFiles[i];
+          const resp = await fetch(f.dataUrl);
+          const blob = await resp.blob();
+          form.append('files[' + i + ']', blob, f.name);
+        }
+        await fetch(WEBHOOK, { method: 'POST', body: form });
+      } else {
         await fetch(WEBHOOK, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            content: `🛠️ **New UI Feature Request**\n\n**Description:**\n${text}`
-          })
+          body: JSON.stringify({ content: msgText })
         });
-      } else {
-        const notes = document.getElementById('uploadNotes').value.trim();
-
-        if (uploadedFiles.length === 0) {
-          // Text-only from upload tab
-          const msgText = notes
-            ? `🛠️ **New UI Feature Request**\n\n**Notes:**\n${notes}`
-            : '🛠️ **New UI Feature Request**\n\n_(No description provided)_';
-          await fetch(WEBHOOK, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: msgText })
-          });
-        } else {
-          // Multipart with images
-          const form = new FormData();
-          const msgText = notes
-            ? `🛠️ **New UI Feature Request**\n\n**Notes:**\n${notes}`
-            : `🛠️ **New UI Feature Request**\n\n_(${uploadedFiles.length} image(s) attached)_`;
-          form.append('payload_json', JSON.stringify({ content: msgText }));
-
-          for (let i = 0; i < uploadedFiles.length; i++) {
-            const f = uploadedFiles[i];
-            const resp = await fetch(f.dataUrl);
-            const blob = await resp.blob();
-            form.append(`files[${i}]`, blob, f.name);
-          }
-
-          await fetch(WEBHOOK, { method: 'POST', body: form });
-        }
       }
 
-      showToast('Feature request sent! Claire will build it soon. 🚀');
+      // Trigger building state on Camera Skills card
+      setFeatureState('camera-skills', 'building');
+
+      showToast('Request sent! Building now...');
       closeModal();
     } catch (err) {
       showToast('Failed to send. Please try again.', true);
     } finally {
-      btn.disabled = false;
-      btn.textContent = 'Request Feature';
+      btn.disabled = false; btn.textContent = 'Request Feature →';
     }
   }
 
@@ -813,10 +664,19 @@
   function showToast(msg, isError) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
-    toast.style.borderLeftColor = isError ? '#ff4466' : '#00b4d8';
+    toast.style.borderLeftColor = isError ? '#ff4466' : '#f96400';
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 4000);
   }
+
+  // Check for deleted param
+  (function() {
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('deleted') === '1') {
+      showToast('PRD deleted.');
+      history.replaceState({}, '', 'index.html');
+    }
+  })();
 </script>
 
 </body>
