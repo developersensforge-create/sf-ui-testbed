@@ -272,7 +272,7 @@
     </div>
     <!-- Package camera PiP -->
     <div class="pkg-pip" onclick="event.stopPropagation(); showScreen('s-package')">
-      <div class="pkg-pip-feed">📦</div>
+      <div class="pkg-pip-feed" style="color:rgba(255,255,255,0.5);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
       <div class="pkg-label">
         <span class="pkg-label-text">Package Cam</span>
         <span class="pkg-badge">1 PKG</span>
@@ -319,7 +319,7 @@
 
   <!-- Package status strip -->
   <div class="pkg-status-strip" onclick="showScreen('s-package')">
-    <span class="pkg-icon">📦</span>
+    <span class="pkg-icon" style="color:var(--orange);display:flex;align-items:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
     <div class="pkg-info">
       <div class="pkg-title">Package at your door</div>
       <div class="pkg-sub">Detected 29 minutes ago · still present</div>
@@ -353,29 +353,29 @@
     <div class="event-item" onclick="showScreen('s-ring')">
       <div class="event-dot"></div>
       <div class="event-content">
-        <div class="event-title">🔔 Doorbell Pressed</div>
+        <div class="event-title">Doorbell Pressed</div>
         <div class="event-meta">9:38 AM · Front Door</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">🔔</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
     </div>
     <div class="event-item" onclick="showScreen('s-package')">
       <div class="event-dot pkg"></div>
       <div class="event-content">
-        <div class="event-title">📦 Package Delivered</div>
+        <div class="event-title">Package Delivered</div>
         <div class="event-meta">9:12 AM · Package Cam</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">📦</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
     </div>
     <div class="event-item">
       <div class="event-dot motion"></div>
       <div class="event-content">
-        <div class="event-title">🚶 Person Detected</div>
+        <div class="event-title">Person Detected</div>
         <div class="event-meta">8:45 AM · Front Door</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">👤</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
     </div>
     <div style="height:12px;"></div>
   </div>
@@ -396,7 +396,7 @@
     <div class="ring-ripple"></div>
     <div class="ring-ripple"></div>
     <div class="ring-ripple"></div>
-    <div class="ring-center">🔔</div>
+    <div class="ring-center" style="color:#fff;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
     <div class="ring-title">Someone at your door</div>
     <div class="ring-sub">Front Door · 9:38 AM</div>
     <div class="ring-snapshot">👤</div>
@@ -431,7 +431,7 @@
   <div class="pkg-detail-video">
     <div class="watermark">SENSFORGE · PKG CAM</div>
     <div class="timestamp">04/02/2026 09:12 AM</div>
-    📦
+    <div style="color:rgba(255,255,255,0.3);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
   </div>
   <div class="scroll-area">
     <div class="info-card" style="margin-top:12px;">
@@ -450,7 +450,7 @@
           <div class="pe-line"></div>
         </div>
         <div class="pe-content">
-          <div class="pe-title">📦 Package Arrived</div>
+          <div class="pe-title">Package Arrived</div>
           <div class="pe-time">9:12 AM today</div>
           <span class="event-ai-tag">First detected</span>
         </div>
@@ -460,7 +460,7 @@
           <div class="pe-dot" style="background:#FF9800;"></div>
         </div>
         <div class="pe-content">
-          <div class="pe-title">⏳ Package Still Here</div>
+          <div class="pe-title">Package Still Here</div>
           <div class="pe-time">9:41 AM · +29 min</div>
           <span class="badge" style="display:inline-block;margin-top:4px;background:#FFF3E0;color:#E65100;">Reminder sent</span>
         </div>
@@ -515,56 +515,56 @@
     <div class="event-item" onclick="showScreen('s-ring')">
       <div class="event-dot"></div>
       <div class="event-content">
-        <div class="event-title">🔔 Doorbell Pressed — Visitor at front door</div>
+        <div class="event-title">Doorbell Pressed — Visitor at front door</div>
         <div class="event-meta">9:38 AM · Front Door</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">🔔</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
     </div>
     <div class="event-item" onclick="showScreen('s-package')">
       <div class="event-dot pkg"></div>
       <div class="event-content">
-        <div class="event-title">📦 Package Delivered at entrance</div>
+        <div class="event-title">Package Delivered at entrance</div>
         <div class="event-meta">9:12 AM · Package Cam</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">📦</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
     </div>
     <div class="event-item">
       <div class="event-dot motion"></div>
       <div class="event-content">
-        <div class="event-title">🚶 Person Walking Past</div>
+        <div class="event-title">Person Walking Past</div>
         <div class="event-meta">8:45 AM · Front Door</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">👤</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
     </div>
     <div class="event-item">
       <div class="event-dot" style="background:#9C27B0;"></div>
       <div class="event-content">
-        <div class="event-title">🚗 Vehicle in Driveway</div>
+        <div class="event-title">Vehicle in Driveway</div>
         <div class="event-meta">8:12 AM · Front Door</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">🚗</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg></div>
     </div>
     <div class="event-item">
       <div class="event-dot"></div>
       <div class="event-content">
-        <div class="event-title">🔔 Doorbell Pressed — Morning delivery</div>
+        <div class="event-title">Doorbell Pressed — Morning delivery</div>
         <div class="event-meta">7:55 AM · Front Door</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">🔔</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
     </div>
     <div class="event-item">
       <div class="event-dot motion"></div>
       <div class="event-content">
-        <div class="event-title">🚶 Early Morning Jogger</div>
+        <div class="event-title">Early Morning Jogger</div>
         <div class="event-meta">6:30 AM · Front Door</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">👤</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
     </div>
     <div style="height:12px;"></div>
   </div>
@@ -595,12 +595,12 @@
       </div>
     </div>
     <div class="list-row">
-      <div class="row-icon">⚡</div>
+      <div class="row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
       <div class="row-content"><div class="name">Device On</div></div>
       <div class="row-right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
     </div>
     <div class="list-row">
-      <div class="row-icon">🔋</div>
+      <div class="row-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v4"/></svg></div>
       <div class="row-content"><div class="name">Battery & Wake-up</div><div class="sub">72% · AOR mode active to save power</div></div>
       <div class="row-right"><div class="chevron">›</div></div>
     </div>
