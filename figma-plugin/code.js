@@ -1,315 +1,248 @@
-// Sensforge Skills UI — Figma Plugin
-// Creates all 6 screens as editable frames
-
+// Sensforge Skills UI — Figma Plugin v2
 figma.showUI(__html__, { width: 300, height: 200 });
 
-const W = 390;
-const H = 844;
-const GAP = 60;
-
-// Brand colors
-const ORANGE = { r: 0.976, g: 0.392, b: 0 };       // #f96400
+const W = 390, H = 844, GAP = 60;
+const ORANGE = { r: 0.976, g: 0.392, b: 0 };
 const ORANGE_LIGHT = { r: 1, g: 0.95, b: 0.925 };
 const WHITE = { r: 1, g: 1, b: 1 };
 const GRAY_BG = { r: 0.961, g: 0.961, b: 0.961 };
-const DIVIDER = { r: 0.941, g: 0.941, b: 0.941 };
-const TEXT = { r: 0.102, g: 0.102, b: 0.102 };
-const TEXT_SUB = { r: 0.467, g: 0.467, b: 0.467 };
-const BLACK = { r: 0, g: 0, b: 0 };
+const DIVIDER = { r: 0.92, g: 0.92, b: 0.92 };
+const TEXT = { r: 0.1, g: 0.1, b: 0.1 };
+const TEXT_SUB = { r: 0.55, g: 0.55, b: 0.55 };
 
-function hex(r,g,b) { return {r, g, b}; }
+// Font to use — will be set after loading
+let FONT_REG = { family: 'Roboto', style: 'Regular' };
+let FONT_MED = { family: 'Roboto', style: 'Medium' };
+let FONT_BOLD = { family: 'Roboto', style: 'Bold' };
 
-async function loadFont(style = 'Regular') {
-  await figma.loadFontAsync({ family: 'Inter', style });
+async function loadFonts() {
+  // Try Inter first, fall back to Roboto
+  try {
+    await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
+    await figma.loadFontAsync({ family: 'Inter', style: 'Medium' });
+    await figma.loadFontAsync({ family: 'Inter', style: 'Bold' });
+    FONT_REG = { family: 'Inter', style: 'Regular' };
+    FONT_MED = { family: 'Inter', style: 'Medium' };
+    FONT_BOLD = { family: 'Inter', style: 'Bold' };
+    return;
+  } catch(e) {}
+  try {
+    await figma.loadFontAsync({ family: 'Roboto', style: 'Regular' });
+    await figma.loadFontAsync({ family: 'Roboto', style: 'Medium' });
+    await figma.loadFontAsync({ family: 'Roboto', style: 'Bold' });
+    return;
+  } catch(e) {}
+  // Last resort
+  await figma.loadFontAsync({ family: 'Arial', style: 'Regular' });
+  FONT_REG = FONT_MED = FONT_BOLD = { family: 'Arial', style: 'Regular' };
 }
 
-function frame(name, x, y, w, h, fills = [{ type: 'SOLID', color: WHITE }]) {
+function mkFrame(name, x) {
   const f = figma.createFrame();
-  f.name = name;
-  f.x = x; f.y = y;
-  f.resize(w, h);
-  f.fills = fills;
-  f.cornerRadius = 0;
+  f.name = name; f.x = x; f.y = 0;
+  f.resize(W, H);
+  f.fills = [{ type: 'SOLID', color: WHITE }];
   f.clipsContent = true;
   return f;
 }
 
-function rect(parent, x, y, w, h, color, radius = 0) {
+function mkRect(parent, x, y, w, h, color, radius = 0) {
   const r = figma.createRectangle();
-  r.x = x; r.y = y;
-  r.resize(w, h);
+  r.x = x; r.y = y; r.resize(w, h);
   r.fills = [{ type: 'SOLID', color }];
   r.cornerRadius = radius;
   parent.appendChild(r);
   return r;
 }
 
-function text(parent, content, x, y, fontSize, color, weight = 'Regular', maxW = 0) {
+function mkText(parent, str, x, y, size, color, bold = false) {
   const t = figma.createText();
-  t.fontName = { family: 'Inter', style: weight };
-  t.characters = content;
-  t.fontSize = fontSize;
+  t.fontName = bold ? FONT_BOLD : FONT_REG;
+  t.characters = String(str);
+  t.fontSize = size;
   t.fills = [{ type: 'SOLID', color }];
   t.x = x; t.y = y;
-  if (maxW > 0) { t.textAutoResize = 'HEIGHT'; t.resize(maxW, 20); }
   parent.appendChild(t);
   return t;
 }
 
-function divider(parent, y, indent = 0) {
-  rect(parent, indent, y, W - indent, 1, DIVIDER);
+function statusBar(f) {
+  mkRect(f, 0, 0, W, 44, WHITE);
+  mkText(f, '9:41', 20, 14, 12, TEXT, true);
+  mkText(f, '88%', W-50, 14, 12, TEXT, false);
 }
 
-function statusBar(parent) {
-  rect(parent, 0, 0, W, 44, WHITE);
-  text(parent, '9:41', 20, 14, 12, TEXT, 'Bold');
-  text(parent, '📶 🔋', W - 60, 14, 12, TEXT, 'Regular');
+function topNav(f, title) {
+  mkRect(f, 0, 44, W, 52, WHITE);
+  mkRect(f, 0, 95, W, 1, DIVIDER);
+  mkText(f, '<', 16, 56, 22, ORANGE, true);
+  mkText(f, title, W/2 - title.length * 4, 59, 17, TEXT, true);
 }
 
-function topNav(parent, title, hasBack = true, y = 44) {
-  rect(parent, 0, y, W, 52, WHITE);
-  divider(parent, y + 52);
-  if (hasBack) text(parent, '‹', 16, y + 12, 24, { r: 0.976, g: 0.392, b: 0 }, 'Bold');
-  text(parent, title, W/2 - 80, y + 14, 17, TEXT, 'Bold');
-}
-
-function orangeBtn(parent, label, x, y, w) {
-  rect(parent, x, y, w, 48, ORANGE, 12);
-  text(parent, label, x + w/2 - 40, y + 14, 16, WHITE, 'Bold');
-}
-
-function listRow(parent, label, sublabel, y, hasChevron = true) {
-  rect(parent, 0, y, W, sublabel ? 68 : 52, WHITE);
-  divider(parent, y + (sublabel ? 68 : 52));
-  const icon = rect(parent, 16, y + 8, 36, 36, GRAY_BG, 8);
-  text(parent, label, 68, y + (sublabel ? 10 : 15), 15, TEXT, 'Medium');
-  if (sublabel) text(parent, sublabel, 68, y + 30, 12, TEXT_SUB, 'Regular');
-  if (hasChevron) text(parent, '›', W - 28, y + (sublabel ? 20 : 17), 18, { r: 0.8, g: 0.8, b: 0.8 }, 'Regular');
-  return sublabel ? 68 : 52;
-}
-
-function toggleRow(parent, label, isOn, y) {
-  rect(parent, 0, y, W, 52, WHITE);
-  divider(parent, y + 52);
-  rect(parent, 16, y + 8, 36, 36, GRAY_BG, 8);
-  text(parent, label, 68, y + 15, 15, TEXT, 'Medium');
-  // Toggle
-  const toggleBg = rect(parent, W - 66, y + 14, 50, 28, isOn ? ORANGE : DIVIDER, 14);
-  rect(parent, isOn ? W - 26 : W - 56, y + 17, 22, 22, WHITE, 11);
+function listRow(f, label, y, showToggle = false, toggleOn = false, showChevron = true) {
+  mkRect(f, 0, y, W, 52, WHITE);
+  mkRect(f, 0, y+51, W, 1, DIVIDER);
+  mkRect(f, 16, y+8, 36, 36, GRAY_BG, 8);
+  mkText(f, label, 68, y+16, 15, TEXT, false);
+  if (showToggle) {
+    mkRect(f, W-66, y+14, 50, 28, toggleOn ? ORANGE : DIVIDER, 14);
+    mkRect(f, toggleOn ? W-26 : W-58, y+17, 22, 22, WHITE, 11);
+  } else if (showChevron) {
+    mkText(f, '>', W-28, y+16, 16, DIVIDER, false);
+  }
   return 52;
 }
 
-// ── SCREEN 1: My Skills ────────────────────────────────
-async function buildMySkills(x) {
-  const f = frame('P1 — My Skills', x, 0, W, H);
+function orangeBtn(f, label, y) {
+  mkRect(f, 16, y, W-32, 50, ORANGE, 12);
+  mkText(f, label, W/2 - label.length*3.5, y+14, 16, WHITE, true);
+}
+
+function chip(f, label, x, y) {
+  const w = label.length * 8 + 24;
+  mkRect(f, x, y, w, 30, ORANGE_LIGHT, 15);
+  mkText(f, label, x+10, y+7, 13, ORANGE, false);
+  return w + 8;
+}
+
+// ── Screen builders ──────────────────────────────────
+
+async function s1_MySkills(x) {
+  const f = mkFrame('P1 — My Skills', x);
   statusBar(f);
-  topNav(f, 'My Skills', false);
-
+  topNav(f, 'My Skills');
   let y = 112;
-  rect(f, 0, y, W, 50, GRAY_BG);
-  text(f, 'Active Skills', 16, y + 16, 13, TEXT_SUB, 'Bold');
-  y += 50;
-
-  // Skill cards
-  const skills = [
-    ['Person at Front Door', 'If person detected → Send notification'],
-    ['Package Delivered', 'If package detected → Alert + Record'],
-  ];
-  for (const [title, desc] of skills) {
-    rect(f, 16, y, W - 32, 72, WHITE, 12);
-    rect(f, 16, y, W - 32, 72, { r: 0, g: 0, b: 0, a: 0.03 }, 12);
-    text(f, title, 32, y + 12, 15, TEXT, 'SemiBold', W - 80);
-    text(f, desc, 32, y + 34, 12, TEXT_SUB, 'Regular', W - 80);
-    rect(f, W - 56, y + 24, 28, 28, ORANGE_LIGHT, 14);
-    text(f, '›', W - 44, y + 28, 14, ORANGE, 'Bold');
-    y += 84;
+  mkRect(f, 0, y, W, 40, GRAY_BG);
+  mkText(f, 'ACTIVE SKILLS', 16, y+13, 11, TEXT_SUB, true);
+  y += 40;
+  for (const [t, d] of [['Person at Front Door','If person detected → Send notification'],['Package Delivered','If package detected → Alert + Record']]) {
+    mkRect(f, 12, y, W-24, 70, GRAY_BG, 12);
+    mkText(f, t, 28, y+12, 15, TEXT, true);
+    mkText(f, d, 28, y+34, 12, TEXT_SUB, false);
+    mkText(f, '>', W-32, y+24, 16, ORANGE, true);
+    y += 82;
   }
-
   y += 16;
-  rect(f, 0, y, W, 50, GRAY_BG);
-  text(f, 'New Skill Template', 16, y + 16, 13, TEXT_SUB, 'Bold');
-  y += 50;
-
-  rect(f, 16, y, W - 32, 56, ORANGE_LIGHT, 12);
-  text(f, '+ Create New Skill', W/2 - 60, y + 18, 15, ORANGE, 'SemiBold');
-
+  mkRect(f, 0, y, W, 40, GRAY_BG);
+  mkText(f, 'NEW SKILL', 16, y+13, 11, TEXT_SUB, true);
+  y += 40;
+  mkRect(f, 12, y, W-24, 52, ORANGE_LIGHT, 12);
+  mkText(f, '+ Create New Skill', W/2-60, y+15, 15, ORANGE, true);
   figma.currentPage.appendChild(f);
   return f;
 }
 
-// ── SCREEN 2: Select Trigger ──────────────────────────
-async function buildSelectTrigger(x) {
-  const f = frame('P2 — Select Trigger', x, 0, W, H);
+async function s2_SelectTrigger(x) {
+  const f = mkFrame('P2 — Select Trigger', x);
   statusBar(f);
   topNav(f, 'Select Trigger');
-
   let y = 112;
-  // Context pill
-  rect(f, 16, y, 200, 32, ORANGE_LIGHT, 16);
-  text(f, 'If ... on ...', 28, y + 8, 13, ORANGE, 'SemiBold');
-  y += 52;
-
-  const triggers = [
-    'Person Detected', 'Person Coming Home', 'Near Car / Driveway',
-    'Motion', 'Vehicle', 'Package Delivered',
-  ];
-  for (const t of triggers) {
-    rect(f, 0, y, W, 52, WHITE);
-    divider(f, y + 52, 16);
-    rect(f, 16, y + 8, 36, 36, GRAY_BG, 8);
-    text(f, t, 68, y + 16, 15, TEXT, 'Regular');
-    text(f, '›', W - 28, y + 17, 18, DIVIDER, 'Regular');
+  mkRect(f, 16, y, 220, 30, ORANGE_LIGHT, 15);
+  mkText(f, 'If ... on ...', 28, y+7, 13, ORANGE, false);
+  y += 48;
+  for (const t of ['Person Detected','Person Coming Home','Near Car / Driveway','Motion','Vehicle','Package Delivered']) {
+    listRow(f, t, y);
     y += 52;
   }
-
   figma.currentPage.appendChild(f);
   return f;
 }
 
-// ── SCREEN 3: Select Device ───────────────────────────
-async function buildSelectDevice(x) {
-  const f = frame('P4 — Select Device', x, 0, W, H);
-  statusBar(f);
-  topNav(f, 'Select Device');
-
-  let y = 96 + 52;
-  rect(f, 16, y - 52, 260, 32, ORANGE_LIGHT, 16);
-  text(f, 'If Person Detected on ...', 28, y - 44, 13, ORANGE, 'SemiBold');
-
-  const devices = ['Living Room Cam', 'Front Door Cam', 'Office Cam'];
-  for (const d of devices) {
-    rect(f, 0, y, W, 52, WHITE);
-    divider(f, y + 52, 16);
-    rect(f, 16, y + 8, 36, 36, GRAY_BG, 8);
-    text(f, d, 68, y + 16, 15, TEXT, 'Regular');
-    y += 52;
-  }
-
-  figma.currentPage.appendChild(f);
-  return f;
-}
-
-// ── SCREEN 4: Select Action ───────────────────────────
-async function buildSelectAction(x) {
-  const f = frame('P5 — Select Action', x, 0, W, H);
-  statusBar(f);
-  topNav(f, 'Select Action');
-
-  let y = 96 + 52;
-  rect(f, 16, y - 52, 300, 32, ORANGE_LIGHT, 16);
-  text(f, 'If Person Detected on Front Door', 28, y - 44, 13, ORANGE, 'SemiBold');
-
-  const actions = [
-    ['Send Notification', true],
-    ['Record', false],
-    ['Turn on Light', false],
-    ['Play Customized Voice', false],
-    ['Trigger Siren', false],
-    ['Call Me', false],
-  ];
-  for (const [label, checked] of actions) {
-    rect(f, 0, y, W, 52, checked ? ORANGE_LIGHT : WHITE);
-    divider(f, y + 52);
-    // Checkbox
-    const cb = rect(f, 16, y + 15, 22, 22, checked ? ORANGE : WHITE, 6);
-    if (!checked) {
-      // Border only
-      const border = rect(f, 16, y + 15, 22, 22, { r: 0.85, g: 0.85, b: 0.85 }, 6);
-    }
-    if (checked) text(f, '✓', 20, y + 17, 13, WHITE, 'Bold');
-    text(f, label, 52, y + 16, 15, TEXT, checked ? 'SemiBold' : 'Regular');
-    y += 52;
-  }
-
-  // Activate button
-  orangeBtn(f, '✅  Activate Now', 16, H - 90, W - 32);
-
-  figma.currentPage.appendChild(f);
-  return f;
-}
-
-// ── SCREEN 5: Trigger Details ─────────────────────────
-async function buildTriggerDetails(x) {
-  const f = frame('P3 — Trigger Details', x, 0, W, H);
+async function s3_TriggerDetails(x) {
+  const f = mkFrame('P3 — Trigger Details', x);
   statusBar(f);
   topNav(f, 'Trigger Details');
-
   let y = 112;
-  rect(f, 16, y, 260, 32, ORANGE_LIGHT, 16);
-  text(f, 'If Person Detected ...', 28, y + 8, 13, ORANGE, 'SemiBold');
+  mkRect(f, 16, y, 240, 30, ORANGE_LIGHT, 15);
+  mkText(f, 'If Person Detected ...', 28, y+7, 13, ORANGE, false);
   y += 52;
-
-  text(f, 'Add conditions (optional)', 16, y, 13, TEXT_SUB, 'Regular');
+  mkText(f, 'Add conditions (optional)', 16, y, 13, TEXT_SUB, false);
   y += 28;
-
-  // Suggestion chips
-  const chips = ['At Night', 'Motion > 10s', 'Near entrance'];
   let cx = 16;
-  for (const chip of chips) {
-    const cw = chip.length * 8 + 24;
-    rect(f, cx, y, cw, 32, ORANGE_LIGHT, 16);
-    text(f, chip, cx + 10, y + 8, 13, ORANGE, 'Medium');
-    cx += cw + 8;
-  }
+  for (const c of ['At Night', 'Motion > 10s', 'Near entrance']) cx += chip(f, c, cx, y);
   y += 52;
-
-  orangeBtn(f, 'Continue →', 16, H - 90, W - 32);
-
+  mkText(f, 'Your conditions', 16, y, 13, TEXT_SUB, false);
+  y += 28;
+  mkRect(f, 16, y, W-32, 52, GRAY_BG, 10);
+  mkText(f, 'No conditions added yet', 24, y+16, 14, TEXT_SUB, false);
+  orangeBtn(f, 'Continue', H-90);
   figma.currentPage.appendChild(f);
   return f;
 }
 
-// ── SCREEN 6: Voice Memo ──────────────────────────────
-async function buildVoiceMemo(x) {
-  const f = frame('P6 — Voice Memo', x, 0, W, H);
+async function s4_SelectDevice(x) {
+  const f = mkFrame('P4 — Select Device', x);
+  statusBar(f);
+  topNav(f, 'Select Device');
+  let y = 112;
+  mkRect(f, 16, y, 280, 30, ORANGE_LIGHT, 15);
+  mkText(f, 'If Person Detected on ...', 28, y+7, 13, ORANGE, false);
+  y += 48;
+  for (const d of ['Living Room Cam','Front Door Cam','Office Cam','Game Room Cam']) {
+    listRow(f, d, y);
+    y += 52;
+  }
+  figma.currentPage.appendChild(f);
+  return f;
+}
+
+async function s5_SelectAction(x) {
+  const f = mkFrame('P5 — Select Action', x);
+  statusBar(f);
+  topNav(f, 'Select Action');
+  let y = 112;
+  mkRect(f, 16, y, 300, 30, ORANGE_LIGHT, 15);
+  mkText(f, 'If Person Detected on Front Door', 28, y+7, 12, ORANGE, false);
+  y += 48;
+  const actions = [['Send Notification', true],['Record', false],['Turn on Light', false],['Play Customized Voice', false],['Trigger Siren', false],['Call Me', false]];
+  for (const [label, checked] of actions) {
+    mkRect(f, 0, y, W, 52, checked ? ORANGE_LIGHT : WHITE);
+    mkRect(f, 0, y+51, W, 1, DIVIDER);
+    mkRect(f, 16, y+15, 22, 22, checked ? ORANGE : WHITE, 6);
+    mkRect(f, 16, y+15, 22, 22, DIVIDER, 6); // border
+    if (checked) { const check = figma.createRectangle(); check.resize(12,2); check.x=20; check.y=y+26; check.fills=[{type:'SOLID',color:WHITE}]; f.appendChild(check); }
+    mkText(f, label, 52, y+16, 15, TEXT, checked);
+    y += 52;
+  }
+  orangeBtn(f, 'Activate Now', H-90);
+  figma.currentPage.appendChild(f);
+  return f;
+}
+
+async function s6_VoiceMemo(x) {
+  const f = mkFrame('P6 — Voice Memo', x);
   statusBar(f);
   topNav(f, 'Record Voice Memo');
-
-  // Mic circle
-  rect(f, W/2 - 52, 220, 104, 104, ORANGE_LIGHT, 52);
-  text(f, '🎙️', W/2 - 16, 248, 36, TEXT, 'Regular');
-  text(f, 'Tap to record', W/2 - 48, 344, 15, TEXT_SUB, 'Regular');
-  text(f, '00:00', W/2 - 22, 378, 20, ORANGE, 'Bold');
-
-  orangeBtn(f, '▶  Play Preview', 16, H - 160, W - 32);
-  orangeBtn(f, '✅  Use This Recording', 16, H - 100, W - 32);
-
+  mkRect(f, W/2-56, 200, 112, 112, ORANGE_LIGHT, 56);
+  mkRect(f, W/2-12, 236, 24, 40, ORANGE, 8);
+  mkRect(f, W/2-20, 270, 40, 8, ORANGE, 4);
+  mkRect(f, W/2-2, 278, 4, 16, ORANGE, 2);
+  mkText(f, 'Tap to record', W/2-50, 330, 15, TEXT_SUB, false);
+  mkText(f, '00:00', W/2-22, 360, 20, ORANGE, true);
+  orangeBtn(f, 'Play Preview', H-160);
+  orangeBtn(f, 'Use This Recording', H-98);
   figma.currentPage.appendChild(f);
   return f;
 }
 
 figma.ui.onmessage = async (msg) => {
   if (msg.type !== 'build') return;
-
   figma.ui.postMessage({ status: 'Loading fonts...' });
-  try {
-    await loadFont('Regular');
-    await loadFont('Medium');
-    await loadFont('SemiBold');
-    await loadFont('Bold');
-  } catch(e) {
-    // Fallback
-    try { await figma.loadFontAsync({ family: 'Inter', style: 'Regular' }); } catch(e2) {}
-  }
+  await loadFonts();
+  figma.ui.postMessage({ status: 'Building 6 screens...' });
+  
+  // Delete any previous incomplete builds
+  const toDelete = figma.currentPage.children.filter(n => n.name.startsWith('P'));
+  for (const n of toDelete) n.remove();
 
-  figma.ui.postMessage({ status: 'Building screens...' });
-
-  const screens = [
-    buildMySkills,
-    buildSelectTrigger,
-    buildTriggerDetails,
-    buildSelectDevice,
-    buildSelectAction,
-    buildVoiceMemo,
-  ];
-
-  let x = 0;
-  for (const builder of screens) {
-    await builder(x);
-    x += W + GAP;
-  }
+  await s1_MySkills(0);
+  await s2_SelectTrigger(W + GAP);
+  await s3_TriggerDetails((W + GAP) * 2);
+  await s4_SelectDevice((W + GAP) * 3);
+  await s5_SelectAction((W + GAP) * 4);
+  await s6_VoiceMemo((W + GAP) * 5);
 
   figma.viewport.scrollAndZoomIntoView(figma.currentPage.children);
   figma.ui.postMessage({ status: '✅ Done! 6 screens created.' });
-  setTimeout(() => figma.closePlugin(), 2000);
+  setTimeout(() => figma.closePlugin(), 2500);
 };
