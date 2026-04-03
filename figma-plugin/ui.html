@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { font-family: -apple-system, sans-serif; padding: 16px; margin: 0; color: #1a1a1a; }
+  h3 { margin: 0 0 8px; font-size: 15px; }
+  p { font-size: 13px; color: #666; margin: 0 0 16px; line-height: 1.5; }
+  button { width: 100%; background: #f96400; color: #fff; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  button:active { opacity: 0.85; }
+  .status { margin-top: 12px; font-size: 12px; color: #999; text-align: center; }
+</style>
+</head>
+<body>
+<h3>Sensforge Skills UI</h3>
+<p>Creates all 6 Camera Skills screens as editable frames in your current Figma file. Screens: My Skills, Select Trigger, Trigger Details, Select Device, Select Action, Voice Memo.</p>
+<button onclick="build()">Build All Screens →</button>
+<div class="status" id="status"></div>
+<script>
+function build() {
+  document.getElementById('status').textContent = 'Building screens...';
+  parent.postMessage({ pluginMessage: { type: 'build' } }, '*');
+}
+window.onmessage = (e) => {
+  if (e.data.pluginMessage) {
+    document.getElementById('status').textContent = e.data.pluginMessage.status || '';
+  }
+};
+</script>
+</body>
+</html>
