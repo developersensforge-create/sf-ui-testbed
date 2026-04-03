@@ -738,6 +738,11 @@
   }
 
   function toggleFigmaPopover(key) {
+    // For camera-skills: open the pre-built Figma export page directly
+    if (key === 'camera-skills') {
+      window.open('exports/camera-skills-figma.html', '_blank');
+      return;
+    }
     const pop = document.getElementById('figma-' + key);
     pop.style.display = pop.style.display === 'block' ? 'none' : 'block';
     if (pop.style.display === 'block') pop.querySelector('input').focus();
