@@ -186,22 +186,25 @@
 </script>
 
 <!-- ===== Dev Tools ===== -->
-<div class="dev-tools-outer" style="border-top: 1px dashed #e0e0e0; margin-top: 32px; padding-top: 16px; padding-bottom: 40px; max-width:375px; margin-left:auto; margin-right:auto;">
-  <div class="dev-tools-label">— Dev tools —</div>
-  <button class="dev-request-btn" onclick="toggleDevPanel()">🛠️ UI Improvement Request</button>
+
+<!-- ===== Design Feedback Panel ===== -->
+<div class="dev-tools-outer">
+  <div class="dev-tools-label">— Design Feedback —</div>
+  <button class="dev-request-btn" onclick="toggleDevPanel()">💬 Leave Feedback on This Page</button>
   <div class="dev-panel" id="devPanel">
     <div class="dev-disclaimer">
-      ⚠️ <strong>This is not part of the app UI</strong><br>
-      This section is for the Dev team only. Use it to request design changes or improvements to this page.
+      📝 <strong>Design review notes</strong><br>
+      Share thoughts on layout, flow, or anything that could be improved. Please include your <strong>name</strong> so we know who to follow up with.
     </div>
-    <textarea class="dev-textarea" id="devImprovement" placeholder="Describe what should be improved on this page..."></textarea>
-    <textarea class="dev-textarea" id="devNotes" placeholder="Any additional notes... (optional)"></textarea>
-    <button class="dev-submit-btn" onclick="submitDevRequest()">Send Improvement Request →</button>
-    <button class="dev-prev-toggle" onclick="togglePrevRequests()" id="prevToggle">View past requests (0)</button>
+    <div class="dev-field-label">Your name + feedback</div>
+    <textarea class="dev-textarea" id="devFeedback" placeholder="e.g. Ruizhi — The action selection feels cramped on smaller screens. Consider more spacing between options." rows="4"></textarea>
+    <div class="dev-field-label">Page / context (optional)</div>
+    <textarea class="dev-textarea" id="devNotes" placeholder="Which part of this page? Any specific scenario?" rows="2"></textarea>
+    <button class="dev-submit-btn" onclick="submitFeedback()">Submit Feedback →</button>
+    <button class="dev-prev-toggle" onclick="togglePrevRequests()" id="prevToggle">View my past feedback (0)</button>
     <div class="dev-prev-list" id="devPrevList" style="display:none;"></div>
   </div>
 </div>
-
 <div class="page-toast" id="pageToast"></div>
 
 <script>
@@ -209,9 +212,9 @@
   const PAGE_ID = 'p2';
   const PAGE_NUM = 'P2';
   const PAGE_TITLE = 'Select Trigger';
+  const FEATURE = 'Camera Skills';
   const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
 
-  // ===== Dev panel toggle =====
   window.toggleDevPanel = function() {
     const panel = document.getElementById('devPanel');
     const showing = panel.style.display === 'block';
@@ -219,49 +222,53 @@
     if (!showing) loadPrevRequests();
   };
 
-  // ===== Submit dev request =====
-  window.submitDevRequest = async function() {
-    const improvement = document.getElementById('devImprovement').value.trim();
+  window.submitFeedback = async function() {
+    const feedback = document.getElementById('devFeedback').value.trim();
     const notes = document.getElementById('devNotes').value.trim();
-    if (!improvement) { showPageToast('Please describe what should be improved.', true); return; }
+    if (!feedback) { showPageToast('Please enter your feedback.', true); return; }
 
-    let msg = '🛠️ **UI Improvement Request**\nFeature: Camera Skills\nPage: ' + PAGE_NUM + ' — ' + PAGE_TITLE + '\nImprovement: ' + improvement;
-    if (notes) msg += '\nNotes: ' + notes;
+    const now = new Date();
+    const timestamp = now.toISOString();
+    const localTime = now.toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+
+    let msg = '<@&1487656704463208592> 💬 **Design Feedback**\n';
+    msg += `Feature: ${FEATURE} | Page: ${PAGE_NUM} — ${PAGE_TITLE}\n`;
+    msg += `Time: ${localTime} ET\n`;
+    msg += `Feedback: ${feedback}`;
+    if (notes) msg += `\nContext: ${notes}`;
 
     try {
       await fetch(WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: '<@&1487656704463208592> ' + msg })
+        body: JSON.stringify({ content: msg })
       });
     } catch(e) {}
 
-    // Store in localStorage
-    const key = 'improvements_' + PAGE_ID + '_' + Date.now();
-    const now = new Date().toLocaleString();
-    localStorage.setItem(key, JSON.stringify({ improvement: improvement, notes: notes, time: now }));
+    // Save locally
+    const key = 'feedback_' + PAGE_ID + '_' + Date.now();
+    localStorage.setItem(key, JSON.stringify({ feedback, notes, timestamp, localTime }));
 
-    document.getElementById('devImprovement').value = '';
+    document.getElementById('devFeedback').value = '';
     document.getElementById('devNotes').value = '';
     document.getElementById('devPanel').style.display = 'none';
-    showPageToast('Request sent to Dev team ✅');
+    showPageToast('Feedback saved ✅ — thanks!');
   };
 
-  // ===== Previous requests =====
   function loadPrevRequests() {
     const list = document.getElementById('devPrevList');
     const toggle = document.getElementById('prevToggle');
-    const keys = Object.keys(localStorage).filter(k => k.startsWith('improvements_' + PAGE_ID + '_')).sort().reverse();
-    toggle.textContent = 'View past requests (' + keys.length + ')';
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('feedback_' + PAGE_ID + '_')).sort().reverse();
+    toggle.textContent = 'View my past feedback (' + keys.length + ')';
     list.innerHTML = '';
     keys.forEach(function(key) {
       const data = JSON.parse(localStorage.getItem(key) || '{}');
       const item = document.createElement('div');
       item.className = 'dev-prev-item';
-      item.innerHTML = '<div class="dev-prev-text">' + escHtml(data.improvement || '') + '</div>' +
+      item.innerHTML = '<div class="dev-prev-text">' + escHtml(data.feedback || '') + '</div>' +
         (data.notes ? '<div class="dev-prev-text" style="color:#888">' + escHtml(data.notes) + '</div>' : '') +
-        '<div class="dev-prev-meta">' + (data.time || '') + '</div>' +
-        '<button class="dev-prev-delete" onclick="deletePrevRequest(\'' + key + '\')" title="Delete">🗑️</button>';
+        '<div class="dev-prev-meta">' + (data.localTime || data.timestamp || '') + '</div>' +
+        '<button class="dev-prev-delete" onclick="deletePrev('' + key + '')" title="Delete">🗑️</button>';
       list.appendChild(item);
     });
   }
@@ -272,7 +279,7 @@
     loadPrevRequests();
   };
 
-  window.deletePrevRequest = function(key) {
+  window.deletePrev = function(key) {
     localStorage.removeItem(key);
     loadPrevRequests();
   };
@@ -281,7 +288,6 @@
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  // ===== Toast =====
   window.showPageToast = function(msg, isError) {
     const toast = document.getElementById('pageToast');
     toast.textContent = msg;
