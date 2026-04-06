@@ -122,9 +122,16 @@
       background: #f5f5f5; border: 1.5px dashed #ccc; border-radius: 10px;
       min-height: 120px; display: flex; align-items: center; justify-content: center;
       color: #aaa; font-size: 14px; font-weight: 600; margin: 12px 0 16px;
+      overflow: hidden; position: relative; max-width: 280px;
     }
-    .screenshot-placeholder:has(img) {
-      background: none; border: none; min-height: auto;
+    .screenshot-placeholder img {
+      width: 280px !important;
+      height: auto !important;
+      max-width: 280px !important;
+      display: block !important;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      position: static !important;
     }
 
     /* Table */
@@ -290,12 +297,10 @@
       document.querySelectorAll('.screenshot-placeholder').forEach(el => {
         const key = el.dataset.screen;
         if (key && SCREENSHOTS[key]) {
-          el.innerHTML = '<img src="' + SCREENSHOTS[key] + '" style="width:390px;max-width:100%;height:auto;border-radius:8px;display:block;margin:0 auto;box-shadow:0 4px 16px rgba(0,0,0,0.12);" />';
+          el.innerHTML = '<img src="' + SCREENSHOTS[key] + '" alt="Screen ' + key + '" />';
           el.style.background = 'none';
-          el.style.height = 'auto';
           el.style.minHeight = 'auto';
           el.style.border = 'none';
-          el.style.display = 'block';
         }
       });
     }
