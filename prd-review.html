@@ -280,6 +280,21 @@
       .page-header { padding: 12px 16px; }
     }
   </style>
+  <script>
+    // Load pre-captured screenshots
+    function loadScreenshots() {
+      if (typeof SCREENSHOTS === 'undefined') return;
+      document.querySelectorAll('.screenshot-placeholder').forEach(el => {
+        const key = el.dataset.screen;
+        if (key && SCREENSHOTS[key]) {
+          el.innerHTML = '<img src="' + SCREENSHOTS[key] + '" style="width:100%;border-radius:8px;display:block;" />';
+          el.style.background = 'none';
+          el.style.minHeight = 'auto';
+          el.style.border = 'none';
+        }
+      });
+    }
+  </script>
 </head>
 <body>
 
@@ -359,7 +374,7 @@
       <h2>Key Screens</h2>
 
       <h3>P1 — My Skills Dashboard</h3>
-      <div class="screenshot-placeholder">[ P1 Screenshot ]</div>
+      <div class="screenshot-placeholder"><div class="screenshot-placeholder" data-screen="P1" style="min-height:200px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999;font-size:13px;">Loading...</div></div>
       <p>The main entry point. Users see their active skills in a card list, with toggles to enable/disable each rule. A template builder at the top lets users start a new If/Then rule by tapping the trigger pill. Newly activated skills appear at the top of the list and are stored in localStorage.</p>
       <ul>
         <li>If/Then template builder with pill-based inputs</li>
@@ -368,7 +383,7 @@
       </ul>
 
       <h3>P2 — Select Trigger</h3>
-      <div class="screenshot-placeholder">[ P2 Screenshot ]</div>
+      <div class="screenshot-placeholder"><div class="screenshot-placeholder" data-screen="P2" style="min-height:200px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999;font-size:13px;">Loading...</div></div>
       <p>Users select from 11 AI detection triggers. Single-select radio list. Once selected, the Next button activates and navigates forward, passing the trigger via URL param.</p>
       <ul>
         <li>Person Detected, Person Coming Home, Person Near Car or Driveway</li>
@@ -377,7 +392,7 @@
       </ul>
 
       <h3>P3 — Add Conditions</h3>
-      <div class="screenshot-placeholder">[ P3 Screenshot ]</div>
+      <div class="screenshot-placeholder"><div class="screenshot-placeholder" data-screen="P3" style="min-height:200px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999;font-size:13px;">Loading...</div></div>
       <p>Optional refinement step. Context-aware suggestions appear based on the selected trigger. Users can type a free-form condition or tap suggestion pills. Condition is passed forward via URL param.</p>
       <ul>
         <li>Free-form text input for custom conditions</li>
@@ -386,11 +401,11 @@
       </ul>
 
       <h3>P4 — Select Device</h3>
-      <div class="screenshot-placeholder">[ P4 Screenshot ]</div>
+      <div class="screenshot-placeholder"><div class="screenshot-placeholder" data-screen="P4" style="min-height:200px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999;font-size:13px;">Loading...</div></div>
       <p>Users choose which camera to monitor. Device list shows name, status, and an active/inactive toggle. Living Room Cam is pre-selected as the default. Selection passes forward via URL param.</p>
 
       <h3>P5 — Select Action</h3>
-      <div class="screenshot-placeholder">[ P5 Screenshot ]</div>
+      <div class="screenshot-placeholder"><div class="screenshot-placeholder" data-screen="P5" style="min-height:200px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999;font-size:13px;">Loading...</div></div>
       <p>Users select the action triggered when the detection event occurs. Send Notification is checked by default. If "Play Customized Voice" is selected, a sub-option appears to record a voice memo (linking to P7).</p>
       <ul>
         <li>Send Notification (default), Record, Turn on Light</li>
@@ -398,7 +413,7 @@
       </ul>
 
       <h3>P6 — Set Schedule</h3>
-      <div class="screenshot-placeholder">[ P6 Screenshot ]</div>
+      <div class="screenshot-placeholder"><div class="screenshot-placeholder" data-screen="P6" style="min-height:200px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999;font-size:13px;">Loading...</div></div>
       <p>Users set when the skill should be active. Time range (Start/End time pickers) and repeat schedule (Everyday, Weekdays, Weekends, Custom). Custom reveals day-of-week toggles. Done → Activate Now returns to P1 and creates the skill card.</p>
 
       <h3>P7 — Voice Memo</h3>
@@ -729,5 +744,25 @@ Record custom voice announcement for Play Customized Voice action.
   }
 </script>
 
+  <script>
+    // Dynamically load feature-specific screenshots
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const feature = params.get('feature') || 'camera-skills';
+      const script = document.createElement('script');
+      // Map feature key to screenshots file path
+      const screenshotPaths = {
+        'camera-skills': 'features/skills/screenshots.js',
+      };
+      const path = screenshotPaths[feature];
+      if (path) {
+        // Get base URL (handle GitHub Pages path)
+        const base = window.location.href.split('/prd-review.html')[0];
+        script.src = base + '/' + path;
+        script.onload = loadScreenshots;
+        document.head.appendChild(script);
+      }
+    })();
+  </script>
 </body>
 </html>
