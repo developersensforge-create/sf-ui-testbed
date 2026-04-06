@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sensforge Subscription UX — UI Prototype</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { background:#e8ecf0; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+  .phone { width:390px; min-height:844px; background:#fff; border-radius:44px; box-shadow:0 24px 80px rgba(0,0,0,0.28); overflow:hidden; position:relative; }
+  .screen { display:none; flex-direction:column; min-height:844px; background:#fff; }
+  .screen.active { display:flex; }
+
+  /* Colors */
+  :root {
+    --orange:#f96400;
+    --orange-light:#fff3ec;
+    --orange-mid:#ffe0cc;
+    --gray-bg:#f5f5f5;
+    --gray:#9e9e9e;
+    --divider:#f0f0f0;
+    --text:#1a1a1a;
+    --text-sub:#777;
+  }
+
+  .status-bar { height:44px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:12px;font-weight:700;color:#111;flex-shrink:0; }
+  .top-nav { display:flex;align-items:center;padding:10px 16px;background:#fff;border-bottom:1px solid var(--divider);flex-shrink:0; }
+  .top-nav .back { font-size:24px;color:var(--orange);cursor:pointer;width:36px; }
+  .top-nav .title { flex:1;text-align:center;font-size:17px;font-weight:700;color:var(--text); }
+  .scroll { flex:1;overflow-y:auto; }
+
+  /* Bottom nav */
+  .bottom-nav { display:flex;background:#fff;border-top:1px solid var(--divider);padding:6px 0 20px;flex-shrink:0; }
+  .tab { flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0; }
+  .tab .icon { font-size:22px; }
+  .tab .label { font-size:10px;color:var(--gray); }
+  .tab.active .label { color:var(--orange); }
+  .tab.active .icon { color:var(--orange); }
+
+  /* ── Feature 1: Paywall overlay ── */
+  .paywall-overlay {
+    position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.95) 100%);
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    padding:24px; z-index:10;
+  }
+  .paywall-lock { font-size:36px; margin-bottom:12px; }
+  .paywall-title { color:#fff; font-size:20px; font-weight:800; text-align:center; margin-bottom:6px; }
+  .paywall-sub { color:rgba(255,255,255,0.75); font-size:14px; text-align:center; line-height:1.5; margin-bottom:20px; }
+  .paywall-btn { background:var(--orange); color:#fff; border:none; border-radius:14px; padding:16px 32px; font-size:16px; font-weight:700; cursor:pointer; width:100%; margin-bottom:8px; }
+  .paywall-btn-secondary { background:rgba(255,255,255,0.15); color:#fff; border:1.5px solid rgba(255,255,255,0.4); border-radius:14px; padding:13px 32px; font-size:14px; font-weight:600; cursor:pointer; width:100%; }
+  .paywall-features { display:flex; gap:12px; margin-bottom:20px; }
+  .paywall-feat { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:10px; padding:10px 14px; text-align:center; flex:1; }
+  .paywall-feat .feat-icon { font-size:20px; margin-bottom:4px; }
+  .paywall-feat .feat-label { color:rgba(255,255,255,0.9); font-size:11px; font-weight:600; }
+
+  /* ── Feature 2: Trial countdown banner ── */
+  .trial-banner {
+    margin:12px 14px 0; background:linear-gradient(135deg, #f96400, #ff8c00); border-radius:14px;
+    padding:14px 16px; display:flex; align-items:center; gap:12px; cursor:pointer;
+  }
+  .trial-banner .banner-icon { font-size:28px; flex-shrink:0; }
+  .trial-banner .banner-content { flex:1; }
+  .trial-banner .banner-title { color:#fff; font-size:14px; font-weight:700; }
+  .trial-banner .banner-sub { color:rgba(255,255,255,0.85); font-size:12px; margin-top:2px; }
+  .trial-banner .banner-days { background:rgba(0,0,0,0.2); border-radius:8px; padding:6px 10px; text-align:center; flex-shrink:0; }
+  .trial-banner .days-num { color:#fff; font-size:22px; font-weight:800; line-height:1; }
+  .trial-banner .days-label { color:rgba(255,255,255,0.8); font-size:10px; font-weight:600; }
+  .trial-banner .banner-arrow { color:rgba(255,255,255,0.8); font-size:18px; flex-shrink:0; }
+
+  /* Minimal countdown variant */
+  .trial-mini {
+    margin:8px 14px 0; background:var(--orange-light); border:1px solid var(--orange-mid); border-radius:10px;
+    padding:10px 14px; display:flex; align-items:center; gap:10px; cursor:pointer;
+  }
+  .trial-mini .mini-text { flex:1; font-size:13px; font-weight:600; color:var(--orange); }
+  .trial-mini .mini-sub { font-size:11px; font-weight:400; color:#a05000; margin-top:1px; }
+  .trial-mini .mini-cta { background:var(--orange); color:#fff; border:none; border-radius:8px; padding:7px 14px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; }
+
+  /* Event card with locked state */
+  .event-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 14px; }
+  .event-card { position:relative; border-radius:12px; overflow:hidden; cursor:pointer; }
+  .event-thumb { width:100%; aspect-ratio:4/3; background:#ddd; display:flex; align-items:center; justify-content:center; font-size:28px; }
+  .event-card .card-blur { filter:blur(3px); }
+  .event-card .lock-chip { position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.65); border-radius:20px; padding:4px 8px; display:flex; align-items:center; gap:4px; }
+  .event-card .lock-chip span { color:#fff; font-size:10px; font-weight:700; }
+  .event-card .lock-icon { font-size:12px; }
+  .event-card-footer { background:#fff; padding:8px 10px; }
+  .event-card-footer .ec-title { font-size:13px; font-weight:600; color:var(--text); }
+  .event-card-footer .ec-sub { font-size:11px; color:var(--gray); margin-top:2px; }
+
+  /* Pro badge */
+  .pro-badge { display:inline-flex; align-items:center; gap:4px; background:linear-gradient(135deg,#f96400,#ff8c00); color:#fff; font-size:10px; font-weight:800; padding:3px 8px; border-radius:20px; letter-spacing:0.5px; }
+
+  /* Explore subscription card */
+  .sub-hero { background:linear-gradient(135deg,#1a1a2e,#16213e); margin:12px; border-radius:18px; padding:20px; position:relative; overflow:hidden; }
+  .sub-hero::before { content:''; position:absolute; top:-40px; right:-40px; width:150px; height:150px; background:radial-gradient(circle,rgba(249,100,0,0.3),transparent 70%); }
+  .sub-hero .hero-label { color:rgba(255,255,255,0.6); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+  .sub-hero .hero-title { color:#fff; font-size:20px; font-weight:800; margin-bottom:6px; }
+  .sub-hero .hero-sub { color:rgba(255,255,255,0.7); font-size:13px; line-height:1.5; margin-bottom:16px; }
+  .sub-hero .hero-btn { background:var(--orange); color:#fff; border:none; border-radius:12px; padding:14px 24px; font-size:15px; font-weight:700; cursor:pointer; width:100%; }
+  .sub-hero .hero-trial { color:rgba(255,255,255,0.5); font-size:11px; text-align:center; margin-top:8px; }
+
+  .plan-card { margin:0 12px 10px; background:#fff; border-radius:14px; border:1.5px solid var(--divider); padding:16px; }
+  .plan-card.recommended { border-color:var(--orange); }
+  .plan-card .plan-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .plan-card .plan-name { font-size:16px; font-weight:700; color:var(--text); }
+  .plan-card .plan-price { font-size:18px; font-weight:800; color:var(--orange); }
+  .plan-card .plan-price span { font-size:12px; font-weight:400; color:var(--gray); }
+  .plan-card .plan-feature { display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:13px; color:var(--text-sub); }
+  .plan-card .plan-feature .check { color:var(--orange); font-size:14px; font-weight:700; }
+  .plan-card .plan-btn { background:var(--orange); color:#fff; border:none; border-radius:10px; padding:13px; font-size:14px; font-weight:700; cursor:pointer; width:100%; margin-top:12px; }
+  .plan-card .plan-btn-outline { background:#fff; color:var(--orange); border:1.5px solid var(--orange); border-radius:10px; padding:11px; font-size:14px; font-weight:600; cursor:pointer; width:100%; margin-top:12px; }
+
+  .section-header { padding:14px 16px 8px; font-size:12px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:0.5px; }
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- ═══ S1: HOME (Trial User) ═══ -->
+<div class="screen active" id="s-home">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+  <div style="padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;">
+    <span style="font-size:20px;font-weight:800;color:var(--text);">Home</span>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;">R</div>
+    </div>
+  </div>
+
+  <!-- Feature 2: Trial countdown banner -->
+  <div class="trial-banner" onclick="showScreen('s-explore')">
+    <div class="trial-banner-icon">⏳</div>
+    <div class="banner-content">
+      <div class="banner-title">Your Free Trial is Running Out</div>
+      <div class="banner-sub">Tap to unlock Daily Highlights & AI Descriptions forever</div>
+    </div>
+    <div class="banner-days">
+      <div class="days-num">7</div>
+      <div class="days-label">days left</div>
+    </div>
+    <div class="banner-arrow">›</div>
+  </div>
+
+  <div class="scroll">
+    <!-- Camera feed tiles -->
+    <div style="padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--divider);">
+        <div style="background:#1a1a1a;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:24px;">📷</div>
+        <div style="padding:8px 10px;"><div style="font-size:13px;font-weight:600;color:var(--text);">Living Room</div><div style="font-size:11px;color:#4CAF50;margin-top:2px;">● Live</div></div>
+      </div>
+      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--divider);">
+        <div style="background:#1a1a1a;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:24px;">📷</div>
+        <div style="padding:8px 10px;"><div style="font-size:13px;font-weight:600;color:var(--text);">Front Door</div><div style="font-size:11px;color:#4CAF50;margin-top:2px;">● Live</div></div>
+      </div>
+    </div>
+
+    <!-- See What's New section -->
+    <div class="section-header">See What's New</div>
+    <div style="padding:0 14px 12px;display:flex;gap:10px;overflow-x:auto;">
+      <div style="min-width:140px;background:var(--gray-bg);border-radius:12px;overflow:hidden;cursor:pointer;" onclick="showScreen('s-paywall')">
+        <div style="aspect-ratio:16/9;background:#555;display:flex;align-items:center;justify-content:center;font-size:24px;position:relative;">
+          🐕
+          <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.65);border-radius:20px;padding:3px 7px;display:flex;align-items:center;gap:3px;">
+            <span style="font-size:12px;">🔒</span>
+            <span style="color:#fff;font-size:9px;font-weight:700;">PRO</span>
+          </div>
+        </div>
+        <div style="padding:8px 10px;"><div style="font-size:12px;font-weight:600;color:var(--text);">Daily Highlight</div><div style="font-size:10px;color:var(--gray);margin-top:1px;">Your pet's best moments</div></div>
+      </div>
+      <div style="min-width:140px;background:var(--gray-bg);border-radius:12px;overflow:hidden;cursor:pointer;" onclick="showScreen('s-paywall')">
+        <div style="aspect-ratio:16/9;background:#333;display:flex;align-items:center;justify-content:center;font-size:24px;position:relative;">
+          🏠
+          <div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.65);border-radius:20px;padding:3px 7px;display:flex;align-items:center;gap:3px;">
+            <span style="font-size:12px;">🔒</span>
+            <span style="color:#fff;font-size:9px;font-weight:700;">PRO</span>
+          </div>
+        </div>
+        <div style="padding:8px 10px;"><div style="font-size:12px;font-weight:600;color:var(--text);">Today's Summary</div><div style="font-size:10px;color:var(--gray);margin-top:1px;">AI-powered recap</div></div>
+      </div>
+      <div style="min-width:140px;background:var(--gray-bg);border-radius:12px;overflow:hidden;">
+        <div style="aspect-ratio:16/9;background:#222;display:flex;align-items:center;justify-content:center;font-size:24px;">👤</div>
+        <div style="padding:8px 10px;"><div style="font-size:12px;font-weight:600;color:var(--text);">Person Detected</div><div style="font-size:10px;color:var(--gray);margin-top:1px;">2 mins ago</div></div>
+      </div>
+    </div>
+    <div style="height:8px;"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="tab active"><div class="icon">🏠</div><div class="label">Home</div></div>
+    <div class="tab"><div class="icon">📋</div><div class="label">Events</div></div>
+    <div class="tab"><div class="icon">⭐</div><div class="label">Smart</div></div>
+    <div class="tab"><div class="icon">🛡️</div><div class="label">Security</div></div>
+    <div class="tab" onclick="showScreen('s-explore')"><div class="icon">🏪</div><div class="label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══ S2: PAYWALL (Feature 1 — AI Content Lock) ═══ -->
+<div class="screen" id="s-paywall">
+  <div class="status-bar" style="background:#111;color:#fff;"><span>9:41</span><span>📶 🔋</span></div>
+  <div style="background:#111;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;">
+    <span onclick="showScreen('s-home')" style="color:rgba(255,255,255,0.8);font-size:24px;cursor:pointer;">←</span>
+    <span style="color:#fff;font-size:16px;font-weight:700;flex:1;">Daily Highlight</span>
+  </div>
+
+  <!-- Blurred content with overlay -->
+  <div style="position:relative;flex:1;overflow:hidden;background:#111;">
+    <!-- Blurred preview -->
+    <div style="filter:blur(6px);padding:16px;opacity:0.5;">
+      <div style="background:#1a1a1a;border-radius:12px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:12px;">🐕</div>
+      <div style="background:#333;border-radius:8px;height:16px;width:80%;margin-bottom:8px;"></div>
+      <div style="background:#333;border-radius:8px;height:12px;width:60%;margin-bottom:8px;"></div>
+      <div style="background:#333;border-radius:8px;height:12px;width:70%;"></div>
+    </div>
+
+    <!-- Paywall overlay -->
+    <div class="paywall-overlay">
+      <div class="paywall-lock">🔒</div>
+      <div class="paywall-title">Unlock Daily Highlights</div>
+      <div class="paywall-sub">Your AI-curated best moments are ready — subscribe to watch your pet's funniest moments, activity summaries, and more.</div>
+      <div class="paywall-features">
+        <div class="paywall-feat"><div class="feat-icon">🎬</div><div class="feat-label">Daily Clips</div></div>
+        <div class="paywall-feat"><div class="feat-icon">🤖</div><div class="feat-label">AI Descriptions</div></div>
+        <div class="paywall-feat"><div class="feat-icon">📸</div><div class="feat-label">Photo Albums</div></div>
+      </div>
+      <button class="paywall-btn" onclick="showScreen('s-explore')">Explore Plans — from $4.99/mo</button>
+      <button class="paywall-btn-secondary" onclick="showScreen('s-home')">Maybe Later</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ S3: EXPLORE (Subscription) ═══ -->
+<div class="screen" id="s-explore">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+  <div style="padding:14px 16px 10px;font-size:20px;font-weight:800;color:var(--text);">Explore</div>
+  <div class="scroll">
+
+    <!-- Hero upgrade card -->
+    <div class="sub-hero">
+      <div class="hero-label">Limited Offer</div>
+      <div class="hero-title">More Peace of Mind.<br/>More Pro Features.</div>
+      <div class="hero-sub">Unlock AI highlights, event descriptions, 30-day cloud history, and priority support — for every camera in your home.</div>
+      <button class="hero-btn" onclick="showScreen('s-plan-select')">See Plans & Start Free Trial</button>
+      <div class="hero-trial">7-day free trial · Cancel anytime</div>
+    </div>
+
+    <div class="section-header">Choose Your Plan</div>
+
+    <!-- Single Pro -->
+    <div class="plan-card recommended">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><span class="pro-badge">⭐ MOST POPULAR</span></div>
+      <div class="plan-header">
+        <div class="plan-name">Single Pro</div>
+        <div class="plan-price">$4.99<span>/mo per camera</span></div>
+      </div>
+      <div class="plan-feature"><span class="check">✓</span> AI Daily Highlights</div>
+      <div class="plan-feature"><span class="check">✓</span> AI Event Descriptions</div>
+      <div class="plan-feature"><span class="check">✓</span> 30-day Cloud Storage</div>
+      <div class="plan-feature"><span class="check">✓</span> Priority Support</div>
+      <button class="plan-btn" onclick="showScreen('s-plan-select')">Start 7-Day Free Trial</button>
+    </div>
+
+    <!-- Family Pro -->
+    <div class="plan-card">
+      <div class="plan-header">
+        <div class="plan-name">Family Pro</div>
+        <div class="plan-price">$9.99<span>/mo all cameras</span></div>
+      </div>
+      <div class="plan-feature"><span class="check">✓</span> Everything in Single Pro</div>
+      <div class="plan-feature"><span class="check">✓</span> Up to 10 cameras</div>
+      <div class="plan-feature"><span class="check">✓</span> Family member sharing</div>
+      <div class="plan-feature"><span class="check">✓</span> Advanced AI features</div>
+      <button class="plan-btn-outline" onclick="showScreen('s-plan-select')">Choose Family Pro</button>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="tab" onclick="showScreen('s-home')"><div class="icon">🏠</div><div class="label">Home</div></div>
+    <div class="tab"><div class="icon">📋</div><div class="label">Events</div></div>
+    <div class="tab"><div class="icon">⭐</div><div class="label">Smart</div></div>
+    <div class="tab"><div class="icon">🛡️</div><div class="label">Security</div></div>
+    <div class="tab active"><div class="icon">🏪</div><div class="label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══ S4: HOME (Minimal Banner Variant) ═══ -->
+<div class="screen" id="s-home-mini">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+  <div style="padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;">
+    <span style="font-size:20px;font-weight:800;color:var(--text);">Home</span>
+    <div style="width:32px;height:32px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;">R</div>
+  </div>
+
+  <!-- Minimal trial strip (less intrusive variant) -->
+  <div class="trial-mini" onclick="showScreen('s-explore')">
+    <div>
+      <div class="mini-text">⏳ 7 days left in your free trial</div>
+      <div class="mini-sub">Daily Highlights and AI Descriptions will be locked after trial</div>
+    </div>
+    <button class="mini-cta">Upgrade</button>
+  </div>
+
+  <div class="scroll">
+    <div style="padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--divider);">
+        <div style="background:#1a1a1a;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:24px;">📷</div>
+        <div style="padding:8px 10px;"><div style="font-size:13px;font-weight:600;color:var(--text);">Living Room</div><div style="font-size:11px;color:#4CAF50;margin-top:2px;">● Live</div></div>
+      </div>
+      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--divider);">
+        <div style="background:#1a1a1a;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;font-size:24px;">📷</div>
+        <div style="padding:8px 10px;"><div style="font-size:13px;font-weight:600;color:var(--text);">Front Door</div><div style="font-size:11px;color:#4CAF50;margin-top:2px;">● Live</div></div>
+      </div>
+    </div>
+    <div class="section-header">See What's New</div>
+    <div style="padding:0 14px 12px;">
+      <div style="background:var(--gray-bg);border-radius:12px;overflow:hidden;cursor:pointer;" onclick="showScreen('s-paywall')">
+        <div style="position:relative;aspect-ratio:16/9;background:#333;display:flex;align-items:center;justify-content:center;font-size:36px;">
+          🐕
+          <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.65);border-radius:20px;padding:4px 10px;display:flex;align-items:center;gap:5px;">
+            <span style="font-size:14px;">🔒</span>
+            <span style="color:#fff;font-size:10px;font-weight:700;">PRO ONLY</span>
+          </div>
+        </div>
+        <div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="font-size:14px;font-weight:700;color:var(--text);">Daily Highlight · Living Room</div><div style="font-size:12px;color:var(--gray);margin-top:2px;">Your pet's best moments today</div></div>
+          <span style="color:var(--orange);font-size:18px;">›</span>
+        </div>
+      </div>
+    </div>
+    <div style="height:8px;"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="tab active"><div class="icon">🏠</div><div class="label">Home</div></div>
+    <div class="tab"><div class="icon">📋</div><div class="label">Events</div></div>
+    <div class="tab"><div class="icon">⭐</div><div class="label">Smart</div></div>
+    <div class="tab"><div class="icon">🛡️</div><div class="label">Security</div></div>
+    <div class="tab" onclick="showScreen('s-explore')"><div class="icon">🏪</div><div class="label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══ S5: PLAN SELECT ═══ -->
+<div class="screen" id="s-plan-select">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+  <div class="top-nav">
+    <span class="back" onclick="showScreen('s-explore')">←</span>
+    <span class="title">Choose Your Plan</span>
+    <span style="width:36px;"></span>
+  </div>
+  <div class="scroll">
+    <div style="padding:16px 14px 8px;text-align:center;">
+      <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;">Start your 7-day free trial</div>
+      <div style="font-size:13px;color:var(--gray);">No charge until trial ends · Cancel anytime</div>
+    </div>
+
+    <!-- Toggle monthly/yearly -->
+    <div style="display:flex;justify-content:center;gap:0;margin:12px;background:var(--gray-bg);border-radius:10px;padding:3px;">
+      <button id="btn-monthly" style="flex:1;padding:8px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:var(--orange);color:#fff;" onclick="selectBilling('monthly')">Monthly</button>
+      <button id="btn-yearly" style="flex:1;padding:8px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--gray);" onclick="selectBilling('yearly')">Yearly <span style="color:#4CAF50;font-size:10px;">Save 20%</span></button>
+    </div>
+
+    <div class="plan-card recommended">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><span class="pro-badge">⭐ BEST VALUE</span></div>
+      <div class="plan-header">
+        <div class="plan-name">Single Pro</div>
+        <div class="plan-price" id="price-single">$4.99<span>/mo</span></div>
+      </div>
+      <div class="plan-feature"><span class="check">✓</span> AI Daily Highlights</div>
+      <div class="plan-feature"><span class="check">✓</span> AI Event Descriptions</div>
+      <div class="plan-feature"><span class="check">✓</span> 30-day Cloud History</div>
+      <div class="plan-feature"><span class="check">✓</span> 10% Store Discount</div>
+      <button class="plan-btn">Start Free Trial — Single Pro</button>
+    </div>
+
+    <div class="plan-card">
+      <div class="plan-header">
+        <div class="plan-name">Family Pro</div>
+        <div class="plan-price" id="price-family">$9.99<span>/mo</span></div>
+      </div>
+      <div class="plan-feature"><span class="check">✓</span> All Single Pro features</div>
+      <div class="plan-feature"><span class="check">✓</span> Up to 10 cameras</div>
+      <div class="plan-feature"><span class="check">✓</span> Family sharing</div>
+      <button class="plan-btn-outline">Start Free Trial — Family Pro</button>
+    </div>
+    <div style="padding:12px 20px;text-align:center;font-size:11px;color:var(--gray);line-height:1.6;">By starting the free trial, you agree to our Terms of Service. Your subscription begins after the 7-day trial ends. Cancel anytime before the trial ends to avoid being charged.</div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- Screen selector nav -->
+<div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:rgba(0,0,0,0.8);padding:8px;display:flex;gap:4px;z-index:9999;overflow-x:auto;">
+  <button onclick="showScreen('s-home')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:10px;cursor:pointer;">Home (Banner)</button>
+  <button onclick="showScreen('s-paywall')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:10px;cursor:pointer;">Paywall</button>
+  <button onclick="showScreen('s-explore')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:10px;cursor:pointer;">Explore</button>
+  <button onclick="showScreen('s-home-mini')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:10px;cursor:pointer;">Home (Mini)</button>
+  <button onclick="showScreen('s-plan-select')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:10px;cursor:pointer;">Plan Select</button>
+</div>
+
+</div>
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function selectBilling(type) {
+  const monthly = document.getElementById('btn-monthly');
+  const yearly = document.getElementById('btn-yearly');
+  const single = document.getElementById('price-single');
+  const family = document.getElementById('price-family');
+  if (type === 'yearly') {
+    monthly.style.background = 'transparent'; monthly.style.color = 'var(--gray)';
+    yearly.style.background = 'var(--orange)'; yearly.style.color = '#fff';
+    single.innerHTML = '$3.99<span>/mo</span>';
+    family.innerHTML = '$7.99<span>/mo</span>';
+  } else {
+    monthly.style.background = 'var(--orange)'; monthly.style.color = '#fff';
+    yearly.style.background = 'transparent'; yearly.style.color = 'var(--gray)';
+    single.innerHTML = '$4.99<span>/mo</span>';
+    family.innerHTML = '$9.99<span>/mo</span>';
+  }
+}
+</script>
+</body>
+</html>
