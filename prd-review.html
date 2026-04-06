@@ -118,20 +118,19 @@
     .flow-arrow { font-size: 18px; color: #ccc; }
 
     /* Screenshot placeholder */
-    .screenshot-placeholder {
-      background: #f5f5f5; border: 1.5px dashed #ccc; border-radius: 10px;
-      min-height: 120px; display: flex; align-items: center; justify-content: center;
-      color: #aaa; font-size: 14px; font-weight: 600; margin: 12px 0 16px;
-      overflow: hidden; position: relative; max-width: 280px;
+    .screen-frame {
+      width: 240px;
+      margin: 16px auto;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      background: #f0f0f0;
+      border: 1px solid #e0e0e0;
     }
-    .screenshot-placeholder img {
-      width: 280px !important;
-      height: auto !important;
-      max-width: 280px !important;
-      display: block !important;
-      border-radius: 8px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-      position: static !important;
+    .screen-img {
+      width: 240px;
+      height: auto;
+      display: block;
     }
 
     /* Table */
@@ -294,14 +293,14 @@
     // Load pre-captured screenshots
     function loadScreenshots() {
       if (typeof SCREENSHOTS === 'undefined') return;
-      document.querySelectorAll('.screenshot-placeholder').forEach(el => {
-        const key = el.dataset.screen;
-        if (key && SCREENSHOTS[key]) {
-          el.innerHTML = '<img src="' + SCREENSHOTS[key] + '" alt="Screen ' + key + '" />';
-          el.style.background = 'none';
-          el.style.minHeight = 'auto';
-          el.style.border = 'none';
+      for (const [key, src] of Object.entries(SCREENSHOTS)) {
+        const img = document.getElementById('screen-img-' + key);
+        if (img && src) {
+          img.src = src;
+          img.style.display = 'block';
         }
+      }
+    }
       });
     }
   </script>
@@ -384,7 +383,7 @@
       <h2>Key Screens</h2>
 
       <h3>P1 — My Skills Dashboard</h3>
-      <div class="screenshot-placeholder" data-screen="P1"></div>
+      <div class="screen-frame"><img class="screen-img" id="screen-img-P1" src="" alt="P1" style="display:none;" /></div>
       <p>The main entry point. Users see their active skills in a card list, with toggles to enable/disable each rule. A template builder at the top lets users start a new If/Then rule by tapping the trigger pill. Newly activated skills appear at the top of the list and are stored in localStorage.</p>
       <ul>
         <li>If/Then template builder with pill-based inputs</li>
@@ -393,7 +392,7 @@
       </ul>
 
       <h3>P2 — Select Trigger</h3>
-      <div class="screenshot-placeholder" data-screen="P2"></div>
+      <div class="screen-frame"><img class="screen-img" id="screen-img-P2" src="" alt="P2" style="display:none;" /></div>
       <p>Users select from 11 AI detection triggers. Single-select radio list. Once selected, the Next button activates and navigates forward, passing the trigger via URL param.</p>
       <ul>
         <li>Person Detected, Person Coming Home, Person Near Car or Driveway</li>
@@ -402,7 +401,7 @@
       </ul>
 
       <h3>P3 — Add Conditions</h3>
-      <div class="screenshot-placeholder" data-screen="P3"></div>
+      <div class="screen-frame"><img class="screen-img" id="screen-img-P3" src="" alt="P3" style="display:none;" /></div>
       <p>Optional refinement step. Context-aware suggestions appear based on the selected trigger. Users can type a free-form condition or tap suggestion pills. Condition is passed forward via URL param.</p>
       <ul>
         <li>Free-form text input for custom conditions</li>
@@ -411,11 +410,11 @@
       </ul>
 
       <h3>P4 — Select Device</h3>
-      <div class="screenshot-placeholder" data-screen="P4"></div>
+      <div class="screen-frame"><img class="screen-img" id="screen-img-P4" src="" alt="P4" style="display:none;" /></div>
       <p>Users choose which camera to monitor. Device list shows name, status, and an active/inactive toggle. Living Room Cam is pre-selected as the default. Selection passes forward via URL param.</p>
 
       <h3>P5 — Select Action</h3>
-      <div class="screenshot-placeholder" data-screen="P5"></div>
+      <div class="screen-frame"><img class="screen-img" id="screen-img-P5" src="" alt="P5" style="display:none;" /></div>
       <p>Users select the action triggered when the detection event occurs. Send Notification is checked by default. If "Play Customized Voice" is selected, a sub-option appears to record a voice memo (linking to P7).</p>
       <ul>
         <li>Send Notification (default), Record, Turn on Light</li>
@@ -423,11 +422,11 @@
       </ul>
 
       <h3>P6 — Set Schedule</h3>
-      <div class="screenshot-placeholder" data-screen="P6"></div>
+      <div class="screen-frame"><img class="screen-img" id="screen-img-P6" src="" alt="P6" style="display:none;" /></div>
       <p>Users set when the skill should be active. Time range (Start/End time pickers) and repeat schedule (Everyday, Weekdays, Weekends, Custom). Custom reveals day-of-week toggles. Done → Activate Now returns to P1 and creates the skill card.</p>
 
       <h3>P7 — Voice Memo</h3>
-      <div class="screenshot-placeholder" data-screen="P7"></div>
+      <div class="screen-frame"><img class="screen-img" id="screen-img-P7" src="" alt="P7" style="display:none;" /></div>
       <p>Optional recording flow for custom voice announcements. Three states: Recording (animated waveform), Paused, and Playback. Save Memo returns to P5 with device/trigger context intact.</p>
 
       <h2>Variable Settings</h2>
