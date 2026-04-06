@@ -112,6 +112,19 @@
   .plan-card .plan-btn-outline { background:#fff; color:var(--orange); border:1.5px solid var(--orange); border-radius:10px; padding:11px; font-size:14px; font-weight:600; cursor:pointer; width:100%; margin-top:12px; }
 
   .section-header { padding:14px 16px 8px; font-size:12px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:0.5px; }
+
+  .feedback-panel { padding:24px 16px 100px; border-top:1px dashed #e0e0e0; margin-top:24px; text-align:center; }
+  .feedback-label { font-size:11px; color:#bbb; margin-bottom:10px; }
+  .feedback-toggle-btn { border:1px solid #ddd; color:#888; background:white; font-size:13px; padding:9px 18px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:7px; }
+  .feedback-toggle-btn:hover { background:#fafafa; }
+  .feedback-form { text-align:left; margin-top:14px; display:none; }
+  .feedback-disclaimer { background:#fffbeb; border-left:3px solid #f96400; border-radius:6px; padding:10px 14px; margin-bottom:10px; font-size:13px; color:#7a5c00; line-height:1.5; }
+  .feedback-field-label { font-size:12px; font-weight:600; color:#888; margin-bottom:4px; margin-top:10px; }
+  .feedback-textarea { width:100%; border:1.5px solid #eee; border-radius:8px; padding:10px 12px; font-size:13px; font-family:inherit; outline:none; resize:vertical; min-height:80px; background:#fafafa; }
+  .feedback-textarea:focus { border-color:#f96400; background:#fff; }
+  .feedback-submit { background:#f96400; color:#fff; border:none; border-radius:8px; padding:11px 20px; font-size:14px; font-weight:600; cursor:pointer; width:100%; margin-top:10px; }
+  .feedback-toast { position:fixed; bottom:120px; left:50%; transform:translateX(-50%) translateY(60px); background:#0f1b2d; color:#fff; padding:11px 20px; border-radius:10px; font-size:13px; font-weight:600; border-left:3px solid #f96400; z-index:9998; opacity:0; transition:transform 0.3s, opacity 0.3s; white-space:nowrap; }
+  .feedback-toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
 </style>
 </head>
 <body>
@@ -388,6 +401,21 @@
   </div>
 </div>
 
+
+  <div class="feedback-panel" id="feedback-panel">
+    <div class="feedback-label">&#8212; Design Feedback &#8212;</div>
+    <button class="feedback-toggle-btn" onclick="toggleFeedback()">&#128172; Leave Feedback on This Page</button>
+    <div class="feedback-form" id="feedback-form">
+      <div class="feedback-disclaimer">&#128221; <strong>Design review notes</strong><br>Share thoughts on layout, flow, or what could improve. Include your <strong>name</strong> so we know who to follow up with.</div>
+      <div class="feedback-field-label">Your name + feedback</div>
+      <textarea class="feedback-textarea" id="feedback-text" placeholder="e.g. Wenbin &mdash; The paywall overlay could show a sample highlight clip instead of a blurred image to make the value clearer." rows="4"></textarea>
+      <div class="feedback-field-label">Page / screen (optional)</div>
+      <textarea class="feedback-textarea" id="feedback-context" placeholder="Which screen? What interaction?" rows="2"></textarea>
+      <button class="feedback-submit" onclick="submitFeedback()">Submit Feedback &rarr;</button>
+    </div>
+  </div>
+  <div class="feedback-toast" id="feedback-toast">Feedback saved &#10003; &mdash; thanks!</div>
+
 <!-- Screen selector nav -->
 <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:rgba(0,0,0,0.8);padding:8px;display:flex;gap:4px;z-index:9999;overflow-x:auto;">
   <button onclick="showScreen('s-home')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:10px;cursor:pointer;">Home (Banner)</button>
@@ -422,6 +450,40 @@ function selectBilling(type) {
     family.innerHTML = '$9.99<span>/mo</span>';
   }
 }
+</script>
+
+<script>
+(function() {
+  var WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+  var FEATURE = 'Subscription UX';
+
+  window.toggleFeedback = function() {
+    var form = document.getElementById('feedback-form');
+    form.style.display = form.style.display === 'block' ? 'none' : 'block';
+  };
+
+  window.submitFeedback = async function() {
+    var feedback = document.getElementById('feedback-text').value.trim();
+    var context = document.getElementById('feedback-context').value.trim();
+    if (!feedback) { return; }
+    var now = new Date();
+    var localTime = now.toLocaleString('en-US', {timeZone:'America/New_York', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', hour12:true});
+    var activeScreen = document.querySelector('.screen.active');
+    var screenName = activeScreen ? activeScreen.id : 'unknown';
+    var mention = '<@&1487656704463208592>';
+    var msg = mention + ' Design Feedback\nFeature: ' + FEATURE + ' | Screen: ' + screenName + '\nTime: ' + localTime + ' ET\nFeedback: ' + feedback;
+    if (context) msg += '\nContext: ' + context;
+    try {
+      await fetch(WEBHOOK, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({content:msg})});
+    } catch(e) {}
+    document.getElementById('feedback-text').value = '';
+    document.getElementById('feedback-context').value = '';
+    document.getElementById('feedback-form').style.display = 'none';
+    var toast = document.getElementById('feedback-toast');
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 3000);
+  };
+})();
 </script>
 </body>
 </html>
