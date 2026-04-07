@@ -7,7 +7,7 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   body { background:#e8ecf0; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
-  .phone { width:390px; min-height:844px; background:#fff; border-radius:44px; box-shadow:0 24px 80px rgba(0,0,0,0.28); overflow:hidden; position:relative; }
+  .phone { width:390px; height:844px; background:#fff; border-radius:44px; box-shadow:0 24px 80px rgba(0,0,0,0.28); overflow:hidden; position:relative; }
   .screen { display:none; flex-direction:column; height:844px; background:#fff; overflow:hidden; }
   .screen.active { display:flex; }
 
@@ -470,6 +470,26 @@
 
 
   
+  <!-- Design Feedback FAB + Modal -->
+  <button id="feedback-fab" onclick="openFeedbackModal()" style="position:absolute;bottom:90px;right:14px;width:44px;height:44px;border-radius:50%;background:#f96400;color:#fff;border:none;box-shadow:0 4px 16px rgba(249,100,0,0.45);font-size:20px;cursor:pointer;z-index:200;display:flex;align-items:center;justify-content:center;line-height:1;">💬</button>
+
+  <!-- Feedback Modal -->
+  <div id="feedback-modal" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:300;align-items:flex-end;justify-content:center;">
+    <div style="background:#fff;border-radius:20px 20px 0 0;padding:20px 18px 32px;width:100%;box-shadow:0 -8px 32px rgba(0,0,0,0.15);">
+      <div style="width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 16px;"></div>
+      <div style="font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:4px;">Leave Design Feedback</div>
+      <div style="font-size:12px;color:#999;margin-bottom:14px;">Include your <strong>name</strong> so we know who to follow up with.</div>
+      <div style="font-size:12px;font-weight:600;color:#666;margin-bottom:5px;">Your name + feedback</div>
+      <textarea id="feedback-modal-text" style="width:100%;border:1.5px solid #eee;border-radius:10px;padding:10px 12px;font-size:13px;font-family:inherit;outline:none;resize:none;min-height:90px;background:#fafafa;box-sizing:border-box;margin-bottom:10px;" placeholder="e.g. Wenbin — the paywall should show a sample clip preview instead of blur"></textarea>
+      <div style="display:flex;gap:8px;">
+        <button onclick="closeFeedbackModal()" style="flex:1;background:#f5f5f5;color:#666;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;">Cancel</button>
+        <button onclick="submitFeedbackModal()" style="flex:2;background:#f96400;color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;">Submit →</button>
+      </div>
+    </div>
+  </div>
+  <div id="feedback-toast" style="position:absolute;bottom:100px;left:50%;transform:translateX(-50%) translateY(60px);background:#0f1b2d;color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;border-left:3px solid #f96400;z-index:400;opacity:0;transition:transform 0.3s,opacity 0.3s;white-space:nowrap;pointer-events:none;">Feedback saved ✅</div>
+
+
 <!-- Screen selector nav -->
 <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:rgba(0,0,0,0.8);padding:8px;display:flex;gap:4px;z-index:9999;overflow-x:auto;">
   <button onclick="showScreen('s-home')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:10px;cursor:pointer;">Home (Banner)</button>
@@ -506,62 +526,36 @@ function selectBilling(type) {
 }
 </script>
 
+
+
 <script>
-(function() {
-  var WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
-  var FEATURE = 'Subscription UX';
-
-  window.toggleFeedback = function(btn) {
-    var form = btn.nextElementSibling;
-    if (form && form.classList.contains('feedback-form')) {
-      form.style.display = form.style.display === 'block' ? 'none' : 'block';
-    }
-  };
-  // legacy
-  window.toggleFeedbackOld = function() {
-    var form = document.getElementById('feedback-form');
-    form.style.display = form.style.display === 'block' ? 'none' : 'block';
-  };
-
-  window.submitFeedbackFrom = async function(btn) {
-    var form = btn.closest('.feedback-form') || btn.parentElement;
-    var textarea = form ? form.querySelector('textarea') : null;
-    if (!textarea || !textarea.value.trim()) return;
-    var feedback = textarea.value.trim();
-    var now = new Date();
-    var localTime = now.toLocaleString('en-US', {timeZone:'America/New_York', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', hour12:true});
-    var activeScreen = document.querySelector('.screen.active');
-    var screenName = activeScreen ? activeScreen.id : 'unknown';
-    var mention = '<@&1487656704463208592>';
-    var msg = mention + ' Design Feedback\nFeature: Subscription UX | Screen: ' + screenName + '\nTime: ' + localTime + ' ET\nFeedback: ' + feedback;
-    try { await fetch(WEBHOOK, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({content:msg})}); } catch(e) {}
-    textarea.value = '';
-    form.style.display = 'none';
-    var toast = document.getElementById('feedback-toast');
-    if (toast) { toast.classList.add('show'); setTimeout(function() { toast.classList.remove('show'); }, 3000); }
-  };
-  window.submitFeedback = async function() {
-    var feedback = document.getElementById('feedback-text').value.trim();
-    var context = document.getElementById('feedback-context').value.trim();
-    if (!feedback) { return; }
-    var now = new Date();
-    var localTime = now.toLocaleString('en-US', {timeZone:'America/New_York', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', hour12:true});
-    var activeScreen = document.querySelector('.screen.active');
-    var screenName = activeScreen ? activeScreen.id : 'unknown';
-    var mention = '<@&1487656704463208592>';
-    var msg = mention + ' Design Feedback\nFeature: ' + FEATURE + ' | Screen: ' + screenName + '\nTime: ' + localTime + ' ET\nFeedback: ' + feedback;
-    if (context) msg += '\nContext: ' + context;
-    try {
-      await fetch(WEBHOOK, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({content:msg})});
-    } catch(e) {}
-    document.getElementById('feedback-text').value = '';
-    document.getElementById('feedback-context').value = '';
-    document.getElementById('feedback-form').style.display = 'none';
-    var toast = document.getElementById('feedback-toast');
-    toast.classList.add('show');
-    setTimeout(function() { toast.classList.remove('show'); }, 3000);
-  };
-})();
+var WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+window.openFeedbackModal = function() {
+  var m = document.getElementById('feedback-modal');
+  m.style.display = 'flex';
+};
+window.closeFeedbackModal = function() {
+  document.getElementById('feedback-modal').style.display = 'none';
+};
+window.submitFeedbackModal = async function() {
+  var text = document.getElementById('feedback-modal-text').value.trim();
+  if (!text) return;
+  var activeScreen = document.querySelector('.screen.active');
+  var screenName = activeScreen ? activeScreen.id : 'unknown';
+  var now = new Date();
+  var t = now.toLocaleString('en-US', {timeZone:'America/New_York', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', hour12:true});
+  var msg = '<@&1487656704463208592> Design Feedback\nFeature: Subscription UX | Screen: ' + screenName + '\nTime: ' + t + ' ET\nFeedback: ' + text;
+  try { await fetch(WEBHOOK, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({content:msg})}); } catch(e) {}
+  document.getElementById('feedback-modal-text').value = '';
+  document.getElementById('feedback-modal').style.display = 'none';
+  var toast = document.getElementById('feedback-toast');
+  toast.style.opacity = '1'; toast.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(function() { toast.style.opacity = '0'; toast.style.transform = 'translateX(-50%) translateY(60px)'; }, 3000);
+};
+// Close modal on backdrop tap
+document.getElementById('feedback-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeFeedbackModal();
+});
 </script>
 </body>
 </html>
