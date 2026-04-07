@@ -270,7 +270,7 @@
   <div class="back-testbed"><a href="../../index.html">↖ Back to Testbed</a></div>
 
   <div class="bottom-bar">
-    <a class="next-btn" id="nextBtn" href="#">Next →</a>
+    <a class="next-btn" id="nextBtn" href="select-action.html">Next →</a>
   </div>
 </div>
 
@@ -479,5 +479,51 @@
 })();
 </script>
 
+
+<script>
+(function() {
+  // Read URL params
+  const params = new URLSearchParams(window.location.search);
+  const trigger = params.get('trigger') || '';
+  const condition = params.get('condition') || '';
+
+  // Update the Next button to go to select-action.html with all params + selected devices
+  function updateNextBtn() {
+    const btn = document.getElementById('nextBtn');
+    if (!btn) return;
+    // Get selected devices (toggles that are on)
+    const selected = [];
+    document.querySelectorAll('.device-row').forEach(row => {
+      const toggle = row.querySelector('.toggle input');
+      if (toggle && toggle.checked) {
+        selected.push(row.dataset.device || row.querySelector('.device-name')?.textContent || '');
+      }
+    });
+    const device = selected.join(', ') || params.get('device') || '';
+    const url = 'select-action.html?trigger=' + encodeURIComponent(trigger) +
+      (condition ? '&condition=' + encodeURIComponent(condition) : '') +
+      '&device=' + encodeURIComponent(device);
+    btn.href = url;
+    btn.onclick = null; // remove any # behavior
+  }
+
+  // Wire toggle changes to update the button
+  document.addEventListener('change', updateNextBtn);
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.device-row') || e.target.closest('.toggle')) {
+      setTimeout(updateNextBtn, 50);
+    }
+  });
+
+  // Initial update
+  setTimeout(updateNextBtn, 100);
+
+  // Also update context pill if trigger is set
+  const pill = document.getElementById('contextPill');
+  if (pill && trigger) {
+    pill.textContent = 'If ' + trigger + (condition ? ': ' + condition : '');
+  }
+})();
+</script>
 </body>
 </html>
