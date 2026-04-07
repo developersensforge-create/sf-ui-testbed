@@ -304,6 +304,79 @@
       });
     }
   </script>
+
+<script>
+(function() {
+  const FEATURE_DATA = {"sf-db1-doorbell": {"title": "SF-DB1 Battery Doorbell Camera", "subtitle": "UI Prototype PRD \u2014 Sensforge App Doorbell Flow", "desc": "The SF-DB1 doorbell camera app UI prototype covers the complete user journey for managing a battery-powered video doorbell: Live View with dual-camera PiP, Doorbell Ring event screen, Package Detection, Events timeline, Chime Settings, Smart Detection, Two-Way Audio, and Device Settings.", "screens": ["Live View", "Doorbell Ring Event", "Package Detection", "Events Tab", "Chime Settings", "Device Settings", "Smart Detection", "Two-Way Audio"], "previewUrl": "sf-db1-doorbell/index.html"}, "sensforge-subscription-ux": {"title": "Sensforge App \u2014 Subscription UX", "subtitle": "UI Prototype PRD \u2014 Subscription & Upsell Flow", "desc": "The Subscription UX prototype covers the complete user journey for converting trial users to paid subscribers: Home page with trial countdown banner and locked AI feature tiles, Paywall overlay for locked content, Explore subscription page with plan comparison, and Plan selection with monthly/yearly toggle.", "screens": ["Home (Trial Active)", "Home (Trial Expired)", "Paywall Overlay", "Explore / Subscribe", "Plan Select"], "previewUrl": "sensforge-subscription-ux/index.html"}};
+
+  const params = new URLSearchParams(window.location.search);
+  const featureKey = params.get('feature') || 'camera-skills';
+
+  if (featureKey === 'camera-skills') return; // hardcoded content already correct
+
+  const data = FEATURE_DATA[featureKey];
+  if (!data) {
+    // Unknown feature — just update the title
+    const h1 = document.querySelector('h1');
+    if (h1) h1.textContent = featureKey + ' — Product Requirements Document';
+    return;
+  }
+
+  // Update title
+  const h1 = document.querySelector('h1');
+  if (h1) h1.textContent = data.title + ' — Product Requirements Document';
+
+  // Update meta bar feature name
+  document.querySelectorAll('.meta-item strong').forEach(el => {
+    if (el.textContent === 'Feature:') {
+      el.parentElement.innerHTML = '<strong>Feature:</strong> ' + data.title;
+    }
+  });
+
+  // Update the feature name in the breadcrumb/header
+  const featureNameEl = document.querySelector('#featureName, .feature-name-display');
+  if (featureNameEl) featureNameEl.textContent = data.title;
+
+  // Find the main overview section and replace content
+  const overviewSection = document.querySelector('.section, .prd-section, #overview, h2');
+  // Replace the first large paragraph (overview description)
+  const paras = document.querySelectorAll('p');
+  if (paras.length > 0) {
+    // Replace first substantive paragraph with the feature's description
+    for (let i = 0; i < Math.min(3, paras.length); i++) {
+      if (paras[i].textContent.length > 50) {
+        paras[i].textContent = data.desc;
+        break;
+      }
+    }
+  }
+
+  // Update the flow diagram screen labels if visible
+  const flowBoxes = document.querySelectorAll('.flow-box, .flow-step, .screen-pill');
+  if (flowBoxes.length > 0 && data.screens) {
+    data.screens.forEach((screen, i) => {
+      if (flowBoxes[i]) {
+        const label = flowBoxes[i].querySelector('div:last-child, span, p');
+        if (label) label.textContent = screen;
+        else flowBoxes[i].textContent = screen;
+      }
+    });
+  }
+
+  // Update screenshots link
+  const screenshotLinks = document.querySelectorAll('[href*="camera-skills"], [src*="camera-skills"]');
+  screenshotLinks.forEach(el => {
+    if (el.href) el.href = el.href.replace('camera-skills', featureKey);
+    if (el.src) el.src = el.src.replace('camera-skills', featureKey);
+  });
+
+  // Update preview link
+  const previewLinks = document.querySelectorAll('.preview-btn, a[href*="features/skills"]');
+  previewLinks.forEach(el => {
+    if (data.previewUrl) el.href = data.previewUrl;
+  });
+})();
+</script>
 </head>
 <body>
 
