@@ -8,6 +8,7 @@
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   body { background:#e8ecf0; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
   .phone { width:390px; height:844px; background:#f5f5f5; border-radius:44px; box-shadow:0 24px 80px rgba(0,0,0,0.28); overflow:hidden; position:relative; }
+  .phone .scroll { overflow-x:hidden; overflow-y:auto; }
   .screen { display:none; flex-direction:column; height:844px; background:#f5f5f5; }
   .screen.active { display:flex; }
   .scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
@@ -58,8 +59,29 @@
   .section-hdr { padding:12px 14px 8px; font-size:12px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:0.5px; }
 
   /* AI Feature tiles horizontal scroll */
-  .ai-tiles { padding:0 10px 10px; display:flex; gap:8px; overflow-x:scroll; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; }
-  .ai-tile { scroll-snap-align:start; }
+  .ai-tiles {
+    padding:0 10px 14px;
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    overflow-y:visible;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:#f96400 #f0f0f0;
+  }
+  .ai-tiles::-webkit-scrollbar {
+    height:4px;
+  }
+  .ai-tiles::-webkit-scrollbar-track {
+    background:#f0f0f0;
+    border-radius:2px;
+    margin:0 10px;
+  }
+  .ai-tiles::-webkit-scrollbar-thumb {
+    background:#f96400;
+    border-radius:2px;
+  }
+  .ai-tile { scroll-snap-align:start; flex-shrink:0; }
   .ai-tiles::-webkit-scrollbar { display:none; }
   .ai-tile { min-width:140px; background:#fff; border-radius:12px; overflow:hidden; cursor:pointer; flex-shrink:0; box-shadow:0 1px 4px rgba(0,0,0,0.08); }
   .ai-tile-thumb { aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; font-size:28px; position:relative; }
@@ -196,16 +218,31 @@
     <!-- Unlock AI Features -->
 
     <!-- Camera Upsell Banner -->
-    <div style="margin:0 10px 8px;background:#fff;border-radius:14px;border:1px solid #eee;padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.06);" onclick="window.open('https://www.sensforge.com','_blank')">
-      <div style="width:44px;height:44px;border-radius:10px;background:#fff3ec;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📷</div>
-      <div style="flex:1;">
-        <div style="font-size:13px;font-weight:700;color:#1a1a1a;">Cover More of Your Home</div>
-        <div style="font-size:11px;color:#888;margin-top:2px;">Add more Sensforge cameras for full protection</div>
+    <div style="margin:0 10px 8px;background:linear-gradient(135deg,#0f1b2d,#1a2d45);border-radius:14px;padding:14px;cursor:pointer;overflow:hidden;position:relative;" onclick="window.open('https://www.sensforge.com','_blank')">
+      <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:radial-gradient(circle,rgba(249,100,0,0.25),transparent 70%);"></div>
+      <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">New Products Available</div>
+      <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:3px;">See Everything. Protect Everyone.</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.65);margin-bottom:12px;">Window cam, doorbell, outdoor cam &amp; more — protect every corner.</div>
+      <!-- Product icon row -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:8px 10px;text-align:center;flex:1;border:1px solid rgba(255,255,255,0.1);">
+          <div style="font-size:22px;margin-bottom:3px;">🪟</div>
+          <div style="color:rgba(255,255,255,0.8);font-size:9px;font-weight:600;">Window Cam</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:8px 10px;text-align:center;flex:1;border:1px solid rgba(255,255,255,0.1);">
+          <div style="font-size:22px;margin-bottom:3px;">🔔</div>
+          <div style="color:rgba(255,255,255,0.8);font-size:9px;font-weight:600;">Doorbell Cam</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:8px 10px;text-align:center;flex:1;border:1px solid rgba(255,255,255,0.1);">
+          <div style="font-size:22px;margin-bottom:3px;">🏕️</div>
+          <div style="color:rgba(255,255,255,0.8);font-size:9px;font-weight:600;">Outdoor Cam</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:8px 10px;text-align:center;flex:1;border:1px solid rgba(255,255,255,0.1);">
+          <div style="font-size:22px;margin-bottom:3px;">🐦</div>
+          <div style="color:rgba(255,255,255,0.8);font-size:9px;font-weight:600;">Bird Feeder</div>
+        </div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-        <div style="background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;">Shop Now ↗</div>
-        <div style="font-size:9px;color:#aaa;">sensforge.com</div>
-      </div>
+      <div style="background:var(--orange);color:#fff;font-size:13px;font-weight:700;padding:10px;border-radius:10px;text-align:center;">Shop Sensforge.com ↗</div>
     </div>
 
     <div class="section-hdr">Unlock Your Unique AI Features</div>
