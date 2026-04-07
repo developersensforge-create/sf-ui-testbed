@@ -58,7 +58,8 @@
   .section-hdr { padding:12px 14px 8px; font-size:12px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:0.5px; }
 
   /* AI Feature tiles horizontal scroll */
-  .ai-tiles { padding:0 10px 10px; display:flex; gap:8px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .ai-tiles { padding:0 10px 10px; display:flex; gap:8px; overflow-x:scroll; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; }
+  .ai-tile { scroll-snap-align:start; }
   .ai-tiles::-webkit-scrollbar { display:none; }
   .ai-tile { min-width:140px; background:#fff; border-radius:12px; overflow:hidden; cursor:pointer; flex-shrink:0; box-shadow:0 1px 4px rgba(0,0,0,0.08); }
   .ai-tile-thumb { aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; font-size:28px; position:relative; }
@@ -181,7 +182,32 @@
       <span style="color:rgba(255,255,255,0.7);font-size:18px;">›</span>
     </div>
 
+
+    <!-- Trial Expired Banner (shown after trial ends) -->
+    <div style="margin:0 10px 8px;background:linear-gradient(135deg,#c0392b,#922b21);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showScreen('s-explore')">
+      <div style="font-size:24px;">⚠️</div>
+      <div style="flex:1;">
+        <div style="color:#fff;font-size:13px;font-weight:700;">Your Free Trial Has Ended</div>
+        <div style="color:rgba(255,255,255,0.82);font-size:11px;margin-top:2px;line-height:1.4;">AI features are now locked. Subscribe to restore Weekly Highlights, Sensi AI, Pet AI and more.</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.9);color:#c0392b;font-size:11px;font-weight:800;padding:7px 12px;border-radius:8px;white-space:nowrap;cursor:pointer;">Subscribe Now</div>
+    </div>
+
     <!-- Unlock AI Features -->
+
+    <!-- Camera Upsell Banner -->
+    <div style="margin:0 10px 8px;background:#fff;border-radius:14px;border:1px solid #eee;padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.06);" onclick="window.open('https://www.sensforge.com','_blank')">
+      <div style="width:44px;height:44px;border-radius:10px;background:#fff3ec;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📷</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;color:#1a1a1a;">Cover More of Your Home</div>
+        <div style="font-size:11px;color:#888;margin-top:2px;">Add more Sensforge cameras for full protection</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <div style="background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;">Shop Now ↗</div>
+        <div style="font-size:9px;color:#aaa;">sensforge.com</div>
+      </div>
+    </div>
+
     <div class="section-hdr">Unlock Your Unique AI Features</div>
     <div class="ai-tiles">
       <div class="ai-tile" onclick="showScreen('s-paywall')">
