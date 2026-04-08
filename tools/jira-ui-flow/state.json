@@ -1,0 +1,63 @@
+{
+  "NEX-51": {
+    "key": "NEX-51",
+    "summary": "Implement swing analysis with professional swing comparison overlay",
+    "status": "UI DESIGN",
+    "brief_sent": true,
+    "brief_sent_at": "2026-04-08T12:00:00Z",
+    "brief_content": "# Design Brief — NEX-51\n## Implement Swing Analysis with Professional Comparison Overlay\n\n**Ticket:** NEX-51  \n**Date:** 2026-04-08  \n**Product:** NextSport (Golf)\n\n---\n\n### Overview\nWe want a screen where users can record or upload their golf swing, then see it overlaid side-by-side (or superimposed) with a reference swing from a professional golfer. This is a core differentiator for NextSport.\n\n### Key Screens Needed\n1. **Swing Capture Entry** — CTA to record or upload a video. Keep it dead simple. One big button.\n2. **Pro Selection** — Let user pick a reference pro (Tiger 2005, Rory McIlroy 2023, etc.). Show thumbnail + name. Max 6 pros visible.\n3. **Analysis View** — Side-by-side or overlay toggle. Scrub bar to step through frames. Key joint markers (hip, shoulder, wrist) highlighted as dots.\n4. **Results Summary** — 3–4 metrics (hip rotation, follow-through angle, backswing tempo). Color coded green/amber/red vs. pro baseline.\n\n### Design Principles\n- Orange (#f96400) as primary action color\n- Dark background for the video comparison area (feels cinematic)\n- Numbers big and readable — users glance at this mid-lesson\n- No clutter — one insight at a time\n\n### Acceptance Criteria\n- [ ] All 4 screens mocked up\n- [ ] Empty state if no swing uploaded yet\n- [ ] Error state if video format unsupported\n- [ ] Mobile-first (375px base), scales to tablet\n- [ ] Figma components use auto-layout",
+    "figma_url": "https://figma.com/file/abc123/NEX-51-Swing-Analysis",
+    "figma_check_count": 2,
+    "quality_passed": false,
+    "last_check_at": "2026-04-08T14:30:00Z",
+    "issues": [
+      {
+        "frame": "Swing Capture Entry",
+        "type": "empty_button",
+        "severity": "blocker",
+        "description": "CTA button has no label — users won't know what it does"
+      },
+      {
+        "frame": "Analysis View",
+        "type": "contrast_fail",
+        "severity": "major",
+        "description": "Text contrast ratio 2.1:1 — fails WCAG AA (need 4.5:1 minimum)"
+      }
+    ],
+    "ignored": false,
+    "human_approved": false,
+    "notes": ""
+  },
+  "NEX-14": {
+    "key": "NEX-14",
+    "summary": "Redesign onboarding flow for new golfers with skill assessment",
+    "status": "READY FOR REVIEW",
+    "brief_sent": true,
+    "brief_sent_at": "2026-04-06T09:00:00Z",
+    "brief_content": "# Design Brief — NEX-14\n## Redesign Onboarding Flow with Skill Assessment\n\n**Ticket:** NEX-14  \n**Date:** 2026-04-06  \n**Product:** NextSport (Golf)\n\n---\n\n### Overview\nNew user retention is low — users drop off after signup because they don't know what to do first. We need a guided onboarding that (a) sets expectations, (b) assesses their skill level, and (c) routes them to the right first experience.\n\n### Key Screens Needed\n1. **Welcome Splash** — Name + logo animation. \"Welcome to NextSport, [Name]\" — personal, warm.\n2. **Skill Self-Assessment** — 3 quick questions. \"How long have you been golfing?\" / \"What's your typical score?\" / \"What's your biggest challenge?\" — single-select chips.\n3. **Goal Setting** — Pick 1 primary goal (Lower score / Improve consistency / Fix my swing / Just for fun). Big tappable cards.\n4. **Your Plan Preview** — \"Based on your answers, here's what we'll work on first.\" 3 bullet preview. Big orange CTA: \"Let's go →\"\n5. **Permission Ask** — Camera access (for swing recording). Explain why. Don't just dump the system dialog.\n\n### Design Principles\n- Warm, encouraging tone — not clinical\n- Progress indicator (1 of 4) at the top\n- Skip option available but not prominent\n- Each screen max 3 elements — no walls of text\n\n### Acceptance Criteria\n- [ ] All 5 screens complete\n- [ ] Empty/skip states handled\n- [ ] Transition animations specified in Figma prototype\n- [ ] Accessible tap targets (min 44px)\n- [ ] Tested at 375px and 390px widths",
+    "figma_url": "https://figma.com/file/def456/NEX-14-Onboarding",
+    "figma_check_count": 3,
+    "quality_passed": true,
+    "last_check_at": "2026-04-08T11:00:00Z",
+    "issues": [],
+    "ignored": false,
+    "human_approved": false,
+    "notes": ""
+  },
+  "NEX-15": {
+    "key": "NEX-15",
+    "summary": "Add video upload feature for player to record and submit swing footage",
+    "status": "UI DESIGN",
+    "brief_sent": true,
+    "brief_sent_at": "2026-04-08T13:45:00Z",
+    "brief_content": "# Design Brief — NEX-15\n## Video Upload — Record & Submit Swing Footage\n\n**Ticket:** NEX-15  \n**Date:** 2026-04-08  \n**Product:** NextSport (Golf)\n\n---\n\n### Overview\nUsers need a smooth way to submit swing videos for AI analysis. This can be from camera (live record) or from camera roll (upload existing). The flow must feel fast and confidence-inspiring — people feel awkward recording their swing; the UI should reduce friction and make them feel capable.\n\n### Key Screens Needed\n1. **Entry Point** — Accessible from home screen and from swing analysis. Two clear options: \"Record Now\" and \"Upload from Library\". Icon + label.\n2. **Camera View** — Full-screen camera. Top-right: timer (3s countdown before record). Bottom: record button (large, red). Tip overlay: \"Face the camera side-on for best results\" — dismissable.\n3. **Clip Preview** — After recording/selecting: scrub the clip, option to retake or confirm. Show duration. Max 30s clip.\n4. **Upload Progress** — Progress bar, estimated time, cancel option. Don't trap the user.\n5. **Success State** — Clip received. \"Your swing is being analyzed — we'll notify you in ~2 minutes.\" Option to record another.\n\n### Error States\n- Camera permission denied → explain + link to settings\n- File too large (>100MB) → clear message, suggest trimming\n- Upload failed → retry button, not just an X\n\n### Design Principles\n- High contrast on camera screens (dark chrome, white controls)\n- Reassuring copy throughout — users are self-conscious\n- No unnecessary steps — record → preview → send, that's it\n\n### Acceptance Criteria\n- [ ] All 5 screens + all 3 error states\n- [ ] Figma prototype clickable end-to-end\n- [ ] Clip preview uses a real video placeholder frame\n- [ ] Specs include camera overlay safe zones",
+    "figma_url": null,
+    "figma_check_count": 0,
+    "quality_passed": false,
+    "last_check_at": null,
+    "issues": [],
+    "ignored": false,
+    "human_approved": false,
+    "notes": "Waiting for designer to create Figma frames"
+  }
+}

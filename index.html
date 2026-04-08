@@ -420,6 +420,7 @@
   // Default features list — Camera Skills is always the first, cannot be deleted
   const DEFAULT_FEATURES = [
     { key: 'camera-skills', name: 'Camera Skills', desc: 'Configure smart detection rules — if X detected → do Y', previewUrl: 'features/skills/index.html' },
+    { key: 'jira-ui-flow', name: '🗂️ Jira-UI Flow Dashboard', desc: 'Monitor the Jira → UI design pipeline: track briefs, Figma QA checks, blockers, and approvals.', previewUrl: 'tools/jira-ui-flow/index.html' },
     { key: 'sf-db1-doorbell', name: 'SF-DB1 Doorbell Camera', desc: 'Battery doorbell camera app UI — live view, events, chime settings, smart detection & two-way audio', previewUrl: 'sf-db1-doorbell/index.html' }
   ];
 
@@ -475,7 +476,7 @@
   }
 
   function createCardEl(feature) {
-    const isDefault = feature.key === 'camera-skills';
+    const isDefault = feature.key === 'camera-skills' || feature.key === 'jira-ui-flow';
     const div = document.createElement('div');
     div.className = 'feature-card';
     div.dataset.cardId = feature.key;
@@ -490,7 +491,7 @@
     }
 
     let deleteBtn = '';
-    if (feature.key !== 'camera-skills') {
+    if (feature.key !== 'camera-skills' && feature.key !== 'jira-ui-flow') {
       deleteBtn = `<button class="card-delete-btn" onclick="deleteCard('${feature.key}')" title="Remove card">×</button>`;
     }
 
@@ -533,7 +534,7 @@
 
   // ===== Delete card =====
   function deleteCard(key) {
-    if (key === 'camera-skills') return;
+    if (key === 'camera-skills' || key === 'jira-ui-flow') return;
     // Show custom confirmation modal
     showDeleteModal(key);
   }
