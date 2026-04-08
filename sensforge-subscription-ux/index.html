@@ -432,7 +432,40 @@
     <div style="display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#1a1a1a;">All Events <span style="font-size:11px;">▾</span></div>
   </div>
   <div class="scroll" style="background:#f5f5f5;">
-    <!-- Event row: Motion with AI summary locked -->
+    <!-- Event row: Pet — FULLY UNLOCKED AI Summary example (top, Pro user view) -->
+    <div style="background:#fff;margin:0 0 1px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:2px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--orange);"></div>
+        <div style="width:1px;flex:1;background:#eee;min-height:40px;"></div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#888;margin-bottom:3px;">05:22:21 PM</div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#555"><path d="M4 14s-1-3 2-5 5-1 7 2l2 5M8 7l1-3M16 7l-1-3M6 17l-2 2M18 17l2 2"/></svg>
+          <span style="font-size:15px;font-weight:700;color:#1a1a1a;">Pet</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
+          <div style="width:14px;height:14px;border-radius:3px;background:#555;"></div>
+          <span style="font-size:12px;color:#888;">Pet Cam Mochi</span>
+        </div>
+        <!-- UNLOCKED AI Summary card -->
+        <div style="background:#fff8f2;border:1px solid #f96400;border-left:3px solid #f96400;border-radius:8px;padding:10px 12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
+            <div style="display:flex;align-items:center;gap:5px;">
+              <span style="font-size:13px;">✨</span>
+              <span style="font-size:11px;font-weight:700;color:var(--orange);">AI Summary</span>
+            </div>
+            <div style="background:var(--orange);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;">Pro</div>
+          </div>
+          <div style="font-size:12px;color:#333;line-height:1.6;">
+            Your cat Mochi had an active afternoon! At <strong>5:22 PM</strong>, Mochi was spotted playing enthusiastically near the window for about 3 minutes. This is the <strong>2nd interaction</strong> detected today — energy level looks high. No unusual behavior detected.
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:var(--orange);font-weight:600;cursor:pointer;">View Full Timeline →</div>
+        </div>
+      </div>
+      <div style="width:72px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:18px;">🐈</div>
+    </div>
+    <!-- Event row: Motion — teaser with blur -->
     <div style="background:#fff;margin:0 0 1px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;">
       <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:2px;">
         <div style="width:8px;height:8px;border-radius:50%;background:#ccc;"></div>
@@ -444,50 +477,33 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#555"><path d="M13 6v10l-5-5 5-5zm0 0h5a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-5"/></svg>
           <span style="font-size:15px;font-weight:700;color:#1a1a1a;">Motion</span>
         </div>
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
           <div style="width:14px;height:14px;border-radius:3px;background:#555;"></div>
           <span style="font-size:12px;color:#888;">Pet Cam Mochi</span>
         </div>
-        <!-- AI Summary locked -->
-        <div style="background:#fff8f5;border:1px solid #ffe0cc;border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="showScreen('s-explore')">
-          <span style="font-size:14px;">🔒</span>
-          <div style="flex:1;">
-            <div style="font-size:11px;font-weight:700;color:var(--orange);">AI Summary — Pro Only</div>
-            <div style="font-size:10px;color:#888;margin-top:1px;">Subscribe to see what Sensi AI detected</div>
+        <!-- Teaser card with fade -->
+        <div style="background:#fff8f5;border:1px solid #ffe0cc;border-radius:8px;overflow:hidden;cursor:pointer;" onclick="showScreen('s-explore')">
+          <div style="padding:10px 12px 0;">
+            <div style="display:flex;align-items:center;gap:5px;margin-bottom:7px;">
+              <span style="font-size:13px;">✨</span>
+              <span style="font-size:11px;font-weight:700;color:var(--orange);">AI Summary</span>
+              <span style="font-size:13px;margin-left:2px;">🔒</span>
+            </div>
+            <div style="font-size:12px;color:#333;line-height:1.6;position:relative;">
+              <span>Motion was detected near the front entrance at 5:22 PM. Duration approximately 45 seconds. The camera identified...</span>
+            </div>
           </div>
-          <div style="background:var(--orange);color:#fff;font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px;white-space:nowrap;">Unlock</div>
+          <!-- Fade overlay -->
+          <div style="height:32px;background:linear-gradient(to bottom, rgba(255,248,245,0) 0%, rgba(255,248,245,1) 100%);margin-top:-8px;"></div>
+          <div style="padding:8px 12px 10px;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:10px;color:#aaa;">Subscribe to read full summary</span>
+            <div style="background:var(--orange);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;">Unlock Pro</div>
+          </div>
         </div>
       </div>
       <div style="width:72px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>
     </div>
-    <!-- Event row: Pet -->
-    <div style="background:#fff;margin:0 0 1px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:2px;">
-        <div style="width:8px;height:8px;border-radius:50%;background:#ccc;"></div>
-        <div style="width:1px;flex:1;background:#eee;min-height:40px;"></div>
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:11px;color:#888;margin-bottom:3px;">05:22:21 PM</div>
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#555"><path d="M4 14s-1-3 2-5 5-1 7 2l2 5M8 7l1-3M16 7l-1-3M6 17l-2 2M18 17l2 2"/></svg>
-          <span style="font-size:15px;font-weight:700;color:#1a1a1a;">Pet</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">
-          <div style="width:14px;height:14px;border-radius:3px;background:#555;"></div>
-          <span style="font-size:12px;color:#888;">Pet Cam Mochi</span>
-        </div>
-        <div style="background:#fff8f5;border:1px solid #ffe0cc;border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="showScreen('s-explore')">
-          <span style="font-size:14px;">🔒</span>
-          <div style="flex:1;">
-            <div style="font-size:11px;font-weight:700;color:var(--orange);">AI Summary — Pro Only</div>
-            <div style="font-size:10px;color:#888;margin-top:1px;">Subscribe to see what Sensi AI detected</div>
-          </div>
-          <div style="background:var(--orange);color:#fff;font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px;white-space:nowrap;">Unlock</div>
-        </div>
-      </div>
-      <div style="width:72px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:18px;">🐈</div>
-    </div>
-    <!-- Event row: Human (no AI summary shown — free event visible) -->
+    <!-- Event row: Human — teaser with blur -->
     <div style="background:#fff;margin:0 0 1px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;">
       <div style="padding-top:2px;"><div style="width:8px;height:8px;border-radius:50%;background:#ccc;margin-top:4px;"></div></div>
       <div style="flex:1;">
@@ -496,19 +512,37 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#555"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           <span style="font-size:15px;font-weight:700;color:#1a1a1a;">Human</span>
         </div>
-        <div style="display:flex;align-items:center;gap:5px;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:8px;">
           <div style="width:14px;height:14px;border-radius:3px;background:#555;"></div>
           <span style="font-size:12px;color:#888;">Pet Cam Mochi</span>
+        </div>
+        <!-- Teaser card with blur -->
+        <div style="background:#fff8f5;border:1px solid #ffe0cc;border-radius:8px;overflow:hidden;cursor:pointer;" onclick="showScreen('s-explore')">
+          <div style="padding:10px 12px 0;">
+            <div style="display:flex;align-items:center;gap:5px;margin-bottom:7px;">
+              <span style="font-size:13px;">✨</span>
+              <span style="font-size:11px;font-weight:700;color:var(--orange);">AI Summary</span>
+              <span style="font-size:13px;margin-left:2px;">🔒</span>
+            </div>
+            <div style="font-size:12px;color:#333;line-height:1.6;">
+              <span>A person was detected in the living area at 5:13 PM. Activity lasted around 2 minutes. Sensi AI identified...</span>
+            </div>
+          </div>
+          <div style="height:32px;background:linear-gradient(to bottom, rgba(255,248,245,0) 0%, rgba(255,248,245,1) 100%);margin-top:-8px;"></div>
+          <div style="padding:8px 12px 10px;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:10px;color:#aaa;">Subscribe to read full summary</span>
+            <div style="background:var(--orange);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;">Unlock Pro</div>
+          </div>
         </div>
       </div>
       <div style="width:72px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>
     </div>
-    <!-- Subscribe banner at bottom of events -->
+    <!-- Subscribe banner at bottom -->
     <div style="margin:10px 10px;background:linear-gradient(135deg,#f96400,#ff8c00);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showScreen('s-explore')">
       <span style="font-size:22px;">✨</span>
       <div style="flex:1;">
-        <div style="color:#fff;font-size:12px;font-weight:700;">Unlock AI Summaries for Every Event</div>
-        <div style="color:rgba(255,255,255,0.82);font-size:10px;margin-top:2px;">Single Pro — from $4.99/mo</div>
+        <div style="color:#fff;font-size:12px;font-weight:700;">🔓 Unlock AI Summaries + 60-day cloud storage</div>
+        <div style="color:rgba(255,255,255,0.82);font-size:10px;margin-top:2px;">from $4.99/mo — cancel anytime</div>
       </div>
       <div style="background:rgba(255,255,255,0.2);color:#fff;font-size:11px;font-weight:700;padding:6px 10px;border-radius:8px;white-space:nowrap;">Subscribe</div>
     </div>
