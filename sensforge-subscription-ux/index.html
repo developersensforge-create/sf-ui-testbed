@@ -394,11 +394,303 @@
 </div>
 
 <!-- ═══ Screen Nav (dev only) ═══ -->
-<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.75);padding:6px;display:flex;gap:4px;z-index:500;overflow-x:auto;">
-  <button onclick="showScreen('s-home')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;">Home</button>
-  <button onclick="showScreen('s-paywall')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;">Paywall</button>
-  <button onclick="showScreen('s-explore')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;">Explore</button>
-  <button onclick="showScreen('s-plan-select')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;">Plan Select</button>
+
+<!-- ═══ SCREEN 5: EVENTS TAB (with AI Summary paywall) ═══ -->
+<div class="screen explore-bg" id="s-events">
+  <div class="status">5:36 ☁️ <span>⊖ ▾ 🔋</span></div>
+  <!-- Calendar week strip -->
+  <div style="background:#fff;padding:10px 14px 8px;flex-shrink:0;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;">
+      <span style="font-size:16px;color:#888;cursor:pointer;">‹</span>
+      <span style="font-size:16px;font-weight:700;color:#1a1a1a;">2026-4</span>
+      <span style="font-size:16px;color:#888;cursor:pointer;">›</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;">
+      <div style="font-size:11px;color:#888;padding:2px 0;">Sun</div>
+      <div style="font-size:11px;color:#888;padding:2px 0;">Mon</div>
+      <div style="font-size:11px;color:#888;padding:2px 0;">Tue</div>
+      <div style="font-size:11px;color:#888;padding:2px 0;">Wed</div>
+      <div style="font-size:11px;color:#888;padding:2px 0;">Thu</div>
+      <div style="font-size:11px;color:#888;padding:2px 0;">Fri</div>
+      <div style="font-size:11px;color:#888;padding:2px 0;">Sat</div>
+      <div style="font-size:13px;color:#888;padding:4px 0;">5</div>
+      <div style="font-size:13px;font-weight:700;padding:4px 0;"><span style="background:var(--orange);color:#fff;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;">6</span></div>
+      <div style="font-size:13px;color:#888;padding:4px 0;">7</div>
+      <div style="font-size:13px;color:#888;padding:4px 0;">8</div>
+      <div style="font-size:13px;color:#888;padding:4px 0;">9</div>
+      <div style="font-size:13px;color:#888;padding:4px 0;">10</div>
+      <div style="font-size:13px;color:#888;padding:4px 0;">11</div>
+    </div>
+    <div style="width:24px;height:3px;background:#ddd;border-radius:2px;margin:8px auto 0;"></div>
+  </div>
+  <!-- Batch management + filter -->
+  <div style="background:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:6px;color:#555;font-size:13px;font-weight:600;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Batch Management
+    </div>
+    <div style="display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#1a1a1a;">All Events <span style="font-size:11px;">▾</span></div>
+  </div>
+  <div class="scroll" style="background:#f5f5f5;">
+    <!-- Event row: Motion with AI summary locked -->
+    <div style="background:#fff;margin:0 0 1px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:2px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:#ccc;"></div>
+        <div style="width:1px;flex:1;background:#eee;min-height:40px;"></div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#888;margin-bottom:3px;">05:22:33 PM</div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#555"><path d="M13 6v10l-5-5 5-5zm0 0h5a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-5"/></svg>
+          <span style="font-size:15px;font-weight:700;color:#1a1a1a;">Motion</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">
+          <div style="width:14px;height:14px;border-radius:3px;background:#555;"></div>
+          <span style="font-size:12px;color:#888;">Pet Cam Mochi</span>
+        </div>
+        <!-- AI Summary locked -->
+        <div style="background:#fff8f5;border:1px solid #ffe0cc;border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="showScreen('s-explore')">
+          <span style="font-size:14px;">🔒</span>
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:700;color:var(--orange);">AI Summary — Pro Only</div>
+            <div style="font-size:10px;color:#888;margin-top:1px;">Subscribe to see what Sensi AI detected</div>
+          </div>
+          <div style="background:var(--orange);color:#fff;font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px;white-space:nowrap;">Unlock</div>
+        </div>
+      </div>
+      <div style="width:72px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:18px;">🏠</div>
+    </div>
+    <!-- Event row: Pet -->
+    <div style="background:#fff;margin:0 0 1px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:2px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:#ccc;"></div>
+        <div style="width:1px;flex:1;background:#eee;min-height:40px;"></div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#888;margin-bottom:3px;">05:22:21 PM</div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#555"><path d="M4 14s-1-3 2-5 5-1 7 2l2 5M8 7l1-3M16 7l-1-3M6 17l-2 2M18 17l2 2"/></svg>
+          <span style="font-size:15px;font-weight:700;color:#1a1a1a;">Pet</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">
+          <div style="width:14px;height:14px;border-radius:3px;background:#555;"></div>
+          <span style="font-size:12px;color:#888;">Pet Cam Mochi</span>
+        </div>
+        <div style="background:#fff8f5;border:1px solid #ffe0cc;border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="showScreen('s-explore')">
+          <span style="font-size:14px;">🔒</span>
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:700;color:var(--orange);">AI Summary — Pro Only</div>
+            <div style="font-size:10px;color:#888;margin-top:1px;">Subscribe to see what Sensi AI detected</div>
+          </div>
+          <div style="background:var(--orange);color:#fff;font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px;white-space:nowrap;">Unlock</div>
+        </div>
+      </div>
+      <div style="width:72px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:18px;">🐈</div>
+    </div>
+    <!-- Event row: Human (no AI summary shown — free event visible) -->
+    <div style="background:#fff;margin:0 0 1px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;">
+      <div style="padding-top:2px;"><div style="width:8px;height:8px;border-radius:50%;background:#ccc;margin-top:4px;"></div></div>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:#888;margin-bottom:3px;">05:13:35 PM</div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#555"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span style="font-size:15px;font-weight:700;color:#1a1a1a;">Human</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <div style="width:14px;height:14px;border-radius:3px;background:#555;"></div>
+          <span style="font-size:12px;color:#888;">Pet Cam Mochi</span>
+        </div>
+      </div>
+      <div style="width:72px;height:56px;border-radius:8px;overflow:hidden;flex-shrink:0;background:#ddd;display:flex;align-items:center;justify-content:center;font-size:18px;">👤</div>
+    </div>
+    <!-- Subscribe banner at bottom of events -->
+    <div style="margin:10px 10px;background:linear-gradient(135deg,#f96400,#ff8c00);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showScreen('s-explore')">
+      <span style="font-size:22px;">✨</span>
+      <div style="flex:1;">
+        <div style="color:#fff;font-size:12px;font-weight:700;">Unlock AI Summaries for Every Event</div>
+        <div style="color:rgba(255,255,255,0.82);font-size:10px;margin-top:2px;">Single Pro — from $4.99/mo</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.2);color:#fff;font-size:11px;font-weight:700;padding:6px 10px;border-radius:8px;white-space:nowrap;">Subscribe</div>
+    </div>
+    <div style="height:8px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab" onclick="showScreen('s-home')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab active"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab" onclick="showScreen('s-explore')"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 6: ACCOUNT PAGE ═══ -->
+<div class="screen explore-bg" id="s-account">
+  <div class="status">5:36 ☁️ <span>⊖ ▾ 🔋</span></div>
+  <div style="background:#fff;padding:12px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee;flex-shrink:0;">
+    <span onclick="showScreen('s-home')" style="font-size:22px;color:#555;cursor:pointer;">←</span>
+    <span style="font-size:17px;font-weight:700;color:#1a1a1a;flex:1;text-align:center;">Account</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div class="scroll">
+    <!-- Email row -->
+    <div style="background:#fff;margin:10px 10px 1px;border-radius:12px;overflow:hidden;">
+      <div style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f5f5f5;">
+        <span style="font-size:14px;color:#1a1a1a;">allen7182608@gmail.com</span>
+        <span style="color:#ccc;font-size:16px;">›</span>
+      </div>
+    </div>
+    <!-- Account settings group -->
+    <div style="background:#fff;margin:8px 10px 1px;border-radius:12px;overflow:hidden;">
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f5f5f5;cursor:pointer;">
+        <div style="width:34px;height:34px;border-radius:8px;background:#555;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18" stroke="white" stroke-width="1.5"/></svg>
+        </div>
+        <span style="flex:1;font-size:15px;color:#1a1a1a;">Change Profile Picture</span>
+        <span style="color:#ccc;font-size:16px;">›</span>
+      </div>
+      <!-- Memberships row — highlighted with orange accent -->
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f5f5f5;cursor:pointer;background:#fffbf8;" onclick="showScreen('s-memberships')">
+        <div style="width:34px;height:34px;border-radius:8px;background:var(--orange);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:15px;color:#1a1a1a;font-weight:600;">Memberships</div>
+          <div style="font-size:11px;color:var(--orange);margin-top:1px;">Manage your Pro plan →</div>
+        </div>
+        <div style="background:var(--orange-light);color:var(--orange);font-size:9px;font-weight:800;padding:3px 8px;border-radius:20px;margin-right:6px;">PRO</div>
+        <span style="color:#ccc;font-size:16px;">›</span>
+      </div>
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f5f5f5;cursor:pointer;">
+        <div style="width:34px;height:34px;border-radius:8px;background:#555;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <span style="flex:1;font-size:15px;color:#1a1a1a;">Shared Users</span>
+        <span style="color:#ccc;font-size:16px;">›</span>
+      </div>
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f5f5f5;cursor:pointer;">
+        <div style="width:34px;height:34px;border-radius:8px;background:#555;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        </div>
+        <span style="flex:1;font-size:15px;color:#1a1a1a;">Shared Access Invitations</span>
+        <span style="color:#ccc;font-size:16px;">›</span>
+      </div>
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
+        <div style="width:34px;height:34px;border-radius:8px;background:#555;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21.5 2.5l-10 10m0-10l10 10M3 7l4-4 4 4-4 4-4-4zm0 10l4-4 4 4-4 4-4-4z"/></svg>
+        </div>
+        <span style="flex:1;font-size:15px;color:#1a1a1a;">Check for Updates</span>
+        <span style="color:#ccc;font-size:16px;">›</span>
+      </div>
+    </div>
+    <!-- Upsell membership card -->
+    <div style="margin:8px 10px;background:var(--orange-light);border:1px solid #ffe0cc;border-radius:12px;padding:12px 14px;cursor:pointer;" onclick="showScreen('s-memberships')">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <span style="font-size:20px;">👑</span>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--orange);">No active Pro plan</div>
+          <div style="font-size:11px;color:#a05000;">Unlock AI features, 60-day cloud &amp; more</div>
+        </div>
+        <div style="margin-left:auto;background:var(--orange);color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:8px;white-space:nowrap;">View Plans</div>
+      </div>
+    </div>
+    <!-- More settings -->
+    <div style="background:#fff;margin:8px 10px 1px;border-radius:12px;overflow:hidden;">
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f5f5f5;cursor:pointer;">
+        <div style="width:34px;height:34px;border-radius:8px;background:#555;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <span style="flex:1;font-size:15px;color:#1a1a1a;">Privacy</span>
+        <span style="color:#ccc;font-size:16px;">›</span>
+      </div>
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f5f5f5;cursor:pointer;">
+        <div style="width:34px;height:34px;border-radius:8px;background:#555;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <span style="flex:1;font-size:15px;color:#1a1a1a;">FAQ &amp; Tech Support</span>
+        <span style="color:#ccc;font-size:16px;">›</span>
+      </div>
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
+        <div style="width:34px;height:34px;border-radius:8px;background:#555;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg></div>
+        <span style="flex:1;font-size:15px;color:#1a1a1a;">About</span>
+        <span style="color:#ccc;font-size:16px;">›</span>
+      </div>
+    </div>
+    <div style="margin:16px 10px;">
+      <button style="width:100%;background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;font-size:15px;font-weight:600;color:#e74c3c;cursor:pointer;">Log Out</button>
+    </div>
+    <div style="height:8px;"></div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 7: MEMBERSHIPS PAGE ═══ -->
+<div class="screen explore-bg" id="s-memberships">
+  <div class="status">5:36 ☁️ <span>⊖ ▾ 🔋</span></div>
+  <div style="background:#fff;padding:12px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee;flex-shrink:0;">
+    <span onclick="showScreen('s-account')" style="font-size:22px;color:#555;cursor:pointer;">←</span>
+    <span style="font-size:17px;font-weight:700;color:#1a1a1a;flex:1;text-align:center;">Memberships</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div class="scroll">
+    <!-- Header section matching real app -->
+    <div style="background:#fff;padding:20px 14px 16px;text-align:center;border-bottom:1px solid #f0f0f0;">
+      <div style="font-size:13px;color:#888;margin-bottom:10px;">Become a Member</div>
+      <!-- Camera icons row -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:-8px;margin-bottom:14px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid #fff;margin-right:-8px;z-index:3;">📷</div>
+        <div style="width:52px;height:52px;border-radius:50%;background:#553300;display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid #fff;z-index:2;">🏠</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid #fff;margin-left:-8px;z-index:1;">📷</div>
+      </div>
+      <div style="font-size:20px;font-weight:800;color:#1a1a1a;margin-bottom:6px;">Unlock all Contents</div>
+      <div style="font-size:13px;color:#888;line-height:1.5;">Full access to Sensforge's features<br>allows a better experience</div>
+    </div>
+    <!-- Basic plan -->
+    <div style="margin:10px 10px 8px;background:#fff;border-radius:14px;border:1.5px solid #eee;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:#f5f5f5;border:1.5px solid #ddd;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:16px;font-weight:700;color:#888;">Basic</div>
+        <div style="font-size:12px;color:#aaa;">1 Camera</div>
+      </div>
+      <span style="font-size:12px;color:var(--orange);font-weight:600;cursor:pointer;">See More Details</span>
+    </div>
+    <!-- Single Pro plan — orange, matching real app -->
+    <div style="margin:0 10px 8px;background:linear-gradient(135deg,#f96400,#ff8c00);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="showScreen('s-plan-select')">
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L14.7 7.63l4.79.698a.5.5 0 0 1 .277.853l-3.467 3.379.818 4.774a.5.5 0 0 1-.726.527L12 15.305l-4.392 2.556a.5.5 0 0 1-.726-.527l.818-4.774L.233 9.18a.5.5 0 0 1 .277-.853l4.79-.698z"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:16px;font-weight:800;color:#fff;">Single Pro</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.8);">No active single-camera plans</div>
+      </div>
+      <span style="font-size:12px;color:rgba(255,255,255,0.9);font-weight:600;cursor:pointer;text-decoration:underline;">See More Details</span>
+    </div>
+    <!-- Family Pro plan — purple, matching real app -->
+    <div style="margin:0 10px 8px;background:linear-gradient(135deg,#7c3aed,#9b59b6);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="showScreen('s-plan-select')">
+      <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:16px;font-weight:800;color:#fff;">Family Pro</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.8);">No active multi-camera plans</div>
+      </div>
+      <span style="font-size:12px;color:rgba(255,255,255,0.9);font-weight:600;cursor:pointer;text-decoration:underline;">See More Details</span>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab" onclick="showScreen('s-home')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
+<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.8);padding:5px;display:flex;gap:3px;z-index:500;overflow-x:auto;">
+  <button onclick="showScreen('s-home')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:5px 9px;border-radius:6px;font-size:9px;cursor:pointer;">Home</button>
+  <button onclick="showScreen('s-paywall')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:5px 9px;border-radius:6px;font-size:9px;cursor:pointer;">Paywall</button>
+  <button onclick="showScreen('s-explore')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:5px 9px;border-radius:6px;font-size:9px;cursor:pointer;">Explore</button>
+  <button onclick="showScreen('s-plan-select')" style="flex-shrink:0;background:#333;color:#fff;border:none;padding:5px 9px;border-radius:6px;font-size:9px;cursor:pointer;">Plans</button>
+  <button onclick="showScreen('s-events')" style="flex-shrink:0;background:#f96400;color:#fff;border:none;padding:5px 9px;border-radius:6px;font-size:9px;cursor:pointer;">Events</button>
+  <button onclick="showScreen('s-account')" style="flex-shrink:0;background:#f96400;color:#fff;border:none;padding:5px 9px;border-radius:6px;font-size:9px;cursor:pointer;">Account</button>
+  <button onclick="showScreen('s-memberships')" style="flex-shrink:0;background:#f96400;color:#fff;border:none;padding:5px 9px;border-radius:6px;font-size:9px;cursor:pointer;">Memberships</button>
 </div>
 
 <!-- Feedback FAB + Modal -->
