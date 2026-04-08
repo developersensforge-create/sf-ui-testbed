@@ -1,0 +1,11 @@
+{
+  "projects": [
+    {
+      "key": "SCRUM",
+      "name": "Sensforge App",
+      "active": true,
+      "filter_created_after": "2026-01-01",
+      "trigger_any_status": true
+    }
+  ]
+}
