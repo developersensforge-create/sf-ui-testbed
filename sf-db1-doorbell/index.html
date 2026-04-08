@@ -255,9 +255,9 @@
       <div class="device-name">Front Door</div>
       <div class="device-sub"><span style="color:#ff4444;font-size:11px;font-weight:700;">● LIVE</span><span>·</span><span>245 KB/s</span><span>·</span><span class="battery-low">72%</span></div>
     </div>
-    <div class="right-icons">
-      <span onclick="showScreen('s-settings')">⚙️</span>
-      <span>⤢</span>
+    <div class="right-icons" style="gap:16px;">
+      <span onclick="showScreen('s-settings')" style="cursor:pointer;display:flex;align-items:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+      <span style="cursor:pointer;display:flex;align-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></span>
     </div>
   </div>
 
@@ -272,7 +272,7 @@
     </div>
     <!-- Package camera PiP -->
     <div class="pkg-pip" onclick="event.stopPropagation(); showScreen('s-package')">
-      <div class="pkg-pip-feed">📦</div>
+      <div class="pkg-pip-feed" style="color:rgba(255,255,255,0.5);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
       <div class="pkg-label">
         <span class="pkg-label-text">Package Cam</span>
         <span class="pkg-badge">1 PKG</span>
@@ -314,12 +314,12 @@
   <div class="video-tabs">
     <div class="vtab active">Live</div>
     <div class="vtab" onclick="showScreen('s-events')">Events</div>
-    <div class="vtab">Playback</div>
+    <div class="vtab" onclick="showScreen('s-playback')">Playback</div>
   </div>
 
   <!-- Package status strip -->
   <div class="pkg-status-strip" onclick="showScreen('s-package')">
-    <span class="pkg-icon">📦</span>
+    <span class="pkg-icon" style="color:var(--orange);display:flex;align-items:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
     <div class="pkg-info">
       <div class="pkg-title">Package at your door</div>
       <div class="pkg-sub">Detected 29 minutes ago · still present</div>
@@ -353,29 +353,29 @@
     <div class="event-item" onclick="showScreen('s-ring')">
       <div class="event-dot"></div>
       <div class="event-content">
-        <div class="event-title">🔔 Doorbell Pressed</div>
+        <div class="event-title">Doorbell Pressed</div>
         <div class="event-meta">9:38 AM · Front Door</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">🔔</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
     </div>
     <div class="event-item" onclick="showScreen('s-package')">
       <div class="event-dot pkg"></div>
       <div class="event-content">
-        <div class="event-title">📦 Package Delivered</div>
+        <div class="event-title">Package Delivered</div>
         <div class="event-meta">9:12 AM · Package Cam</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">📦</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
     </div>
     <div class="event-item">
       <div class="event-dot motion"></div>
       <div class="event-content">
-        <div class="event-title">🚶 Person Detected</div>
+        <div class="event-title">Person Detected</div>
         <div class="event-meta">8:45 AM · Front Door</div>
         <span class="event-ai-tag">AI Description beta</span>
       </div>
-      <div class="event-thumb">👤</div>
+      <div class="event-thumb" style="color:#777;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
     </div>
     <div style="height:12px;"></div>
   </div>
@@ -396,7 +396,7 @@
     <div class="ring-ripple"></div>
     <div class="ring-ripple"></div>
     <div class="ring-ripple"></div>
-    <div class="ring-center">🔔</div>
+    <div class="ring-center" style="color:#fff;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
     <div class="ring-title">Someone at your door</div>
     <div class="ring-sub">Front Door · 9:38 AM</div>
     <div class="ring-snapshot">👤</div>
@@ -431,7 +431,7 @@
   <div class="pkg-detail-video">
     <div class="watermark">SENSFORGE · PKG CAM</div>
     <div class="timestamp">04/02/2026 09:12 AM</div>
-    📦
+    <div style="color:rgba(255,255,255,0.3);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
   </div>
   <div class="scroll-area">
     <div class="info-card" style="margin-top:12px;">
@@ -450,7 +450,7 @@
           <div class="pe-line"></div>
         </div>
         <div class="pe-content">
-          <div class="pe-title">📦 Package Arrived</div>
+          <div class="pe-title">Package Arrived</div>
           <div class="pe-time">9:12 AM today</div>
           <span class="event-ai-tag">First detected</span>
         </div>
@@ -460,7 +460,7 @@
           <div class="pe-dot" style="background:#FF9800;"></div>
         </div>
         <div class="pe-content">
-          <div class="pe-title">⏳ Package Still Here</div>
+          <div class="pe-title">Package Still Here</div>
           <div class="pe-time">9:41 AM · +29 min</div>
           <span class="badge" style="display:inline-block;margin-top:4px;background:#FFF3E0;color:#E65100;">Reminder sent</span>
         </div>
@@ -491,90 +491,142 @@
   <div class="status-bar"><span>9:41</span><span>📶 🔋 72%</span></div>
   <div class="top-nav">
     <span class="back" onclick="showScreen('s-live')">←</span>
-    <span class="title">Events</span>
-    <span class="icon-btn" style="width:36px;text-align:right;font-size:14px;color:var(--orange);">Filter ▾</span>
-  </div>
-  <div class="date-strip">
-    <span class="arrow">‹</span>
-    <span class="date-label">Today, April 2</span>
-    <span class="arrow">›</span>
-  </div>
-
-  <!-- Today activity summary -->
-  <div class="activity-card" style="margin:12px 16px;">
-    <div class="ac-title">TODAY'S SUMMARY</div>
-    <div class="activity-stats">
-      <div class="activity-stat"><div class="as-num">4</div><div class="as-label">Visitors</div></div>
-      <div class="activity-stat"><div class="as-num">1</div><div class="as-label">Deliveries</div></div>
-      <div class="activity-stat"><div class="as-num">2</div><div class="as-label">Rings</div></div>
-      <div class="activity-stat"><div class="as-num">8</div><div class="as-label">Total</div></div>
+    <span class="title">Front Door</span>
+    <div class="right-actions">
+      <span style="width:26px;height:26px;border-radius:50%;background:var(--orange);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;">5</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg>
+      <svg onclick="showScreen('s-settings')" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.8" style="cursor:pointer;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </div>
   </div>
-
+  <div class="main-video" style="aspect-ratio:4/3;" onclick="showScreen('s-ring')">
+    <div class="watermark">Sensforge</div>
+    <div class="timestamp">04/02/2026 09:41:00 AM</div>
+    <div class="loading"><div class="spinner"></div></div>
+  </div>
+  <div class="video-tabs" style="flex-shrink:0;">
+    <div class="vtab" onclick="showScreen('s-live')">Live</div>
+    <div class="vtab active">Events</div>
+    <div class="vtab" onclick="showScreen('s-playback')">Playback</div>
+  </div>
+  <div style="display:flex;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);flex-shrink:0;">
+    <div style="display:flex;align-items:center;gap:4px;background:var(--gray-bg);border-radius:6px;padding:6px 10px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;">Today <span style="color:var(--gray);font-size:11px;">▾</span></div>
+    <div style="display:flex;align-items:center;gap:4px;background:var(--gray-bg);border-radius:6px;padding:6px 10px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;">All Events <span style="color:var(--gray);font-size:11px;">▾</span></div>
+  </div>
   <div class="scroll-area">
-    <div class="event-item" onclick="showScreen('s-ring')">
-      <div class="event-dot"></div>
-      <div class="event-content">
-        <div class="event-title">🔔 Doorbell Pressed — Visitor at front door</div>
-        <div class="event-meta">9:38 AM · Front Door</div>
-        <span class="event-ai-tag">AI Description beta</span>
-      </div>
-      <div class="event-thumb">🔔</div>
+    <div style="padding:12px 14px 10px;border-bottom:1px solid var(--divider);cursor:pointer;" onclick="showScreen('s-ring')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:12px;color:var(--gray);">09:38:22 AM</span><div style="display:flex;align-items:center;gap:4px;"><span style="color:var(--orange);font-size:11px;">✦ AI Description</span><span style="font-size:10px;color:var(--gray);background:var(--gray-bg);padding:1px 5px;border-radius:3px;">beta</span><span style="color:var(--gray);font-size:16px;margin-left:4px;">···</span></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><div style="flex:1;"><div style="display:flex;align-items:flex-start;gap:8px;"><svg width="14" height="22" viewBox="0 0 24 24" fill="#1a1a1a" style="flex-shrink:0;margin-top:3px;"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2zM2 20c0-4 4-7 10-7s10 3 10 7"/></svg><div><div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.3;">Visitor Pressed Doorbell at Front Door</div><div style="display:flex;align-items:center;gap:4px;margin-top:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span style="font-size:12px;color:var(--gray);">Front Door</span></div></div></div></div><div style="width:80px;height:56px;background:#eee;border-radius:6px;flex-shrink:0;"></div></div>
     </div>
-    <div class="event-item" onclick="showScreen('s-package')">
-      <div class="event-dot pkg"></div>
-      <div class="event-content">
-        <div class="event-title">📦 Package Delivered at entrance</div>
-        <div class="event-meta">9:12 AM · Package Cam</div>
-        <span class="event-ai-tag">AI Description beta</span>
-      </div>
-      <div class="event-thumb">📦</div>
+    <div style="padding:12px 14px 10px;border-bottom:1px solid var(--divider);cursor:pointer;" onclick="showScreen('s-package')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:12px;color:var(--gray);">09:12:43 AM</span><div style="display:flex;align-items:center;gap:4px;"><span style="color:var(--orange);font-size:11px;">✦ AI Description</span><span style="font-size:10px;color:var(--gray);background:var(--gray-bg);padding:1px 5px;border-radius:3px;">beta</span><span style="color:var(--gray);font-size:16px;margin-left:4px;">···</span></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><div style="flex:1;"><div style="display:flex;align-items:flex-start;gap:8px;"><svg width="14" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" style="flex-shrink:0;margin-top:3px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg><div><div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.3;">Package Delivered and Sitting at Front Door</div><div style="display:flex;align-items:center;gap:4px;margin-top:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span style="font-size:12px;color:var(--gray);">Package Cam</span></div></div></div></div><div style="width:80px;height:56px;background:#eee;border-radius:6px;flex-shrink:0;"></div></div>
     </div>
-    <div class="event-item">
-      <div class="event-dot motion"></div>
-      <div class="event-content">
-        <div class="event-title">🚶 Person Walking Past</div>
-        <div class="event-meta">8:45 AM · Front Door</div>
-        <span class="event-ai-tag">AI Description beta</span>
-      </div>
-      <div class="event-thumb">👤</div>
+    <div style="padding:12px 14px 10px;border-bottom:1px solid var(--divider);cursor:pointer;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:12px;color:var(--gray);">08:45:17 AM</span><div style="display:flex;align-items:center;gap:4px;"><span style="color:var(--orange);font-size:11px;">✦ AI Description</span><span style="font-size:10px;color:var(--gray);background:var(--gray-bg);padding:1px 5px;border-radius:3px;">beta</span><span style="color:var(--gray);font-size:16px;margin-left:4px;">···</span></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><div style="flex:1;"><div style="display:flex;align-items:flex-start;gap:8px;"><svg width="14" height="22" viewBox="0 0 24 24" fill="#1a1a1a" style="flex-shrink:0;margin-top:3px;"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2zM2 20c0-4 4-7 10-7s10 3 10 7"/></svg><div><div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.3;">Person Walking Past Front Door</div><div style="display:flex;align-items:center;gap:4px;margin-top:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span style="font-size:12px;color:var(--gray);">Front Door</span></div></div></div></div><div style="width:80px;height:56px;background:#eee;border-radius:6px;flex-shrink:0;"></div></div>
     </div>
-    <div class="event-item">
-      <div class="event-dot" style="background:#9C27B0;"></div>
-      <div class="event-content">
-        <div class="event-title">🚗 Vehicle in Driveway</div>
-        <div class="event-meta">8:12 AM · Front Door</div>
-        <span class="event-ai-tag">AI Description beta</span>
-      </div>
-      <div class="event-thumb">🚗</div>
-    </div>
-    <div class="event-item">
-      <div class="event-dot"></div>
-      <div class="event-content">
-        <div class="event-title">🔔 Doorbell Pressed — Morning delivery</div>
-        <div class="event-meta">7:55 AM · Front Door</div>
-        <span class="event-ai-tag">AI Description beta</span>
-      </div>
-      <div class="event-thumb">🔔</div>
-    </div>
-    <div class="event-item">
-      <div class="event-dot motion"></div>
-      <div class="event-content">
-        <div class="event-title">🚶 Early Morning Jogger</div>
-        <div class="event-meta">6:30 AM · Front Door</div>
-        <span class="event-ai-tag">AI Description beta</span>
-      </div>
-      <div class="event-thumb">👤</div>
+    <div style="padding:12px 14px 10px;border-bottom:1px solid var(--divider);cursor:pointer;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-size:12px;color:var(--gray);">08:12:05 AM</span><div style="display:flex;align-items:center;gap:4px;"><span style="color:var(--orange);font-size:11px;">✦ AI Description</span><span style="font-size:10px;color:var(--gray);background:var(--gray-bg);padding:1px 5px;border-radius:3px;">beta</span><span style="color:var(--gray);font-size:16px;margin-left:4px;">···</span></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;"><div style="flex:1;"><div style="display:flex;align-items:flex-start;gap:8px;"><svg width="14" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2" style="flex-shrink:0;margin-top:3px;"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-2"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg><div><div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.3;">Vehicle Detected in Driveway Area</div><div style="display:flex;align-items:center;gap:4px;margin-top:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span style="font-size:12px;color:var(--gray);">Front Door</span></div></div></div></div><div style="width:80px;height:56px;background:#eee;border-radius:6px;flex-shrink:0;"></div></div>
     </div>
     <div style="height:12px;"></div>
   </div>
-
   <div class="bottom-nav">
     <div class="tab" onclick="goHome()"><div class="icon" style="font-size:20px;color:inherit;">⌂</div><div class="label">Home</div></div>
     <div class="tab active"><div class="icon" style="font-size:20px;color:inherit;">≡</div><div class="label">Events</div></div>
     <div class="tab"><div class="icon" style="font-size:20px;color:inherit;">✦</div><div class="label">Highlights</div></div>
     <div class="tab"><div class="icon" style="font-size:20px;color:inherit;">◈</div><div class="label">Security</div></div>
     <div class="tab"><div class="icon" style="font-size:20px;color:inherit;">◉</div><div class="label">Explore</div></div>
+  </div>
+</div>
+<!-- ═══════════════════ S4b: PLAYBACK ═══════════════════ -->
+<div class="screen" id="s-playback">
+  <div class="status-bar"><span>9:41</span><span>📶 🔋 72%</span></div>
+  <div class="top-nav">
+    <span class="back" onclick="showScreen('s-live')">←</span>
+    <span class="title">Front Door</span>
+    <div class="right-actions">
+      <span style="width:26px;height:26px;border-radius:50%;background:var(--orange);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;">5</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg>
+      <svg onclick="showScreen('s-settings')" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.8" style="cursor:pointer;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
+  </div>
+  <!-- Video with playback controls overlaid -->
+  <div style="background:#1a1a1a;width:100%;aspect-ratio:4/3;position:relative;flex-shrink:0;">
+    <div class="watermark">Sensforge</div>
+    <div class="timestamp">04/02/2026 09:01:32 AM</div>
+    <div class="loading"><div class="spinner"></div></div>
+    <!-- Playback control strip overlaid at bottom of video -->
+    <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,0.92);backdrop-filter:blur(4px);padding:8px 12px;display:flex;justify-content:space-around;align-items:center;border-top:1px solid rgba(0,0,0,0.08);">
+      <div style="width:36px;height:36px;border-radius:50%;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+      </div>
+      <div style="width:36px;height:36px;border-radius:50%;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#555"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </div>
+      <div style="width:36px;height:36px;border-radius:50%;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;font-weight:700;color:#555;">1x</div>
+      <div style="width:36px;height:36px;border-radius:50%;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <span style="font-size:10px;font-weight:800;color:#f44336;">●REC</span>
+      </div>
+      <div style="width:44px;height:44px;border-radius:50%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="#1a1a1a"/></svg>
+      </div>
+      <div style="width:36px;height:36px;border-radius:50%;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+    </div>
+  </div>
+  <!-- Tabs -->
+  <div class="video-tabs" style="flex-shrink:0;">
+    <div class="vtab" onclick="showScreen('s-live')">Live</div>
+    <div class="vtab" onclick="showScreen('s-events')">Events</div>
+    <div class="vtab active">Playback</div>
+  </div>
+  <!-- Date nav -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:10px 16px;border-bottom:1px solid var(--divider);flex-shrink:0;">
+    <span style="font-size:20px;color:var(--gray);cursor:pointer;">‹</span>
+    <div style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--text);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Today
+    </div>
+    <span style="font-size:20px;color:var(--gray);cursor:pointer;">›</span>
+  </div>
+  <!-- Timeline -->
+  <div class="scroll-area" style="display:flex;padding:0;">
+    <!-- Left: time labels + vertical bar -->
+    <div style="width:90px;flex-shrink:0;padding-top:8px;position:relative;">
+      <div style="position:absolute;left:72px;top:0;bottom:0;width:2px;background:var(--divider);"></div>
+      <!-- Activity bar -->
+      <div style="position:absolute;left:68px;top:28px;width:8px;height:80px;background:var(--orange-mid);border-radius:2px;"></div>
+      <div style="position:absolute;left:68px;top:160px;width:8px;height:60px;background:var(--orange-mid);border-radius:2px;"></div>
+      <div style="position:absolute;left:68px;top:270px;width:8px;height:50px;background:var(--orange-mid);border-radius:2px;"></div>
+      <!-- Selected time pill -->
+      <div style="position:absolute;left:4px;top:45px;background:var(--orange);color:#fff;font-size:9px;font-weight:700;padding:3px 5px;border-radius:4px;white-space:nowrap;">09:38 AM</div>
+      <!-- Time labels -->
+      <div style="padding-top:10px;display:flex;flex-direction:column;gap:0;">
+        <div style="height:60px;display:flex;align-items:flex-start;padding:4px 8px 0 8px;font-size:10px;color:var(--gray);">10:00 AM</div>
+        <div style="height:60px;display:flex;align-items:flex-start;padding:4px 8px 0 8px;font-size:10px;color:var(--gray);">09:30 AM</div>
+        <div style="height:60px;display:flex;align-items:flex-start;padding:4px 8px 0 8px;font-size:10px;color:var(--gray);">09:00 AM</div>
+        <div style="height:60px;display:flex;align-items:flex-start;padding:4px 8px 0 8px;font-size:10px;color:var(--gray);">08:30 AM</div>
+        <div style="height:60px;display:flex;align-items:flex-start;padding:4px 8px 0 8px;font-size:10px;color:var(--gray);">08:00 AM</div>
+        <div style="height:60px;display:flex;align-items:flex-start;padding:4px 8px 0 8px;font-size:10px;color:var(--gray);">07:30 AM</div>
+        <div style="height:60px;display:flex;align-items:flex-start;padding:4px 8px 0 8px;font-size:10px;color:var(--gray);">07:00 AM</div>
+      </div>
+    </div>
+    <!-- Right: event labels -->
+    <div style="flex:1;padding-top:18px;padding-left:12px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="background:var(--orange-light);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;color:var(--orange);display:inline-block;max-width:200px;">🔔 Doorbell +1</div>
+        <div style="height:30px;"></div>
+        <div style="background:var(--orange-light);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;color:var(--orange);display:inline-block;max-width:200px;">📦 Package +1</div>
+        <div style="height:20px;"></div>
+        <div style="background:var(--orange-light);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;color:var(--orange);display:inline-block;max-width:200px;">Human +2</div>
+        <div style="height:40px;"></div>
+        <div style="background:var(--orange-light);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;color:var(--orange);display:inline-block;max-width:200px;">Human +3</div>
+        <div style="height:20px;"></div>
+        <div style="background:var(--orange-light);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;color:var(--orange);display:inline-block;max-width:200px;">Vehicle +1</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -587,83 +639,146 @@
     <span style="width:36px;"></span>
   </div>
   <div class="scroll-area">
-    <div class="device-card">
-      <div class="cam-icon">🚪</div>
-      <div class="info">
-        <div class="name">Front Door Cam (SF-DB1)</div>
-        <div class="sn">SN: SFD-DB1-00142</div>
+    <!-- Device card -->
+    <div style="margin:12px 12px 8px;background:#f5f5f5;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;">
+      <div style="width:44px;height:44px;border-radius:8px;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🚪</div>
+      <div style="flex:1;">
+        <div style="font-size:15px;font-weight:600;color:#1a1a1a;">Front Door Cam (SF-DB1)</div>
+        <div style="font-size:12px;color:#999;margin-top:2px;">SN: SFD-DB1-00142</div>
       </div>
     </div>
-    <div class="list-row">
-      <div class="row-icon">⚡</div>
-      <div class="row-content"><div class="name">Device On</div></div>
-      <div class="row-right"><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <!-- Group 1 -->
+    <div style="background:#fff;margin:0 0 1px;">
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" >
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">Device On</div>
+          
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" >
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v4"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">Battery &amp; Wake-up</div>
+          <div style="font-size:12px;color:#999;margin-top:1px;">72% · AOR mode active to save power</div>
+        </div>
+        <span style="color:#ccc;font-size:18px;">›</span>
+      </div>
     </div>
-    <div class="list-row">
-      <div class="row-icon">🔋</div>
-      <div class="row-content"><div class="name">Battery & Wake-up</div><div class="sub">72% · AOR mode active to save power</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
+    <!-- Section: Cameras -->
+    <div style="padding:12px 16px 6px;font-size:12px;font-weight:700;color:#999;letter-spacing:0.5px;background:#f5f5f5;">CAMERAS</div>
+    <div style="background:#fff;margin:0 0 1px;">
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="showScreen('s-detection')">
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M2 12h3M19 12h3M12 2v3M12 19v3"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">Smart Detection</div>
+          <div style="font-size:12px;color:#999;margin-top:1px;">Person, Package, Vehicle, Animal</div>
+        </div>
+        <span style="color:var(--orange);font-size:13px;font-weight:600;margin-right:4px;">On</span><span style="color:#ccc;font-size:18px;">›</span>
+      </div>
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="showScreen('s-pkg-settings')">
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">Package Camera</div>
+          <div style="font-size:12px;color:#999;margin-top:1px;">Downward-facing · package detection only</div>
+        </div>
+        <span style="color:var(--orange);font-size:13px;font-weight:600;margin-right:4px;">On</span><span style="color:#ccc;font-size:18px;">›</span>
+      </div>
     </div>
-    <div class="section-header">Cameras</div>
-    <div class="list-row" onclick="showScreen('s-detection')">
-      <div class="row-icon">👁️</div>
-      <div class="row-content"><div class="name">Smart Detection</div><div class="sub">Person, Package, Vehicle, Animal</div></div>
-      <div class="row-right"><span style="color:var(--orange);font-size:13px;">On</span><div class="chevron">›</div></div>
+    <!-- Section: Doorbell -->
+    <div style="padding:12px 16px 6px;font-size:12px;font-weight:700;color:#999;letter-spacing:0.5px;background:#f5f5f5;">DOORBELL</div>
+    <div style="background:#fff;margin:0 0 1px;">
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="showScreen('s-chime')">
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">Chime Settings</div>
+          <div style="font-size:12px;color:#999;margin-top:1px;">Classic Ding Dong · Volume 70%</div>
+        </div>
+        <span style="color:#ccc;font-size:18px;">›</span>
+      </div>
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="showScreen('s-twoway')">
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">Two-Way Audio</div>
+          <div style="font-size:12px;color:#999;margin-top:1px;">Noise cancel, echo suppression on</div>
+        </div>
+        <span style="color:#ccc;font-size:18px;">›</span>
+      </div>
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" >
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">Quick Replies</div>
+          <div style="font-size:12px;color:#999;margin-top:1px;">Edit canned response messages</div>
+        </div>
+        <span style="color:#ccc;font-size:18px;">›</span>
+      </div>
     </div>
-    <div class="list-row" onclick="showScreen('s-pkg-settings')">
-      <div class="row-icon">📦</div>
-      <div class="row-content"><div class="name">Package Camera</div><div class="sub">Downward-facing · package detection only</div></div>
-      <div class="row-right"><span style="color:var(--orange);font-size:13px;">On</span><div class="chevron">›</div></div>
-    </div>
-    <div class="section-header">Doorbell</div>
-    <div class="list-row" onclick="showScreen('s-chime')">
-      <div class="row-icon">🔔</div>
-      <div class="row-content"><div class="name">Chime Settings</div><div class="sub">Classic Ding Dong · Volume 70%</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <div class="list-row" onclick="showScreen('s-twoway')">
-      <div class="row-icon">🎙️</div>
-      <div class="row-content"><div class="name">Two-Way Audio</div><div class="sub">Noise cancel, echo suppression on</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <div class="list-row">
-      <div class="row-icon">💬</div>
-      <div class="row-content"><div class="name">Quick Replies</div><div class="sub">Edit canned response messages</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <div class="section-header">General</div>
-    <div class="list-row">
-      <div class="row-icon">🤖</div>
-      <div class="row-content"><div class="name">AI Assistant</div></div>
-      <div class="row-right"><span class="badge">Beta</span><div class="chevron">›</div></div>
-    </div>
-    <div class="list-row">
-      <div class="row-icon">📷</div>
-      <div class="row-content"><div class="name">Image Settings</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <div class="list-row">
-      <div class="row-icon">🔔</div>
-      <div class="row-content"><div class="name">Notification Settings</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <div class="list-row">
-      <div class="row-icon">💾</div>
-      <div class="row-content"><div class="name">Storage Settings</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
-    </div>
-    <div class="list-row">
-      <div class="row-icon">⚙️</div>
-      <div class="row-content"><div class="name">Other Settings</div></div>
-      <div class="row-right"><div class="chevron">›</div></div>
+    <!-- Section: General -->
+    <div style="padding:12px 16px 6px;font-size:12px;font-weight:700;color:#999;letter-spacing:0.5px;background:#f5f5f5;">GENERAL</div>
+    <div style="background:#fff;margin:0 0 1px;">
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" >
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">AI Assistant</div>
+          
+        </div>
+        <span style="background:var(--orange-light);color:var(--orange);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-right:4px;">Beta</span><span style="color:#ccc;font-size:18px;">›</span>
+      </div>
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" >
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">Image Setting</div>
+          
+        </div>
+        <span style="color:#ccc;font-size:18px;">›</span>
+      </div>
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" >
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">Notification Setting</div>
+          
+        </div>
+        <span style="color:#ccc;font-size:18px;">›</span>
+      </div>
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" >
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">Storage Setting</div>
+          
+        </div>
+        <span style="color:#ccc;font-size:18px;">›</span>
+      </div>
+      
+      <div style="display:flex;align-items:center;padding:13px 16px;gap:12px;border-bottom:1px solid #f0f0f0;cursor:pointer;" >
+        <div style="width:36px;height:36px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#555"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></div>
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:500;color:#1a1a1a;">Other Settings</div>
+          
+        </div>
+        <span style="color:#ccc;font-size:18px;">›</span>
+      </div>
     </div>
     <div style="height:12px;"></div>
-    <button class="btn-outlined">🔄 Reboot Device</button>
-    <button class="btn-danger">Delete Device</button>
-    <div style="height:24px;"></div>
+    <!-- Danger zone -->
+    <div style="background:#fff;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;">
+      <div style="padding:16px;text-align:center;font-size:15px;font-weight:500;color:#1a1a1a;cursor:pointer;border-bottom:1px solid #f0f0f0;">Reboot Device</div>
+      <div style="padding:16px;text-align:center;font-size:15px;font-weight:600;color:#f44336;cursor:pointer;">Delete Device</div>
+    </div>
+    <div style="height:32px;"></div>
   </div>
 </div>
-
 <!-- ═══════════════════ S6: SMART DETECTION ═══════════════════ -->
 <div class="screen" id="s-detection">
   <div class="status-bar"><span>9:41</span><span>📶 🔋 72%</span></div>

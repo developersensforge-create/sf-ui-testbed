@@ -418,18 +418,10 @@
   const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
 
   // Default features list — Camera Skills is always the first, cannot be deleted
-  const TESTBED_VERSION = 'v2026-04-03-1';
-  // Auto-clear corrupt localStorage on version change
-  if (localStorage.getItem('sf_testbed_version') !== TESTBED_VERSION) {
-    localStorage.removeItem('sf_features');
-    localStorage.removeItem('sf_hidden_keys');
-    localStorage.setItem('sf_testbed_version', TESTBED_VERSION);
-  }
-
   const DEFAULT_FEATURES = [
     { key: 'camera-skills', name: 'Camera Skills', desc: 'Configure smart detection rules — if X detected → do Y', previewUrl: 'features/skills/index.html' },
-    { key: 'sf-db1-doorbell', name: 'SF-DB1 Doorbell Camera', desc: 'Battery doorbell camera app UI — live view, events, chime settings, smart detection & two-way audio', previewUrl: 'sf-db1-doorbell/index.html' },
-    { key: 'sensforge-subscription-ux', name: 'Subscription UX', desc: 'Trial countdown banner + AI content paywall — guide free/trial users to subscribe via Explore tab', previewUrl: 'sensforge-subscription-ux/index.html' }
+    { key: 'jira-ui-flow', name: '🗂️ Jira-UI Flow Dashboard', desc: 'Monitor the Jira → UI design pipeline: track briefs, Figma QA checks, blockers, and approvals.', previewUrl: 'tools/jira-ui-flow/index.html' },
+    { key: 'sf-db1-doorbell', name: 'SF-DB1 Doorbell Camera', desc: 'Battery doorbell camera app UI — live view, events, chime settings, smart detection & two-way audio', previewUrl: 'sf-db1-doorbell/index.html' }
   ];
 
   // ===== Feature list persistence =====
@@ -484,7 +476,7 @@
   }
 
   function createCardEl(feature) {
-    const isDefault = feature.key === 'camera-skills';
+    const isDefault = feature.key === 'camera-skills' || feature.key === 'jira-ui-flow';
     const div = document.createElement('div');
     div.className = 'feature-card';
     div.dataset.cardId = feature.key;
@@ -499,7 +491,7 @@
     }
 
     let deleteBtn = '';
-    if (feature.key !== 'camera-skills') {
+    if (feature.key !== 'camera-skills' && feature.key !== 'jira-ui-flow') {
       deleteBtn = `<button class="card-delete-btn" onclick="deleteCard('${feature.key}')" title="Remove card">×</button>`;
     }
 
@@ -542,7 +534,7 @@
 
   // ===== Delete card =====
   function deleteCard(key) {
-    if (key === 'camera-skills') return;
+    if (key === 'camera-skills' || key === 'jira-ui-flow') return;
     // Show custom confirmation modal
     showDeleteModal(key);
   }
@@ -739,11 +731,6 @@
   }
 
   function toggleFigmaPopover(key) {
-    // For camera-skills: open the pre-built Figma export page directly
-    if (key === 'camera-skills') {
-      window.open('exports/camera-skills-figma.html', '_blank');
-      return;
-    }
     const pop = document.getElementById('figma-' + key);
     pop.style.display = pop.style.display === 'block' ? 'none' : 'block';
     if (pop.style.display === 'block') pop.querySelector('input').focus();
