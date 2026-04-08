@@ -464,6 +464,237 @@
     .empty-state-icon { font-size: 2.5rem; margin-bottom: 10px; }
     .empty-state-text { font-size: 0.9rem; }
 
+    /* ── Project Intake Panel ────────────────────────────────────────── */
+    .intake-panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .intake-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      cursor: pointer;
+      user-select: none;
+      gap: 10px;
+      background: var(--white);
+      border-bottom: 1px solid transparent;
+      transition: background .15s, border-color .15s;
+    }
+    .intake-header:hover { background: var(--grey-lt); }
+    .intake-header.open  { border-bottom-color: var(--border); }
+    .intake-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .intake-header-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .intake-header-count {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .intake-chevron {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      transition: transform .2s;
+    }
+    .intake-chevron.open { transform: rotate(180deg); }
+    .intake-body {
+      display: none;
+      padding: 16px 18px;
+    }
+    .intake-body.open { display: block; }
+
+    /* Config banner */
+    .intake-banner {
+      background: var(--yellow-lt);
+      border: 1px solid #f5d78e;
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      color: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .intake-banner-text { flex: 1; min-width: 200px; }
+    .btn-copy-config {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      background: var(--white);
+      border: 1px solid #f5d78e;
+      border-radius: var(--radius);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--yellow);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .btn-copy-config:hover {
+      background: var(--yellow);
+      color: var(--white);
+      border-color: var(--yellow);
+    }
+
+    /* Projects table */
+    .projects-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .projects-table-wrap table {
+      font-size: 0.82rem;
+    }
+    .projects-table-wrap thead tr { background: var(--grey-lt); }
+    .projects-table-wrap th {
+      padding: 8px 12px;
+      font-size: 0.68rem;
+    }
+    .projects-table-wrap td { padding: 10px 12px; }
+    .project-key-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--orange-lt);
+      color: var(--orange);
+      border: 1px solid #fdba74;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+    }
+    .status-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all .15s;
+    }
+    .status-toggle.active   { background: var(--green-lt);  color: var(--green);  border: 1px solid #6ee7a0; }
+    .status-toggle.paused   { background: var(--grey-lt);   color: var(--grey);   border: 1px solid #d1d5db; }
+    .status-toggle:hover.active  { background: var(--grey-lt);  color: var(--grey);  }
+    .status-toggle:hover.paused  { background: var(--green-lt); color: var(--green); }
+    .btn-remove-project {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid #fca5a5;
+      background: var(--red-lt);
+      color: var(--red);
+      transition: all .15s;
+    }
+    .btn-remove-project:hover { background: var(--red); color: var(--white); border-color: var(--red); }
+
+    /* Empty projects state */
+    .no-projects {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    /* Add project form */
+    .add-project-form {
+      background: var(--grey-lt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+    .add-project-form-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .add-project-fields {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .add-project-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 120px;
+    }
+    .add-project-field label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+    .add-project-field input {
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color .15s;
+      font-family: inherit;
+    }
+    .add-project-field input:focus {
+      outline: none;
+      border-color: var(--orange);
+    }
+    .btn-add-project {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 16px;
+      background: var(--orange);
+      border: 1px solid var(--orange);
+      border-radius: var(--radius);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--white);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+      align-self: flex-end;
+    }
+    .btn-add-project:hover { background: var(--orange-dk); border-color: var(--orange-dk); }
+
+    /* Out-of-scope ticket styling */
+    tr.out-of-scope { opacity: 0.5; }
+    tr.out-of-scope td { background: var(--grey-lt) !important; }
+    .out-of-scope-label {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--grey-lt);
+      color: var(--grey);
+      border: 1px dashed #d1d5db;
+      border-radius: 10px;
+      font-size: 0.68rem;
+      font-style: italic;
+    }
+
     /* ── Responsive ──────────────────────────────────────────────────── */
     @media (max-width: 768px) {
       .header { padding: 12px 14px; }
@@ -473,6 +704,7 @@
       .ticket-summary { max-width: 160px; }
       .actions { flex-direction: column; }
       .modal { max-height: 95vh; }
+      .add-project-fields { flex-direction: column; }
     }
   </style>
 </head>
@@ -495,6 +727,63 @@
 
 <!-- ── Main ───────────────────────────────────────────────────────────── -->
 <main class="container">
+
+  <!-- ── Project Intake & Configuration ──────────────────────────────── -->
+  <div class="intake-panel" id="intake-panel">
+    <div class="intake-header" id="intake-toggle" onclick="toggleIntake()">
+      <div class="intake-header-left">
+        <span>📥</span>
+        <span class="intake-header-title">Project Intake &amp; Configuration</span>
+        <span class="intake-header-count" id="intake-project-count"></span>
+      </div>
+      <span class="intake-chevron" id="intake-chevron">▼</span>
+    </div>
+    <div class="intake-body" id="intake-body">
+      <!-- Config persistence banner -->
+      <div class="intake-banner">
+        <div class="intake-banner-text">
+          ⚠️ Config changes are saved locally in your browser. To apply to the automation engine, copy the config JSON and give it to Claire.
+        </div>
+        <button class="btn-copy-config" onclick="copyConfigJSON()">📋 Copy Config JSON</button>
+      </div>
+
+      <!-- Monitored projects table -->
+      <div class="projects-table-wrap" id="projects-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Project Key</th>
+              <th>Display Name</th>
+              <th>Tickets After</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="projects-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Add project form -->
+      <div class="add-project-form">
+        <div class="add-project-form-title">➕ Add Project</div>
+        <div class="add-project-fields">
+          <div class="add-project-field">
+            <label for="new-proj-key">Project Key</label>
+            <input type="text" id="new-proj-key" placeholder="e.g. NEX" maxlength="20" />
+          </div>
+          <div class="add-project-field">
+            <label for="new-proj-name">Display Name</label>
+            <input type="text" id="new-proj-name" placeholder="e.g. NextSport" maxlength="60" />
+          </div>
+          <div class="add-project-field">
+            <label for="new-proj-date">Only tickets created after</label>
+            <input type="date" id="new-proj-date" value="2026-01-01" />
+          </div>
+          <button class="btn-add-project" onclick="addProject()">+ Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Stats Bar -->
   <div class="stats-bar" id="stats-bar">
@@ -588,6 +877,171 @@
 
 <script>
 // ═══════════════════════════════════════════════════════════════════════
+//  Project Intake Config
+// ═══════════════════════════════════════════════════════════════════════
+const CONFIG_LS_KEY = 'jira_ui_flow_config';
+let intakeConfig = null; // { monitored_projects: [...], last_updated: "..." }
+let intakeOpen   = false;
+
+async function loadIntakeConfig() {
+  // 1. Try localStorage
+  try {
+    const raw = localStorage.getItem(CONFIG_LS_KEY);
+    if (raw) { intakeConfig = JSON.parse(raw); return; }
+  } catch {}
+
+  // 2. Fall back to config.json
+  try {
+    const r = await fetch('config.json?_=' + Date.now());
+    if (r.ok) {
+      intakeConfig = await r.json();
+      return;
+    }
+  } catch {}
+
+  // 3. Hardcoded defaults
+  intakeConfig = {
+    monitored_projects: [
+      { key: 'NEX',  name: 'NextSport',   active: true, filter_created_after: '2026-01-01' },
+      { key: 'SFAI', name: 'SensForge AI', active: true, filter_created_after: '2026-01-01' }
+    ],
+    last_updated: new Date().toISOString()
+  };
+}
+
+function saveIntakeConfig() {
+  intakeConfig.last_updated = new Date().toISOString();
+  localStorage.setItem(CONFIG_LS_KEY, JSON.stringify(intakeConfig));
+}
+
+function getMonitoredSet() {
+  // Returns Map<key, project> for active projects
+  const map = new Map();
+  for (const p of (intakeConfig?.monitored_projects || [])) {
+    map.set(p.key.toUpperCase(), p);
+  }
+  return map;
+}
+
+function toggleIntake() {
+  intakeOpen = !intakeOpen;
+  document.getElementById('intake-body').classList.toggle('open', intakeOpen);
+  document.getElementById('intake-header').classList.toggle('open', intakeOpen);
+  document.getElementById('intake-chevron').classList.toggle('open', intakeOpen);
+}
+
+function renderIntakeProjects() {
+  const projects = intakeConfig?.monitored_projects || [];
+  const count    = projects.length;
+  document.getElementById('intake-project-count').textContent =
+    `(${count} project${count !== 1 ? 's' : ''} monitored)`;
+
+  const tbody = document.getElementById('projects-tbody');
+  if (!projects.length) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="no-projects">No projects configured yet. Add one below.</div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = '';
+  for (const p of projects) {
+    const tr = document.createElement('tr');
+    const activeClass = p.active ? 'active' : 'paused';
+    const statusLabel = p.active ? '🟢 Active' : '⏸ Paused';
+    const toggleLabel = p.active ? '⏸ Pause' : '▶ Activate';
+    tr.innerHTML = `
+      <td><span class="project-key-badge">${esc(p.key)}</span></td>
+      <td>${esc(p.name)}</td>
+      <td style="font-size:0.8rem;color:var(--text-muted)">${esc(p.filter_created_after || '—')}</td>
+      <td>
+        <button class="status-toggle ${activeClass}" onclick="toggleProjectStatus('${esc(p.key)}')" title="${toggleLabel}">
+          ${statusLabel}
+        </button>
+      </td>
+      <td>
+        <button class="btn-remove-project" onclick="removeProject('${esc(p.key)}')">✕ Remove</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+
+function toggleProjectStatus(key) {
+  const proj = intakeConfig.monitored_projects.find(p => p.key === key);
+  if (!proj) return;
+  proj.active = !proj.active;
+  saveIntakeConfig();
+  renderIntakeProjects();
+  render(); // re-filter ticket table
+  showToast(proj.active ? `▶ ${proj.key} activated` : `⏸ ${proj.key} paused`, 2000);
+}
+
+function removeProject(key) {
+  intakeConfig.monitored_projects = intakeConfig.monitored_projects.filter(p => p.key !== key);
+  saveIntakeConfig();
+  renderIntakeProjects();
+  render();
+  showToast(`🗑 ${key} removed from monitoring`, 2000);
+}
+
+function addProject() {
+  const keyEl  = document.getElementById('new-proj-key');
+  const nameEl = document.getElementById('new-proj-name');
+  const dateEl = document.getElementById('new-proj-date');
+
+  const key  = keyEl.value.trim().toUpperCase();
+  const name = nameEl.value.trim();
+  const date = dateEl.value;
+
+  if (!key)  { showToast('⚠️ Project Key is required', 2500); keyEl.focus();  return; }
+  if (!name) { showToast('⚠️ Display Name is required', 2500); nameEl.focus(); return; }
+
+  const exists = intakeConfig.monitored_projects.some(p => p.key === key);
+  if (exists) { showToast(`⚠️ Project ${key} is already in the list`, 2500); return; }
+
+  intakeConfig.monitored_projects.push({
+    key,
+    name,
+    active: true,
+    filter_created_after: date || '2026-01-01'
+  });
+  saveIntakeConfig();
+  renderIntakeProjects();
+  render();
+
+  // Reset form
+  keyEl.value  = '';
+  nameEl.value = '';
+  dateEl.value = '2026-01-01';
+  showToast(`✅ ${key} (${name}) added to monitoring`, 2500);
+}
+
+function copyConfigJSON() {
+  const json = JSON.stringify(intakeConfig, null, 2);
+  navigator.clipboard.writeText(json).then(() => {
+    showToast('📋 Config JSON copied to clipboard!', 2500);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = json;
+    ta.style.position = 'fixed';
+    ta.style.opacity  = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('📋 Config JSON copied to clipboard!', 2500);
+  });
+}
+
+function isTicketInScope(key) {
+  // key is like "NEX-123" → project key = "NEX"
+  const projectKey = key.split('-')[0].toUpperCase();
+  const monitoredSet = getMonitoredSet();
+  const proj = monitoredSet.get(projectKey);
+  return proj ? { inScope: proj.active, project: proj } : { inScope: false, project: null };
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 //  State & overrides
 // ═══════════════════════════════════════════════════════════════════════
 const JIRA_BASE   = 'https://sensforge.atlassian.net/browse/';
@@ -645,6 +1099,11 @@ async function reload() {
     console.error(e);
     showToast('⚠️ Failed to load state.json — showing cached data', 4000);
   }
+}
+
+async function initIntake() {
+  await loadIntakeConfig();
+  renderIntakeProjects();
 }
 
 function scheduleRefresh() {
@@ -724,9 +1183,24 @@ function buildMainRow(t) {
   tr.dataset.key = t.key;
   tr.className   = 'ticket-row';
 
-  const s       = effectiveStatus(t);
-  const issues  = t.issues || [];
+  const s        = effectiveStatus(t);
+  const issues   = t.issues || [];
   const blockers = issues.filter(i => i.severity === 'blocker').length;
+  const scope    = isTicketInScope(t.key);
+
+  if (!scope.inScope) {
+    tr.classList.add('out-of-scope');
+    const notInConfig = !scope.project;
+    const reasonLabel = notInConfig
+      ? 'Not in scope — add project to monitor'
+      : `${scope.project.key} is paused`;
+    tr.innerHTML = `
+      <td class="ticket-key"><a href="${JIRA_BASE}${t.key}" target="_blank" rel="noopener">${t.key}</a></td>
+      <td class="ticket-summary" colspan="5">${esc(t.summary)} <span class="out-of-scope-label">⚠ ${reasonLabel}</span></td>
+      <td></td>
+    `;
+    return tr;
+  }
 
   tr.innerHTML = `
     <td class="ticket-key"><a href="${JIRA_BASE}${t.key}" target="_blank" rel="noopener">${t.key}</a></td>
@@ -1003,7 +1477,7 @@ function showToast(msg, duration = 3000) {
 // ═══════════════════════════════════════════════════════════════════════
 //  Boot
 // ═══════════════════════════════════════════════════════════════════════
-reload().then(scheduleRefresh);
+initIntake().then(() => reload().then(scheduleRefresh));
 </script>
 </body>
 </html>

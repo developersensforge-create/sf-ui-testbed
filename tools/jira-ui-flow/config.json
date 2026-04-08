@@ -1,0 +1,7 @@
+{
+  "monitored_projects": [
+    {"key": "NEX", "name": "NextSport", "active": true, "filter_created_after": "2026-01-01"},
+    {"key": "SFAI", "name": "SensForge AI", "active": true, "filter_created_after": "2026-01-01"}
+  ],
+  "last_updated": "2026-04-08T15:35:00Z"
+}
