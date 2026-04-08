@@ -681,6 +681,109 @@
     }
     .btn-add-project:hover { background: var(--orange-dk); border-color: var(--orange-dk); }
 
+    /* URL paste field */
+    .url-paste-field {
+      margin-bottom: 14px;
+    }
+    .url-paste-field label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin-bottom: 6px;
+    }
+    .url-paste-field label .url-paste-badge {
+      background: var(--orange);
+      color: white;
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: 8px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+    .url-paste-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .url-paste-icon {
+      position: absolute;
+      left: 11px;
+      font-size: 1rem;
+      pointer-events: none;
+      line-height: 1;
+    }
+    .url-paste-input-wrap input {
+      width: 100%;
+      padding: 9px 10px 9px 34px;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color .15s, background .15s;
+      font-family: inherit;
+    }
+    .url-paste-input-wrap input::placeholder {
+      color: #adb5bd;
+    }
+    .url-paste-input-wrap input:focus {
+      outline: none;
+      border-color: var(--orange);
+      border-style: solid;
+      background: #fffdf9;
+    }
+    .url-paste-input-wrap input.detected {
+      border-color: var(--green);
+      border-style: solid;
+      background: var(--green-lt);
+    }
+    .url-paste-hint {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      padding: 7px 11px;
+      background: var(--green-lt);
+      border: 1px solid #6ee7a0;
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--green-dk);
+    }
+    .url-paste-hint.show { display: flex; }
+    .url-paste-hint .hint-key {
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      background: white;
+      border: 1px solid #6ee7a0;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 0.78rem;
+    }
+    .url-paste-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+    .url-paste-divider::before,
+    .url-paste-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
     /* Out-of-scope ticket styling */
     tr.out-of-scope { opacity: 0.5; }
     tr.out-of-scope td { background: var(--grey-lt) !important; }
@@ -766,10 +869,36 @@
       <!-- Add project form -->
       <div class="add-project-form">
         <div class="add-project-form-title">➕ Add Project</div>
+
+        <!-- Step 1: URL paste (primary entry point) -->
+        <div class="url-paste-field">
+          <label for="new-proj-url">
+            <span>📋 Paste Jira URL</span>
+            <span class="url-paste-badge">Start here</span>
+          </label>
+          <div class="url-paste-input-wrap">
+            <span class="url-paste-icon">📋</span>
+            <input type="text" id="new-proj-url"
+              placeholder="Paste Jira project URL here…"
+              oninput="handleProjUrlInput()"
+              onpaste="setTimeout(handleProjUrlInput, 0)"
+              autocomplete="off" autocorrect="off" spellcheck="false" />
+          </div>
+          <div class="url-paste-hint" id="proj-url-hint">
+            <span>✓ Detected:</span>
+            <span class="hint-key" id="proj-hint-key"></span>
+            <span id="proj-hint-name"></span>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="url-paste-divider">or fill in manually</div>
+
+        <!-- Step 2: Key + Name + Date + Button -->
         <div class="add-project-fields">
           <div class="add-project-field">
             <label for="new-proj-key">Project Key</label>
-            <input type="text" id="new-proj-key" placeholder="e.g. NEX" maxlength="20" />
+            <input type="text" id="new-proj-key" placeholder="e.g. NEX" maxlength="20" oninput="onProjKeyManualInput()" />
           </div>
           <div class="add-project-field">
             <label for="new-proj-name">Display Name</label>
@@ -983,6 +1112,73 @@ function removeProject(key) {
   showToast(`🗑 ${key} removed from monitoring`, 2000);
 }
 
+// ── Known project lookup ─────────────────────────────────────────────
+const knownProjects = {
+  NEX:  'NextSport',
+  SFAI: 'SensForge AI',
+  SCRUM:'Sensforge App',
+  SR:   'Sensforge Ring',
+  SN:   'Sensforge Wearable Cam',
+  SWC:  'Sensforge Window Cam',
+  SDB:  'SF Door Bell'
+};
+
+// ── URL → key extraction ─────────────────────────────────────────────
+function extractKeyFromUrl(val) {
+  // /projects/KEY or /browse/KEY-
+  const m = val.match(/\/projects\/([A-Z][A-Z0-9]+)/i)
+         || val.match(/\/browse\/([A-Z][A-Z0-9]+)-/i);
+  return m ? m[1].toUpperCase() : null;
+}
+
+function handleProjUrlInput() {
+  const urlEl  = document.getElementById('new-proj-url');
+  const keyEl  = document.getElementById('new-proj-key');
+  const nameEl = document.getElementById('new-proj-name');
+  const hint   = document.getElementById('proj-url-hint');
+  const hintKey  = document.getElementById('proj-hint-key');
+  const hintName = document.getElementById('proj-hint-name');
+
+  const val = urlEl.value.trim();
+
+  // Only try to parse if it looks like a URL
+  if (!val.includes('/')) {
+    urlEl.classList.remove('detected');
+    hint.classList.remove('show');
+    return;
+  }
+
+  const key = extractKeyFromUrl(val);
+  if (!key) {
+    urlEl.classList.remove('detected');
+    hint.classList.remove('show');
+    return;
+  }
+
+  // Auto-fill key field
+  keyEl.value = key;
+
+  // Auto-fill name from lookup (only if not already manually edited)
+  const knownName = knownProjects[key] || '';
+  if (knownName) nameEl.value = knownName;
+
+  // Visual feedback
+  urlEl.classList.add('detected');
+  hintKey.textContent  = key;
+  hintName.textContent = knownName ? `— ${knownName}` : '';
+  hint.classList.add('show');
+}
+
+function onProjKeyManualInput() {
+  // When user types a key manually, try lookup but don't override URL hint
+  const keyEl  = document.getElementById('new-proj-key');
+  const nameEl = document.getElementById('new-proj-name');
+  const key    = keyEl.value.trim().toUpperCase();
+  if (knownProjects[key] && !nameEl.value.trim()) {
+    nameEl.value = knownProjects[key];
+  }
+}
+
 function addProject() {
   const keyEl  = document.getElementById('new-proj-key');
   const nameEl = document.getElementById('new-proj-name');
@@ -1009,6 +1205,9 @@ function addProject() {
   render();
 
   // Reset form
+  document.getElementById('new-proj-url').value = '';
+  document.getElementById('new-proj-url').classList.remove('detected');
+  document.getElementById('proj-url-hint').classList.remove('show');
   keyEl.value  = '';
   nameEl.value = '';
   dateEl.value = '2026-01-01';
