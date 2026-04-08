@@ -1348,7 +1348,7 @@ function render() {
 }
 
 function renderStats() {
-  const all   = Object.values(allTickets);
+  const all   = Object.values(allTickets).filter(t => isTicketInScope(t.key).inScope);
   document.getElementById('stat-total').textContent    = all.length;
   document.getElementById('stat-attention').textContent = all.filter(t => matchesFilter(t,'needs-attention')).length;
   document.getElementById('stat-qa').textContent        = all.filter(t => effectiveStatus(t)==='in-qa').length;
@@ -1357,7 +1357,7 @@ function renderStats() {
 }
 
 function renderTable() {
-  const tickets = Object.values(allTickets).filter(t => matchesFilter(t, activeFilter));
+  const tickets = Object.values(allTickets).filter(t => isTicketInScope(t.key).inScope && matchesFilter(t, activeFilter));
   const tbody = document.getElementById('ticket-tbody');
   document.getElementById('ticket-count-label').textContent =
     tickets.length + ' ticket' + (tickets.length !== 1 ? 's' : '') + ' shown';
@@ -1385,21 +1385,6 @@ function buildMainRow(t) {
   const s        = effectiveStatus(t);
   const issues   = t.issues || [];
   const blockers = issues.filter(i => i.severity === 'blocker').length;
-  const scope    = isTicketInScope(t.key);
-
-  if (!scope.inScope) {
-    tr.classList.add('out-of-scope');
-    const notInConfig = !scope.project;
-    const reasonLabel = notInConfig
-      ? 'Not in scope — add project to monitor'
-      : `${scope.project.key} is paused`;
-    tr.innerHTML = `
-      <td class="ticket-key"><a href="${JIRA_BASE}${t.key}" target="_blank" rel="noopener">${t.key}</a></td>
-      <td class="ticket-summary" colspan="5">${esc(t.summary)} <span class="out-of-scope-label">⚠ ${reasonLabel}</span></td>
-      <td></td>
-    `;
-    return tr;
-  }
 
   tr.innerHTML = `
     <td class="ticket-key"><a href="${JIRA_BASE}${t.key}" target="_blank" rel="noopener">${t.key}</a></td>
