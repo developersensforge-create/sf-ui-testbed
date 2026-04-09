@@ -1346,14 +1346,17 @@
         <div class="fm-spinner"></div>
         <div class="fm-loading-text" id="freq-loading-text">Generating checklist & design draft…</div>
       </div>
+      <!-- Existing data hint -->
+      <div id="freq-existing-hint" style="display:none;margin-bottom:12px;padding:9px 13px;background:var(--blue-lt);border:1px solid #93c5fd;border-radius:var(--radius);font-size:0.8rem;color:var(--blue)"></div>
+
       <!-- Form fields -->
       <div id="freq-form">
         <div class="fm-field">
-          <label class="fm-label">Additional Details <span class="opt">(optional)</span></label>
+          <label class="fm-label">Additional Details <span class="opt">(optional — add or edit requirements)</span></label>
           <textarea class="fm-textarea" id="freq-details" rows="4" placeholder="Describe what needs to be designed, any requirements, context, or constraints…"></textarea>
         </div>
         <div class="fm-field">
-          <label class="fm-label">Current Screenshot <span class="opt">(optional — upload baseline)</span></label>
+          <label class="fm-label">Screenshot <span class="opt">(optional — upload or replace baseline)</span></label>
           <div class="fm-upload-zone" id="freq-upload-zone">
             <input type="file" id="freq-screenshot" accept="image/*" onchange="onFReqScreenshotChange()" />
             <div class="fm-upload-text"><strong>Click to upload</strong> or drag &amp; drop<br>PNG, JPG, GIF up to 5MB</div>
@@ -1391,8 +1394,9 @@
           <div class="fm-draft-frame" id="fdraft-frame-wrap">
             <iframe id="fdraft-iframe" sandbox="allow-scripts" title="AI Design Draft"></iframe>
           </div>
-          <div id="fdraft-regen-row" style="margin-top:10px">
-            <button class="fm-btn fm-btn-secondary" style="font-size:0.78rem;padding:6px 12px" onclick="regenFigmaRequest()">↺ Regenerate</button>
+          <div id="fdraft-regen-row" style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="fm-btn fm-btn-secondary" style="font-size:0.78rem;padding:6px 12px" onclick="regenFigmaRequest()">↺ Regenerate Draft</button>
+            <button class="fm-btn fm-btn-secondary" style="font-size:0.78rem;padding:6px 12px" onclick="editRequirements()">✏️ Edit Requirements</button>
           </div>
         </div>
         <!-- Right: checklist editor -->
@@ -2164,25 +2168,50 @@ function openFigmaReqModal(ticketKey) {
   const t = allTickets[ticketKey];
   if (!t) return;
   _figmaCurrentKey = ticketKey;
-  _figmaCurrentScreenshotB64 = null;
 
+  // Load any previously saved data for this ticket
+  const existing = getFigmaData()[ticketKey] || {};
+  const isUpdate = !!(existing.checklist && existing.checklist.length);
+
+  // Pre-fill from saved state (so PM, UI designer can all keep adding to it)
+  _figmaCurrentScreenshotB64 = existing.screenshotB64 || null;
+  document.getElementById('freq-details').value = existing.details || '';
+
+  // Restore screenshot preview if one was previously uploaded
+  if (existing.screenshotB64) {
+    document.getElementById('freq-preview-img').src = existing.screenshotB64;
+    document.getElementById('freq-file-name').textContent = '✓ Screenshot attached (from previous session)';
+    document.getElementById('freq-upload-preview').classList.add('show');
+    document.getElementById('freq-upload-zone').classList.add('has-file');
+  } else {
+    document.getElementById('freq-screenshot').value = '';
+    document.getElementById('freq-upload-preview').classList.remove('show');
+    document.getElementById('freq-upload-zone').classList.remove('has-file');
+  }
+
+  // Update modal title + button label depending on first-time vs update
   document.getElementById('freq-modal-title').textContent = ticketKey + ' — Figma Request';
   document.getElementById('freq-modal-subtitle').textContent = t.summary || '';
-  document.getElementById('freq-details').value = '';
-  document.getElementById('freq-screenshot').value = '';
-  document.getElementById('freq-upload-preview').classList.remove('show');
-  document.getElementById('freq-upload-zone').classList.remove('has-file');
+  document.getElementById('freq-generate-btn').textContent = isUpdate
+    ? '✨ Update & Regenerate'
+    : '✨ Generate Checklist & Draft';
+  document.getElementById('freq-generate-btn').disabled = false;
+
+  // Show prior checklist count hint if updating
+  const hintEl = document.getElementById('freq-existing-hint');
+  if (isUpdate) {
+    hintEl.style.display = '';
+    hintEl.textContent = `ℹ️ Previously generated: ${existing.checklist.length} checklist items. Updating will regenerate the draft and checklist.`;
+  } else {
+    hintEl.style.display = 'none';
+  }
+
   document.getElementById('freq-form').style.display = '';
   document.getElementById('freq-footer').style.display = '';
   document.getElementById('freq-loading').classList.remove('show');
-  document.getElementById('freq-generate-btn').disabled = false;
 
   // Check OpenAI key
-  if (!getOpenAIKey()) {
-    document.getElementById('freq-key-banner').style.display = '';
-  } else {
-    document.getElementById('freq-key-banner').style.display = 'none';
-  }
+  document.getElementById('freq-key-banner').style.display = getOpenAIKey() ? 'none' : '';
 
   document.getElementById('figma-req-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -2197,9 +2226,9 @@ function onFReqScreenshotChange() {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = (e) => {
-    _figmaCurrentScreenshotB64 = e.target.result; // data:image/...;base64,...
+    _figmaCurrentScreenshotB64 = e.target.result;
     document.getElementById('freq-preview-img').src = e.target.result;
-    document.getElementById('freq-file-name').textContent = '✓ ' + file.name;
+    document.getElementById('freq-file-name').textContent = '✓ ' + file.name + ' (replaced)';
     document.getElementById('freq-upload-preview').classList.add('show');
     document.getElementById('freq-upload-zone').classList.add('has-file');
   };
@@ -2230,13 +2259,16 @@ async function generateFigmaRequest() {
     _figmaCurrentChecklist = result.checklist;
     _figmaCurrentDraftHtml = result.draftHtml;
 
-    // Save to localStorage
+    // Save to localStorage — merge with existing so nothing is lost
     const allData = getFigmaData();
+    const prev = allData[key] || {};
     allData[key] = {
+      ...prev,
       checklist: result.checklist,
       draftHtml: result.draftHtml,
       details,
-      screenshotB64: _figmaCurrentScreenshotB64
+      screenshotB64: _figmaCurrentScreenshotB64 || prev.screenshotB64 || null,
+      lastUpdated: new Date().toISOString()
     };
     saveFigmaData(allData);
 
@@ -2370,6 +2402,12 @@ function addChecklistItem() {
 }
 
 function regenFigmaRequest() {
+  closeFigmaDraftModal();
+  openFigmaReqModal(_figmaCurrentKey);
+}
+
+function editRequirements() {
+  // Go back to Step 1 pre-filled — PM can add more details, UI can replace screenshot
   closeFigmaDraftModal();
   openFigmaReqModal(_figmaCurrentKey);
 }
