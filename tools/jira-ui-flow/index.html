@@ -798,6 +798,331 @@
       font-style: italic;
     }
 
+    /* ── Figma Request Button ────────────────────────────────────────── */
+    .btn-figma-req  { background: #f0e8ff; color: #7c3aed; border-color: #c4b5fd; }
+    .btn-figma-req:hover { background: #7c3aed; color: white; border-color: #7c3aed; }
+    .btn-ai-review  { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+    .btn-ai-review:hover { background: #0369a1; color: white; border-color: #0369a1; }
+    .badge-ai-approved { background: #d1fae5; color: #065f46; border: 1px solid #34d399; font-weight: 700; }
+
+    /* ── Figma Modals (shared base) ──────────────────────────────────── */
+    .figma-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 400;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .figma-modal-backdrop.open { display: flex; }
+    .figma-modal {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modal-in .2s ease;
+    }
+    .figma-modal.wide { max-width: 860px; }
+    .figma-modal.narrow { max-width: 560px; }
+    .figma-modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .figma-modal-header-text {}
+    .figma-modal-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: #7c3aed;
+      margin-bottom: 2px;
+    }
+    .figma-modal-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .figma-modal-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .figma-modal-close {
+      background: var(--grey-lt);
+      border: none;
+      border-radius: 6px;
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .figma-modal-close:hover { background: var(--border); color: var(--text); }
+    .figma-modal-body {
+      overflow-y: auto;
+      padding: 20px 22px;
+      flex: 1;
+    }
+    .figma-modal-footer {
+      padding: 14px 22px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .fm-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all .15s;
+    }
+    .fm-btn-primary { background: #7c3aed; color: white; border-color: #7c3aed; }
+    .fm-btn-primary:hover { background: #6d28d9; border-color: #6d28d9; }
+    .fm-btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+    .fm-btn-secondary { background: var(--white); color: var(--text); border-color: var(--border); }
+    .fm-btn-secondary:hover { border-color: var(--grey); }
+    .fm-btn-green { background: var(--green); color: white; border-color: var(--green); }
+    .fm-btn-green:hover { background: var(--green-dk); border-color: var(--green-dk); }
+    .fm-btn-green:disabled { opacity: .5; cursor: not-allowed; }
+    .fm-btn-orange { background: var(--orange); color: white; border-color: var(--orange); }
+    .fm-btn-orange:hover { background: var(--orange-dk); border-color: var(--orange-dk); }
+    .fm-btn-orange:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* Form fields */
+    .fm-field { margin-bottom: 16px; }
+    .fm-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      margin-bottom: 6px;
+    }
+    .fm-label span.opt { font-weight: 400; text-transform: none; letter-spacing: 0; color: #adb5bd; }
+    .fm-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-family: inherit;
+      color: var(--text);
+      resize: vertical;
+      min-height: 80px;
+      transition: border-color .15s;
+    }
+    .fm-textarea:focus { outline: none; border-color: #7c3aed; }
+    .fm-upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .15s;
+      background: var(--grey-lt);
+      position: relative;
+    }
+    .fm-upload-zone:hover, .fm-upload-zone.drag-over {
+      border-color: #7c3aed;
+      background: #f5f3ff;
+    }
+    .fm-upload-zone.has-file {
+      border-color: var(--green);
+      background: var(--green-lt);
+    }
+    .fm-upload-zone input[type=file] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .fm-upload-text { font-size: 0.82rem; color: var(--text-muted); }
+    .fm-upload-text strong { color: var(--text); }
+    .fm-upload-preview {
+      display: none;
+      margin-top: 10px;
+    }
+    .fm-upload-preview.show { display: block; }
+    .fm-upload-preview img {
+      max-height: 120px;
+      max-width: 100%;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    /* Loading spinner */
+    .fm-loading {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      gap: 14px;
+    }
+    .fm-loading.show { display: flex; }
+    .fm-spinner {
+      width: 36px; height: 36px;
+      border: 3px solid #e9d5ff;
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .fm-loading-text { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+
+    /* Step 2: draft + checklist layout */
+    .fm-draft-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+    }
+    @media (max-width: 700px) { .fm-draft-layout { grid-template-columns: 1fr; } }
+    .fm-draft-left {}
+    .fm-draft-right {}
+    .fm-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .fm-draft-frame {
+      width: 100%;
+      min-height: 340px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #fafafa;
+      overflow: hidden;
+    }
+    .fm-draft-frame iframe {
+      width: 100%; height: 100%; min-height: 340px;
+      border: none;
+    }
+
+    /* Checklist editor */
+    .fm-checklist { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .fm-check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      background: var(--grey-lt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+    }
+    .fm-check-item span { flex: 1; line-height: 1.4; }
+    .fm-check-del {
+      background: none; border: none; cursor: pointer;
+      color: var(--text-muted); font-size: 0.9rem; padding: 0 2px;
+      transition: color .15s; flex-shrink: 0;
+    }
+    .fm-check-del:hover { color: var(--red); }
+    .fm-add-check-row {
+      display: flex; gap: 6px;
+    }
+    .fm-add-check-input {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      font-family: inherit;
+    }
+    .fm-add-check-input:focus { outline: none; border-color: #7c3aed; }
+    .fm-add-check-btn {
+      padding: 6px 12px;
+      background: #f5f3ff;
+      border: 1px solid #c4b5fd;
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #7c3aed;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .fm-add-check-btn:hover { background: #7c3aed; color: white; }
+
+    /* Step 3: AI review results */
+    .fm-review-results { display: flex; flex-direction: column; gap: 8px; }
+    .fm-result-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      border: 1px solid;
+      font-size: 0.83rem;
+    }
+    .fm-result-item.pass {
+      background: var(--green-lt); border-color: #6ee7a0;
+    }
+    .fm-result-item.fail {
+      background: var(--red-lt); border-color: #fca5a5;
+    }
+    .fm-result-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .fm-result-text {}
+    .fm-result-item-label { font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .fm-result-item-reason { color: var(--text-muted); font-size: 0.78rem; }
+    .fm-all-passed-banner {
+      display: none;
+      padding: 14px 16px;
+      background: var(--green-lt);
+      border: 1px solid #6ee7a0;
+      border-radius: var(--radius);
+      text-align: center;
+      font-weight: 700;
+      color: var(--green-dk);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+    .fm-all-passed-banner.show { display: block; }
+
+    /* OpenAI key config */
+    .fm-key-banner {
+      padding: 10px 14px;
+      background: var(--yellow-lt);
+      border: 1px solid #f5d78e;
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      color: var(--yellow);
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .fm-key-banner input {
+      flex: 1; min-width: 180px;
+      padding: 5px 9px;
+      border: 1px solid #f5d78e;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+    }
+    .fm-key-banner button {
+      padding: 5px 12px;
+      background: var(--yellow);
+      border: none; border-radius: 6px;
+      font-size: 0.8rem; font-weight: 600; color: white; cursor: pointer;
+    }
+
     /* ── Responsive ──────────────────────────────────────────────────── */
     @media (max-width: 768px) {
       .header { padding: 12px 14px; }
@@ -994,6 +1319,144 @@
     </div>
     <div class="modal-body">
       <div class="brief-content" id="modal-brief-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Figma Request Modal (Step 1: request form) ─────────────────────── -->
+<div class="figma-modal-backdrop" id="figma-req-modal" role="dialog" aria-modal="true">
+  <div class="figma-modal narrow">
+    <div class="figma-modal-header">
+      <div class="figma-modal-header-text">
+        <div class="figma-modal-eyebrow">🎨 Figma Request</div>
+        <div class="figma-modal-title" id="freq-modal-title">Design Request</div>
+        <div class="figma-modal-subtitle" id="freq-modal-subtitle"></div>
+      </div>
+      <button class="figma-modal-close" onclick="closeFigmaReqModal()">✕</button>
+    </div>
+    <div class="figma-modal-body">
+      <!-- OpenAI key banner -->
+      <div class="fm-key-banner" id="freq-key-banner" style="display:none">
+        ⚠️ OpenAI key needed:
+        <input type="password" id="freq-openai-key" placeholder="sk-..." autocomplete="off"/>
+        <button onclick="saveFigmaOpenAIKey()">Save</button>
+      </div>
+      <!-- Loading state -->
+      <div class="fm-loading" id="freq-loading">
+        <div class="fm-spinner"></div>
+        <div class="fm-loading-text" id="freq-loading-text">Generating checklist & design draft…</div>
+      </div>
+      <!-- Form fields -->
+      <div id="freq-form">
+        <div class="fm-field">
+          <label class="fm-label">Additional Details <span class="opt">(optional)</span></label>
+          <textarea class="fm-textarea" id="freq-details" rows="4" placeholder="Describe what needs to be designed, any requirements, context, or constraints…"></textarea>
+        </div>
+        <div class="fm-field">
+          <label class="fm-label">Current Screenshot <span class="opt">(optional — upload baseline)</span></label>
+          <div class="fm-upload-zone" id="freq-upload-zone">
+            <input type="file" id="freq-screenshot" accept="image/*" onchange="onFReqScreenshotChange()" />
+            <div class="fm-upload-text"><strong>Click to upload</strong> or drag &amp; drop<br>PNG, JPG, GIF up to 5MB</div>
+            <div class="fm-upload-preview" id="freq-upload-preview">
+              <img id="freq-preview-img" src="" alt="Preview" />
+              <div style="font-size:0.75rem;color:var(--green);margin-top:4px" id="freq-file-name"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="figma-modal-footer" id="freq-footer">
+      <button class="fm-btn fm-btn-secondary" onclick="closeFigmaReqModal()">Cancel</button>
+      <button class="fm-btn fm-btn-primary" id="freq-generate-btn" onclick="generateFigmaRequest()">✨ Generate Checklist &amp; Draft</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Figma Draft Modal (Step 2: preview + checklist) ────────────────── -->
+<div class="figma-modal-backdrop" id="figma-draft-modal" role="dialog" aria-modal="true">
+  <div class="figma-modal wide">
+    <div class="figma-modal-header">
+      <div class="figma-modal-header-text">
+        <div class="figma-modal-eyebrow">🎨 AI Design Draft</div>
+        <div class="figma-modal-title" id="fdraft-modal-title">Review Draft &amp; Checklist</div>
+        <div class="figma-modal-subtitle">Edit the checklist, then download the design package for your designer.</div>
+      </div>
+      <button class="figma-modal-close" onclick="closeFigmaDraftModal()">✕</button>
+    </div>
+    <div class="figma-modal-body">
+      <div class="fm-draft-layout">
+        <!-- Left: draft preview -->
+        <div class="fm-draft-left">
+          <div class="fm-section-title">🖼 AI Design Draft</div>
+          <div class="fm-draft-frame" id="fdraft-frame-wrap">
+            <iframe id="fdraft-iframe" sandbox="allow-scripts" title="AI Design Draft"></iframe>
+          </div>
+          <div id="fdraft-regen-row" style="margin-top:10px">
+            <button class="fm-btn fm-btn-secondary" style="font-size:0.78rem;padding:6px 12px" onclick="regenFigmaRequest()">↺ Regenerate</button>
+          </div>
+        </div>
+        <!-- Right: checklist editor -->
+        <div class="fm-draft-right">
+          <div class="fm-section-title">✅ Quality Checklist <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.72rem">(edit as needed)</span></div>
+          <div class="fm-checklist" id="fdraft-checklist"></div>
+          <div class="fm-add-check-row">
+            <input class="fm-add-check-input" type="text" id="fdraft-add-input" placeholder="Add checklist item…" onkeydown="if(event.key==='Enter')addChecklistItem()" />
+            <button class="fm-add-check-btn" onclick="addChecklistItem()">+ Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="figma-modal-footer">
+      <button class="fm-btn fm-btn-secondary" onclick="closeFigmaDraftModal()">Cancel</button>
+      <button class="fm-btn fm-btn-green" onclick="downloadDesignPackage()">⬇ Download Design Package</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── AI Review Modal (Step 3: designer submits screenshot) ──────────── -->
+<div class="figma-modal-backdrop" id="figma-review-modal" role="dialog" aria-modal="true">
+  <div class="figma-modal narrow">
+    <div class="figma-modal-header">
+      <div class="figma-modal-header-text">
+        <div class="figma-modal-eyebrow">🔍 AI Quality Review</div>
+        <div class="figma-modal-title" id="frev-modal-title">Submit Design for Review</div>
+        <div class="figma-modal-subtitle" id="frev-modal-subtitle"></div>
+      </div>
+      <button class="figma-modal-close" onclick="closeFigmaReviewModal()">✕</button>
+    </div>
+    <div class="figma-modal-body">
+      <!-- Loading -->
+      <div class="fm-loading" id="frev-loading">
+        <div class="fm-spinner"></div>
+        <div class="fm-loading-text">AI is reviewing your design…</div>
+      </div>
+      <!-- Upload form -->
+      <div id="frev-form">
+        <div class="fm-field">
+          <label class="fm-label">Upload Finished Design Screenshot</label>
+          <div class="fm-upload-zone" id="frev-upload-zone">
+            <input type="file" id="frev-screenshot" accept="image/*" onchange="onFRevScreenshotChange()" />
+            <div class="fm-upload-text"><strong>Click to upload</strong> or drag &amp; drop<br>PNG, JPG — your finished Figma design</div>
+            <div class="fm-upload-preview" id="frev-upload-preview">
+              <img id="frev-preview-img" src="" alt="Preview" />
+              <div style="font-size:0.75rem;color:var(--green);margin-top:4px" id="frev-file-name"></div>
+            </div>
+          </div>
+        </div>
+        <div id="frev-checklist-summary" style="margin-top:12px;display:none">
+          <div class="fm-section-title" style="margin-bottom:6px">Checklist being verified:</div>
+          <div id="frev-checklist-list" style="font-size:0.8rem;color:var(--text-muted);line-height:1.8"></div>
+        </div>
+      </div>
+      <!-- Results -->
+      <div id="frev-results" style="display:none">
+        <div class="fm-all-passed-banner" id="frev-all-passed">🎉 All checks passed! Ticket status updated to AI Approved.</div>
+        <div class="fm-review-results" id="frev-results-list"></div>
+      </div>
+    </div>
+    <div class="figma-modal-footer" id="frev-footer">
+      <button class="fm-btn fm-btn-secondary" onclick="closeFigmaReviewModal()">Cancel</button>
+      <button class="fm-btn fm-btn-orange" id="frev-submit-btn" onclick="submitAIReview()" disabled>🔍 Run AI Review</button>
     </div>
   </div>
 </div>
@@ -1315,6 +1778,7 @@ function scheduleRefresh() {
 // ═══════════════════════════════════════════════════════════════════════
 function effectiveStatus(t) {
   if (t.ignored)        return 'ignored';
+  if (t.ai_approved)    return 'ai-approved';
   if (t.human_approved) return 'approved';
   const raw = (t.status || '').trim().toUpperCase();
   if (raw === 'READY FOR REVIEW' || raw === 'READY_FOR_REVIEW') return 'ready';
@@ -1435,11 +1899,12 @@ function severityClass(s) {
 
 function statusBadge(s) {
   const map = {
-    'ui-design': ['badge-yellow', '🟡 UI Design'],
-    'in-qa':     ['badge-blue',   '🔵 In QA'],
-    'ready':     ['badge-green',  '🟢 Ready for Review'],
-    'approved':  ['badge-darkgreen','✅ Approved'],
-    'ignored':   ['badge-grey',   '⚫ Ignored'],
+    'ui-design':   ['badge-yellow',    '🟡 UI Design'],
+    'in-qa':       ['badge-blue',      '🔵 In QA'],
+    'ready':       ['badge-green',     '🟢 Ready for Review'],
+    'approved':    ['badge-darkgreen', '✅ Approved'],
+    'ignored':     ['badge-grey',      '⚫ Ignored'],
+    'ai-approved': ['badge-ai-approved','🤖 AI Approved'],
   };
   const [cls, label] = map[s] || ['badge-grey', s];
   return `<span class="badge ${cls}">${label}</span>`;
@@ -1474,6 +1939,12 @@ function actionsCell(t, issues, blockers) {
   }
   if (hasIssues) {
     btns += `<button class="btn btn-issues" onclick="toggleIssues('${t.key}')" title="View Issues">⚠ Issues (${issues.length})</button>`;
+  }
+  // Figma Request button
+  btns += `<button class="btn btn-figma-req" onclick="openFigmaReqModal('${t.key}')" title="Figma Design Request">🎨 Figma Request</button>`;
+  // AI Review button (show if figma request was made)
+  if (t.figma_checklist && t.figma_checklist.length > 0) {
+    btns += `<button class="btn btn-ai-review" onclick="openFigmaReviewModal('${t.key}')" title="Submit for AI Review">🔍 AI Review</button>`;
   }
   return btns;
 }
@@ -1659,9 +2130,581 @@ function showToast(msg, duration = 3000) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+//  Figma Request Flow
+// ═══════════════════════════════════════════════════════════════════════
+
+const FIGMA_LS_KEY = 'jira_figma_requests'; // { [ticketKey]: { checklist, details, draftHtml, screenshotB64 } }
+const OPENAI_KEY_LS = 'figma_openai_key';
+
+function getFigmaData() {
+  try { return JSON.parse(localStorage.getItem(FIGMA_LS_KEY) || '{}'); } catch { return {}; }
+}
+function saveFigmaData(data) {
+  localStorage.setItem(FIGMA_LS_KEY, JSON.stringify(data));
+}
+function getOpenAIKey() {
+  return localStorage.getItem(OPENAI_KEY_LS) || '';
+}
+function saveFigmaOpenAIKey() {
+  const val = document.getElementById('freq-openai-key').value.trim();
+  if (!val) return;
+  localStorage.setItem(OPENAI_KEY_LS, val);
+  document.getElementById('freq-key-banner').style.display = 'none';
+  showToast('✅ OpenAI key saved', 2000);
+}
+
+// ── State for current open modal ─────────────────────────────────────
+let _figmaCurrentKey = null;
+let _figmaCurrentChecklist = [];
+let _figmaCurrentDraftHtml = '';
+let _figmaCurrentScreenshotB64 = null;
+
+// ── Step 1: Open Figma Request Modal ─────────────────────────────────
+function openFigmaReqModal(ticketKey) {
+  const t = allTickets[ticketKey];
+  if (!t) return;
+  _figmaCurrentKey = ticketKey;
+  _figmaCurrentScreenshotB64 = null;
+
+  document.getElementById('freq-modal-title').textContent = ticketKey + ' — Figma Request';
+  document.getElementById('freq-modal-subtitle').textContent = t.summary || '';
+  document.getElementById('freq-details').value = '';
+  document.getElementById('freq-screenshot').value = '';
+  document.getElementById('freq-upload-preview').classList.remove('show');
+  document.getElementById('freq-upload-zone').classList.remove('has-file');
+  document.getElementById('freq-form').style.display = '';
+  document.getElementById('freq-footer').style.display = '';
+  document.getElementById('freq-loading').classList.remove('show');
+  document.getElementById('freq-generate-btn').disabled = false;
+
+  // Check OpenAI key
+  if (!getOpenAIKey()) {
+    document.getElementById('freq-key-banner').style.display = '';
+  } else {
+    document.getElementById('freq-key-banner').style.display = 'none';
+  }
+
+  document.getElementById('figma-req-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeFigmaReqModal() {
+  document.getElementById('figma-req-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function onFReqScreenshotChange() {
+  const file = document.getElementById('freq-screenshot').files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    _figmaCurrentScreenshotB64 = e.target.result; // data:image/...;base64,...
+    document.getElementById('freq-preview-img').src = e.target.result;
+    document.getElementById('freq-file-name').textContent = '✓ ' + file.name;
+    document.getElementById('freq-upload-preview').classList.add('show');
+    document.getElementById('freq-upload-zone').classList.add('has-file');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Step 2: Generate via OpenAI ──────────────────────────────────────
+async function generateFigmaRequest() {
+  const key = _figmaCurrentKey;
+  const t = allTickets[key];
+  if (!t) return;
+
+  const apiKey = getOpenAIKey();
+  if (!apiKey) {
+    document.getElementById('freq-key-banner').style.display = '';
+    showToast('⚠️ Please enter your OpenAI API key first', 3000);
+    return;
+  }
+
+  const details = document.getElementById('freq-details').value.trim();
+  document.getElementById('freq-form').style.display = 'none';
+  document.getElementById('freq-footer').style.display = 'none';
+  document.getElementById('freq-loading').classList.add('show');
+  document.getElementById('freq-loading-text').textContent = 'Generating checklist & design draft…';
+
+  try {
+    const result = await callOpenAIForFigmaRequest(apiKey, t.key, t.summary, details, _figmaCurrentScreenshotB64);
+    _figmaCurrentChecklist = result.checklist;
+    _figmaCurrentDraftHtml = result.draftHtml;
+
+    // Save to localStorage
+    const allData = getFigmaData();
+    allData[key] = {
+      checklist: result.checklist,
+      draftHtml: result.draftHtml,
+      details,
+      screenshotB64: _figmaCurrentScreenshotB64
+    };
+    saveFigmaData(allData);
+
+    // Also save checklist to ticket overrides so "AI Review" button appears
+    allTickets[key].figma_checklist = result.checklist;
+    saveOverride(key, { figma_checklist: result.checklist });
+
+    closeFigmaReqModal();
+    openFigmaDraftModal(key);
+  } catch (err) {
+    document.getElementById('freq-loading').classList.remove('show');
+    document.getElementById('freq-form').style.display = '';
+    document.getElementById('freq-footer').style.display = '';
+    document.getElementById('freq-generate-btn').disabled = false;
+    showToast('❌ Error: ' + err.message, 5000);
+    console.error(err);
+  }
+}
+
+async function callOpenAIForFigmaRequest(apiKey, ticketKey, summary, details, screenshotB64) {
+  const messages = [
+    {
+      role: 'system',
+      content: `You are a UI design quality assistant for SensForge (brand color: #f96400 orange).
+Given a Jira ticket, output a JSON object with two keys:
+1. "checklist": array of 6-10 specific, actionable UI quality check items for this design task. Each item is a short string (max 80 chars). Be specific to the ticket, not generic.
+2. "draftHtml": a complete, self-contained HTML document (with embedded CSS, no external deps) showing a visual UI mockup for this ticket. Use SensForge brand (#f96400 orange, white, clean sans-serif). Make it look like a real polished UI, not a wireframe. Use inline styles. The HTML should be renderable in an iframe.
+Output ONLY valid JSON, no markdown fences.`
+    },
+    {
+      role: 'user',
+      content: screenshotB64
+        ? [
+            { type: 'text', text: `Ticket: ${ticketKey}\nTitle: ${summary}\nDetails: ${details || '(none)'}` },
+            { type: 'image_url', image_url: { url: screenshotB64, detail: 'low' } }
+          ]
+        : `Ticket: ${ticketKey}\nTitle: ${summary}\nDetails: ${details || '(none)'}`
+    }
+  ];
+
+  const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      messages,
+      temperature: 0.7,
+      max_tokens: 3000
+    })
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err?.error?.message || 'OpenAI API error ' + resp.status);
+  }
+
+  const data = await resp.json();
+  const raw = data.choices?.[0]?.message?.content || '';
+  // Strip markdown fences if any
+  const cleaned = raw.replace(/^```(?:json)?\n?/i, '').replace(/\n?```$/, '').trim();
+  const parsed = JSON.parse(cleaned);
+  if (!Array.isArray(parsed.checklist) || !parsed.draftHtml) {
+    throw new Error('Unexpected response format from AI');
+  }
+  return parsed;
+}
+
+// ── Draft Modal ──────────────────────────────────────────────────────
+function openFigmaDraftModal(ticketKey) {
+  const t = allTickets[ticketKey];
+  if (!t) return;
+  _figmaCurrentKey = ticketKey;
+
+  const data = getFigmaData()[ticketKey] || {};
+  _figmaCurrentChecklist = data.checklist || [];
+  _figmaCurrentDraftHtml = data.draftHtml || '';
+
+  document.getElementById('fdraft-modal-title').textContent = ticketKey + ' — ' + (t.summary || 'Design Draft');
+
+  // Render iframe
+  const iframe = document.getElementById('fdraft-iframe');
+  iframe.srcdoc = _figmaCurrentDraftHtml;
+
+  // Render checklist
+  renderDraftChecklist();
+
+  document.getElementById('figma-draft-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFigmaDraftModal() {
+  document.getElementById('figma-draft-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  render(); // refresh table so AI Review button shows
+}
+
+function renderDraftChecklist() {
+  const container = document.getElementById('fdraft-checklist');
+  container.innerHTML = '';
+  _figmaCurrentChecklist.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'fm-check-item';
+    div.innerHTML = `<span>${esc(item)}</span><button class="fm-check-del" onclick="removeChecklistItem(${i})" title="Remove">✕</button>`;
+    container.appendChild(div);
+  });
+}
+
+function removeChecklistItem(i) {
+  _figmaCurrentChecklist.splice(i, 1);
+  // Update saved data
+  const allData = getFigmaData();
+  if (allData[_figmaCurrentKey]) allData[_figmaCurrentKey].checklist = _figmaCurrentChecklist;
+  saveFigmaData(allData);
+  saveOverride(_figmaCurrentKey, { figma_checklist: _figmaCurrentChecklist });
+  allTickets[_figmaCurrentKey].figma_checklist = _figmaCurrentChecklist;
+  renderDraftChecklist();
+}
+
+function addChecklistItem() {
+  const input = document.getElementById('fdraft-add-input');
+  const val = input.value.trim();
+  if (!val) return;
+  _figmaCurrentChecklist.push(val);
+  input.value = '';
+  const allData = getFigmaData();
+  if (allData[_figmaCurrentKey]) allData[_figmaCurrentKey].checklist = _figmaCurrentChecklist;
+  saveFigmaData(allData);
+  saveOverride(_figmaCurrentKey, { figma_checklist: _figmaCurrentChecklist });
+  allTickets[_figmaCurrentKey].figma_checklist = _figmaCurrentChecklist;
+  renderDraftChecklist();
+}
+
+function regenFigmaRequest() {
+  closeFigmaDraftModal();
+  openFigmaReqModal(_figmaCurrentKey);
+}
+
+// ── Download Package ─────────────────────────────────────────────────
+async function downloadDesignPackage() {
+  const key = _figmaCurrentKey;
+  const t = allTickets[key];
+  if (!t) return;
+  const data = getFigmaData()[key] || {};
+
+  showToast('⏳ Generating design package…', 3000);
+
+  // Build a printable HTML document and use browser print / canvas
+  const packageHtml = buildPackageHtml(key, t.summary, data);
+
+  // Open in new window for user to print/save as PDF, or trigger download via blob
+  const blob = new Blob([packageHtml], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+
+  // Try html2canvas approach via hidden iframe + canvas
+  try {
+    await downloadPackageAsImage(key, t.summary, data);
+  } catch (e) {
+    // Fallback: open HTML in new tab
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = key.replace('/', '-') + '-design-package.html';
+    a.click();
+    showToast('📦 Design package downloaded (HTML)', 3000);
+  }
+}
+
+function buildPackageHtml(ticketKey, summary, data) {
+  const checklist = (data.checklist || []).map(item => `<li>${esc(item)}</li>`).join('');
+  const screenshotSection = data.screenshotB64
+    ? `<div class="section"><div class="section-title">📸 Original Screenshot (Baseline)</div><img class="snapshot" src="${data.screenshotB64}" /></div>`
+    : '';
+  const draftSection = data.draftHtml
+    ? `<div class="section"><div class="section-title">🤖 AI Design Draft</div><div class="draft-wrap">${data.draftHtml}</div></div>`
+    : '';
+
+  return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>${ticketKey} Design Package</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #111; margin: 0; padding: 32px; max-width: 900px; margin: 0 auto; }
+  .header { border-bottom: 3px solid #f96400; padding-bottom: 16px; margin-bottom: 24px; }
+  .ticket-num { font-size: 13px; font-weight: 700; color: #f96400; text-transform: uppercase; letter-spacing: .5px; }
+  .ticket-title { font-size: 24px; font-weight: 800; color: #111; margin-top: 4px; }
+  .section { margin-bottom: 28px; }
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #6b7280; margin-bottom: 10px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; }
+  .details-text { font-size: 14px; color: #374151; line-height: 1.6; }
+  .checklist { margin: 0; padding-left: 0; list-style: none; }
+  .checklist li { font-size: 13px; padding: 6px 10px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+  .checklist li::before { content: '☐'; color: #9ca3af; }
+  .snapshot { max-width: 100%; border: 1px solid #e5e7eb; border-radius: 8px; }
+  .draft-wrap { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+  .draft-wrap iframe { display: none; }
+  @media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="ticket-num">${esc(ticketKey)}</div>
+    <div class="ticket-title">${esc(summary)}</div>
+  </div>
+  ${data.details ? `<div class="section"><div class="section-title">📋 Task Details</div><div class="details-text">${esc(data.details)}</div></div>` : ''}
+  <div class="section"><div class="section-title">✅ Quality Checklist</div><ul class="checklist">${checklist}</ul></div>
+  ${screenshotSection}
+  ${draftSection}
+</body>
+</html>`;
+}
+
+async function downloadPackageAsImage(ticketKey, summary, data) {
+  // Build a canvas-based image using an offscreen div
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;left:-9999px;top:0;width:900px;background:#fff;padding:32px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;box-sizing:border-box;';
+
+  const checklist = (data.checklist || []).map(item =>
+    `<div style="font-size:13px;padding:6px 10px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;margin-bottom:5px">☐ ${esc(item)}</div>`
+  ).join('');
+
+  container.innerHTML = `
+    <div style="border-bottom:3px solid #f96400;padding-bottom:16px;margin-bottom:24px">
+      <div style="font-size:12px;font-weight:700;color:#f96400;text-transform:uppercase;letter-spacing:.5px">${esc(ticketKey)}</div>
+      <div style="font-size:22px;font-weight:800;color:#111;margin-top:4px">${esc(summary)}</div>
+    </div>
+    ${data.details ? `<div style="margin-bottom:22px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6b7280;margin-bottom:8px;border-bottom:1px solid #e5e7eb;padding-bottom:5px">📋 Task Details</div><div style="font-size:14px;color:#374151;line-height:1.6">${esc(data.details)}</div></div>` : ''}
+    <div style="margin-bottom:22px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6b7280;margin-bottom:8px;border-bottom:1px solid #e5e7eb;padding-bottom:5px">✅ Quality Checklist</div>
+      ${checklist}
+    </div>
+    ${data.screenshotB64 ? `<div style="margin-bottom:22px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6b7280;margin-bottom:8px;border-bottom:1px solid #e5e7eb;padding-bottom:5px">📸 Original Screenshot</div><img src="${data.screenshotB64}" style="max-width:100%;border:1px solid #e5e7eb;border-radius:8px"/></div>` : ''}
+  `;
+
+  document.body.appendChild(container);
+
+  // Use html2canvas if available, otherwise fallback to HTML download
+  if (typeof html2canvas !== 'undefined') {
+    const canvas = await html2canvas(container, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+    document.body.removeChild(container);
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = ticketKey.replace('/', '-') + '-design-package.png';
+    a.click();
+    showToast('📦 Design package downloaded!', 3000);
+  } else {
+    document.body.removeChild(container);
+    // Fallback: HTML download
+    const html = buildPackageHtml(ticketKey, summary, data);
+    const blob = new Blob([html], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = ticketKey.replace('/', '-') + '-design-package.html';
+    a.click();
+    showToast('📦 Design package downloaded (HTML — open in browser to print as PDF)', 4000);
+  }
+}
+
+// ── Step 3: AI Review Modal ──────────────────────────────────────────
+function openFigmaReviewModal(ticketKey) {
+  const t = allTickets[ticketKey];
+  if (!t) return;
+  _figmaCurrentKey = ticketKey;
+
+  const data = getFigmaData()[ticketKey] || {};
+  const checklist = t.figma_checklist || data.checklist || [];
+
+  document.getElementById('frev-modal-title').textContent = ticketKey + ' — AI Review';
+  document.getElementById('frev-modal-subtitle').textContent = t.summary || '';
+
+  // Reset state
+  document.getElementById('frev-form').style.display = '';
+  document.getElementById('frev-results').style.display = 'none';
+  document.getElementById('frev-loading').classList.remove('show');
+  document.getElementById('frev-footer').style.display = '';
+  document.getElementById('frev-submit-btn').disabled = true;
+  document.getElementById('frev-screenshot').value = '';
+  document.getElementById('frev-upload-preview').classList.remove('show');
+  document.getElementById('frev-upload-zone').classList.remove('has-file');
+  document.getElementById('frev-all-passed').classList.remove('show');
+  document.getElementById('frev-results-list').innerHTML = '';
+
+  // Show checklist summary
+  if (checklist.length) {
+    document.getElementById('frev-checklist-summary').style.display = '';
+    document.getElementById('frev-checklist-list').innerHTML = checklist.map(item => `• ${esc(item)}`).join('<br>');
+  } else {
+    document.getElementById('frev-checklist-summary').style.display = 'none';
+  }
+
+  document.getElementById('figma-review-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeFigmaReviewModal() {
+  document.getElementById('figma-review-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function onFRevScreenshotChange() {
+  const file = document.getElementById('frev-screenshot').files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('frev-preview-img').src = e.target.result;
+    document.getElementById('frev-file-name').textContent = '✓ ' + file.name;
+    document.getElementById('frev-upload-preview').classList.add('show');
+    document.getElementById('frev-upload-zone').classList.add('has-file');
+    document.getElementById('frev-submit-btn').disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitAIReview() {
+  const key = _figmaCurrentKey;
+  const t = allTickets[key];
+  if (!t) return;
+
+  const apiKey = getOpenAIKey();
+  if (!apiKey) {
+    showToast('⚠️ OpenAI API key not set — configure it in Figma Request', 4000);
+    return;
+  }
+
+  const file = document.getElementById('frev-screenshot').files[0];
+  if (!file) { showToast('⚠️ Please upload a design screenshot', 3000); return; }
+
+  const data = getFigmaData()[key] || {};
+  const checklist = t.figma_checklist || data.checklist || [];
+  if (!checklist.length) { showToast('⚠️ No checklist found for this ticket', 3000); return; }
+
+  // Read file as base64
+  const screenshotB64 = await new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('frev-form').style.display = 'none';
+  document.getElementById('frev-footer').style.display = 'none';
+  document.getElementById('frev-loading').classList.add('show');
+
+  try {
+    const results = await callOpenAIForReview(apiKey, screenshotB64, checklist);
+
+    document.getElementById('frev-loading').classList.remove('show');
+    document.getElementById('frev-results').style.display = '';
+
+    const allPassed = results.every(r => r.passed);
+    const resultsList = document.getElementById('frev-results-list');
+    resultsList.innerHTML = results.map(r => `
+      <div class="fm-result-item ${r.passed ? 'pass' : 'fail'}">
+        <div class="fm-result-icon">${r.passed ? '✅' : '❌'}</div>
+        <div class="fm-result-text">
+          <div class="fm-result-item-label">${esc(r.item)}</div>
+          <div class="fm-result-item-reason">${esc(r.reason)}</div>
+        </div>
+      </div>
+    `).join('');
+
+    if (allPassed) {
+      document.getElementById('frev-all-passed').classList.add('show');
+      // Mark ticket as AI approved
+      allTickets[key].ai_approved = true;
+      saveOverride(key, { ai_approved: true });
+      render();
+      showToast('🎉 All checks passed! Ticket marked as AI Approved.', 4000);
+    } else {
+      const failed = results.filter(r => !r.passed).length;
+      showToast(`❌ ${failed} check${failed !== 1 ? 's' : ''} failed — fix and re-submit`, 4000);
+    }
+
+    // Show re-submit footer
+    document.getElementById('frev-footer').style.display = '';
+    document.getElementById('frev-footer').innerHTML = `
+      <button class="fm-btn fm-btn-secondary" onclick="closeFigmaReviewModal()">Close</button>
+      ${!allPassed ? `<button class="fm-btn fm-btn-orange" onclick="resetFigmaReview('${key}')">↺ Re-submit</button>` : ''}
+    `;
+  } catch (err) {
+    document.getElementById('frev-loading').classList.remove('show');
+    document.getElementById('frev-form').style.display = '';
+    document.getElementById('frev-footer').style.display = '';
+    document.getElementById('frev-submit-btn').disabled = false;
+    showToast('❌ Error: ' + err.message, 5000);
+    console.error(err);
+  }
+}
+
+function resetFigmaReview(ticketKey) {
+  closeFigmaReviewModal();
+  setTimeout(() => openFigmaReviewModal(ticketKey), 200);
+}
+
+async function callOpenAIForReview(apiKey, screenshotB64, checklist) {
+  const checklistText = checklist.map((item, i) => `${i + 1}. ${item}`).join('\n');
+  const messages = [
+    {
+      role: 'system',
+      content: `You are a UI design quality reviewer. Given a design screenshot and a checklist, evaluate each item.
+Output a JSON array of objects: { "item": string, "passed": boolean, "reason": string }
+- "item": exact checklist item text
+- "passed": true if it clearly passes, false if it fails or cannot be verified
+- "reason": one sentence explanation
+Output ONLY valid JSON array, no markdown.`
+    },
+    {
+      role: 'user',
+      content: [
+        { type: 'text', text: `Checklist:\n${checklistText}\n\nPlease review the attached design screenshot against each item.` },
+        { type: 'image_url', image_url: { url: screenshotB64, detail: 'high' } }
+      ]
+    }
+  ];
+
+  const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'gpt-4o', messages, temperature: 0.3, max_tokens: 2000 })
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err?.error?.message || 'OpenAI API error ' + resp.status);
+  }
+
+  const data = await resp.json();
+  const raw = data.choices?.[0]?.message?.content || '';
+  const cleaned = raw.replace(/^```(?:json)?\n?/i, '').replace(/\n?```$/, '').trim();
+  return JSON.parse(cleaned);
+}
+
+// ── Merge saved figma data into allTickets on load ───────────────────
+function mergeFigmaDataIntoTickets() {
+  const figmaData = getFigmaData();
+  for (const [key, data] of Object.entries(figmaData)) {
+    if (allTickets[key] && data.checklist?.length) {
+      allTickets[key].figma_checklist = allTickets[key].figma_checklist || data.checklist;
+    }
+  }
+}
+
+// ── Close modals on backdrop click / Escape ──────────────────────────
+document.getElementById('figma-req-modal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeFigmaReqModal();
+});
+document.getElementById('figma-draft-modal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeFigmaDraftModal();
+});
+document.getElementById('figma-review-modal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeFigmaReviewModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeFigmaReqModal();
+    closeFigmaDraftModal();
+    closeFigmaReviewModal();
+  }
+});
+
+// ── Load html2canvas dynamically ─────────────────────────────────────
+(function loadHtml2Canvas() {
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+  s.async = true;
+  document.head.appendChild(s);
+})();
+
+// ═══════════════════════════════════════════════════════════════════════
 //  Boot
 // ═══════════════════════════════════════════════════════════════════════
-initIntake().then(() => reload().then(scheduleRefresh));
+initIntake().then(() => reload().then(() => { mergeFigmaDataIntoTickets(); scheduleRefresh(); }));
 </script>
 </body>
 </html>
