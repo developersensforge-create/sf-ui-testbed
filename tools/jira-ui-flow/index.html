@@ -1465,6 +1465,40 @@
   </div>
 </div>
 
+<!-- ── Jira Credential Modal ────────────────────────────────────────────── -->
+<div class="figma-modal-backdrop" id="jira-cred-modal" role="dialog" aria-modal="true">
+  <div class="figma-modal" style="max-width:460px;">
+    <div class="figma-modal-header">
+      <div class="figma-modal-header-text">
+        <div class="figma-modal-eyebrow">🔐 Jira Credentials</div>
+        <div class="figma-modal-title" id="jcred-modal-title">Connect your Jira account</div>
+      </div>
+      <button class="figma-modal-close" onclick="closeJiraCredModal()">✕</button>
+    </div>
+    <div class="figma-modal-body">
+      <p style="font-size:13px;color:#6b7280;margin:0 0 16px;">Enter your credentials once — saved to your browser only. Other users on other machines enter their own.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Jira Site URL</label>
+          <input id="jcred-site" type="url" placeholder="https://yourorg.atlassian.net" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Your Email</label>
+          <input id="jcred-email" type="email" placeholder="you@yourorg.com" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">Jira API Token <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" style="font-weight:400;color:#6b7280;font-size:11px;">(get yours here)</a></label>
+          <input id="jcred-token" type="password" placeholder="ATATT3x..." style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;box-sizing:border-box;" />
+        </div>
+      </div>
+    </div>
+    <div class="figma-modal-footer">
+      <button class="fm-btn fm-btn-secondary" onclick="closeJiraCredModal()">Cancel</button>
+      <button class="fm-btn fm-btn-orange" onclick="saveJiraCredAndContinue()">Save & Continue</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── Toast notification ──────────────────────────────────────────────── -->
 <div class="notif" id="notif">
   <span class="notif-icon" id="notif-icon">✓</span>
@@ -2138,7 +2172,15 @@ function showToast(msg, duration = 3000) {
 // ═══════════════════════════════════════════════════════════════════════
 
 const FIGMA_LS_KEY = 'jira_figma_requests'; // { [ticketKey]: { checklist, details, draftHtml, screenshotB64 } }
-const OPENAI_KEY_LS = 'figma_openai_key';
+const OPENAI_KEY_LS  = 'figma_openai_key';
+const JIRA_CREDS_LS  = 'jira_user_creds'; // { site, email, token }
+
+function getJiraCreds() {
+  try { return JSON.parse(localStorage.getItem(JIRA_CREDS_LS) || 'null'); } catch { return null; }
+}
+function saveJiraCreds(site, email, token) {
+  localStorage.setItem(JIRA_CREDS_LS, JSON.stringify({ site, email, token }));
+}
 
 function getFigmaData() {
   try { return JSON.parse(localStorage.getItem(FIGMA_LS_KEY) || '{}'); } catch { return {}; }
@@ -2779,6 +2821,48 @@ document.addEventListener('keydown', (e) => {
 
 // ═══════════════════════════════════════════════════════════════════════
 //  Boot
+// ═══════════════════════════════════════════════════════════════════════
+// Jira Credential Modal
+// ═══════════════════════════════════════════════════════════════════════
+function openJiraCredModal(onSaveCallback) {
+  const creds = getJiraCreds();
+  if (creds && creds.token) {
+    // Already saved — use directly
+    onSaveCallback(creds);
+    return;
+  }
+  _jiraCredCallback = onSaveCallback;
+  document.getElementById('jcred-site').value  = 'https://sensforge.atlassian.net';
+  document.getElementById('jcred-email').value = '';
+  document.getElementById('jcred-token').value = '';
+  document.getElementById('jira-cred-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeJiraCredModal() {
+  document.getElementById('jira-cred-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  _jiraCredCallback = null;
+}
+function saveJiraCredAndContinue() {
+  const site  = document.getElementById('jcred-site').value.trim().replace(/\/$/, '');
+  const email = document.getElementById('jcred-email').value.trim();
+  const token = document.getElementById('jcred-token').value.trim();
+  if (!site || !email || !token) { showToast('⚠️ All fields required', 3000); return; }
+  saveJiraCreds(site, email, token);
+  closeJiraCredModal();
+  showToast('✅ Jira credentials saved', 2000);
+  if (_jiraCredCallback) _jiraCredCallback({ site, email, token });
+}
+function clearJiraCreds() {
+  localStorage.removeItem(JIRA_CREDS_LS);
+  showToast('🗑️ Jira credentials cleared', 2000);
+}
+let _jiraCredCallback = null;
+
+document.getElementById('jira-cred-modal').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeJiraCredModal();
+});
+
 // ═══════════════════════════════════════════════════════════════════════
 initIntake().then(() => reload().then(() => { mergeFigmaDataIntoTickets(); scheduleRefresh(); }));
 </script>
