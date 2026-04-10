@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SensForge Amazon Ads Dashboard — 5-Day View</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--orange:#f96400;--navy:#1a1a2e;--green:#34c759;--red:#ff3b30;--amber:#ff9500;--blue:#007aff;--bg:#f0f2f5;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:#1a1a2e;font-size:14px}
+.header{background:var(--navy);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:18px;font-weight:800}
+.header .subtitle{font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px}
+
+/* Date filter */
+.date-filter{background:var(--navy);padding:0 24px 14px;display:flex;gap:8px;flex-wrap:wrap}
+.date-btn{padding:6px 14px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.date-btn.active{background:var(--orange);border-color:var(--orange)}
+.date-btn:hover:not(.active){background:rgba(255,255,255,0.1)}
+
+/* Tabs */
+.tab-nav{display:flex;background:var(--card);border-bottom:2px solid #eee;padding:0 24px}
+.tab-btn{padding:12px 20px;font-size:13px;font-weight:600;color:#888;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+.tab-btn.active{color:var(--orange);border-bottom-color:var(--orange)}
+.tab-content{display:none;padding:20px 24px}
+.tab-content.active{display:block}
+
+/* KPI cards */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.kpi-card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.kpi-label{font-size:11px;color:#888;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.kpi-value{font-size:24px;font-weight:900;color:var(--navy)}
+.kpi-trend{font-size:11px;margin-top:4px;font-weight:600}
+.trend-up{color:var(--green)}.trend-down{color:var(--red)}.trend-ok{color:var(--amber)}
+
+/* Charts */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.chart-card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.chart-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.chart-full{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:16px}
+
+/* Tables */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8f9fb;color:#666;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;padding:10px 12px;text-align:left;white-space:nowrap;cursor:pointer}
+th:hover{background:#eef0f3}
+td{padding:9px 12px;border-bottom:1px solid #f0f0f0}
+tr:hover td{background:#fafbfc}
+
+/* ROAS cells */
+.roas-green{background:#e8f8ee;color:#1a7a3f;font-weight:700;border-radius:6px;padding:2px 8px;font-size:12px;white-space:nowrap}
+.roas-amber{background:#fff4e0;color:#9a5c00;font-weight:700;border-radius:6px;padding:2px 8px;font-size:12px;white-space:nowrap}
+.roas-red{background:#ffecec;color:#c0392b;font-weight:700;border-radius:6px;padding:2px 8px;font-size:12px;white-space:nowrap}
+.roas-grey{background:#f0f0f0;color:#aaa;border-radius:6px;padding:2px 8px;font-size:12px;white-space:nowrap}
+
+/* Search terms */
+.st-green td{background:#f4fff8!important}
+.st-red td{background:#fff4f4!important}
+.st-green td:first-child{border-left:3px solid var(--green)}
+.st-red td:first-child{border-left:3px solid var(--red)}
+
+/* Alerts */
+.alerts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.alert{border-radius:10px;padding:12px 16px;font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+.alert-red{background:#ffecec;color:#c0392b;border-left:4px solid var(--red)}
+.alert-green{background:#e8f8ee;color:#1a7a3f;border-left:4px solid var(--green)}
+.alert-amber{background:#fff4e0;color:#9a5c00;border-left:4px solid var(--amber)}
+.alert-blue{background:#e8f4ff;color:#1a5fa8;border-left:4px solid var(--blue)}
+
+/* Sparkline dots */
+.spark{display:flex;gap:4px;align-items:center}
+.spark-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* Sub-tabs */
+.sub-tabs{display:flex;gap:8px;margin-bottom:14px}
+.sub-tab{padding:6px 16px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#666;font-size:12px;font-weight:600;cursor:pointer}
+.sub-tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
+.sub-content{display:none}
+.sub-content.active{display:block}
+
+/* Search filter */
+.search-bar{display:flex;gap:10px;margin-bottom:12px}
+.search-input{flex:1;padding:8px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:13px}
+.search-input:focus{outline:none;border-color:var(--orange)}
+
+@media(max-width:768px){.chart-grid{grid-template-columns:1fr}.kpi-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>🛒 SensForge Amazon Ads Dashboard</h1>
+    <div class="subtitle">Apr 3 · Apr 6 · Apr 7 · Apr 8 · Apr 9 · Goal: 2.0x ROAS</div>
+  </div>
+  <div style="text-align:right;font-size:12px;color:rgba(255,255,255,0.6)">Last updated: Apr 10, 2026</div>
+</div>
+
+<!-- Date filter -->
+<div class="date-filter">
+  <button class="date-btn active" onclick="setDate('all')">📊 All Days</button>
+  <button class="date-btn" onclick="setDate('apr3')">Apr 3</button>
+  <button class="date-btn" onclick="setDate('apr6')">Apr 6</button>
+  <button class="date-btn" onclick="setDate('apr7')">Apr 7</button>
+  <button class="date-btn" onclick="setDate('apr8')">Apr 8</button>
+  <button class="date-btn" onclick="setDate('apr9')">Apr 9</button>
+</div>
+
+<!-- Main tabs -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="setTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="setTab('campaigns')">Campaigns</button>
+  <button class="tab-btn" onclick="setTab('keywords')">Keywords</button>
+  <button class="tab-btn" onclick="setTab('search')">Search Terms</button>
+</div>
+
+<!-- ===== OVERVIEW TAB ===== -->
+<div id="tab-overview" class="tab-content active">
+  <div class="kpi-row" id="kpi-row"></div>
+
+  <div class="chart-full">
+    <div class="chart-title">📈 5-Day ROAS, Orders & Spend Trend</div>
+    <canvas id="chart-trend" height="80"></canvas>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">💰 Spend by Campaign Type (per day)</div>
+      <canvas id="chart-spend" height="180"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🏆 Top Converting Search Terms (Apr 9)</div>
+      <canvas id="chart-terms" height="180"></canvas>
+    </div>
+  </div>
+
+  <div class="alerts">
+    <div class="alert alert-red">🔴 <div><strong>BC22-Keywords-Broad:</strong> 0.33x ROAS on $122 spend Apr 9 — unprofitable all 5 days. Pause or cap at $20/day.</div></div>
+    <div class="alert alert-green">✅ <div><strong>SF-Branded-Sponsor Products-C2:</strong> 33x ROAS Apr 9, budget-limited at $60/day. Raise to $120 to unlock $300+ more daily revenue.</div></div>
+    <div class="alert alert-blue">🚨 <div><strong>baby monitor keyword missing from Apr 6–9</strong> — drove $358 in sales on Apr 3 (9 orders, 2.02x ROAS). Re-add to C2-Recommended-Mix at bid $1.00.</div></div>
+    <div class="alert alert-amber">⚠️ <div><strong>wifi camera:</strong> Same $1.20 bid but impressions dropped 95% (2,617 Apr 3 → 131 Apr 9). Competition raised auction floor. Raise bid to $1.80.</div></div>
+  </div>
+</div>
+
+<!-- ===== CAMPAIGNS TAB ===== -->
+<div id="tab-campaigns" class="tab-content">
+  <div class="table-wrap">
+    <table id="campaigns-table">
+      <thead>
+        <tr>
+          <th onclick="sortTable('campaigns-table',0)">Campaign ↕</th>
+          <th onclick="sortTable('campaigns-table',1)">Apr 3</th>
+          <th onclick="sortTable('campaigns-table',2)">Apr 6</th>
+          <th onclick="sortTable('campaigns-table',3)">Apr 7</th>
+          <th onclick="sortTable('campaigns-table',4)">Apr 8</th>
+          <th onclick="sortTable('campaigns-table',5)">Apr 9</th>
+          <th onclick="sortTable('campaigns-table',6)">Avg ROAS ↕</th>
+          <th>Trend</th>
+        </tr>
+      </thead>
+      <tbody id="campaigns-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== KEYWORDS TAB ===== -->
+<div id="tab-keywords" class="tab-content">
+  <div class="chart-full">
+    <div class="chart-title">📈 Keyword ROAS — 5-Day Trend (Top Keywords)</div>
+    <canvas id="chart-kw" height="90"></canvas>
+  </div>
+  <div class="table-wrap">
+    <table id="kw-table">
+      <thead>
+        <tr>
+          <th>Keyword</th>
+          <th>Apr 3</th>
+          <th>Apr 6</th>
+          <th>Apr 7</th>
+          <th>Apr 8</th>
+          <th>Apr 9</th>
+          <th>5-Day Trend</th>
+          <th onclick="sortTable('kw-table',7)">Profitable ↕</th>
+          <th>Recommendation</th>
+        </tr>
+      </thead>
+      <tbody id="kw-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== SEARCH TERMS TAB ===== -->
+<div id="tab-search" class="tab-content">
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="setSub('apr9')">Apr 9 Data</button>
+    <button class="sub-tab" onclick="setSub('apr3')">Apr 3 Data</button>
+  </div>
+  <div class="search-bar">
+    <input type="text" class="search-input" id="st-search" placeholder="Filter search terms..." oninput="filterST()"/>
+    <select id="st-filter" style="padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px" onchange="filterST()">
+      <option value="all">All</option>
+      <option value="converting">Converting only</option>
+      <option value="waste">Wasted spend only</option>
+    </select>
+  </div>
+  <div id="sub-apr9" class="sub-content active">
+    <div class="table-wrap"><table id="st9-table">
+      <thead><tr><th onclick="sortTable('st9-table',0)">Search Term ↕</th><th>Keyword Triggered</th><th onclick="sortTable('st9-table',2)">Spend ↕</th><th onclick="sortTable('st9-table',3)">Clicks ↕</th><th onclick="sortTable('st9-table',4)">Orders ↕</th><th onclick="sortTable('st9-table',5)">Sales ↕</th><th onclick="sortTable('st9-table',6)">ROAS ↕</th></tr></thead>
+      <tbody id="st9-body"></tbody>
+    </table></div>
+  </div>
+  <div id="sub-apr3" class="sub-content">
+    <div class="table-wrap"><table id="st3-table">
+      <thead><tr><th onclick="sortTable('st3-table',0)">Search Term ↕</th><th>Keyword Triggered</th><th onclick="sortTable('st3-table',2)">Spend ↕</th><th onclick="sortTable('st3-table',3)">Clicks ↕</th><th onclick="sortTable('st3-table',4)">Orders ↕</th><th onclick="sortTable('st3-table',5)">Sales ↕</th><th onclick="sortTable('st3-table',6)">ROAS ↕</th></tr></thead>
+      <tbody id="st3-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const dailyData = {
+  apr3: {spend:1595, orders:83, sales:3488, roas:2.19},
+  apr6: {spend:1282, orders:53, sales:2327, roas:1.81},
+  apr7: {spend:1171, orders:40, sales:1827, roas:1.56},
+  apr8: {spend:974,  orders:26, sales:1241, roas:1.27},
+  apr9: {spend:1120, orders:47, sales:2231, roas:1.99},
+};
+const allData = {
+  spend: 1595+1282+1171+974+1120,
+  orders: 83+53+40+26+47,
+  sales: 3488+2327+1827+1241+2231,
+  roas: ((3488+2327+1827+1241+2231)/(1595+1282+1171+974+1120)),
+};
+
+const campaigns = [
+  {name:"SF | C2 KW Mix",          apr3:{s:1138,o:53,r:1.89}, apr6:{s:816,o:33,r:1.88}, apr7:{s:783,o:22,r:1.28}, apr8:{s:625,o:16,r:1.15}, apr9:{s:738,o:27,r:1.60}},
+  {name:"SF-BC22-Keywords-Broad",  apr3:{s:171,o:7,r:1.62},  apr6:{s:92,o:1,r:0.44},   apr7:null,                apr8:{s:122,o:1,r:0.33},  apr9:{s:122,o:1,r:0.33}},
+  {name:"SF-Branded-C2",           apr3:{s:18,o:8,r:17.6},   apr6:{s:9,o:3,r:12.5},    apr7:{s:5,o:5,r:56.8},   apr8:{s:10,o:4,r:32.98},  apr9:{s:10,o:4,r:32.98}},
+  {name:"SP B0F22F8CZP Auto",      apr3:{s:81,o:3,r:1.74},   apr6:{s:205,o:13,r:2.62}, apr7:{s:129,o:6,r:1.94}, apr8:{s:65,o:0,r:0},      apr9:{s:28,o:3,r:5.15}},
+  {name:"SF-C2 Product Target",    apr3:{s:30,o:4,r:5.91},   apr6:{s:21,o:1,r:1.68},   apr7:{s:17,o:1,r:2.17},  apr8:{s:15,o:2,r:4.80},   apr9:{s:27,o:2,r:2.66}},
+  {name:"SBV Broad 06",            apr3:{s:60,o:2,r:1.20},   apr6:{s:50,o:1,r:0.72},   apr7:{s:37,o:0,r:0},     apr8:{s:39,o:1,r:0.91},   apr9:{s:51,o:4,r:2.80}},
+  {name:"SF-BC22-Category Target", apr3:{s:10,o:2,r:11.27},  apr6:{s:21,o:1,r:2.85},   apr7:null,               apr8:{s:32,o:0,r:0},      apr9:{s:32,o:0,r:0}},
+  {name:"SF-Brand Generic KW",     apr3:null,                 apr6:{s:13,o:0,r:0},       apr7:{s:16,o:1,r:3.02},  apr8:{s:23,o:1,r:3.02},   apr9:{s:26,o:3,r:5.41}},
+];
+
+const keywords = [
+  {kw:"indoor camera",          apr3:1.73, apr6:2.27, apr7:1.51, apr8:1.40, apr9:1.56, rec:"✅ KEEP — scale", prof:5},
+  {kw:"home security",          apr3:1.91, apr6:1.44, apr7:0.66, apr8:null, apr9:0.89, rec:"⬇️ Reduce bid $2.20→$1.80", prof:2},
+  {kw:"baby monitor",           apr3:2.02, apr6:null, apr7:null, apr8:null, apr9:null, rec:"🚨 RESTORE to ad group", prof:1},
+  {kw:"home camera",            apr3:1.77, apr6:2.71, apr7:0,    apr8:0.68, apr9:0,    rec:"⬇️ Reduce bid $2.00→$1.40", prof:2},
+  {kw:"wifi camera",            apr3:2.97, apr6:0,    apr7:0,    apr8:0,    apr9:0,    rec:"⬆️ Raise bid $1.20→$1.80", prof:1},
+  {kw:"security cameras",       apr3:1.67, apr6:null, apr7:null, apr8:null, apr9:null, rec:"🚨 RESTORE to ad group", prof:1},
+  {kw:"indoor home camera",     apr3:1.05, apr6:5.62, apr7:1.49, apr8:0,    apr9:0,    rec:"⬇️ Reduce bid", prof:2},
+  {kw:"camera for pets",        apr3:2.03, apr6:null, apr7:null, apr8:null, apr9:null, rec:"📊 Monitor", prof:1},
+  {kw:"pan tilt camera",        apr3:0,    apr6:0,    apr7:0,    apr8:0,    apr9:0,    rec:"❌ PAUSE — 0 orders all days", prof:0},
+  {kw:"camera with mic (home)", apr3:null, apr6:null, apr7:null, apr8:0,    apr9:0,    rec:"❌ PAUSE — 0 orders, $31 waste", prof:0},
+  {kw:"motion detect. indoor",  apr3:0,    apr6:null, apr7:null, apr8:1.17, apr9:1.17, rec:"⬇️ Reduce bid $2.00→$1.20", prof:0},
+];
+
+const apr9ST = [{"term": "tapo indoor camera", "keyword": "indoor camera", "spend": 4.99, "clicks": 2, "orders": 1, "sales": 71.98, "roas": 14.42}, {"term": "senseforge camera", "keyword": "senseforge", "spend": 1.25, "clicks": 1, "orders": 1, "sales": 71.98, "roas": 57.58}, {"term": "camera for home security no subscription", "keyword": "home security", "spend": 2.64, "clicks": 1, "orders": 1, "sales": 69.99, "roas": 26.51}, {"term": "in door camera with sd card", "keyword": "camera with sd card", "spend": 6.14, "clicks": 2, "orders": 1, "sales": 69.99, "roas": 11.4}, {"term": "indoor camera sd card storage", "keyword": "camera with sd card", "spend": 3.19, "clicks": 1, "orders": 1, "sales": 69.99, "roas": 21.94}, {"term": "camera for room", "keyword": "camera for rooms", "spend": 2.4, "clicks": 1, "orders": 1, "sales": 69.99, "roas": 29.16}, {"term": "indoor camera local storage", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 11.54}, {"term": "indoor camera w free storage", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 11.54}, {"term": "indoor outdoor security cameras", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 11.54}, {"term": "motion detection indoor camera for house", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 11.54}, {"term": "motion sensor video camera indoor", "keyword": "indoor camera", "spend": 2.96, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 12.16}, {"term": "indoor camera motion tracking", "keyword": "indoor camera", "spend": 2.86, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 12.58}, {"term": "surveillance camera for bedroom", "keyword": "indoor camera", "spend": 2.83, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 12.72}, {"term": "pet cameras with motion detection alerts", "keyword": "pet camera with motion detection", "spend": 2.77, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 12.99}, {"term": "indoor security camera 24 hour recording", "keyword": "indoor camera", "spend": 2.66, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 13.53}, {"term": "indoor plug in camera no subscription", "keyword": "indoor camera", "spend": 2.59, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 13.9}, {"term": "camaras de seguridad para casa inalambricas", "keyword": "c\u00e1maras de seguridad para casa", "spend": 2.53, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 14.23}, {"term": "home security camera system", "keyword": "home security", "spend": 2.42, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 14.87}, {"term": "\u76d1\u63a7\u6444\u5934\u542bsd\u5361", "keyword": "motion detection camera indoor", "spend": 2.2, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 16.36}, {"term": "cctv camera professional", "keyword": "indoor camera", "spend": 2.08, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 17.3}, {"term": "recording camera", "keyword": "camera", "spend": 4.0, "clicks": 3, "orders": 1, "sales": 35.99, "roas": 9.0}, {"term": "surveillance camera with sd card", "keyword": "camera with sd card", "spend": 3.42, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 10.52}, {"term": "room cameras", "keyword": "room camera", "spend": 2.4, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 15.0}, {"term": "camera you dont have to subscribe to use", "keyword": "camera", "spend": 1.56, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 23.07}, {"term": "cameras for apartment safety", "keyword": "camera", "spend": 1.56, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 23.07}, {"term": "cameras for home security", "keyword": "home security", "spend": 43.36, "clicks": 17, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor camera", "keyword": "indoor camera", "spend": 22.92, "clicks": 8, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "camera for room", "keyword": "indoor camera", "spend": 12.18, "clicks": 4, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "pet camera", "keyword": "pet camera for house", "spend": 6.2, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "security camera indoor", "keyword": "indoor camera", "spend": 5.98, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor home camera", "keyword": "indoor camera", "spend": 5.75, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "home cameras indoor", "keyword": "indoor camera", "spend": 5.72, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor security camera", "keyword": "indoor camera", "spend": 5.72, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "reolink indoor camera", "keyword": "indoor camera", "spend": 5.72, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "security cameras", "keyword": "home security", "spend": 5.5, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "security home cameras", "keyword": "home security", "spend": 5.5, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "small indoor security camera", "keyword": "indoor camera", "spend": 5.37, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "plug in cameras for home security", "keyword": "home security", "spend": 5.13, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "touchless security camera", "keyword": "motion detection camera indoor", "spend": 4.49, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "pet camera indoor with phone app", "keyword": "pet camera with recording ability", "spend": 3.24, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "pet camera", "keyword": "wifi pet camera with phone app", "spend": 3.19, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor camera compatible with iphone", "keyword": "cameras indoors compatible with iphone", "spend": 3.16, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "best indoor camera no subscription", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "best wifi camera indoor", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "camera for bedroom connect to iphone", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "camera for inside", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "camera for inside house", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "camera for inside my house", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "camera para casa", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "cameras for home security indoor 360 with memory card", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "cameras for inside the house", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "in home camera", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor camera for elderly with alert", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor camera for pets", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor camera for pets with voice", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor camera with audio", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor camera with wifi remote access", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor cameras for home", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor house cameras stand without drilling wall", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor pet security cameras", "keyword": "indoor camera", "spend": 3.12, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}];
+const apr3ST = [{"term": "cameras for home security", "keyword": "home security", "spend": 103.05, "clicks": 29, "orders": 6, "sales": 215.94, "roas": 2.1}, {"term": "indoor camera", "keyword": "indoor camera", "spend": 75.33, "clicks": 15, "orders": 5, "sales": 179.95, "roas": 2.39}, {"term": "baby monitor", "keyword": "baby monitor", "spend": 91.19, "clicks": 24, "orders": 4, "sales": 177.96, "roas": 1.95}, {"term": "3 bluetooth security cameras", "keyword": "security cameras", "spend": 4.42, "clicks": 1, "orders": 1, "sales": 107.97, "roas": 24.43}, {"term": "indoor camera", "keyword": "indoor camera with sound detection", "spend": 10.15, "clicks": 2, "orders": 2, "sales": 75.98, "roas": 7.49}, {"term": "pet indoor camera no subscription", "keyword": "pet camera indoor no subscription", "spend": 10.67, "clicks": 2, "orders": 1, "sales": 71.98, "roas": 6.75}, {"term": "in home camera", "keyword": "indoor camera", "spend": 3.69, "clicks": 1, "orders": 1, "sales": 69.99, "roas": 18.97}, {"term": "wifi baby camera", "keyword": "wifi camera", "spend": 3.65, "clicks": 1, "orders": 1, "sales": 69.99, "roas": 19.18}, {"term": "the best indoor camera", "keyword": "indoor camera", "spend": 2.91, "clicks": 1, "orders": 1, "sales": 69.99, "roas": 24.05}, {"term": "outdoor security camera", "keyword": "outdoor security camera wireless connect", "spend": 11.83, "clicks": 4, "orders": 1, "sales": 39.99, "roas": 3.38}, {"term": "live view outdoor camera wireless", "keyword": "wireless camera for outdoor", "spend": 2.5, "clicks": 1, "orders": 1, "sales": 39.99, "roas": 16.0}, {"term": "battery operated wireless indoor home security cameras", "keyword": "wireless security camera", "spend": 2.39, "clicks": 1, "orders": 1, "sales": 39.99, "roas": 16.73}, {"term": "wireless home security cameras", "keyword": "wireless security camera", "spend": 2.39, "clicks": 1, "orders": 1, "sales": 39.99, "roas": 16.73}, {"term": "security cameras wireless", "keyword": "wireless security camera", "spend": 2.22, "clicks": 1, "orders": 1, "sales": 39.99, "roas": 18.01}, {"term": "waterproof outdoor kennel camera battery powered", "keyword": "outdoor camera", "spend": 1.62, "clicks": 1, "orders": 1, "sales": 39.99, "roas": 24.69}, {"term": "wifi camera indoor", "keyword": "indoor camera", "spend": 6.72, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 5.36}, {"term": "motion sensor indoor camera", "keyword": "motion sensor indoor camera", "spend": 6.2, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 5.8}, {"term": "indoor security camera with two way audio", "keyword": "indoor camera", "spend": 5.73, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 6.28}, {"term": "pet camera indoor with phone app", "keyword": "camera for pets", "spend": 5.6, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 6.43}, {"term": "pet camera indoor with phone app 2 way audio", "keyword": "indoor camera", "spend": 5.55, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 6.48}, {"term": "no subscription pet camera", "keyword": "camera for pets", "spend": 5.51, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 6.53}, {"term": "wifi baby monitor", "keyword": "baby monitor", "spend": 5.46, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 6.59}, {"term": "pet camera indoor with phone app no subscription", "keyword": "indoor camera", "spend": 4.76, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 7.56}, {"term": "pet monitoring camera with phone app", "keyword": "camera for pets", "spend": 4.67, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 7.71}, {"term": "baby monitor connects to phone", "keyword": "baby monitor", "spend": 4.64, "clicks": 2, "orders": 1, "sales": 35.99, "roas": 7.76}, {"term": "camera that connects to any wifi", "keyword": "wifi camera", "spend": 4.55, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 7.91}, {"term": "indoor camera without subscription", "keyword": "indoor camera", "spend": 4.4, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 8.18}, {"term": "indoor cameras for home", "keyword": "indoor camera", "spend": 4.22, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 8.53}, {"term": "home cameras indoor", "keyword": "indoor camera for apartments", "spend": 4.06, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 8.86}, {"term": "outside cameras for home security cordless", "keyword": "home security", "spend": 3.86, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 9.32}, {"term": "video baby monitor with app", "keyword": "baby monitor", "spend": 3.6, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 10.0}, {"term": "camera for home security", "keyword": "home security", "spend": 3.57, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 10.08}, {"term": "indoor wifi camera", "keyword": "indoor camera", "spend": 3.32, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 10.84}, {"term": "indoor wifi camera 360", "keyword": "indoor camera", "spend": 3.32, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 10.84}, {"term": "bluetooth camera home", "keyword": "home camera", "spend": 3.29, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 10.94}, {"term": "home camera footage", "keyword": "home camera", "spend": 2.97, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 12.12}, {"term": "baby monitor recording", "keyword": "baby monitor", "spend": 2.95, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 12.2}, {"term": "home cameras indoor", "keyword": "indoor home camera", "spend": 2.8, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 12.85}, {"term": "camera security", "keyword": "security cameras", "spend": 2.76, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 13.04}, {"term": "camera for home on battery", "keyword": "home camera", "spend": 2.63, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 13.68}, {"term": "security cameras plug in with sd card", "keyword": "sd security camera", "spend": 2.35, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 15.31}, {"term": "inside security camera with microphone battery operated", "keyword": "security cameras", "spend": 2.25, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 16.0}, {"term": "long distance baby monitor", "keyword": "baby monitor", "spend": 2.07, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 17.39}, {"term": "self panning bedroom security camera", "keyword": "security cameras", "spend": 2.03, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 17.73}, {"term": "senseforge indoor security camera", "keyword": "indoor camera", "spend": 1.35, "clicks": 2, "orders": 1, "sales": 35.99, "roas": 26.66}, {"term": "senforge 2.5k indoor pan-tilt dome security camera", "keyword": "pan tilt security camera", "spend": 0.45, "clicks": 1, "orders": 1, "sales": 35.99, "roas": 79.98}, {"term": "sd card home security cameras", "keyword": "security camera", "spend": 3.1, "clicks": 2, "orders": 1, "sales": 35.99, "roas": 11.61}, {"term": "pet camera", "keyword": "camera for pets", "spend": 12.53, "clicks": 3, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "security camera indoor", "keyword": "indoor camera", "spend": 12.41, "clicks": 3, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "room camera for bedroom", "keyword": "room camera bedroom", "spend": 11.92, "clicks": 3, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "baby monitor with app", "keyword": "baby monitor", "spend": 11.64, "clicks": 4, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "best indoor camera for elderly", "keyword": "indoor camera", "spend": 11.43, "clicks": 3, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "pet camera indoor with phone app", "keyword": "indoor camera", "spend": 10.58, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "security camera", "keyword": "security cameras", "spend": 10.21, "clicks": 3, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "home security camera system", "keyword": "home security", "spend": 9.85, "clicks": 3, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "wifi camera", "keyword": "wifi camera", "spend": 9.58, "clicks": 3, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "indoor camera for elderly", "keyword": "indoor camera", "spend": 8.98, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "home camera", "keyword": "home camera", "spend": 8.68, "clicks": 3, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "home cameras indoor", "keyword": "indoor camera", "spend": 8.65, "clicks": 2, "orders": 0, "sales": 0.0, "roas": 0.0}, {"term": "pan tilt indoor security cameras", "keyword": "pan tilt security camera", "spend": 8.15, "clicks": 1, "orders": 0, "sales": 0.0, "roas": 0.0}];
+
+// ===== STATE =====
+let currentDate = 'all';
+let currentTab = 'overview';
+let currentSub = 'apr9';
+
+// ===== DATE FILTER =====
+function setDate(d) {
+  currentDate = d;
+  document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderKPIs();
+  renderCampaigns();
+}
+
+// ===== TAB SWITCHING =====
+function setTab(t) {
+  currentTab = t;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+}
+
+function setSub(s) {
+  currentSub = s;
+  document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sub-content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('sub-'+s).classList.add('active');
+}
+
+// ===== KPI CARDS =====
+function roasColor(r) { return r >= 1.8 ? 'trend-up' : r >= 1.2 ? 'trend-ok' : 'trend-down'; }
+
+function renderKPIs() {
+  const days = ['apr3','apr6','apr7','apr8','apr9'];
+  let d, prevD = null;
+  if (currentDate === 'all') {
+    d = allData;
+  } else {
+    d = dailyData[currentDate];
+    const idx = days.indexOf(currentDate);
+    if (idx > 0) prevD = dailyData[days[idx-1]];
+  }
+
+  function trend(val, prev, fmt) {
+    if (!prev) return '';
+    const delta = val - prev;
+    const pct = Math.abs(delta/prev*100).toFixed(1);
+    const up = delta >= 0;
+    return `<div class="kpi-trend ${up?'trend-up':'trend-down'}">${up?'▲':'▼'} ${pct}% vs ${currentDate==='all'?'benchmark':days[days.indexOf(currentDate)-1].replace('apr','Apr ')||'prev'}</div>`;
+  }
+
+  const cards = [
+    {label:'Total Spend', value:'$'+d.spend.toLocaleString(), trend: prevD ? trend(d.spend, prevD.spend) : ''},
+    {label:'Orders', value: d.orders, trend: prevD ? trend(d.orders, prevD.orders) : ''},
+    {label:'Sales', value:'$'+d.sales.toLocaleString(), trend: prevD ? trend(d.sales, prevD.sales) : ''},
+    {label:'ROAS', value:d.roas.toFixed(2)+'x', extra: `<div class="kpi-trend ${roasColor(d.roas)}">Target: 2.0x</div>`},
+    {label: currentDate==='all' ? 'Best Day' : 'Goal Gap', value: currentDate==='all' ? '2.19x (Apr 3)' : (d.roas >= 2.0 ? '✅ On Target' : '🎯 '+(2.0-d.roas).toFixed(2)+'x to go'), extra:''},
+  ];
+
+  document.getElementById('kpi-row').innerHTML = cards.map(c =>
+    `<div class="kpi-card">
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-value">${c.value}</div>
+      ${c.trend||''} ${c.extra||''}
+    </div>`).join('');
+}
+
+// ===== CAMPAIGNS TABLE =====
+function roasCell(r) {
+  if (r === null || r === undefined) return '<td><span class="roas-grey">—</span></td>';
+  const cls = r >= 1.8 ? 'roas-green' : r >= 1.0 ? 'roas-amber' : 'roas-red';
+  return `<td><span class="${cls}">${r.toFixed(2)}x</span></td>`;
+}
+
+function renderCampaigns() {
+  const body = document.getElementById('campaigns-body');
+  const days = ['apr3','apr6','apr7','apr8','apr9'];
+  body.innerHTML = campaigns.map(c => {
+    const vals = days.map(d => c[d] ? c[d].r : null);
+    const validVals = vals.filter(v => v !== null);
+    const avg = validVals.length ? (validVals.reduce((a,b)=>a+b,0)/validVals.length) : 0;
+    const last2 = vals.slice(-2).filter(v=>v!==null);
+    const trendDir = last2.length < 2 ? '—' : last2[1] > last2[0] ? '📈' : last2[1] < last2[0] ? '📉' : '→';
+    
+    // Filter by date
+    if (currentDate !== 'all') {
+      const dayData = c[currentDate];
+      if (!dayData) return `<tr><td>${c.name}</td><td colspan="7" style="color:#ccc">No data for this day</td></tr>`;
+      const cls = dayData.r >= 1.8 ? 'roas-green' : dayData.r >= 1.0 ? 'roas-amber' : 'roas-red';
+      return `<tr><td style="font-weight:600">${c.name}</td><td colspan="4"></td><td><span class="${cls}">${dayData.r.toFixed(2)}x</span></td><td>$${dayData.s}</td><td>${dayData.o} orders</td></tr>`;
+    }
+    
+    return `<tr>
+      <td style="font-weight:600;max-width:200px">${c.name}</td>
+      ${days.map(d => roasCell(c[d] ? c[d].r : null)).join('')}
+      <td><span class="${avg>=1.8?'roas-green':avg>=1.0?'roas-amber':'roas-red'}">${avg.toFixed(2)}x</span></td>
+      <td style="font-size:18px">${trendDir}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== KEYWORD TABLE =====
+function renderKeywords() {
+  const body = document.getElementById('kw-body');
+  body.innerHTML = keywords.map(k => {
+    const days = [k.apr3, k.apr6, k.apr7, k.apr8, k.apr9];
+    const dots = days.map(v => {
+      if (v === null) return '<span class="spark-dot" style="background:#e0e0e0"></span>';
+      if (v >= 1.8) return '<span class="spark-dot" style="background:#34c759"></span>';
+      if (v >= 1.0) return '<span class="spark-dot" style="background:#ff9500"></span>';
+      return '<span class="spark-dot" style="background:#ff3b30"></span>';
+    });
+    function cell(v) {
+      if (v === null) return '<td><span class="roas-grey">—</span></td>';
+      const cls = v >= 1.8 ? 'roas-green' : v >= 1.0 ? 'roas-amber' : 'roas-red';
+      return `<td><span class="${cls}">${v.toFixed(2)}x</span></td>`;
+    }
+    return `<tr>
+      <td style="font-weight:600">${k.kw}</td>
+      ${cell(k.apr3)}${cell(k.apr6)}${cell(k.apr7)}${cell(k.apr8)}${cell(k.apr9)}
+      <td><div class="spark">${dots.join('')}</div></td>
+      <td>${k.prof}/5</td>
+      <td style="font-size:12px">${k.rec}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== SEARCH TERMS =====
+function renderST(data, tbodyId) {
+  const body = document.getElementById(tbodyId);
+  body.innerHTML = data.map(r => {
+    const isConverting = r.orders > 0 && r.roas >= 1.5;
+    const isWaste = r.spend >= 5 && r.orders === 0;
+    const cls = isConverting ? 'st-green' : isWaste ? 'st-red' : '';
+    const roas_cls = r.roas >= 1.8 ? 'roas-green' : r.roas >= 1.0 ? 'roas-amber' : r.orders === 0 ? 'roas-grey' : 'roas-red';
+    return `<tr class="${cls}">
+      <td style="font-weight:500;max-width:200px">${r.term}</td>
+      <td style="color:#888;font-size:12px">${r.keyword}</td>
+      <td>$${r.spend.toFixed(2)}</td>
+      <td>${r.clicks}</td>
+      <td>${r.orders}</td>
+      <td>$${r.sales.toFixed(2)}</td>
+      <td>${r.roas > 0 ? '<span class="'+roas_cls+'">'+r.roas.toFixed(2)+'x</span>' : '<span class="roas-grey">0x</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterST() {
+  const q = document.getElementById('st-search').value.toLowerCase();
+  const filter = document.getElementById('st-filter').value;
+  const data = currentSub === 'apr9' ? apr9ST : apr3ST;
+  const filtered = data.filter(r => {
+    const matchQ = !q || r.term.toLowerCase().includes(q) || r.keyword.toLowerCase().includes(q);
+    const matchF = filter === 'all' || 
+                   (filter === 'converting' && r.orders > 0 && r.roas >= 1.5) ||
+                   (filter === 'waste' && r.spend >= 5 && r.orders === 0);
+    return matchQ && matchF;
+  });
+  const id = currentSub === 'apr9' ? 'st9-body' : 'st3-body';
+  const body = document.getElementById(id);
+  body.innerHTML = filtered.map(r => {
+    const isConverting = r.orders > 0 && r.roas >= 1.5;
+    const isWaste = r.spend >= 5 && r.orders === 0;
+    const cls = isConverting ? 'st-green' : isWaste ? 'st-red' : '';
+    const roas_cls = r.roas >= 1.8 ? 'roas-green' : r.roas >= 1.0 ? 'roas-amber' : r.orders === 0 ? 'roas-grey' : 'roas-red';
+    return `<tr class="${cls}"><td style="font-weight:500;max-width:200px">${r.term}</td><td style="color:#888;font-size:12px">${r.keyword}</td><td>$${r.spend.toFixed(2)}</td><td>${r.clicks}</td><td>${r.orders}</td><td>$${r.sales.toFixed(2)}</td><td>${r.roas>0?'<span class="'+roas_cls+'">'+r.roas.toFixed(2)+'x</span>':'<span class="roas-grey">0x</span>'}</td></tr>`;
+  }).join('');
+}
+
+// ===== SORT =====
+function sortTable(tableId, col) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const asc = table.dataset.sortCol == col && table.dataset.sortDir !== 'asc';
+  table.dataset.sortCol = col;
+  table.dataset.sortDir = asc ? 'asc' : 'desc';
+  rows.sort((a,b) => {
+    const av = a.cells[col]?.textContent.replace(/[^0-9.-]/g,'') || '';
+    const bv = b.cells[col]?.textContent.replace(/[^0-9.-]/g,'') || '';
+    const an = parseFloat(av) || 0, bn = parseFloat(bv) || 0;
+    return asc ? an-bn : bn-an;
+  });
+  rows.forEach(r => tbody.appendChild(r));
+}
+
+// ===== CHARTS =====
+function initCharts() {
+  // Trend chart
+  new Chart(document.getElementById('chart-trend'), {
+    data: {
+      labels: ['Apr 3','Apr 6','Apr 7','Apr 8','Apr 9'],
+      datasets: [
+        {type:'line', label:'ROAS', data:[2.19,1.81,1.56,1.27,1.99], borderColor:'#f96400', backgroundColor:'rgba(249,100,0,0.1)', tension:0.4, yAxisID:'y', pointRadius:6, pointHoverRadius:8, fill:true},
+        {type:'line', label:'Target (2.0x)', data:[2,2,2,2,2], borderColor:'#ccc', borderDash:[5,5], pointRadius:0, yAxisID:'y'},
+        {type:'bar', label:'Orders', data:[83,53,40,26,47], backgroundColor:'rgba(0,122,255,0.15)', borderColor:'#007aff', borderWidth:2, yAxisID:'y2'},
+        {type:'line', label:'Spend ($00s)', data:[15.95,12.82,11.71,9.74,11.20], borderColor:'#34c759', tension:0.4, pointRadius:4, yAxisID:'y2', borderDash:[3,3]},
+      ]
+    },
+    options:{responsive:true, interaction:{mode:'index',intersect:false}, scales:{
+      y:{type:'linear',position:'left',title:{display:true,text:'ROAS'},min:0,max:3,ticks:{callback:v=>v+'x'}},
+      y2:{type:'linear',position:'right',title:{display:true,text:'Orders / Spend(÷100)'},grid:{drawOnChartArea:false}}
+    }, plugins:{legend:{position:'bottom'}}}
+  });
+
+  // Spend by category
+  new Chart(document.getElementById('chart-spend'), {
+    type:'bar',
+    data:{
+      labels:['Apr 3','Apr 6','Apr 7','Apr 8','Apr 9'],
+      datasets:[
+        {label:'C2 KW Mix',data:[1138,815,783,625,738],backgroundColor:'#f96400'},
+        {label:'BC22',data:[171,92,122,154,154],backgroundColor:'#ff3b30'},
+        {label:'Branded',data:[18,9,5,10,10],backgroundColor:'#34c759'},
+        {label:'Auto/Other',data:[268,366,261,185,218],backgroundColor:'#007aff'},
+      ]
+    },
+    options:{responsive:true,scales:{x:{stacked:true},y:{stacked:true,title:{display:true,text:'Spend ($)'}}},plugins:{legend:{position:'bottom'}}}
+  });
+
+  // Top search terms horizontal bar
+  const topTerms = apr9ST.filter(r=>r.orders>0).slice(0,8);
+  new Chart(document.getElementById('chart-terms'), {
+    type:'bar',
+    data:{
+      labels:topTerms.map(r=>r.term.substring(0,30)),
+      datasets:[{label:'Sales ($)',data:topTerms.map(r=>r.sales),backgroundColor:'#34c759'}]
+    },
+    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'Sales ($)'}}}}
+  });
+
+  // Keyword trend chart
+  new Chart(document.getElementById('chart-kw'), {
+    type:'line',
+    data:{
+      labels:['Apr 3','Apr 6','Apr 7','Apr 8','Apr 9'],
+      datasets:[
+        {label:'indoor camera',data:[1.73,2.27,1.51,1.40,1.56],borderColor:'#f96400',tension:0.3,pointRadius:5,spanGaps:true},
+        {label:'home security',data:[1.91,1.44,0.66,null,0.89],borderColor:'#007aff',tension:0.3,pointRadius:5,spanGaps:true},
+        {label:'baby monitor',data:[2.02,null,null,null,null],borderColor:'#34c759',tension:0.3,pointRadius:8,spanGaps:false},
+        {label:'home camera',data:[1.77,2.71,0,0.68,0],borderColor:'#963af6',tension:0.3,pointRadius:5,spanGaps:true},
+        {label:'wifi camera',data:[2.97,0,0,0,0],borderColor:'#ff9500',tension:0.3,pointRadius:5,spanGaps:true},
+        {label:'Target 2.0x',data:[2,2,2,2,2],borderColor:'#ccc',borderDash:[5,5],pointRadius:0},
+      ]
+    },
+    options:{responsive:true,scales:{y:{min:0,max:6.5,title:{display:true,text:'ROAS'},ticks:{callback:v=>v+'x'}}},plugins:{legend:{position:'bottom'}}}
+  });
+}
+
+// ===== INIT =====
+renderKPIs();
+renderCampaigns();
+renderKeywords();
+renderST(apr9ST, 'st9-body');
+renderST(apr3ST, 'st3-body');
+initCharts();
+</script>
+</body>
+</html>
