@@ -2159,6 +2159,7 @@ function saveFigmaOpenAIKey() {
 
 // ── State for current open modal ─────────────────────────────────────
 let _figmaCurrentKey = null;
+let _lastReviewResults = [];
 let _figmaCurrentChecklist = [];
 let _figmaCurrentDraftHtml = '';
 let _figmaCurrentScreenshotB64 = null;
@@ -2621,6 +2622,7 @@ async function submitAIReview() {
     document.getElementById('frev-results').style.display = '';
 
     const allPassed = results.every(r => r.passed);
+    _lastReviewResults = results;
     const resultsList = document.getElementById('frev-results-list');
     resultsList.innerHTML = results.map(r => `
       <div class="fm-result-item ${r.passed ? 'pass' : 'fail'}">
@@ -2649,6 +2651,7 @@ async function submitAIReview() {
     document.getElementById('frev-footer').innerHTML = `
       <button class="fm-btn fm-btn-secondary" onclick="closeFigmaReviewModal()">Close</button>
       ${!allPassed ? `<button class="fm-btn fm-btn-orange" onclick="resetFigmaReview('${key}')">↺ Re-submit</button>` : ''}
+      ${!allPassed ? `<button class="fm-btn" style="background:#f59e0b;color:#fff;border-color:#d97706;" onclick="ignoreFailedItems('${key}')">⚠️ Ignore Failed Items</button>` : ''}
     `;
   } catch (err) {
     document.getElementById('frev-loading').classList.remove('show');
@@ -2663,6 +2666,41 @@ async function submitAIReview() {
 function resetFigmaReview(ticketKey) {
   closeFigmaReviewModal();
   setTimeout(() => openFigmaReviewModal(ticketKey), 200);
+}
+
+function ignoreFailedItems(key) {
+  const t = allTickets[key];
+  if (!t) return;
+
+  const results = _lastReviewResults || [];
+  const failed = results.filter(r => !r.passed);
+  const ignoredSummary = failed.map(r => `• [IGNORED] ${r.item} — ${r.reason}`).join('\n');
+
+  // Mark as AI approved (human force-pass) and log ignored items
+  t.ai_approved = true;
+  t.ignored_items = ignoredSummary;
+  saveOverride(key, { ai_approved: true, ignored_items: ignoredSummary });
+
+  // Update results list — mark failed items as IGNORED
+  const items = document.querySelectorAll('#frev-results-list .fm-result-item.fail');
+  items.forEach(el => {
+    el.classList.remove('fail');
+    el.classList.add('ignored-item');
+    el.style.opacity = '0.7';
+    const icon = el.querySelector('.fm-result-icon');
+    if (icon) icon.textContent = '⚠️';
+  });
+
+  // Update footer
+  document.getElementById('frev-footer').innerHTML = `
+    <div style="font-size:12px;color:#92400e;background:#fef3c7;padding:8px 12px;border-radius:6px;flex:1;text-align:left;">
+      ⚠️ ${failed.length} item${failed.length !== 1 ? 's' : ''} ignored — logged for human review. Ticket moved to AI Approved.
+    </div>
+    <button class="fm-btn fm-btn-secondary" onclick="closeFigmaReviewModal()">Close</button>
+  `;
+
+  render();
+  showToast('⚠️ Ignored items logged — ticket force-approved', 4000);
 }
 
 async function callOpenAIForReview(apiKey, screenshotB64, checklist) {
