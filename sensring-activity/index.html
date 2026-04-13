@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SensRing Activity — SensForge UI Testbed</title>
+<style>
+/* ─── Reset & base ─────────────────────────────────────────── */
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root {
+  --orange:#f96400;
+  --text:#1a1a1a;
+  --gray:#888;
+  --gray2:#bbb;
+  --divider:#ebebeb;
+  --card:#ffffff;
+  --bg:#f4f4f6;
+  --green:#34c759;
+  --purple:#7c5cbf;
+}
+body {
+  background:#e0e0e5;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:32px 20px 60px;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;
+  gap:0;
+}
+
+/* ─── Page header (outside phone) ──────────────────────────── */
+.page-header {
+  width:390px;
+  margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.page-title { font-size:20px; font-weight:800; color:#111; }
+.page-title span { color:var(--orange); }
+.screen-tabs { display:flex; gap:8px; }
+.stab {
+  padding:7px 16px;
+  border-radius:100px;
+  border:1.5px solid #ccc;
+  background:#fff;
+  color:#666;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .18s;
+  letter-spacing:.2px;
+}
+.stab.active { background:var(--orange); border-color:var(--orange); color:#fff; }
+
+/* ─── Phone shell ───────────────────────────────────────────── */
+.phone {
+  width:390px;
+  height:844px;
+  background:var(--bg);
+  border-radius:50px;
+  box-shadow:0 0 0 10px #1a1a1a, 0 0 0 12px #3a3a3a, 0 36px 90px rgba(0,0,0,.55);
+  overflow:hidden;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ─── Screen ────────────────────────────────────────────────── */
+.screen { display:none; flex-direction:column; flex:1; overflow:hidden; }
+.screen.active { display:flex; }
+
+/* ─── Status bar ────────────────────────────────────────────── */
+.status-bar {
+  height:44px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+  flex-shrink:0;
+}
+.sb-time { font-size:15px; font-weight:700; color:#111; }
+.sb-icons { display:flex; align-items:center; gap:5px; }
+
+/* ─── App header ────────────────────────────────────────────── */
+.app-header {
+  background:#fff;
+  padding:8px 16px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-shrink:0;
+  border-bottom:1px solid var(--divider);
+}
+.s-logo {
+  width:36px; height:36px; border-radius:50%;
+  background:var(--orange);
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px; font-weight:900; color:#fff;
+  box-shadow:0 2px 8px rgba(249,100,0,.35);
+}
+.gear-icon { font-size:22px; color:#555; }
+
+/* ─── Device row ─────────────────────────────────────────────── */
+.device-row {
+  background:#fff;
+  padding:8px 16px 12px;
+  flex-shrink:0;
+}
+.device-name {
+  font-size:22px; font-weight:800; color:#111;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.device-sub { font-size:13px; color:var(--gray); margin-top:2px; }
+.device-status {
+  display:flex; gap:14px; margin-top:8px; align-items:center;
+}
+.ds-item {
+  display:flex; align-items:center; gap:5px;
+  font-size:12px; font-weight:600; color:#444;
+}
+.ds-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:var(--green);
+}
+.ds-battery { font-size:13px; }
+
+/* ─── Nav tabs (Insights / Sleep / Activity / Vitals / Stress) ─ */
+.nav-tabs {
+  background:#fff;
+  display:flex;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding:0 12px;
+  border-bottom:1px solid var(--divider);
+  flex-shrink:0;
+  gap:2px;
+}
+.nav-tabs::-webkit-scrollbar { display:none; }
+.nav-tab {
+  padding:11px 12px 9px;
+  font-size:13px; font-weight:600;
+  color:var(--gray);
+  white-space:nowrap;
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  flex-shrink:0;
+  transition:color .15s;
+}
+.nav-tab.active { color:var(--orange); border-bottom-color:var(--orange); }
+
+/* ─── Scroll area ───────────────────────────────────────────── */
+.scroll {
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  background:var(--bg);
+  padding:14px 14px 30px;
+}
+.scroll::-webkit-scrollbar { display:none; }
+
+/* ─── Period pills ──────────────────────────────────────────── */
+.period-pills {
+  display:flex;
+  background:#e5e5ea;
+  border-radius:10px;
+  padding:3px;
+  gap:2px;
+  margin-bottom:14px;
+}
+.ppill {
+  flex:1;
+  padding:7px 0;
+  border-radius:8px;
+  border:none;
+  background:transparent;
+  font-size:13px;
+  font-weight:600;
+  color:var(--gray);
+  cursor:pointer;
+  transition:all .18s;
+  text-align:center;
+}
+.ppill.active {
+  background:var(--orange);
+  color:#fff;
+  box-shadow:0 1px 4px rgba(249,100,0,.4);
+}
+
+/* ─── Date nav ──────────────────────────────────────────────── */
+.date-nav {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:12px;
+  padding:0 2px;
+}
+.date-arrow {
+  width:32px; height:32px; border-radius:50%;
+  background:#fff; border:1px solid var(--divider);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; color:#555; cursor:pointer;
+  box-shadow:0 1px 3px rgba(0,0,0,.07);
+}
+.date-arrow.disabled { opacity:.3; pointer-events:none; }
+.date-center {
+  font-size:15px; font-weight:700; color:#111;
+}
+
+/* ─── Card ──────────────────────────────────────────────────── */
+.card {
+  background:#fff;
+  border-radius:16px;
+  padding:14px 16px;
+  box-shadow:0 1px 6px rgba(0,0,0,.07);
+  margin-bottom:12px;
+}
+
+/* ─── Card header ───────────────────────────────────────────── */
+.card-header {
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.card-title {
+  font-size:14px; font-weight:600; color:#555;
+}
+.card-title strong {
+  font-size:20px; font-weight:800; color:#111;
+  margin:0 3px;
+}
+.card-title .goal { color:var(--gray); font-weight:500; font-size:13px; }
+.card-latest { font-size:11px; color:var(--gray); }
+
+/* ─── Line chart (SVG) ──────────────────────────────────────── */
+.chart-svg-wrap {
+  width:100%;
+  height:120px;
+  position:relative;
+}
+.chart-svg-wrap svg { width:100%; height:100%; overflow:visible; }
+
+/* y-axis labels */
+.y-labels {
+  position:absolute;
+  left:0; top:0; bottom:20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  pointer-events:none;
+}
+.y-label { font-size:9px; color:var(--gray2); }
+
+/* x-axis labels */
+.x-labels-row {
+  display:flex;
+  justify-content:space-between;
+  margin-top:4px;
+  padding:0 0px;
+}
+.x-label { font-size:9px; color:var(--gray2); text-align:center; }
+
+/* ─── Summary card (Week / Month) ───────────────────────────── */
+.summary-label {
+  font-size:11px;
+  font-weight:600;
+  color:var(--gray);
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  margin-bottom:10px;
+}
+.insight-text {
+  font-size:12px;
+  color:#555;
+  line-height:1.55;
+  margin-top:10px;
+}
+
+/* ─── Area chart (Week/Month) ───────────────────────────────── */
+.area-chart-wrap {
+  width:100%;
+  height:110px;
+  position:relative;
+}
+.area-chart-wrap svg { width:100%; height:100%; overflow:visible; }
+
+/* ─── Metrics list ──────────────────────────────────────────── */
+.metrics-list { margin-top:4px; }
+.metric-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:13px 0;
+  border-bottom:1px solid var(--divider);
+}
+.metric-row:last-child { border-bottom:none; }
+.metric-left { display:flex; align-items:center; gap:10px; }
+.metric-icon { font-size:18px; }
+.metric-name { font-size:14px; font-weight:600; color:#333; }
+.metric-right { display:flex; align-items:center; gap:8px; }
+.metric-value { font-size:22px; font-weight:800; color:#111; }
+.metric-unit { font-size:11px; color:var(--gray); font-weight:500; margin-top:2px; }
+.trend-up { font-size:16px; color:var(--orange); }
+.trend-neutral { font-size:16px; color:var(--gray2); }
+
+/* ─── Home indicator ─────────────────────────────────────────── */
+.home-ind {
+  height:34px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.home-bar { width:130px; height:5px; background:#d0d0d5; border-radius:100px; }
+</style>
+</head>
+<body>
+
+<!-- ── Outside-phone screen switcher ─────────────────────────── -->
+<div class="page-header">
+  <div class="page-title">SensRing <span>Activity</span></div>
+  <div class="screen-tabs">
+    <button class="stab active" onclick="switchScreen('day',this)">Day</button>
+    <button class="stab"        onclick="switchScreen('week',this)">Week</button>
+    <button class="stab"        onclick="switchScreen('month',this)">Month</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--                         PHONE                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="phone">
+
+  <!-- ── Shared chrome (status + header + device row + nav tabs) -->
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="sb-time">9:41</span>
+    <div class="sb-icons">
+      <!-- Signal -->
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="#111">
+        <rect x="0"  y="6" width="3" height="6" rx="1"/>
+        <rect x="4.5" y="4" width="3" height="8" rx="1"/>
+        <rect x="9"  y="2" width="3" height="10" rx="1"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1" opacity=".3"/>
+      </svg>
+      <!-- WiFi -->
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="#111">
+        <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+        <path d="M3.5 6.2C5 4.7 6.9 3.8 8 3.8s3 .9 4.5 2.4l1.4-1.4C12 3 10.1 2 8 2S4 3 2.1 4.8z"/>
+        <path d="M1 4C3 2 5.4.8 8 .8s5 1.2 7 3.2L16.4 2.6C14 .3 11.2-1 8-1S2-.3-.4 2.6z" opacity=".3"/>
+      </svg>
+      <!-- Battery -->
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+        <rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="#111" stroke-opacity=".35"/>
+        <rect x="1.5" y="1.5" width="17" height="9" rx="2.5" fill="#111"/>
+        <path d="M23 4v4c1-.5 1.5-1.1 1.5-2S24 4.5 23 4z" fill="#111" opacity=".4"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- App header -->
+  <div class="app-header">
+    <div class="s-logo">S</div>
+    <div class="gear-icon">⚙️</div>
+  </div>
+
+  <!-- Device row -->
+  <div class="device-row">
+    <div class="device-name">
+      SensRing
+      <span class="gear-icon" style="font-size:18px;">⚙️</span>
+    </div>
+    <div class="device-sub">Silver | Size 8</div>
+    <div class="device-status">
+      <div class="ds-item">
+        <span class="ds-battery">🔋</span> 80%
+      </div>
+      <div class="ds-item">
+        <span class="ds-dot"></span> Connected
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav tabs -->
+  <div class="nav-tabs">
+    <div class="nav-tab">Insights</div>
+    <div class="nav-tab">Sleep</div>
+    <div class="nav-tab active">Activity</div>
+    <div class="nav-tab">Vitals</div>
+    <div class="nav-tab">Stress</div>
+  </div>
+
+  <!-- ── DAY SCREEN ──────────────────────────────────────────── -->
+  <div class="screen active" id="screen-day">
+    <div class="scroll">
+
+      <!-- Period pills -->
+      <div class="period-pills">
+        <button class="ppill active">Day</button>
+        <button class="ppill">Week</button>
+        <button class="ppill">Month</button>
+      </div>
+
+      <!-- Date nav -->
+      <div class="date-nav">
+        <div class="date-arrow">‹</div>
+        <div class="date-center">March 13th, 2025</div>
+        <div class="date-arrow">›</div>
+      </div>
+
+      <!-- Steps card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            Steps <strong>2,100</strong>
+            <span class="goal">/ 6,000 steps</span>
+          </div>
+          <div class="card-latest">Latest: 10:24 AM</div>
+        </div>
+        <div class="chart-svg-wrap">
+          <svg id="day-steps-svg" viewBox="0 0 340 90" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="x-labels-row" id="day-steps-xlabels"></div>
+      </div>
+
+      <!-- Calories card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            Calories <strong>243</strong>
+            <span class="goal">/ 300 kcal</span>
+          </div>
+          <div class="card-latest">Latest: 10:24 AM</div>
+        </div>
+        <div class="chart-svg-wrap">
+          <svg id="day-cal-svg" viewBox="0 0 340 90" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="x-labels-row" id="day-cal-xlabels"></div>
+      </div>
+
+    </div>
+  </div><!-- /day -->
+
+  <!-- ── WEEK SCREEN ─────────────────────────────────────────── -->
+  <div class="screen" id="screen-week">
+    <div class="scroll">
+
+      <!-- Period pills -->
+      <div class="period-pills">
+        <button class="ppill">Day</button>
+        <button class="ppill active">Week</button>
+        <button class="ppill">Month</button>
+      </div>
+
+      <!-- Date nav -->
+      <div class="date-nav">
+        <div class="date-arrow">‹</div>
+        <div class="date-center">This Week</div>
+        <div class="date-arrow">›</div>
+      </div>
+
+      <!-- Summary card -->
+      <div class="card">
+        <div class="summary-label">Summary</div>
+        <div class="area-chart-wrap">
+          <svg id="week-area-svg" viewBox="0 0 340 90" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="x-labels-row" id="week-xlabels"></div>
+        <p class="insight-text">You maintained good activity levels this week. Keep adding light movement or short walks to support balanced recovery.</p>
+      </div>
+
+      <!-- Metrics list -->
+      <div class="card">
+        <div class="metrics-list">
+          <div class="metric-row">
+            <div class="metric-left">
+              <span class="metric-icon">🦶</span>
+              <div>
+                <div class="metric-name">Steps</div>
+                <div class="metric-unit">this week</div>
+              </div>
+            </div>
+            <div class="metric-right">
+              <div>
+                <div class="metric-value">7,463</div>
+              </div>
+              <span class="trend-up">↗</span>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-left">
+              <span class="metric-icon">🔥</span>
+              <div>
+                <div class="metric-name">Calories</div>
+                <div class="metric-unit">avg / day</div>
+              </div>
+            </div>
+            <div class="metric-right">
+              <div>
+                <div class="metric-value">782</div>
+              </div>
+              <span class="trend-up">↗</span>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-left">
+              <span class="metric-icon">⏱</span>
+              <div>
+                <div class="metric-name">Exercise Time</div>
+                <div class="metric-unit">avg / day</div>
+              </div>
+            </div>
+            <div class="metric-right">
+              <div>
+                <div class="metric-value">25 <span style="font-size:13px;font-weight:500;color:#888;">min</span></div>
+              </div>
+              <span class="trend-neutral">→</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /week -->
+
+  <!-- ── MONTH SCREEN ────────────────────────────────────────── -->
+  <div class="screen" id="screen-month">
+    <div class="scroll">
+
+      <!-- Period pills -->
+      <div class="period-pills">
+        <button class="ppill">Day</button>
+        <button class="ppill">Week</button>
+        <button class="ppill active">Month</button>
+      </div>
+
+      <!-- Date nav -->
+      <div class="date-nav">
+        <div class="date-arrow">‹</div>
+        <div class="date-center">March 2025</div>
+        <div class="date-arrow">›</div>
+      </div>
+
+      <!-- Summary card -->
+      <div class="card">
+        <div class="summary-label">Summary</div>
+        <div class="area-chart-wrap">
+          <svg id="month-area-svg" viewBox="0 0 340 90" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="x-labels-row" id="month-xlabels"></div>
+        <p class="insight-text">A solid month overall. Your step count trended upward in the final two weeks. Calorie output was consistent — great foundation heading into April.</p>
+      </div>
+
+      <!-- Metrics list -->
+      <div class="card">
+        <div class="metrics-list">
+          <div class="metric-row">
+            <div class="metric-left">
+              <span class="metric-icon">🦶</span>
+              <div>
+                <div class="metric-name">Steps</div>
+                <div class="metric-unit">avg / day</div>
+              </div>
+            </div>
+            <div class="metric-right">
+              <div>
+                <div class="metric-value">3,431</div>
+              </div>
+              <span class="trend-up">↗</span>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-left">
+              <span class="metric-icon">🔥</span>
+              <div>
+                <div class="metric-name">Calories</div>
+                <div class="metric-unit">avg / day</div>
+              </div>
+            </div>
+            <div class="metric-right">
+              <div>
+                <div class="metric-value">2,100</div>
+              </div>
+              <span class="trend-up">↗</span>
+            </div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-left">
+              <span class="metric-icon">⏱</span>
+              <div>
+                <div class="metric-name">Exercise Time</div>
+                <div class="metric-unit">avg / day</div>
+              </div>
+            </div>
+            <div class="metric-right">
+              <div>
+                <div class="metric-value">18 <span style="font-size:13px;font-weight:500;color:#888;">min</span></div>
+              </div>
+              <span class="trend-neutral">→</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /month -->
+
+  <!-- Home indicator -->
+  <div class="home-ind"><div class="home-bar"></div></div>
+</div><!-- /phone -->
+
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   Chart drawing helpers
+═══════════════════════════════════════════════════════════════ */
+
+// Build an SVG polyline/path string from normalized [0-1] y values
+function buildLinePath(vals, W, H, filled) {
+  const n = vals.length;
+  const pts = vals.map((v, i) => {
+    const x = (i / (n - 1)) * W;
+    const y = H - v * H;
+    return [x, y];
+  });
+
+  const lineD = 'M ' + pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' L ');
+
+  if (filled) {
+    const areaD = lineD
+      + ` L ${pts[pts.length-1][0].toFixed(1)},${H} L 0,${H} Z`;
+    return { lineD, areaD, pts };
+  }
+  return { lineD, pts };
+}
+
+// Draw a line chart into an SVG element
+function drawLineChart(svgId, vals, color) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const W = 340, H = 80, padY = 5;
+
+  const max = Math.max(...vals);
+  const norm = vals.map(v => max > 0 ? (v / max) * 0.9 : 0);
+
+  const { lineD, pts } = buildLinePath(norm, W, H, false);
+
+  // Grid lines
+  [0.25, 0.5, 0.75].forEach(t => {
+    const y = H - t * H * 0.9;
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1','0'); line.setAttribute('x2', W);
+    line.setAttribute('y1', y); line.setAttribute('y2', y);
+    line.setAttribute('stroke','#ebebeb'); line.setAttribute('stroke-width','1');
+    svg.appendChild(line);
+  });
+
+  // Line
+  const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d', lineD);
+  path.setAttribute('fill','none');
+  path.setAttribute('stroke', color);
+  path.setAttribute('stroke-width','2.5');
+  path.setAttribute('stroke-linejoin','round');
+  path.setAttribute('stroke-linecap','round');
+  svg.appendChild(path);
+
+  // Dots at peaks
+  const peak = Math.max(...vals);
+  pts.forEach((p, i) => {
+    if (vals[i] === peak) {
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]);
+      c.setAttribute('r','4'); c.setAttribute('fill', color);
+      svg.appendChild(c);
+    }
+  });
+}
+
+// Draw area chart (for week/month summary)
+function drawAreaChart(svgId, xlabelsId, vals, labels, color) {
+  const svg = document.getElementById(svgId);
+  const labelsEl = document.getElementById(xlabelsId);
+  if (!svg) return;
+  const W = 340, H = 80;
+
+  const max = Math.max(...vals);
+  const norm = vals.map(v => max > 0 ? (v / max) * 0.85 : 0);
+  const { lineD, areaD, pts } = buildLinePath(norm, W, H, true);
+
+  // Gradient def
+  const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+  const grad = document.createElementNS('http://www.w3.org/2000/svg','linearGradient');
+  grad.setAttribute('id', svgId + '-grad');
+  grad.setAttribute('x1','0'); grad.setAttribute('y1','0');
+  grad.setAttribute('x2','0'); grad.setAttribute('y2','1');
+  const s1 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+  s1.setAttribute('offset','0%'); s1.setAttribute('stop-color', color); s1.setAttribute('stop-opacity','0.35');
+  const s2 = document.createElementNS('http://www.w3.org/2000/svg','stop');
+  s2.setAttribute('offset','100%'); s2.setAttribute('stop-color', color); s2.setAttribute('stop-opacity','0.02');
+  grad.appendChild(s1); grad.appendChild(s2);
+  defs.appendChild(grad);
+  svg.appendChild(defs);
+
+  // Grid lines
+  [0.33, 0.66].forEach(t => {
+    const y = H - t * H * 0.85;
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1','0'); line.setAttribute('x2', W);
+    line.setAttribute('y1', y); line.setAttribute('y2', y);
+    line.setAttribute('stroke','#ebebeb'); line.setAttribute('stroke-width','1');
+    svg.appendChild(line);
+  });
+
+  // Area fill
+  const area = document.createElementNS('http://www.w3.org/2000/svg','path');
+  area.setAttribute('d', areaD);
+  area.setAttribute('fill', `url(#${svgId}-grad)`);
+  svg.appendChild(area);
+
+  // Line
+  const line = document.createElementNS('http://www.w3.org/2000/svg','path');
+  line.setAttribute('d', lineD);
+  line.setAttribute('fill','none');
+  line.setAttribute('stroke', color);
+  line.setAttribute('stroke-width','2.5');
+  line.setAttribute('stroke-linejoin','round');
+  line.setAttribute('stroke-linecap','round');
+  svg.appendChild(line);
+
+  // Dots
+  pts.forEach((p, i) => {
+    const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    dot.setAttribute('cx', p[0]); dot.setAttribute('cy', p[1]);
+    dot.setAttribute('r','4'); dot.setAttribute('fill','#fff');
+    dot.setAttribute('stroke', color); dot.setAttribute('stroke-width','2');
+    svg.appendChild(dot);
+  });
+
+  // X labels
+  if (labelsEl && labels) {
+    labelsEl.innerHTML = '';
+    labels.forEach(lbl => {
+      const span = document.createElement('span');
+      span.className = 'x-label';
+      span.textContent = lbl;
+      labelsEl.appendChild(span);
+    });
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Data & render calls
+═══════════════════════════════════════════════════════════════ */
+
+// DAY — Steps: hourly data 12AM→11PM (7-point sampled for x labels)
+const dayHourlySteps = [0, 0, 0, 0, 0, 0, 20, 120, 280, 350, 480, 620,
+                        750, 820, 940, 1080, 1240, 1560, 1820, 1980, 2060, 2100, 2100, 2100];
+const dayHourlyCal   = [0, 0, 0, 0, 0, 0,  8,  35,  70,  95, 115, 140,
+                        162, 175, 190, 205, 218, 228, 237, 241, 243, 243, 243, 243];
+const dayXLabels = ['12AM','3AM','6AM','9AM','12PM','3PM','6PM','9PM'];
+
+// Draw day line charts
+drawLineChart('day-steps-svg', dayHourlySteps, '#f96400');
+drawLineChart('day-cal-svg',   dayHourlyCal,   '#f96400');
+
+// Populate day x-labels (8 evenly spaced)
+['day-steps-xlabels','day-cal-xlabels'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  dayXLabels.forEach(lbl => {
+    const s = document.createElement('span');
+    s.className = 'x-label'; s.textContent = lbl;
+    el.appendChild(s);
+  });
+});
+
+// WEEK — Steps by day: Su M Tu W Th F Sa
+const weekSteps  = [820, 1200,  900, 1840, 1350,  980, 373];
+const weekLabels = ['Su','M','Tu','W','Th','F','Sa'];
+drawAreaChart('week-area-svg', 'week-xlabels', weekSteps, weekLabels, '#7c5cbf');
+
+// MONTH — Steps by week: W1 W2 W3 W4
+const monthSteps  = [22400, 26800, 31200, 29700];
+const monthLabels = ['W1','W2','W3','W4'];
+drawAreaChart('month-area-svg', 'month-xlabels', monthSteps, monthLabels, '#7c5cbf');
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Screen switcher
+═══════════════════════════════════════════════════════════════ */
+function switchScreen(name, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+
+</body>
+</html>
