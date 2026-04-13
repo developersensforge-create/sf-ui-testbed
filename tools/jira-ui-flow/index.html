@@ -1784,7 +1784,7 @@ async function fetchFromJira() {
   const creds = getJiraCreds();
   if (!creds || !creds.site || !creds.email || !creds.token) return null;
   const auth = btoa(creds.email + ':' + creds.token);
-  const jql  = encodeURIComponent('project=SCRUM AND status="UI Design" ORDER BY updated DESC');
+  const jql  = encodeURIComponent('project=SCRUM ORDER BY updated DESC');
   const url  = `${creds.site}/rest/api/3/search?jql=${jql}&fields=summary,status,assignee,priority,updated&maxResults=100`;
   const resp = await fetch(url, {
     headers: { 'Authorization': 'Basic ' + auth, 'Accept': 'application/json' }
