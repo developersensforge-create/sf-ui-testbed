@@ -1780,19 +1780,68 @@ async function fetchState() {
   return r.json();
 }
 
-async function reload() {
+async function fetchFromJira() {
+  const creds = getJiraCreds();
+  if (!creds || !creds.site || !creds.email || !creds.token) return null;
+  const auth = btoa(creds.email + ':' + creds.token);
+  const jql  = encodeURIComponent('project=SCRUM AND status="UI Design" ORDER BY updated DESC');
+  const url  = `${creds.site}/rest/api/3/search?jql=${jql}&fields=summary,status,assignee,priority,updated&maxResults=100`;
+  const resp = await fetch(url, {
+    headers: { 'Authorization': 'Basic ' + auth, 'Accept': 'application/json' }
+  });
+  if (!resp.ok) throw new Error('Jira API error: ' + resp.status);
+  const data = await resp.json();
+  // Convert Jira issues into the same shape as state.json entries
+  const live = {};
+  for (const issue of (data.issues || [])) {
+    const key = issue.key;
+    live[key] = {
+      key,
+      summary:  issue.fields.summary,
+      status:   issue.fields.status?.name   || '',
+      assignee: issue.fields.assignee?.displayName || '',
+      priority: issue.fields.priority?.name || '',
+      updated:  issue.fields.updated        || '',
+      _fromJira: true
+    };
+  }
+  return live;
+}
+
+async function reload(liveRefresh = false) {
   try {
     const raw       = await fetchState();
     const overrides = loadOverrides();
-    allTickets      = mergeTickets(raw, overrides);
 
-    // Last updated = newest last_check_at or brief_sent_at
-    const dates = Object.values(raw)
-      .flatMap(t => [t.last_check_at, t.brief_sent_at].filter(Boolean))
-      .map(d => new Date(d)).filter(d => !isNaN(d));
-    const latest = dates.length ? new Date(Math.max(...dates)) : null;
-    document.getElementById('last-updated').textContent =
-      latest ? 'Last updated: ' + fmtDate(latest) : 'Last updated: unknown';
+    if (liveRefresh) {
+      try {
+        const liveData = await fetchFromJira();
+        if (liveData) {
+          // Merge live Jira data on top of state.json, preserving local state fields
+          for (const key of Object.keys(liveData)) {
+            raw[key] = Object.assign({}, raw[key] || {}, liveData[key]);
+          }
+        }
+      } catch (jiraErr) {
+        console.warn('Live Jira fetch failed, falling back to state.json:', jiraErr);
+        showToast('⚠️ Jira API unreachable — showing cached data', 3000);
+      }
+    }
+
+    allTickets = mergeTickets(raw, overrides);
+
+    // Last updated = now on live refresh, else newest timestamp from state
+    if (liveRefresh) {
+      document.getElementById('last-updated').textContent =
+        'Last updated: ' + fmtDate(new Date());
+    } else {
+      const dates = Object.values(raw)
+        .flatMap(t => [t.last_check_at, t.brief_sent_at].filter(Boolean))
+        .map(d => new Date(d)).filter(d => !isNaN(d));
+      const latest = dates.length ? new Date(Math.max(...dates)) : null;
+      document.getElementById('last-updated').textContent =
+        latest ? 'Last updated: ' + fmtDate(latest) : 'Last updated: unknown';
+    }
 
     render();
   } catch (e) {
@@ -2137,9 +2186,14 @@ document.querySelectorAll('.stat-card').forEach(card => {
 });
 
 document.getElementById('refresh-btn').addEventListener('click', () => {
+  const creds = getJiraCreds();
+  if (!creds || !creds.site || !creds.email || !creds.token) {
+    showToast('⚠️ Please configure Jira credentials first', 3000);
+    return;
+  }
   clearTimeout(refreshTimer);
-  reload().then(scheduleRefresh);
-  showToast('↻ Refreshing…', 1500);
+  showToast('↻ Fetching latest from Jira…', 2000);
+  reload(true).then(scheduleRefresh);
 });
 
 // ═══════════════════════════════════════════════════════════════════════
