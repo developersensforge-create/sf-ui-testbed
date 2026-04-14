@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SensForge Profile — v1 | Screens</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #ddd;
+    padding: 40px 20px 60px;
+  }
+  h2.group-title {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #555;
+    margin: 40px 0 18px;
+  }
+  .flow {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .phone-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .phone-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #7a7a7a;
+  }
+  .phone {
+    width: 285px;
+    border-radius: 36px;
+    background: #f8f8f8;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.2);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── SHARED COMPONENTS ── */
+  .status-bar {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  .status-bar.light { color: #fff; }
+  .status-bar-icons { display: flex; gap: 4px; align-items: center; }
+
+  .nav-bar {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+  }
+  .nav-bar .back {
+    color: #f96400;
+    font-size: 18px;
+    font-weight: 700;
+    margin-right: 6px;
+    line-height: 1;
+  }
+  .nav-bar .nav-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #1a1a1a;
+  }
+
+  .tab-bar {
+    display: flex;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    padding: 6px 0 10px;
+  }
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 9px;
+    font-weight: 700;
+    color: #b0b0b0;
+  }
+  .tab-item.active { color: #f96400; }
+  .tab-icon { font-size: 18px; line-height: 1; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #7a7a7a;
+    letter-spacing: 0.8px;
+    padding: 14px 13px 6px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin: 0 13px 10px;
+    padding: 14px;
+  }
+
+  .list-group {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin: 0 13px 10px;
+    overflow: hidden;
+  }
+  .list-row {
+    padding: 13px 15px;
+    border-bottom: 1px solid #f4f4f4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+  }
+  .list-row:last-child { border-bottom: none; }
+  .list-row .row-label {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+  .list-row .row-sub {
+    font-size: 11px;
+    font-weight: 500;
+    color: #7a7a7a;
+    margin-top: 1px;
+  }
+  .list-row .row-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: #7a7a7a;
+  }
+  .list-row .arrow {
+    color: #c8c8c8;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .icon-wrap {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .iw-orange { background: #ffedde; }
+  .iw-purple { background: #f0e6ff; }
+  .iw-green  { background: #e5f9ed; }
+  .iw-blue   { background: #e5f0ff; }
+  .iw-grey   { background: #f0f0f0; }
+  .iw-red    { background: #fff0f0; }
+
+  .badge {
+    background: #f96400;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    border-radius: 50px;
+    padding: 1px 6px;
+    min-width: 18px;
+    text-align: center;
+  }
+
+  .btn-primary {
+    display: block;
+    background: #f96400;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    text-align: center;
+    border: none;
+    border-radius: 50px;
+    padding: 13px 20px;
+    margin: 0 13px 14px;
+    cursor: pointer;
+    width: calc(100% - 26px);
+  }
+
+  /* ── SCREEN 1: ACCOUNT MAIN ── */
+  .hero-gradient {
+    background: linear-gradient(160deg, #f96400 0%, #ff9a4d 100%);
+    padding: 14px 16px 18px;
+  }
+  .hero-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .avatar-circle {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    border: 2.5px solid rgba(255,255,255,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .hero-info { flex: 1; }
+  .hero-name {
+    font-size: 17px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .hero-email {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    margin-top: 2px;
+  }
+  .hero-edit-btn {
+    background: rgba(255,255,255,0.25);
+    border: 1.5px solid rgba(255,255,255,0.5);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 5px 12px;
+    cursor: pointer;
+  }
+  .membership-chip {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 12px;
+    padding: 9px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .chip-text {
+    flex: 1;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+  }
+  .chip-arrow { color: rgba(255,255,255,0.8); font-size: 12px; font-weight: 700; }
+
+  /* ── SCREEN 3: PASSWORD ── */
+  .form-group { margin: 0 13px 10px; }
+  .form-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #7a7a7a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+  }
+  .form-field {
+    background: #fff;
+    border-radius: 12px;
+    border: 1.5px solid #eee;
+    padding: 11px 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .form-field .placeholder {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    color: #c0c0c0;
+  }
+  .form-field .eye { font-size: 15px; color: #bbb; }
+  .note-text {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: #7a7a7a;
+    line-height: 1.5;
+    margin: 8px 13px 14px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+
+  /* ── SCREEN 4: BOTTOM SHEET ── */
+  .dimmed-overlay {
+    background: rgba(0,0,0,0.45);
+    padding: 14px 0 0;
+  }
+  .dimmed-list-item {
+    padding: 11px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .bottom-sheet {
+    background: #f8f8f8;
+    border-radius: 24px 24px 0 0;
+    padding: 0 0 16px;
+    margin-top: 10px;
+  }
+  .sheet-handle {
+    width: 36px;
+    height: 4px;
+    background: #ddd;
+    border-radius: 2px;
+    margin: 10px auto 14px;
+  }
+  .sheet-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1a1a1a;
+    text-align: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    margin: 0 13px;
+  }
+  .avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 14px 16px 10px;
+  }
+  .avatar-option {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin: 0 auto;
+  }
+  .sheet-divider { height: 1px; background: #f0f0f0; margin: 4px 0 0; }
+  .sheet-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  /* ── SCREEN 7: FAQ ── */
+  .support-banner {
+    background: linear-gradient(135deg, #f96400 0%, #ff8c30 100%);
+    border-radius: 16px;
+    margin: 10px 13px;
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .banner-icon { font-size: 26px; }
+  .banner-title { font-size: 14px; font-weight: 800; color: #fff; }
+  .banner-sub { font-size: 11.5px; font-weight: 500; color: rgba(255,255,255,0.85); margin-top: 3px; }
+
+  .pill-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 8px 13px 10px;
+  }
+  .pill-tab {
+    padding: 7px 18px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #f0f0f0;
+    color: #7a7a7a;
+  }
+  .pill-tab.active {
+    background: #f96400;
+    color: #fff;
+  }
+
+  .faq-item {
+    background: #fff;
+    border-bottom: 1px solid #f4f4f4;
+    padding: 12px 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .faq-icon { font-size: 16px; padding-top: 1px; flex-shrink: 0; }
+  .faq-q { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+  .faq-a {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: #7a7a7a;
+    margin-top: 5px;
+    line-height: 1.5;
+    padding-bottom: 2px;
+  }
+  .faq-chevron { color: #c8c8c8; font-size: 13px; margin-left: auto; padding-top: 2px; flex-shrink: 0; }
+
+  /* ── SCREEN 8: TECH SUPPORT ── */
+  .form-dropdown {
+    background: #fff;
+    border-radius: 12px;
+    border: 1.5px solid #eee;
+    padding: 11px 13px;
+    display: flex;
+    align-items: center;
+    margin: 0 13px 10px;
+  }
+  .dropdown-label { flex: 1; font-size: 13px; font-weight: 500; color: #c0c0c0; }
+  .dropdown-arrow { font-size: 11px; color: #bbb; }
+  .textarea-wrap {
+    background: #fff;
+    border-radius: 12px;
+    border: 1.5px solid #eee;
+    margin: 0 13px 10px;
+    padding: 11px 13px;
+  }
+  .textarea-placeholder { font-size: 13px; font-weight: 500; color: #c0c0c0; }
+  .char-count { font-size: 10px; font-weight: 600; color: #bbb; text-align: right; margin-top: 30px; }
+  .upload-zone {
+    background: #fff;
+    border-radius: 12px;
+    border: 1.5px dashed #e0e0e0;
+    margin: 0 13px 10px;
+    padding: 18px 13px;
+    text-align: center;
+  }
+  .upload-icon { font-size: 20px; }
+  .upload-text { font-size: 12px; font-weight: 700; color: #1a1a1a; margin-top: 5px; }
+  .upload-hint { font-size: 10.5px; font-weight: 500; color: #aaa; margin-top: 3px; }
+  .required-star { color: #f96400; font-size: 11px; }
+
+  /* ── SCREEN 9: FIRMWARE ── */
+  .toggle-track {
+    width: 38px;
+    height: 22px;
+    border-radius: 11px;
+    background: #f96400;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .toggle-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle-track.off { background: #e0e0e0; }
+  .toggle-track.off .toggle-thumb { right: auto; left: 2px; }
+  .version-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .tag-green { background: #e5f9ed; color: #27ae60; }
+  .tag-orange { background: #ffedde; color: #f96400; }
+
+  /* ── SCREEN 11: USER AGREEMENT ── */
+  .legal-content { padding: 14px 16px; }
+  .legal-date { font-size: 11px; font-weight: 600; color: #7a7a7a; margin-bottom: 12px; }
+  .legal-h1 { font-size: 16px; font-weight: 800; color: #1a1a1a; margin-bottom: 10px; }
+  .legal-h2 { font-size: 13px; font-weight: 800; color: #1a1a1a; margin: 12px 0 6px; }
+  .legal-p { font-size: 11.5px; font-weight: 500; color: #555; line-height: 1.6; margin-bottom: 8px; }
+  .scroll-hint { font-size: 11px; font-weight: 600; color: #b0b0b0; text-align: center; padding: 8px 0 14px; }
+
+  /* ── SCREEN 12: ABOUT ── */
+  .dark-hero {
+    background: #1a1a1a;
+    padding: 24px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .dark-hero .logo { font-size: 36px; }
+  .dark-hero .brand { font-size: 22px; font-weight: 800; color: #fff; margin-top: 8px; }
+  .dark-hero .version { font-size: 11px; font-weight: 600; color: #777; margin-top: 5px; }
+  .dark-hero .tagline { font-size: 12px; font-weight: 500; font-style: italic; color: #aaa; margin-top: 8px; }
+  .stats-row {
+    display: flex;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .stat-cell {
+    flex: 1;
+    padding: 12px 6px;
+    text-align: center;
+    border-right: 1px solid #f0f0f0;
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-val { font-size: 14px; font-weight: 800; color: #1a1a1a; }
+  .stat-lbl { font-size: 9px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+  .pull-quote {
+    font-size: 13px;
+    font-weight: 600;
+    font-style: italic;
+    color: #f96400;
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  .social-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 0 13px 10px;
+  }
+  .social-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    padding: 11px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  .social-icon { font-size: 18px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  GROUP 1 — ACCOUNT                        -->
+<!-- ══════════════════════════════════════════ -->
+<h2 class="group-title">Group 1 — Account</h2>
+<div class="flow">
+
+  <!-- SCREEN 1: Account Main -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 1 · Account</div>
+    <div class="phone">
+      <div class="status-bar light" style="background:linear-gradient(160deg,#f96400,#ff9a4d);padding-top:2px;">
+        <span>9:41</span>
+        <div class="status-bar-icons">
+          <span>●●●</span>
+          <span>WiFi</span>
+          <span>🔋</span>
+        </div>
+      </div>
+      <!-- Hero -->
+      <div class="hero-gradient">
+        <div class="hero-top">
+          <div class="avatar-circle">FF</div>
+          <div class="hero-info">
+            <div class="hero-name">Fang Fang</div>
+            <div class="hero-email">fang.fang@sensforge.com</div>
+          </div>
+          <button class="hero-edit-btn">Edit</button>
+        </div>
+        <div class="membership-chip">
+          <span style="font-size:14px;">⭐</span>
+          <div class="chip-text">
+            Family Pro · Active<br>
+            <span style="font-size:10px;font-weight:600;opacity:0.85;">4 cameras · Renews May 9</span>
+          </div>
+          <span class="chip-arrow">›</span>
+        </div>
+      </div>
+
+      <!-- CAMERAS & DEVICES -->
+      <div class="section-label">Cameras &amp; Devices</div>
+      <div class="list-group">
+        <div class="list-row">
+          <div class="icon-wrap iw-orange">📷</div>
+          <div style="flex:1;">
+            <div class="row-label">My Cameras</div>
+            <div class="row-sub">4 cameras active</div>
+          </div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="list-row">
+          <div class="icon-wrap iw-purple">👥</div>
+          <div style="flex:1;">
+            <div class="row-label">Family Sharing</div>
+            <div class="row-sub">Manage shared access</div>
+          </div>
+          <span class="badge">2</span>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+
+      <!-- PREFERENCES -->
+      <div class="section-label">Preferences</div>
+      <div class="list-group">
+        <div class="list-row">
+          <div class="icon-wrap iw-orange">🔔</div>
+          <div class="row-label">Notifications</div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="list-row">
+          <div class="icon-wrap iw-grey">⚙️</div>
+          <div class="row-label">Account Settings</div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="list-row">
+          <div class="icon-wrap iw-blue">🛡</div>
+          <div class="row-label">Privacy</div>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+
+      <!-- SUPPORT -->
+      <div class="section-label">Support</div>
+      <div class="list-group">
+        <div class="list-row">
+          <div class="icon-wrap iw-green">❓</div>
+          <div class="row-label">Help &amp; FAQ</div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="list-row">
+          <div class="icon-wrap iw-purple">📲</div>
+          <div class="row-label">Firmware &amp; Updates</div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="list-row">
+          <div class="icon-wrap iw-grey">ℹ️</div>
+          <div style="flex:1;">
+            <div class="row-label">About SensForge</div>
+            <div class="row-sub">v2.4.1</div>
+          </div>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+
+      <!-- Log Out -->
+      <div class="list-group" style="margin-top:6px;">
+        <div class="list-row" style="justify-content:center;">
+          <span style="font-size:13px;font-weight:800;color:#e53935;">Log Out</span>
+        </div>
+      </div>
+      <div style="height:8px;"></div>
+
+      <!-- Tab Bar -->
+      <div class="tab-bar">
+        <div class="tab-item"><div class="tab-icon">🏠</div>Home</div>
+        <div class="tab-item"><div class="tab-icon">📷</div>Cameras</div>
+        <div class="tab-item"><div class="tab-icon">▶️</div>Clips</div>
+        <div class="tab-item"><div class="tab-icon">🔔</div>Alerts</div>
+        <div class="tab-item active"><div class="tab-icon">👤</div>Profile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Account Settings -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 2 · Account Settings</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="status-bar-icons"><span>●●●</span><span>🔋</span></div></div>
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <span class="nav-title">Account Settings</span>
+      </div>
+      <div style="height:16px;"></div>
+
+      <div class="list-group">
+        <div class="list-row">
+          <div class="icon-wrap iw-blue">✉️</div>
+          <div style="flex:1;">
+            <div class="row-label">Email</div>
+            <div class="row-sub">fang.fang@sensforge.com</div>
+          </div>
+        </div>
+        <div class="list-row">
+          <div class="icon-wrap iw-orange">🔑</div>
+          <div class="row-label">Change Password</div>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+
+      <div class="section-label">Danger Zone</div>
+      <div class="list-group">
+        <div class="list-row">
+          <div class="icon-wrap iw-red">🗑</div>
+          <div style="flex:1;">
+            <div class="row-label" style="color:#e53935;">Delete Account</div>
+            <div class="row-sub">This action cannot be undone</div>
+          </div>
+          <span class="arrow" style="color:#e53935;">›</span>
+        </div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Update Password -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 3 · Update Password</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="status-bar-icons"><span>●●●</span><span>🔋</span></div></div>
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <span class="nav-title">Update Password</span>
+      </div>
+      <div style="height:12px;"></div>
+
+      <div class="note-text">
+        Password must be 8–16 characters and contain two types: letters, numbers, or special symbols.
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Old Password</div>
+        <div class="form-field">
+          <span class="placeholder">ex. Password</span>
+          <span class="eye">👁</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">New Password</div>
+        <div class="form-field">
+          <span class="placeholder">ex. Password</span>
+          <span class="eye">👁</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Confirm New Password</div>
+        <div class="form-field">
+          <span class="placeholder">ex. Password</span>
+          <span class="eye">👁</span>
+        </div>
+      </div>
+      <div style="height:16px;"></div>
+      <button class="btn-primary">Save</button>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: Profile Picture Picker -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 4 · Profile Pic Picker</div>
+    <div class="phone">
+      <div class="status-bar light" style="background:#1a1a1a66;position:relative;z-index:2;"><span>9:41</span><div class="status-bar-icons"><span>●●●</span><span>🔋</span></div></div>
+      <!-- Dimmed overlay content -->
+      <div class="dimmed-overlay">
+        <div class="dimmed-list-item">fang.fang@sensforge.com</div>
+        <div class="dimmed-list-item">Change Profile Picture</div>
+        <div class="dimmed-list-item">Memberships</div>
+        <!-- Bottom sheet -->
+        <div class="bottom-sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-title">Choose Profile Picture</div>
+          <div class="avatar-grid">
+            <div class="avatar-option" style="background:#aed6f1;">😊</div>
+            <div class="avatar-option" style="background:#f1948a;">😄</div>
+            <div class="avatar-option" style="background:#a9dfbf;">🙂</div>
+            <div class="avatar-option" style="background:#f9e79f;">😎</div>
+            <div class="avatar-option" style="background:#d7bde2;">🐱</div>
+            <div class="avatar-option" style="background:#fadbd8;">🦊</div>
+          </div>
+          <div class="sheet-divider"></div>
+          <div class="sheet-row">
+            <div class="icon-wrap iw-grey">📸</div>
+            <span>Choose Existing Photo</span>
+            <span class="arrow" style="margin-left:auto;">›</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  GROUP 2 — SHARING                        -->
+<!-- ══════════════════════════════════════════ -->
+<h2 class="group-title">Group 2 — Sharing</h2>
+<div class="flow">
+
+  <!-- SCREEN 5: Shared Users -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 5 · Shared Users</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="status-bar-icons"><span>●●●</span><span>🔋</span></div></div>
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <span class="nav-title">Family Sharing</span>
+      </div>
+
+      <div class="section-label">Accounts I Shared With</div>
+
+      <!-- Empty state -->
+      <div class="card" style="text-align:center;padding:28px 14px;">
+        <div style="font-size:32px;margin-bottom:10px;">👥</div>
+        <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:4px;">No shared users yet</div>
+        <div style="font-size:12px;font-weight:500;color:#7a7a7a;">Invite family to view your cameras</div>
+      </div>
+
+      <!-- Add row -->
+      <div class="list-group">
+        <div class="list-row">
+          <div style="width:34px;height:34px;border-radius:9px;background:#ffedde;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#f96400;flex-shrink:0;">+</div>
+          <span style="font-size:13px;font-weight:800;color:#f96400;">Share with a New User</span>
+        </div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 6: Shared Access Invitations -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 6 · Invitations</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="status-bar-icons"><span>●●●</span><span>🔋</span></div></div>
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <span class="nav-title">Shared Access Invitations</span>
+      </div>
+
+      <div class="section-label">Pending Invitations</div>
+
+      <div class="card" style="text-align:center;padding:28px 14px;">
+        <div style="font-size:32px;margin-bottom:10px;">📨</div>
+        <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:4px;">No pending invitations</div>
+        <div style="font-size:12px;font-weight:500;color:#7a7a7a;">Invitations from other users will appear here</div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  GROUP 3 — HELP                           -->
+<!-- ══════════════════════════════════════════ -->
+<h2 class="group-title">Group 3 — Help</h2>
+<div class="flow">
+
+  <!-- SCREEN 7: FAQ -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 7 · FAQ</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="status-bar-icons"><span>●●●</span><span>🔋</span></div></div>
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <span class="nav-title">Help &amp; Support</span>
+      </div>
+
+      <div class="support-banner">
+        <div class="banner-icon">💬</div>
+        <div>
+          <div class="banner-title">Need help?</div>
+          <div class="banner-sub">Browse FAQs or submit a support ticket</div>
+        </div>
+      </div>
+
+      <div class="pill-tabs">
+        <div class="pill-tab active">FAQ</div>
+        <div class="pill-tab">Tech Support</div>
+      </div>
+
+      <!-- FAQ list -->
+      <div class="list-group" style="margin-bottom:10px;">
+        <!-- Expanded item -->
+        <div class="faq-item" style="background:#fff8f3;flex-direction:column;align-items:flex-start;gap:0;">
+          <div style="display:flex;align-items:center;gap:10px;width:100%;">
+            <span class="faq-icon">📶</span>
+            <span class="faq-q" style="flex:1;">My camera keeps going offline</span>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-a" style="padding-left:26px;">Check that your router is within range and the camera is powered. Try rebooting both devices. Ensure Wi-Fi is 2.4 GHz band.</div>
+        </div>
+        <div class="faq-item">
+          <span class="faq-icon">🎬</span>
+          <span class="faq-q" style="flex:1;">Highlight Reels</span>
+          <span class="faq-chevron">›</span>
+        </div>
+        <div class="faq-item">
+          <span class="faq-icon">🔔</span>
+          <span class="faq-q" style="flex:1;">Motion alerts</span>
+          <span class="faq-chevron">›</span>
+        </div>
+        <div class="faq-item">
+          <span class="faq-icon">👥</span>
+          <span class="faq-q" style="flex:1;">Invite family</span>
+          <span class="faq-chevron">›</span>
+        </div>
+        <div class="faq-item">
+          <span class="faq-icon">☁️</span>
+          <span class="faq-q" style="flex:1;">Footage storage</span>
+          <span class="faq-chevron">›</span>
+        </div>
+        <div class="faq-item" style="border-bottom:none;">
+          <span class="faq-icon">🔄</span>
+          <span class="faq-q" style="flex:1;">Cancel subscription</span>
+          <span class="faq-chevron">›</span>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab-item"><div class="tab-icon">🏠</div>Home</div>
+        <div class="tab-item"><div class="tab-icon">📷</div>Cameras</div>
+        <div class="tab-item"><div class="tab-icon">▶️</div>Clips</div>
+        <div class="tab-item"><div class="tab-icon">🔔</div>Alerts</div>
+        <div class="tab-item active"><div class="tab-icon">👤</div>Profile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 8: Tech Support Form -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 8 · Tech Support</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="status-bar-icons"><span>●●●</span><span>🔋</span></div></div>
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <span class="nav-title">Help &amp; Support</span>
+      </div>
+
+      <div class="pill-tabs">
+        <div class="pill-tab">FAQ</div>
+        <div class="pill-tab active">Tech Support</div>
+      </div>
+
+      <div style="padding:0 0 4px;">
+        <div class="section-label" style="padding-top:4px;">Device</div>
+        <div class="form-dropdown">
+          <span class="dropdown-label">Select a device…</span>
+          <span class="dropdown-arrow">▾</span>
+        </div>
+
+        <div class="section-label" style="padding-top:4px;">Feedback Type <span class="required-star">*</span></div>
+        <div class="form-dropdown">
+          <span class="dropdown-label">Select type…</span>
+          <span class="dropdown-arrow">▾</span>
+        </div>
+
+        <div class="section-label" style="padding-top:4px;">Details</div>
+        <div class="textarea-wrap">
+          <div class="textarea-placeholder">Describe the issue…</div>
+          <div class="char-count">0 / 1500</div>
+        </div>
+
+        <div class="section-label" style="padding-top:4px;">Attachments</div>
+        <div class="upload-zone">
+          <div class="upload-icon">📎</div>
+          <div class="upload-text">Select files to upload</div>
+          <div class="upload-hint">png / jpg / jpeg &lt; 5 MB</div>
+        </div>
+      </div>
+
+      <button class="btn-primary">Submit</button>
+      <div style="height:14px;"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  GROUP 4 — FIRMWARE & PRIVACY             -->
+<!-- ══════════════════════════════════════════ -->
+<h2 class="group-title">Group 4 — Firmware &amp; Privacy</h2>
+<div class="flow">
+
+  <!-- SCREEN 9: Firmware & Updates -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 9 · Firmware &amp; Updates</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="status-bar-icons"><span>●●●</span><span>🔋</span></div></div>
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <span class="nav-title">Firmware &amp; Updates</span>
+      </div>
+
+      <div class="section-label">App Version</div>
+      <div class="list-group">
+        <div class="list-row">
+          <div class="icon-wrap iw-blue">📱</div>
+          <div style="flex:1;">
+            <div class="row-label">iOS App</div>
+            <div class="row-sub">1.2.6 (2026031140)</div>
+          </div>
+          <span class="version-tag tag-green">Latest</span>
+        </div>
+      </div>
+
+      <div class="section-label">Firmware</div>
+      <!-- Auto update toggle -->
+      <div class="list-group">
+        <div class="list-row">
+          <div class="icon-wrap iw-orange">🔄</div>
+          <div class="row-label" style="flex:1;">Auto Update All</div>
+          <div class="toggle-track"><div class="toggle-thumb"></div></div>
+        </div>
+      </div>
+
+      <!-- Device list -->
+      <div class="list-group">
+        <div class="list-row">
+          <div style="flex:1;">
+            <div class="row-label">Study Cam</div>
+            <div class="row-sub">V2.5.35</div>
+          </div>
+          <span class="version-tag tag-green" style="margin-right:8px;">Latest</span>
+          <div class="toggle-track"><div class="toggle-thumb"></div></div>
+        </div>
+        <div class="list-row">
+          <div style="flex:1;">
+            <div class="row-label">Smart Bird Feeder</div>
+            <div class="row-sub">V2.6.10</div>
+          </div>
+          <span class="version-tag tag-green" style="margin-right:8px;">Latest</span>
+          <div class="toggle-track"><div class="toggle-thumb"></div></div>
+        </div>
+        <div class="list-row">
+          <div style="flex:1;">
+            <div class="row-label">Front Door Cam</div>
+            <div class="row-sub">V2.5.35</div>
+          </div>
+          <span class="version-tag tag-green" style="margin-right:8px;">Latest</span>
+          <div class="toggle-track"><div class="toggle-thumb"></div></div>
+        </div>
+        <div class="list-row">
+          <div style="flex:1;">
+            <div class="row-label">Basement</div>
+            <div class="row-sub">V2.8.3</div>
+          </div>
+          <span class="version-tag tag-orange" style="margin-right:8px;">Update</span>
+          <div class="toggle-track"><div class="toggle-thumb"></div></div>
+        </div>
+        <div class="list-row">
+          <div style="flex:1;">
+            <div class="row-label">Driveway Cam</div>
+            <div class="row-sub">V2.5.66</div>
+          </div>
+          <span class="version-tag tag-green" style="margin-right:8px;">Latest</span>
+          <div class="toggle-track"><div class="toggle-thumb"></div></div>
+        </div>
+      </div>
+
+      <button class="btn-primary">Update All</button>
+      <div style="height:14px;"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 10: Privacy -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 10 · Privacy</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="status-bar-icons"><span>●●●</span><span>🔋</span></div></div>
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <span class="nav-title">Privacy &amp; Legal</span>
+      </div>
+      <div style="height:14px;"></div>
+
+      <div class="list-group">
+        <div class="list-row">
+          <div class="icon-wrap iw-blue">📄</div>
+          <div style="flex:1;">
+            <div class="row-label">User Agreement</div>
+            <div class="row-sub">Last updated Jan 1, 2025</div>
+          </div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="list-row">
+          <div class="icon-wrap iw-blue">🛡</div>
+          <div style="flex:1;">
+            <div class="row-label">Privacy Policy</div>
+            <div class="row-sub">Last updated Jan 1, 2025</div>
+          </div>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:14px;font-weight:800;color:#1a1a1a;margin-bottom:6px;">Your data, your control.</div>
+        <div style="font-size:12px;font-weight:500;color:#555;line-height:1.6;">SensForge only uses your data to provide and improve our services. We never sell your personal information to third parties.</div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 11: User Agreement -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 11 · User Agreement</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><div class="status-bar-icons"><span>●●●</span><span>🔋</span></div></div>
+      <div class="nav-bar">
+        <span class="back">‹</span>
+        <span class="nav-title">User Agreement</span>
+      </div>
+
+      <div class="legal-content">
+        <div class="legal-date">Last update: Jan 1st, 2025</div>
+        <div class="legal-h1">Sensforge Terms of Use</div>
+
+        <div class="legal-h2">1. Introduction</div>
+        <div class="legal-p">Welcome to SensForge. By accessing or using our mobile application, website, or any related services (collectively, the "Services"), you agree to be bound by these Terms of Use and our Privacy Policy.</div>
+        <div class="legal-p">These Terms constitute a legally binding agreement between you and SensForge Inc. If you do not agree to these Terms, please do not use our Services. We reserve the right to update these Terms at any time with notice provided through the app.</div>
+        <div class="legal-p">Your continued use of the Services after any changes constitutes your acceptance of the new Terms. Please review these Terms periodically for updates.</div>
+
+        <div class="legal-h2">2. User Account</div>
+        <div class="legal-p">To access certain features of our Services, you must create an account. You are responsible for maintaining the confidentiality of your credentials and for all activity that occurs under your account.</div>
+
+        <div class="legal-h2">2.1 Creating an Account</div>
+        <div class="legal-p">You must provide accurate, current, and complete information during the registration process. You agree to update your information to keep it accurate. SensForge may suspend or terminate accounts with inaccurate information.</div>
+        <div class="legal-p">You must be at least 13 years of age to use our Services. By creating an account, you represent that you meet this requirement.</div>
+      </div>
+
+      <div class="scroll-hint">· · · scroll for more · · ·</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!--  GROUP 5 — ABOUT                          -->
+<!-- ══════════════════════════════════════════ -->
+<h2 class="group-title">Group 5 — About</h2>
+<div class="flow">
+
+  <!-- SCREEN 12: About SensForge -->
+  <div class="phone-wrap">
+    <div class="phone-label">Screen 12 · About SensForge</div>
+    <div class="phone">
+      <div class="status-bar light" style="background:#1a1a1a;">
+        <span>9:41</span>
+        <div class="status-bar-icons"><span style="color:#fff;">●●●</span><span style="color:#fff;">🔋</span></div>
+      </div>
+
+      <!-- Dark hero -->
+      <div class="dark-hero">
+        <div class="logo">🛡</div>
+        <div class="brand">SensForge</div>
+        <div class="version">Version 2.4.1 · © 2026 SensForge Inc.</div>
+        <div class="tagline">Peace of mind, beautifully designed.</div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stats-row">
+        <div class="stat-cell">
+          <div class="stat-val">50K+</div>
+          <div class="stat-lbl">Homes</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-val">4.8★</div>
+          <div class="stat-lbl">App Store</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-val">2024</div>
+          <div class="stat-lbl">Founded</div>
+        </div>
+      </div>
+
+      <!-- Our Story -->
+      <div class="section-label">Our Story</div>
+      <div class="card">
+        <div class="pull-quote" style="font-size:14px;font-weight:800;color:#f96400;font-style:italic;line-height:1.5;margin-bottom:10px">"It all started with a deer."</div>
+        <div style="font-size:12px;font-weight:500;color:#555;line-height:1.7;">Our founder was frustrated when a deer kept sneaking into his backyard and munching on his wife's beloved vegetable garden. After setting up a camera to catch the culprit, he found that it didn't provide enough information to solve the mystery.</div>
+        <div style="font-size:12px;font-weight:600;color:#f96400;margin:10px 0 6px;font-style:italic">"When Security Meets Fun."</div>
+        <div style="font-size:12px;font-weight:500;color:#555;line-height:1.7;">This lightbulb moment led to the creation of SensForge. We develop smart, AI-powered cameras that not only keep you safe but also capture wonderful everyday moments.
+      </div>
+
+      <!-- Follow Us -->
+      <div class="section-label">Follow Us</div>
+      <div class="social-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 13px 12px">
+        <div class="social-card" style="background:#fff;border-radius:14px;padding:12px 6px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+          <div style="width:40px;height:40px;background:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 5px;font-size:16px;font-weight:900;color:#fff;font-family:sans-serif">T</div>
+          <div style="font-size:10px;font-weight:700;color:#7a7a7a">TikTok</div>
+        </div>
+        <div class="social-card" style="background:#fff;border-radius:14px;padding:12px 6px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+          <div style="width:40px;height:40px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 5px;font-size:18px;color:#fff">📷</div>
+          <div style="font-size:10px;font-weight:700;color:#7a7a7a">Instagram</div>
+        </div>
+        <div class="social-card" style="background:#fff;border-radius:14px;padding:12px 6px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+          <div style="width:40px;height:40px;background:#1877f2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 5px;font-size:20px;font-weight:900;color:#fff;font-family:sans-serif">f</div>
+          <div style="font-size:10px;font-weight:700;color:#7a7a7a">Facebook</div>
+        </div>
+        <div class="social-card" style="background:#fff;border-radius:14px;padding:12px 6px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+          <div style="width:40px;height:40px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 5px;font-size:16px;color:#fff">▶</div>
+          <div style="font-size:10px;font-weight:700;color:#7a7a7a">YouTube</div>
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="section-label">Links</div>
+      <div class="list-group">
+        <div class="list-row">
+          <div class="icon-wrap iw-blue">🌐</div>
+          <div class="row-label">sensforge.com</div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="list-row">
+          <div class="icon-wrap iw-green">📧</div>
+          <div class="row-label">support@sensforge.com</div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="list-row">
+          <div class="icon-wrap iw-grey">📄</div>
+          <div class="row-label">Privacy Policy</div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="list-row">
+          <div class="icon-wrap iw-grey">📋</div>
+          <div class="row-label">Terms of Service</div>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
