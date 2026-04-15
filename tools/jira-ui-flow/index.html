@@ -1573,7 +1573,6 @@
     <div class="figma-modal-footer">
       <button class="fm-btn fm-btn-secondary" onclick="closeFigmaDraftModal()">Cancel</button>
       <button class="fm-btn fm-btn-green" onclick="downloadDesignPackage()">⬇ Download Design Package</button>
-      <button class="fm-btn" id="fdraft-send-btn" onclick="sendToDesigner()" style="background:#7c3aed;color:white;border-color:#7c3aed">📌 Send to Designer</button>
     </div>
   </div>
 </div>
@@ -2533,7 +2532,50 @@ function openFigmaReqModal(ticketKey) {
 
   document.getElementById('figma-req-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  // Auto-create Trello card when Figma Request is opened (if not already created)
+  const overrides = loadOverrides();
+  if (!overrides[ticketKey]?.trello_card_id && !allTickets[ticketKey]?.trello_card_id) {
+    autoCreateTrelloCard(ticketKey);
+  }
 }
+
+async function autoCreateTrelloCard(ticketKey) {
+  const t = allTickets[ticketKey];
+  if (!t) return;
+
+  const isWenbin = (t.assignee || '').toLowerCase().includes('wenbin');
+  const action   = isWenbin ? 'create-wenbin' : 'create-anna';
+  const listName = isWenbin ? 'Wenbin' : 'Anna';
+  const currentUser = getCurrentUser();
+  const actor = currentUser ? currentUser.name : 'PM';
+
+  try {
+    const resp = await fetch(TRELLO_PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action,
+        ticketKey,
+        ticketSummary: t.summary || ticketKey,
+        actor,
+        extraText: (t.brief_content || '').slice(0, 500),
+        stageLabel: '[Need UI Design]'
+      })
+    });
+    const data = await resp.json();
+    if (data.cardId) {
+      saveOverride(ticketKey, { trello_card_id: data.cardId, trello_card_url: data.cardUrl || '' });
+      allTickets[ticketKey].trello_card_id  = data.cardId;
+      allTickets[ticketKey].trello_card_url = data.cardUrl || '';
+      showToast(`📌 Trello card created in ${listName}'s list`, 3000);
+    }
+  } catch (e) {
+    // silent — don't interrupt the Figma Request flow
+    console.warn('Trello auto-create failed:', e.message);
+  }
+}
+
 function closeFigmaReqModal() {
   document.getElementById('figma-req-modal').classList.remove('open');
   document.body.style.overflow = '';
