@@ -5,7 +5,7 @@
     "brief_discord_message_id": "1491550015322329370",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.568115+00:00",
+    "last_seen": "2026-04-15T17:00:04.928265+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-224",
     "summary": "Add subscription ad banner on Sensforge app homepage"
@@ -16,7 +16,7 @@
     "brief_discord_message_id": "1491550056086765791",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.663889+00:00",
+    "last_seen": "2026-04-15T17:00:05.454955+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-222",
     "summary": "Reorganize the \"Hightlight\" tab front page. Rename that to AI, include the entrance of \"Skills\"(Customized Detection) and Pet AI features"
@@ -27,7 +27,7 @@
     "brief_discord_message_id": "1491550085497229334",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.566028+00:00",
+    "last_seen": "2026-04-15T17:00:04.922354+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-218",
     "summary": "SF-BC22 Add \"Camera Setup Mode\" for selection, including Home Security Mode, Bird Watching Mode"
@@ -38,7 +38,7 @@
     "brief_discord_message_id": "1491550116438347837",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.564143+00:00",
+    "last_seen": "2026-04-15T17:00:04.915788+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-219",
     "summary": "SF-BC1WD Add \"Camera Setup Mode\" for selection, including Window Mode, Freestand Mode, Wildlife Mode, Aquarium Mode"
@@ -49,7 +49,7 @@
     "brief_discord_message_id": "1491550148546007240",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.661774+00:00",
+    "last_seen": "2026-04-15T17:00:05.444804+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-223",
     "summary": "Add \"Skills\" ability in \"AI\" tab(change from \"Highlight\" Tab), the work flow include \"Trigger\" \"Action\" \"Rule\" and the \"dash board\" that summarize what happend today"
@@ -60,7 +60,7 @@
     "brief_discord_message_id": "1491550182456955122",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.659421+00:00",
+    "last_seen": "2026-04-15T17:00:05.428090+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-221",
     "summary": "Pet micro-highlight clip"
@@ -71,7 +71,7 @@
     "brief_discord_message_id": "1491550214430134272",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.657495+00:00",
+    "last_seen": "2026-04-15T17:00:05.420873+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-220",
     "summary": "Motion false detection, create a sensi pop up ask user feedback, then remind adjust the sensitivity and disable motion detection"
@@ -82,7 +82,7 @@
     "brief_discord_message_id": "1491550242972368940",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.655619+00:00",
+    "last_seen": "2026-04-15T17:00:05.411855+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-206",
     "summary": "Change \"Help\" To \"FAQ & Tech Support\""
@@ -93,7 +93,7 @@
     "brief_discord_message_id": "1491550275159330877",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.653890+00:00",
+    "last_seen": "2026-04-15T17:00:05.404496+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-217",
     "summary": "ring \"activity measure\" popup redesign"
@@ -104,7 +104,7 @@
     "brief_discord_message_id": "1491550306297974824",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.651521+00:00",
+    "last_seen": "2026-04-15T17:00:05.400904+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-192",
     "summary": "\u6bcf\u65e5\u7cbe\u5f69\u9875\u9762\u4fee\u6539Add Delete function to Highlights"
@@ -115,7 +115,7 @@
     "brief_discord_message_id": "1491550332940062820",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.649605+00:00",
+    "last_seen": "2026-04-15T17:00:05.396358+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-199",
     "summary": "Share Highlights ability to another user"
@@ -126,7 +126,7 @@
     "brief_discord_message_id": "1491550360207360050",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.647316+00:00",
+    "last_seen": "2026-04-15T17:00:05.391655+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-216",
     "summary": "Welcome page policy iteration - \u6b22\u8fce\u9875policy\u66f4\u6362"
@@ -137,7 +137,7 @@
     "brief_discord_message_id": "1491550394264981544",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.645270+00:00",
+    "last_seen": "2026-04-15T17:00:05.386314+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-215",
     "summary": "Hotfix: SF-BC22 Offline troubleshoot guide"
@@ -148,7 +148,7 @@
     "brief_discord_message_id": "1491550424912629810",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.643251+00:00",
+    "last_seen": "2026-04-15T17:00:05.381445+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-214",
     "summary": "add highlight notification included push notification + UI design"
@@ -159,7 +159,7 @@
     "brief_discord_message_id": "1491550454344188114",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.641197+00:00",
+    "last_seen": "2026-04-15T17:00:05.366586+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-195",
     "summary": "\u9ed8\u8ba4motion\u548cstrange sound \u4e0d\u5f00\uff0cDetection Setting, turn off \"motion\" and \"strange sound\""
@@ -170,7 +170,7 @@
     "brief_discord_message_id": "1491550481862889552",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.639291+00:00",
+    "last_seen": "2026-04-15T17:00:05.328602+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-176",
     "summary": "Membership Trial countdown \u4ed8\u8d39\u4f1a\u5458\u8bd5\u7528\u671f\u5012\u8ba1\u65f6"
@@ -181,7 +181,7 @@
     "brief_discord_message_id": "1491550509235179560",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.637366+00:00",
+    "last_seen": "2026-04-15T17:00:05.325147+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-173",
     "summary": "Improve the payment flow, \u652f\u4ed8\u6d41\u7a0b\u518d\u4f18\u5316"
@@ -192,7 +192,7 @@
     "brief_discord_message_id": "1491550532899442708",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.635405+00:00",
+    "last_seen": "2026-04-15T17:00:05.319163+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-175",
     "summary": "Ring Status \u652f\u6301\u6212\u6307\u8bbe\u5907\u4fe1\u606f\u663e\u793a\uff1a\u5305\u62ec\u7535\u91cf\uff0c\u6212\u6307\u578b\u53f7\uff0c\u5c3a\u5bf8\uff0c\u989c\u8272"
@@ -203,7 +203,7 @@
     "brief_discord_message_id": "1491550560669798510",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.632854+00:00",
+    "last_seen": "2026-04-15T17:00:05.313775+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-174",
     "summary": "Ring pairing \u652f\u6301\u6212\u6307\u914d\u7f51"
@@ -214,7 +214,7 @@
     "brief_discord_message_id": "1491550587534315580",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.631004+00:00",
+    "last_seen": "2026-04-15T17:00:05.307950+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-189",
     "summary": "Fix Invitation flow, people accept should be easy, \u8bbe\u5907\u5206\u4eab\u63a5\u53d7\u592a\u9ebb\u70e6"
@@ -225,7 +225,7 @@
     "brief_discord_message_id": "1491550632836988939",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.629388+00:00",
+    "last_seen": "2026-04-15T17:00:05.297648+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-198",
     "summary": "New Sd card activate flow"
@@ -236,7 +236,7 @@
     "brief_discord_message_id": "1491550660854812904",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.627769+00:00",
+    "last_seen": "2026-04-15T17:00:05.294564+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-208",
     "summary": "Support ticket update, more characters"
@@ -247,7 +247,7 @@
     "brief_discord_message_id": "1491550701321453660",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.625999+00:00",
+    "last_seen": "2026-04-15T17:00:05.278642+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-205",
     "summary": "Improve setting button"
@@ -258,7 +258,7 @@
     "brief_discord_message_id": "1491550746569609337",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.624408+00:00",
+    "last_seen": "2026-04-15T17:00:05.266112+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-204",
     "summary": "Camera page top right button more visible"
@@ -269,7 +269,7 @@
     "brief_discord_message_id": "1491550769416245260",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.622851+00:00",
+    "last_seen": "2026-04-15T17:00:05.243176+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-203",
     "summary": "Camera Interaction buttons improve, better visiable"
@@ -280,7 +280,7 @@
     "brief_discord_message_id": "1491550804644069560",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.621197+00:00",
+    "last_seen": "2026-04-15T17:00:05.233148+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-202",
     "summary": "Delete highlights ability"
@@ -291,7 +291,7 @@
     "brief_discord_message_id": "1491550835040325876",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.619630+00:00",
+    "last_seen": "2026-04-15T17:00:05.216195+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-197",
     "summary": "motion & events detection duplicate"
@@ -302,7 +302,7 @@
     "brief_discord_message_id": "1491550871132307497",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.617917+00:00",
+    "last_seen": "2026-04-15T17:00:05.212001+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-209",
     "summary": "Smart Detection Categories optimize"
@@ -313,7 +313,7 @@
     "brief_discord_message_id": "1491550907895251067",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.616245+00:00",
+    "last_seen": "2026-04-15T17:00:05.203638+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-200",
     "summary": "add a new popup for sensforge app Review prompt\u52a0\u4e00\u4e2aapp\u5185\u7684\u5f39\u7a97\u8ba9\u7528\u6237\u4e3b\u52a8\u586b\u5199app \u7684\u8bc4\u5206"
@@ -324,7 +324,7 @@
     "brief_discord_message_id": "1491550947262857347",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.614169+00:00",
+    "last_seen": "2026-04-15T17:00:05.195955+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-196",
     "summary": "Add Sensi flow to allow users to provide strange sound detection accuracy"
@@ -335,7 +335,7 @@
     "brief_discord_message_id": "1491550980813095116",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.612205+00:00",
+    "last_seen": "2026-04-15T17:00:05.086973+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-194",
     "summary": "live view CTA modifcation"
@@ -346,7 +346,7 @@
     "brief_discord_message_id": "1491551010689388767",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.610137+00:00",
+    "last_seen": "2026-04-15T17:00:05.068213+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-191",
     "summary": "payment subscription process fix"
@@ -357,7 +357,7 @@
     "brief_discord_message_id": "1491551036882686112",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.608148+00:00",
+    "last_seen": "2026-04-15T17:00:05.056580+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-188",
     "summary": "Daily AI Highlights correct \"Daily\""
@@ -368,7 +368,7 @@
     "brief_discord_message_id": "1491551066964234371",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.606165+00:00",
+    "last_seen": "2026-04-15T17:00:05.049056+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-187",
     "summary": "Notification Snooze\uff0c\u6682\u505c\u4e8b\u4ef6\u62a5\u8b66"
@@ -379,7 +379,7 @@
     "brief_discord_message_id": "1491551112845725917",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.604114+00:00",
+    "last_seen": "2026-04-15T17:00:05.039434+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-181",
     "summary": "Family Member Detection and Naming, \u5bb6\u5ead\u6210\u5458\u68c0\u6d4b"
@@ -390,7 +390,7 @@
     "brief_discord_message_id": "1491551159880646798",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.602125+00:00",
+    "last_seen": "2026-04-15T17:00:05.030189+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-190",
     "summary": "\u6253\u5f00\u7aef\u4fa7\u4eba\u8138\u68c0\u6d4b"
@@ -401,7 +401,7 @@
     "brief_discord_message_id": "1491551186380259360",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.600022+00:00",
+    "last_seen": "2026-04-15T17:00:05.018954+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-213",
     "summary": "Image Setting Page Improve"
@@ -412,7 +412,7 @@
     "brief_discord_message_id": "1491551219708071946",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.598039+00:00",
+    "last_seen": "2026-04-15T17:00:05.011189+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-212",
     "summary": "Night Vision Page Improve"
@@ -423,7 +423,7 @@
     "brief_discord_message_id": "1491551253031813173",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.596017+00:00",
+    "last_seen": "2026-04-15T17:00:05.008789+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-211",
     "summary": "AI Assistant Setting page improve"
@@ -434,7 +434,7 @@
     "brief_discord_message_id": "1491551285026230523",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.594254+00:00",
+    "last_seen": "2026-04-15T17:00:05.002125+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-210",
     "summary": "Detection Zone Page optimize"
@@ -445,7 +445,7 @@
     "brief_discord_message_id": "1491551320241471559",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.592514+00:00",
+    "last_seen": "2026-04-15T17:00:04.996739+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-207",
     "summary": "Bottom Navi bar more in other page"
@@ -456,7 +456,7 @@
     "brief_discord_message_id": "1491551348381188147",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.590545+00:00",
+    "last_seen": "2026-04-15T17:00:04.993031+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-201",
     "summary": "Add Customized AI alert ability"
@@ -467,7 +467,7 @@
     "brief_discord_message_id": "1491551378995413012",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.588387+00:00",
+    "last_seen": "2026-04-15T17:00:04.982355+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-193",
     "summary": "Sensi Conversation History"
@@ -478,7 +478,7 @@
     "brief_discord_message_id": "1491551413116080188",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.586590+00:00",
+    "last_seen": "2026-04-15T17:00:04.977352+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-183",
     "summary": "SD card video Download for all cameras\uff0c \u6240\u6709\u76f8\u673a\u652f\u6301sd\u5361\u89c6\u9891\u4e0b\u8f7d (firmware)"
@@ -489,7 +489,7 @@
     "brief_discord_message_id": "1491551464903016538",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.584925+00:00",
+    "last_seen": "2026-04-15T17:00:04.970861+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-182",
     "summary": "3 Day Free Cloud for all Basic users, \u6240\u6709\u514d\u8d39\u7528\u6237\u652f\u63013\u5929\u4e91\u5b58"
@@ -500,7 +500,7 @@
     "brief_discord_message_id": "1491551500240163056",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.583162+00:00",
+    "last_seen": "2026-04-15T17:00:04.964376+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-186",
     "summary": "Promo page design: Highlights\uff0c\u8d2d\u4e70\u63d0\u793a\u4fe1\u606f\uff1a\u6bcf\u65e5\u7cbe\u5f69\u9875"
@@ -511,7 +511,7 @@
     "brief_discord_message_id": "1491551539943313470",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.581361+00:00",
+    "last_seen": "2026-04-15T17:00:04.962108+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-185",
     "summary": "Promo page design: cloud events\uff0c \u8d2d\u4e70\u63d0\u793a\u4fe1\u606f\uff1a\u4e91\u5b58\u9875\u9762"
@@ -522,7 +522,7 @@
     "brief_discord_message_id": "1491551565905924206",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.579503+00:00",
+    "last_seen": "2026-04-15T17:00:04.958042+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-184",
     "summary": "Promo page design: Event descriptions\uff0c\u8d2d\u4e70\u63d0\u793a\u4fe1\u606f\uff1a\u4e8b\u4ef6\u63cf\u8ff0\u9875"
@@ -533,7 +533,7 @@
     "brief_discord_message_id": "1491551601838784713",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.577622+00:00",
+    "last_seen": "2026-04-15T17:00:04.954944+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-180",
     "summary": "Ring UI: Vital \u6212\u6307\u4ea4\u4e92\uff1a\u5065\u5eb7\u68c0\u6d4b\u6a21\u5757"
@@ -544,7 +544,7 @@
     "brief_discord_message_id": "1491551634205966566",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.575291+00:00",
+    "last_seen": "2026-04-15T17:00:04.946623+00:00",
     "status": "UI DESIGN",
     "key": "SCRUM-179",
     "summary": "Ring UI: Activity \u6212\u6307\u4ea4\u4e92\uff1a\u8fd0\u52a8\u4fe1\u606f\u6a21\u5757"
@@ -555,7 +555,7 @@
     "brief_discord_message_id": "1491551664556212408",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.573194+00:00",
+    "last_seen": "2026-04-15T17:00:04.943353+00:00",
     "status": "UI DESIGN"
   },
   "SCRUM-177": {
@@ -564,7 +564,7 @@
     "brief_discord_message_id": "1491551701659025499",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.570340+00:00",
+    "last_seen": "2026-04-15T17:00:04.936664+00:00",
     "status": "UI DESIGN"
   },
   "SCRUM-225": {
@@ -573,7 +573,7 @@
     "brief_discord_message_id": "1493382637560266904",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.562017+00:00",
+    "last_seen": "2026-04-15T17:00:04.904642+00:00",
     "status": "UI DESIGN"
   },
   "SCRUM-226": {
@@ -582,7 +582,7 @@
     "brief_discord_message_id": "1494018772078694553",
     "figma_check_count": 0,
     "quality_passed": false,
-    "last_seen": "2026-04-15T16:57:13.559728+00:00",
+    "last_seen": "2026-04-15T17:00:04.892245+00:00",
     "status": "UI DESIGN"
   }
 }
