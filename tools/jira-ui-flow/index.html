@@ -2102,7 +2102,13 @@ function renderStats() {
 }
 
 function renderTable() {
-  const tickets = Object.values(allTickets).filter(t => isTicketInScope(t.key).inScope && matchesFilter(t, activeFilter));
+  const tickets = Object.values(allTickets)
+    .filter(t => isTicketInScope(t.key).inScope && matchesFilter(t, activeFilter))
+    .sort((a, b) => {
+      const numA = parseInt((a.key || '').split('-')[1]) || 0;
+      const numB = parseInt((b.key || '').split('-')[1]) || 0;
+      return numB - numA;
+    });
   const tbody = document.getElementById('ticket-tbody');
   document.getElementById('ticket-count-label').textContent =
     tickets.length + ' ticket' + (tickets.length !== 1 ? 's' : '') + ' shown';
