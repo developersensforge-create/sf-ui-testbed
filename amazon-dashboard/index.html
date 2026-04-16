@@ -354,18 +354,9 @@ function setDate(btn,d){
   renderCampaigns();
   renderKeywordsTab();
   filterST();
-  // Auto-switch search terms sub-tab
-  if(d==='apr3'){
-    document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.sub-pane').forEach(p=>p.classList.remove('active'));
-    const s3btn=document.querySelector('.sub-tab:nth-child(2)');
-    if(s3btn){s3btn.classList.add('active');}
-    const s3pane=document.getElementById('s3');
-    if(s3pane){s3pane.classList.add('active');}
-    const s9pane=document.getElementById('s9');
-    if(s9pane){s9pane.classList.remove('active');}
-    curSub='s3';
-  } else {
+  // Auto-switch search terms sub-tab — use filterST() which is date-aware
+  filterST();
+  if(false){
     document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
     document.querySelectorAll('.sub-pane').forEach(p=>p.classList.remove('active'));
     const s9btn=document.querySelector('.sub-tab:nth-child(1)');
@@ -542,19 +533,44 @@ function renderST(data, bodyId){
   }).join('');
 }
 
+function getSTData(date){
+  const map={
+    'apr3': apr3ST, 'apr9': apr9ST,
+    'apr14': apr14ST, 'apr15': apr15ST
+  };
+  // fallback: find nearest date with data
+  if(map[date]) return map[date];
+  const order=['apr15','apr14','apr9','apr3'];
+  for(const d of order){ if(map[d]) return map[d]; }
+  return [];
+}
+function getSTBodyId(date){
+  const map={
+    'apr3':'st3b','apr9':'st9b','apr14':'s14-body','apr15':'s15-body'
+  };
+  return map[date]||'st9b';
+}
 function filterST(){
   const q=(document.getElementById('st-q').value||'').toLowerCase();
   const f=document.getElementById('st-f').value;
-  // Auto-switch sub-tab based on date selection
-  if(curDate==='apr3'){curSub='s3';}
-  else if(curDate!=='all'){curSub='s9';}
-  const src=curSub==='s9'?apr9ST:apr3ST;
-  const bid=curSub==='s9'?'st9b':'st3b';
+  const activeDate=curDate==='all'?'apr15':curDate;
+  // Show the correct sub-pane for this date
+  const paneMap={apr3:'s3',apr9:'s9',apr14:'s14',apr15:'s15'};
+  const targetPane=paneMap[activeDate]||'s15';
+  document.querySelectorAll('.sub-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
+  const pane=document.getElementById(targetPane);
+  if(pane) pane.classList.add('active');
+  // Also highlight the matching sub-tab
+  const tabs=document.querySelectorAll('.sub-tab');
+  tabs.forEach(t=>{if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+targetPane+"'"))t.classList.add('active');});
+  const src=getSTData(activeDate);
+  const bodyId=getSTBodyId(activeDate);
   renderSTFiltered(src.filter(r=>{
-    const mq=!q||r.term.toLowerCase().includes(q)||r.keyword.toLowerCase().includes(q);
+    const mq=!q||r.term.toLowerCase().includes(q)||(r.keyword||'').toLowerCase().includes(q);
     const mf=f==='all'||(f==='conv'&&r.orders>0&&r.roas>=1.5)||(f==='waste'&&r.spend>=5&&r.orders===0);
     return mq&&mf;
-  }),bid);
+  }),bodyId);
 }
 
 function renderSTFiltered(data,bodyId){
