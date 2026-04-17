@@ -93,8 +93,8 @@ select{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px
 <body>
 
 <div class="header">
-  <div><h1>🛒 SensForge Amazon Ads Dashboard</h1><div class="sub">Apr 3 · Apr 6 · Apr 7 · Apr 8 · Apr 9 · Goal: 2.0x ROAS</div></div>
-  <div style="font-size:11px;color:rgba(255,255,255,0.5)">Last updated: Apr 10, 2026</div>
+  <div><h1>🛒 SensForge Amazon Ads Dashboard</h1><div class="sub">Apr 3 → Apr 16 · Goal: 2.0x ROAS</div></div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.5)">Last updated: Apr 16, 2026</div>
 </div>
 <div class="date-bar">
   <button class="date-btn active" onclick="setDate(this,'all')">📊 All Days</button>
@@ -413,7 +413,7 @@ function renderKPIs(){
 // ===== OVERVIEW CHARTS =====
 function renderOverview(){
   // ROAS bars — highlight selected date
-  const allDays=[['Apr 3','apr3',2.19],['Apr 6','apr6',1.81],['Apr 7','apr7',1.56],['Apr 8','apr8',1.27],['Apr 9','apr9',2.00],['Apr 10','apr10',2.00],['Apr 11','apr11',1.65],['Apr 12','apr12',1.73]];
+  const allDays=[['Apr 3','apr3',2.19],['Apr 6','apr6',1.81],['Apr 7','apr7',1.56],['Apr 8','apr8',1.27],['Apr 9','apr9',2.00],['Apr 10','apr10',2.00],['Apr 11','apr11',1.65],['Apr 12','apr12',1.73],['Apr 13','apr13',1.62],['Apr 14','apr14',1.65],['Apr 15','apr15',1.88],['Apr 16','apr16',1.68]];
   document.getElementById('roas-bars').innerHTML=allDays.map(([d,key,r])=>{
     const isSelected=curDate!=='all'&&curDate===key;
     const c=r>=1.8?'var(--green)':r>=1.0?'var(--amber)':'var(--red)';
@@ -426,8 +426,18 @@ function renderOverview(){
 
   // Spend by type
   const spendDays=[
-    ['Apr 3',[1138,171,18,268]],['Apr 6',[815,92,9,366]],['Apr 7',[783,122,5,261]],
-    ['Apr 8',[625,154,10,185]],['Apr 9',[738,154,10,218]]
+    ['Apr 3',[1138,171,18,268]],
+    ['Apr 6',[816,92,9,365]],
+    ['Apr 7',[783,122,5,261]],
+    ['Apr 8',[625,102,10,237]],
+    ['Apr 9',[738,79,10,307]],
+    ['Apr 10',[690,74,10,360]],
+    ['Apr 11',[689,81,12,411]],
+    ['Apr 12',[712,85,18,507]],
+    ['Apr 13',[471,84,16,593]],
+    ['Apr 14',[849,130,23,297]],
+    ['Apr 15',[867,130,23,327]],
+    ['Apr 16',[829,130,23,266]]
   ];
   const colors=['var(--orange)','var(--red)','var(--green)','var(--blue)'];
   const labels=['C2 Mix','BC22','Branded','Auto+Other'];
@@ -539,11 +549,11 @@ function renderST(data, bodyId){
 function getSTData(date){
   const map={
     'apr3': apr3ST, 'apr9': apr9ST,
-    'apr14': apr14ST, 'apr15': apr15ST
+    'apr14': apr14ST, 'apr15': apr15ST, 'apr16': apr16ST
   };
   // fallback: find nearest date with data
   if(map[date]) return map[date];
-  const order=['apr15','apr14','apr9','apr3'];
+  const order=['apr16','apr15','apr14','apr9','apr3'];
   for(const d of order){ if(map[d]) return map[d]; }
   return [];
 }
@@ -556,7 +566,7 @@ function getSTBodyId(date){
 function filterST(){
   const q=(document.getElementById('st-q').value||'').toLowerCase();
   const f=document.getElementById('st-f').value;
-  const activeDate=curDate==='all'?'apr15':curDate;
+  const activeDate=curDate==='all'?'apr16':curDate;
   // Show the correct sub-pane for this date
   const paneMap={apr3:'s3',apr9:'s9',apr14:'s14',apr15:'s15',apr16:'s16'};
   const targetPane=paneMap[activeDate]||'s15';
