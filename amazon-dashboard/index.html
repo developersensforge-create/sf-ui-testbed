@@ -225,7 +225,7 @@ select{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px
     <div class="tbl-wrap">
       <table id="kwrec"><thead><tr>
         <th>Keyword</th>
-        <th>Apr 3</th><th>Apr 6</th><th>Apr 7</th><th>Apr 8</th><th>Apr 9</th>
+        <th>A3</th><th>A6</th><th>A7</th><th>A8</th><th>A9</th><th>A10</th><th>A11</th><th>A12</th><th>A13</th><th>A14</th><th>A15</th><th>A16</th>
         <th>Trend</th>
         <th onclick="srt('kwrec',7)">Profitable ↕</th>
         <th>Action</th>
@@ -312,9 +312,9 @@ const campaigns=[
 ];
 
 const keywords=[
-  {kw:"indoor camera",         apr3:1.73,apr6:2.27,apr7:1.51,apr8:1.40,apr9:1.56,apr10:0.61,apr11:null,apr12:2.26,apr13:1.31,apr14:1.07,prof:5,rec:"✅ KEEP — volatile, scale carefully"},
-  {kw:"home security",         apr3:1.91,apr6:1.44,apr7:0.66,apr8:null,apr9:0.89,prof:2,rec:"⬇️ Reduce bid $2.20→$1.80"},
-  {kw:"baby monitor",          apr3:2.02,apr6:null,apr7:null,apr8:null,apr9:null,apr10:4.04,apr11:null,apr12:1.18,apr13:1.68,apr14:4.27,apr15:0.9,prof:3,rec:"✅ Keep — high avg ROAS, volatile daily"},
+  {kw:"indoor camera",         apr3:1.73,apr6:2.27,apr7:1.51,apr8:1.40,apr9:1.56,apr10:0.61,apr11:null,apr12:2.26,apr13:1.31,apr14:1.07,apr15:0.87,apr16:1.25,prof:5,rec:"⚠️ Reduce bid $2.50→$2.20 — volatile but volume driver"},
+  {kw:"home security",         apr3:1.91,apr6:1.44,apr7:0.66,apr8:null,apr9:0.89,apr10:1.17,apr11:null,apr12:0.32,apr13:0.98,apr14:5.32,apr15:null,apr16:5.32,prof:4,rec:"✅ Keep — often converts well, add targeted negatives"},
+  {kw:"baby monitor",          apr3:2.02,apr6:null,apr7:null,apr8:null,apr9:null,apr10:4.04,apr11:null,apr12:1.18,apr13:1.68,apr14:4.27,apr15:0.9,apr16:null,prof:4,rec:"✅ Scale bid — avg 2.8x across 6 days"},
   {kw:"home camera",           apr3:1.77,apr6:2.71,apr7:0,   apr8:0.68,apr9:0,   prof:2,rec:"⬇️ Reduce bid $2.00→$1.40"},
   {kw:"wifi camera",           apr3:2.97,apr6:0,   apr7:0,   apr8:0,   apr9:0,   prof:1,rec:"⬆️ Raise bid $1.20→$1.80"},
   {kw:"security cameras",      apr3:1.67,apr6:null,apr7:null,apr8:null,apr9:null, prof:1,rec:"🚨 RESTORE to ad group"},
@@ -487,7 +487,7 @@ function renderKeywordsTab(){
   // Trend bars per keyword
   const colors=['#f96400','#007aff','#34c759','#963af6','#ff9500'];
   const days=['apr3','apr6','apr7','apr8','apr9','apr10','apr11','apr12','apr13','apr14','apr15','apr16'];
-  const dayLabels=['Apr3','Apr6','Apr7','Apr8','Apr9'];
+  const dayLabels=['Apr3','Apr6','Apr7','Apr8','Apr9','Apr10','Apr11','Apr12','Apr13','Apr14','Apr15','Apr16'];
   const topKw=keywords.slice(0,5);
   document.getElementById('kw-trend-bars').innerHTML=topKw.map((k,i)=>{
     const vals=days.map(d=>k[d]);
@@ -511,7 +511,7 @@ function renderKeywordsTab(){
 
   // Recommendation table
   document.getElementById('kwrec-body').innerHTML=keywords.map(k=>{
-    const vals=[k.apr3,k.apr6,k.apr7,k.apr8,k.apr9];
+    const vals=[k.apr3,k.apr6,k.apr7,k.apr8,k.apr9,k.apr10,k.apr11,k.apr12,k.apr13,k.apr14,k.apr15,k.apr16];
     const dots=vals.map(v=>{
       if(v===null)return'<span class="sd" style="background:#e0e0e0" title="No data"></span>';
       if(v>=1.8)return'<span class="sd" style="background:#34c759" title="'+v+'x"></span>';
