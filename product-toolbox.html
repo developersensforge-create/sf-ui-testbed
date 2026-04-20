@@ -45,12 +45,22 @@
     .login-user-name { font-weight: 700; color: #0f1b2d; font-size: 14px; }
     .login-user-role { font-size: 12px; color: #7a9bb5; }
     .login-divider { border: none; border-top: 1px solid #f0f4f8; margin: 18px 0; }
-    .login-guest-btn {
+    .login-other-wrap { text-align: left; }
+    .login-other-label { font-size: 12px; color: #7a9bb5; margin-bottom: 8px; display: block; text-align: center; }
+    .login-other-fields { display: flex; flex-direction: column; gap: 8px; }
+    .login-other-input {
+      width: 100%; padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 10px;
+      font-size: 14px; color: #0f1b2d; font-family: inherit; outline: none;
+      transition: border-color 0.15s;
+    }
+    .login-other-input:focus { border-color: #f96400; }
+    .login-other-btn {
       width: 100%; padding: 11px; background: #f0f4f8; border: none;
-      border-radius: 10px; color: #7a9bb5; font-size: 13px; font-weight: 600;
+      border-radius: 10px; color: #0f1b2d; font-size: 13px; font-weight: 700;
       cursor: pointer; transition: background 0.15s;
     }
-    .login-guest-btn:hover { background: #e0eaf0; color: #0f1b2d; }
+    .login-other-btn:hover { background: #e0eaf0; }
+    .login-error { font-size: 12px; color: #dc2626; margin-top: 4px; display: none; text-align: center; }
 
     /* ── Header ── */
     .site-header {
@@ -148,26 +158,34 @@
         <div class="login-avatar">RH</div>
         <div class="login-user-info">
           <span class="login-user-name">Ruizhi</span>
-          <span class="login-user-role">Product Leader</span>
+          <span class="login-user-role">Product</span>
         </div>
       </button>
       <button class="login-user-btn" onclick="loginAs('Anna', 'Product Experience', 'AN', 'blue')">
         <div class="login-avatar blue">AN</div>
         <div class="login-user-info">
           <span class="login-user-name">Anna</span>
-          <span class="login-user-role">Product Experience</span>
+          <span class="login-user-role">Product</span>
         </div>
       </button>
       <button class="login-user-btn" onclick="loginAs('Wenbin', 'Product Manager', 'WB', 'green')">
         <div class="login-avatar green">WB</div>
         <div class="login-user-info">
           <span class="login-user-name">Wenbin</span>
-          <span class="login-user-role">Product Manager</span>
+          <span class="login-user-role">Product</span>
         </div>
       </button>
     </div>
     <div class="login-divider"></div>
-    <button class="login-guest-btn" onclick="loginAs('Guest', 'View Only', 'G', 'purple')">Continue as Guest (view only)</button>
+    <div class="login-other-wrap">
+      <span class="login-other-label">Other team member? Enter your name and password</span>
+      <div class="login-other-fields">
+        <input class="login-other-input" id="otherName" type="text" placeholder="Your name" />
+        <input class="login-other-input" id="otherPassword" type="password" placeholder="Password" onkeydown="if(event.key==='Enter') loginOther()" />
+        <button class="login-other-btn" onclick="loginOther()">Sign In →</button>
+        <div class="login-error" id="loginError">Incorrect password. Please try again.</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -195,6 +213,7 @@
 
 <script>
   const PRIVILEGED = ['Ruizhi', 'Anna', 'Wenbin'];
+  const OTHER_PASSWORD = 'sf2026';
   const AVATAR_COLORS = { '': '#f96400', 'blue': '#1a6bc9', 'green': '#1a9c4e', 'purple': '#7b2d9c' };
 
   const TOOLS = [
@@ -224,6 +243,17 @@
       restricted: true,
     },
   ];
+
+  function loginOther() {
+    const name = document.getElementById('otherName').value.trim();
+    const pw = document.getElementById('otherPassword').value;
+    const err = document.getElementById('loginError');
+    if (!name) { err.textContent = 'Please enter your name.'; err.style.display = 'block'; return; }
+    if (pw !== OTHER_PASSWORD) { err.textContent = 'Incorrect password. Please try again.'; err.style.display = 'block'; return; }
+    err.style.display = 'none';
+    const initials = name.slice(0,2).toUpperCase();
+    loginAs(name, 'Product', initials, 'purple');
+  }
 
   function loginAs(name, role, initials, colorKey) {
     sessionStorage.setItem('toolbox_user', JSON.stringify({ name, role, initials, colorKey }));
