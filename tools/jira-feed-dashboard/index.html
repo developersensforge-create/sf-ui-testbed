@@ -369,7 +369,38 @@ Low — minor improvement with unclear user value
 Lowest — questionable, very low value or high resource cost
 Note: visual-only changes should never exceed Medium`;
 
-  let feeds = JSON.parse(localStorage.getItem('jira_feeds') || '[]');
+  const DEFAULT_FEEDS = [
+    {
+      id: 'feed_cs_returns',
+      name: 'Monthly Return Analysis & Improvement Tracker',
+      url: 'https://docs.google.com/spreadsheets/d/1o9fy9t4Ga8_4c7XGvHYdKEgK5RlNxW0YWm0hUiJpr3w/edit',
+      label: 'CS',
+      project: 'SCRUM',
+      priority: DEFAULT_PRIORITY,
+      date: '2026-04-16',
+      autoRefresh: false,
+      dupeCheck: true,
+      lastRun: 'Apr 16, 2026',
+      lastTickets: 'SCRUM-228 → SCRUM-243 (16 tickets)',
+    },
+    {
+      id: 'feed_mkt_changes',
+      name: 'Product Change Requests (Marketing)',
+      url: 'https://docs.google.com/spreadsheets/d/1dyg6R__sbtPqqjFPfb8BFLIqkXpfqD83bPnhmrr0j3E/edit',
+      label: 'MKT',
+      project: 'SCRUM',
+      priority: DEFAULT_PRIORITY,
+      date: '2026-03-20',
+      autoRefresh: true,
+      dupeCheck: true,
+      lastRun: 'Apr 19, 2026',
+      lastTickets: 'SCRUM-246 → SCRUM-254 (9 tickets)',
+    },
+  ];
+
+  const stored = localStorage.getItem('jira_feeds');
+  let feeds = stored ? JSON.parse(stored) : DEFAULT_FEEDS;
+  if (!stored) localStorage.setItem('jira_feeds', JSON.stringify(DEFAULT_FEEDS));
   let editingId = null;
 
   function saveFeeds() {
@@ -390,7 +421,7 @@ Note: visual-only changes should never exceed Medium`;
           <div>
             <div class="feed-name">${f.name}</div>
             <div class="feed-url">${f.url}</div>
-            <div class="feed-meta">Project: ${f.project} · From: ${f.date || 'All dates'}</div>
+            <div class="feed-meta">Project: ${f.project} · From: ${f.date || 'All dates'}${f.lastTickets ? ' · ' + f.lastTickets : ''}</div>
           </div>
           <span class="label-badge ${labelClass}">${f.label}</span>
         </div>
