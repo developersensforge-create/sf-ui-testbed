@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jira Feed Dashboard — Product Dev Tools</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1b2d;
+      --accent: #f96400;
+      --accent2: #ff8c2f;
+      --card: #fff;
+      --card-radius: 12px;
+      --card-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --secondary: #7a9bb5;
+      --surface: #162236;
+      --border: #1e3050;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: var(--font);
+      color: #e8f0f8;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    header .logo {
+      font-size: 28px;
+    }
+    header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+    }
+    header p {
+      font-size: 13px;
+      color: var(--secondary);
+      margin-top: 2px;
+    }
+    header .badge {
+      margin-left: auto;
+      background: rgba(249,100,0,0.15);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* ── Layout ── */
+    .main {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 24px;
+      padding: 28px 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--secondary);
+      margin-bottom: 14px;
+    }
+
+    /* ── Feed cards ── */
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .feed-card {
+      background: var(--card);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      padding: 16px 18px;
+      color: #1a2a40;
+    }
+    .feed-card-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .feed-card-name {
+      font-weight: 700;
+      font-size: 15px;
+      flex: 1;
+    }
+    .channel-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(249,100,0,0.12);
+      color: var(--accent);
+      border: 1px solid rgba(249,100,0,0.3);
+    }
+    .feed-card-meta {
+      font-size: 12px;
+      color: #6b8099;
+      margin-bottom: 12px;
+    }
+    .feed-card-meta span { margin-right: 14px; }
+    .feed-card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      font-family: var(--font);
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: opacity .15s, transform .1s;
+    }
+    .btn:hover { opacity: .88; }
+    .btn:active { transform: scale(.97); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+    .btn-secondary {
+      background: #f0f4f8;
+      color: #3a5068;
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--secondary);
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+    .btn-danger {
+      background: transparent;
+      border: 1px solid #e55;
+      color: #e55;
+      padding: 8px 14px;
+      font-size: 13px;
+    }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    .add-btn {
+      margin-top: 14px;
+      width: 100%;
+      background: rgba(249,100,0,0.08);
+      border: 2px dashed rgba(249,100,0,0.4);
+      color: var(--accent);
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: var(--card-radius);
+      cursor: pointer;
+      transition: background .15s;
+      font-family: var(--font);
+    }
+    .add-btn:hover { background: rgba(249,100,0,0.15); }
+
+    /* ── Right panel ── */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .log-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--secondary);
+      margin-bottom: 8px;
+    }
+    textarea#runLog {
+      width: 100%;
+      height: 420px;
+      background: #0a1525;
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      color: #b8d4ee;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px;
+      resize: vertical;
+      outline: none;
+    }
+    .right-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .right-actions .btn-primary { flex: 1; text-align: center; padding: 14px; font-size: 15px; }
+
+    /* ── Modal overlay ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5,12,25,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: #162236;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 16px 60px rgba(0,0,0,0.5);
+      width: 560px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+    }
+    .modal h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+
+    /* ── Form ── */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--secondary);
+      margin-bottom: 6px;
+    }
+    input[type="text"],
+    input[type="date"],
+    select,
+    textarea.form-textarea {
+      width: 100%;
+      background: #0f1b2d;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #e8f0f8;
+      font-family: var(--font);
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    input:focus, select:focus, textarea.form-textarea:focus {
+      border-color: var(--accent);
+    }
+    select option { background: #0f1b2d; }
+    textarea.form-textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+
+    /* Toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .toggle-row label { margin: 0; }
+    .toggle {
+      position: relative;
+      width: 46px;
+      height: 26px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: var(--border);
+      border-radius: 26px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .slider::before {
+      content: '';
+      position: absolute;
+      width: 20px; height: 20px;
+      left: 3px; top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform .2s;
+    }
+    .toggle input:checked + .slider { background: var(--accent); }
+    .toggle input:checked + .slider::before { transform: translateX(20px); }
+
+    /* Checkbox */
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #e8f0f8;
+    }
+    .check-row input[type="checkbox"] {
+      width: 18px; height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .modal-actions .btn-primary { flex: 1; padding: 13px; font-size: 15px; }
+    .modal-actions .btn-ghost { padding: 13px 22px; font-size: 14px; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 14px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(249,100,0,0.35);
+      z-index: 200;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: transform .3s, opacity .3s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--secondary);
+      font-size: 14px;
+    }
+    .empty-state .icon { font-size: 36px; margin-bottom: 10px; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">📋</div>
+  <div>
+    <h1>Jira Feed Dashboard</h1>
+    <p>Product Dev Tools</p>
+  </div>
+  <div class="badge">Internal Tool</div>
+</header>
+
+<!-- Main layout -->
+<div class="main">
+
+  <!-- LEFT: Feed Sources -->
+  <div class="left-col">
+    <div class="section-title">Feed Sources</div>
+    <div class="feed-list" id="feedList">
+      <!-- cards injected by JS -->
+    </div>
+    <button class="add-btn" onclick="openModal()">＋ Add Feed Source</button>
+  </div>
+
+  <!-- RIGHT: Log -->
+  <div class="right-panel">
+    <div class="log-label">Preview / Run Log</div>
+    <textarea id="runLog" readonly placeholder="Run a feed source to see a preview here…"></textarea>
+    <div class="right-actions">
+      <button class="btn btn-primary" onclick="createAllTickets()">🎟 Create All Tickets</button>
+      <button class="btn btn-ghost" onclick="clearLog()">Clear Log</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">Add Feed Source</h2>
+
+    <input type="hidden" id="editIndex" value="-1" />
+
+    <div class="form-group">
+      <label>Source Name</label>
+      <input type="text" id="fName" placeholder="e.g. CS Feedback Sheet – April" />
+    </div>
+
+    <div class="form-group">
+      <label>URL <span style="color:#7a9bb5;font-weight:400">(Google Sheet URL)</span></label>
+      <input type="text" id="fUrl" placeholder="https://docs.google.com/spreadsheets/d/…" />
+    </div>
+
+    <div class="form-group">
+      <label>Channel Label</label>
+      <select id="fChannel">
+        <option value="CS">CS — Customer Service</option>
+        <option value="MKT">MKT — Marketing</option>
+        <option value="PD">PD — Product</option>
+        <option value="Custom">Custom</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Priority Rules</label>
+      <textarea class="form-textarea" id="fPriority">Highest: Impacts many users OR major revenue loss
+High: Customer feedback + significant UX impact
+Medium: Cosmetic/UX polish, nice-to-have
+Low: Minor improvement, unclear user value
+Lowest: Very low value or high cost</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Starting From Date</label>
+      <input type="date" id="fDate" />
+    </div>
+
+    <div class="form-group">
+      <div class="check-row">
+        <input type="checkbox" id="fAutoRefresh" />
+        <label for="fAutoRefresh" style="margin:0;font-size:14px;color:#e8f0f8">Auto Refresh (daily at 7:00 AM EST)</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Jira Project</label>
+      <select id="fProject">
+        <option value="SCRUM">SCRUM</option>
+        <option value="NEX">NEX</option>
+        <option value="SWC">SWC</option>
+        <option value="SDB">SDB</option>
+        <option value="SFAI">SFAI</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <div class="toggle-row">
+        <label>Duplicate Check</label>
+        <label class="toggle">
+          <input type="checkbox" id="fDupCheck" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="saveAndPreview()">💾 Save &amp; Preview</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const STORAGE_KEY = 'jira_feed_sources_v1';
+
+  function loadSources() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch { return []; }
+  }
+  function saveSources(sources) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sources));
+  }
+
+  function formatDate(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function renderFeeds() {
+    const sources = loadSources();
+    const list = document.getElementById('feedList');
+    if (sources.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="icon">📂</div>No feed sources yet.<br>Add one to get started.</div>`;
+      return;
+    }
+    list.innerHTML = sources.map((s, i) => `
+      <div class="feed-card">
+        <div class="feed-card-top">
+          <div class="feed-card-name">${esc(s.name)}</div>
+          <span class="channel-badge">${esc(s.channel)}</span>
+        </div>
+        <div class="feed-card-meta">
+          <span>🗂 ${esc(s.project)}</span>
+          <span>📅 From: ${formatDate(s.startDate)}</span>
+          <span>⏱ Last run: ${s.lastRun ? s.lastRun : 'Never'}</span>
+          ${s.autoRefresh ? '<span>🔄 Auto</span>' : ''}
+          ${s.dupCheck ? '<span>🛡 Dup-check</span>' : ''}
+        </div>
+        <div class="feed-card-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editFeed(${i})">✏️ Edit</button>
+          <button class="btn btn-primary btn-sm" onclick="runFeed(${i})">▶ Run Now</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteFeed(${i})" style="margin-left:auto">🗑</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function esc(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function openModal(idx = -1) {
+    document.getElementById('editIndex').value = idx;
+    const overlay = document.getElementById('modalOverlay');
+    overlay.classList.add('open');
+
+    if (idx === -1) {
+      document.getElementById('modalTitle').textContent = 'Add Feed Source';
+      document.getElementById('fName').value = '';
+      document.getElementById('fUrl').value = '';
+      document.getElementById('fChannel').value = 'CS';
+      document.getElementById('fPriority').value = `Highest: Impacts many users OR major revenue loss\nHigh: Customer feedback + significant UX impact\nMedium: Cosmetic/UX polish, nice-to-have\nLow: Minor improvement, unclear user value\nLowest: Very low value or high cost`;
+      document.getElementById('fDate').value = '';
+      document.getElementById('fAutoRefresh').checked = false;
+      document.getElementById('fProject').value = 'SCRUM';
+      document.getElementById('fDupCheck').checked = true;
+    } else {
+      const sources = loadSources();
+      const s = sources[idx];
+      document.getElementById('modalTitle').textContent = 'Edit Feed Source';
+      document.getElementById('fName').value = s.name;
+      document.getElementById('fUrl').value = s.url;
+      document.getElementById('fChannel').value = s.channel;
+      document.getElementById('fPriority').value = s.priority;
+      document.getElementById('fDate').value = s.startDate || '';
+      document.getElementById('fAutoRefresh').checked = !!s.autoRefresh;
+      document.getElementById('fProject').value = s.project;
+      document.getElementById('fDupCheck').checked = !!s.dupCheck;
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  function editFeed(idx) { openModal(idx); }
+
+  function deleteFeed(idx) {
+    if (!confirm('Delete this feed source?')) return;
+    const sources = loadSources();
+    sources.splice(idx, 1);
+    saveSources(sources);
+    renderFeeds();
+  }
+
+  function saveAndPreview() {
+    const name = document.getElementById('fName').value.trim();
+    const url  = document.getElementById('fUrl').value.trim();
+    if (!name) { alert('Please enter a Source Name.'); return; }
+    if (!url)  { alert('Please enter a URL.'); return; }
+
+    const idx      = parseInt(document.getElementById('editIndex').value, 10);
+    const sources  = loadSources();
+    const channel  = document.getElementById('fChannel').value;
+    const priority = document.getElementById('fPriority').value;
+    const startDate = document.getElementById('fDate').value;
+    const autoRefresh = document.getElementById('fAutoRefresh').checked;
+    const project  = document.getElementById('fProject').value;
+    const dupCheck = document.getElementById('fDupCheck').checked;
+    const now      = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'short', timeStyle: 'short' });
+
+    const entry = { name, url, channel, priority, startDate, autoRefresh, project, dupCheck, lastRun: now };
+
+    if (idx === -1) sources.push(entry);
+    else sources[idx] = entry;
+
+    saveSources(sources);
+    closeModal();
+    renderFeeds();
+
+    // Mock preview
+    const log = document.getElementById('runLog');
+    const ts  = new Date().toLocaleTimeString();
+    const rows = Math.floor(Math.random() * 5) + 3;
+    let preview = `[${ts}] Running: ${name}\n`;
+    preview += `Source URL: ${url}\n`;
+    preview += `Project: ${project} | Channel: [${channel}]\n`;
+    if (startDate) preview += `Filtering from: ${formatDate(startDate)}\n`;
+    if (dupCheck) preview += `Duplicate check: ON\n`;
+    preview += `─────────────────────────────────\n`;
+    const mockItems = [
+      `[${channel}] Improve onboarding flow — Priority: High`,
+      `[${channel}] Fix login timeout on mobile — Priority: Highest`,
+      `[${channel}] Add dark mode toggle — Priority: Medium`,
+      `[${channel}] Notification settings reset on update — Priority: High`,
+      `[${channel}] Performance lag on Events tab — Priority: High`,
+      `[${channel}] Camera offline alert delay — Priority: High`,
+      `[${channel}] Export button missing in Reports — Priority: Medium`,
+    ];
+    for (let i = 0; i < rows; i++) {
+      preview += `• ${mockItems[i % mockItems.length]}\n`;
+    }
+    preview += `─────────────────────────────────\n`;
+    preview += `✅ ${rows} ticket(s) ready to create in ${project}\n\n`;
+    log.value = preview + log.value;
+    showToast(`✅ "${name}" saved and preview generated!`);
+  }
+
+  function runFeed(idx) {
+    const sources = loadSources();
+    const s = sources[idx];
+    const now = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'short', timeStyle: 'short' });
+    sources[idx].lastRun = now;
+    saveSources(sources);
+    renderFeeds();
+
+    const log = document.getElementById('runLog');
+    const ts  = new Date().toLocaleTimeString();
+    const rows = Math.floor(Math.random() * 4) + 2;
+    let preview = `[${ts}] Running: ${s.name}\n`;
+    preview += `Project: ${s.project} | Channel: [${s.channel}]\n`;
+    preview += `─────────────────────────────────\n`;
+    const mockItems = [
+      `[${s.channel}] Subscription renewal notification — Priority: High`,
+      `[${s.channel}] Camera thumbnail not loading — Priority: High`,
+      `[${s.channel}] Two-factor auth not sending SMS — Priority: Highest`,
+      `[${s.channel}] Improve clip sharing UX — Priority: Medium`,
+      `[${s.channel}] Add battery level indicator — Priority: Low`,
+    ];
+    for (let i = 0; i < rows; i++) {
+      preview += `• ${mockItems[i % mockItems.length]}\n`;
+    }
+    preview += `─────────────────────────────────\n`;
+    preview += `✅ ${rows} ticket(s) ready to create in ${s.project}\n\n`;
+    log.value = preview + log.value;
+    showToast(`▶ "${s.name}" run complete — ${rows} items previewed`);
+  }
+
+  function createAllTickets() {
+    const log = document.getElementById('runLog');
+    if (!log.value.trim()) {
+      showToast('⚠️ Run a feed source first to generate a preview.');
+      return;
+    }
+    showToast('🎟 All tickets queued for creation in Jira!');
+  }
+
+  function clearLog() {
+    document.getElementById('runLog').value = '';
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  // Close modal on overlay click
+  document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Init
+  renderFeeds();
+</script>
+</body>
+</html>

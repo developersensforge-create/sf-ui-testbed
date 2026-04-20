@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Toolbox — SensForge</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1b2d;
+      --accent: #f96400;
+      --accent2: #ff8c2f;
+      --card: #fff;
+      --card-radius: 12px;
+      --card-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --secondary: #7a9bb5;
+      --surface: #162236;
+      --border: #1e3050;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: var(--font);
+      color: #e8f0f8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 22px 40px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .header-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    header h1 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+    }
+    header span.org {
+      color: var(--accent);
+    }
+    header p {
+      font-size: 13px;
+      color: var(--secondary);
+      margin-top: 2px;
+    }
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .env-badge {
+      background: rgba(249,100,0,0.12);
+      border: 1px solid rgba(249,100,0,0.3);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 60px 24px 40px;
+    }
+    .hero h2 {
+      font-size: 36px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .hero h2 span { color: var(--accent); }
+    .hero p {
+      font-size: 16px;
+      color: var(--secondary);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── Tools grid ── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      padding: 0 40px 60px;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .tool-card {
+      background: var(--card);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      padding: 30px 28px;
+      color: #1a2a40;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform .18s, box-shadow .18s;
+      position: relative;
+      overflow: hidden;
+    }
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    }
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity .18s;
+    }
+    .tool-card:hover::before { opacity: 1; }
+
+    .tool-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .tool-icon {
+      font-size: 36px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .tool-meta { flex: 1; }
+    .tool-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: #1a2a40;
+      margin-bottom: 2px;
+    }
+    .tool-desc {
+      font-size: 13px;
+      color: #5a7490;
+      line-height: 1.5;
+    }
+
+    .tool-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tool-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .badge-new {
+      background: rgba(249,100,0,0.1);
+      color: var(--accent);
+      border: 1px solid rgba(249,100,0,0.3);
+    }
+    .badge-tag {
+      background: #eef4fa;
+      color: #4a6e8a;
+      border: 1px solid #d0e2f0;
+    }
+
+    .tool-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin-top: auto;
+      width: fit-content;
+      transition: opacity .15s;
+    }
+    .tool-card:hover .tool-cta { opacity: .9; }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 20px 40px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--secondary);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="header-logo">🛠</div>
+  <div>
+    <h1><span class="org">SensForge</span> Product Toolbox</h1>
+    <p>Internal tools for the product &amp; dev team</p>
+  </div>
+  <div class="header-right">
+    <div class="env-badge">Internal</div>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="hero">
+  <h2>Your <span>Dev Tools</span> Hub</h2>
+  <p>All internal product and development tools in one place. Fast access, no setup required.</p>
+</div>
+
+<!-- Tools Grid -->
+<div class="tools-grid">
+
+  <!-- Card 1: SF UI Testbed -->
+  <a class="tool-card" href="index.html">
+    <div class="tool-card-top">
+      <div class="tool-icon">🎨</div>
+      <div class="tool-meta">
+        <div class="tool-name">SF UI Testbed</div>
+        <div class="tool-desc">Interactive UI component playground for the SensForge design system. Preview, test, and iterate on UI patterns.</div>
+      </div>
+    </div>
+    <div class="tool-badges">
+      <span class="tool-badge badge-tag">Design System</span>
+      <span class="tool-badge badge-tag">Components</span>
+    </div>
+    <div class="tool-cta">Open Tool →</div>
+  </a>
+
+  <!-- Card 2: Jira UI Flow -->
+  <a class="tool-card" href="tools/jira-ui-flow/index.html">
+    <div class="tool-card-top">
+      <div class="tool-icon">🔄</div>
+      <div class="tool-meta">
+        <div class="tool-name">Jira UI Flow</div>
+        <div class="tool-desc">Visualize and manage Jira ticket workflows. Map user flows to sprints and track progress across teams.</div>
+      </div>
+    </div>
+    <div class="tool-badges">
+      <span class="tool-badge badge-tag">Jira</span>
+      <span class="tool-badge badge-tag">Workflow</span>
+    </div>
+    <div class="tool-cta">Open Tool →</div>
+  </a>
+
+  <!-- Card 3: Jira Feed Dashboard -->
+  <a class="tool-card" href="tools/jira-feed-dashboard/index.html">
+    <div class="tool-card-top">
+      <div class="tool-icon">📋</div>
+      <div class="tool-meta">
+        <div class="tool-name">Jira Feed Dashboard</div>
+        <div class="tool-desc">Connect Google Sheets as ticket sources. Preview, filter, and bulk-create Jira tickets with priority rules and duplicate detection.</div>
+      </div>
+    </div>
+    <div class="tool-badges">
+      <span class="tool-badge badge-new">New ✨</span>
+      <span class="tool-badge badge-tag">Jira</span>
+      <span class="tool-badge badge-tag">Automation</span>
+    </div>
+    <div class="tool-cta">Open Tool →</div>
+  </a>
+
+</div>
+
+<!-- Footer -->
+<footer>
+  SensForge Internal Tools &nbsp;·&nbsp; <a href="https://sensforge.com" target="_blank">sensforge.com</a> &nbsp;·&nbsp; Product Dev Team
+</footer>
+
+</body>
+</html>
