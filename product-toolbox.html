@@ -244,15 +244,39 @@
     },
   ];
 
-  function loginOther() {
+  let _pendingName = '', _pendingInitials = '', _pendingColor = '';
+
+  function selectUser(name, initials, colorKey) {
+    _pendingName = name; _pendingInitials = initials; _pendingColor = colorKey;
+    document.getElementById('step-select').style.display = 'none';
+    const step2 = document.getElementById('step-password');
+    step2.style.display = 'block';
+    const av = document.getElementById('pwAvatar');
+    av.textContent = initials;
+    av.style.background = AVATAR_COLORS[colorKey] || '#f96400';
+    document.getElementById('pwName').textContent = name;
+    document.getElementById('pwInput').value = '';
+    document.getElementById('loginError').style.display = 'none';
+    setTimeout(() => document.getElementById('pwInput').focus(), 50);
+  }
+
+  function selectOther() {
     const name = document.getElementById('otherName').value.trim();
-    const pw = document.getElementById('otherPassword').value;
+    if (!name) return;
+    selectUser(name, name.slice(0,2).toUpperCase(), 'purple');
+  }
+
+  function submitPassword() {
+    const pw = document.getElementById('pwInput').value;
     const err = document.getElementById('loginError');
-    if (!name) { err.textContent = 'Please enter your name.'; err.style.display = 'block'; return; }
-    if (pw !== OTHER_PASSWORD) { err.textContent = 'Incorrect password. Please try again.'; err.style.display = 'block'; return; }
+    if (pw !== OTHER_PASSWORD) { err.style.display = 'block'; document.getElementById('pwInput').value = ''; document.getElementById('pwInput').focus(); return; }
     err.style.display = 'none';
-    const initials = name.slice(0,2).toUpperCase();
-    loginAs(name, 'Product', initials, 'purple');
+    loginAs(_pendingName, 'Product', _pendingInitials, _pendingColor);
+  }
+
+  function backToSelect() {
+    document.getElementById('step-password').style.display = 'none';
+    document.getElementById('step-select').style.display = 'block';
   }
 
   function loginAs(name, role, initials, colorKey) {
