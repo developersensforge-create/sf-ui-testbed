@@ -81,6 +81,9 @@ select{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px
 .sub-tabs{display:flex;gap:8px;margin-bottom:12px}
 .sub-tab{padding:6px 16px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#666;font-size:12px;font-weight:600;cursor:pointer}
 .sub-tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
+.st-day-btn{padding:5px 12px;border-radius:12px;border:1.5px solid #ddd;background:#fff;color:#777;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.st-day-btn.active{background:var(--orange);border-color:var(--orange);color:#fff}
+.st-day-btn:hover:not(.active){border-color:#f96400;color:#f96400}
 .sub-pane{display:none}.sub-pane.active{display:block}
 
 /* Sparkle dots */
@@ -239,40 +242,50 @@ select{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px
 
 <!-- SEARCH TERMS -->
 <div id="tab-search" class="tab-pane">
-  <div class="sub-tabs">
-    <button class="sub-tab active" onclick="setSub(this,'s9')">Apr 9 Data</button>
-    <button class="sub-tab" onclick="setSub(this,'s3')">Apr 3 Data</button>
+  <!-- Multi-day selector -->
+  <div style="background:#f8f9fb;border-radius:12px;padding:12px 16px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span style="font-size:11px;font-weight:800;color:#666;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap">Select Days:</span>
+      <button class="st-day-btn active" data-day="apr19" onclick="toggleSTDay(this)">Apr 19</button>
+      <button class="st-day-btn" data-day="apr18" onclick="toggleSTDay(this)">Apr 18</button>
+      <button class="st-day-btn" data-day="apr17" onclick="toggleSTDay(this)">Apr 17</button>
+      <button class="st-day-btn" data-day="apr16" onclick="toggleSTDay(this)">Apr 16</button>
+      <button class="st-day-btn" data-day="apr15" onclick="toggleSTDay(this)">Apr 15</button>
+      <button class="st-day-btn" data-day="apr14" onclick="toggleSTDay(this)">Apr 14</button>
+      <button class="st-day-btn" data-day="apr13" onclick="toggleSTDay(this)">Apr 13</button>
+      <button class="st-day-btn" data-day="apr12" onclick="toggleSTDay(this)">Apr 12</button>
+      <button class="st-day-btn" data-day="apr11" onclick="toggleSTDay(this)">Apr 11</button>
+      <button class="st-day-btn" data-day="apr10" onclick="toggleSTDay(this)">Apr 10</button>
+      <button class="st-day-btn" data-day="apr9" onclick="toggleSTDay(this)">Apr 9</button>
+      <button class="st-day-btn" data-day="apr6" onclick="toggleSTDay(this)">Apr 6</button>
+      <button class="st-day-btn" data-day="apr3" onclick="toggleSTDay(this)">Apr 3</button>
+      <div style="margin-left:auto;display:flex;gap:6px">
+        <button onclick="selectAllSTDays()" style="font-size:11px;font-weight:700;padding:5px 12px;border-radius:10px;border:1.5px solid #ddd;background:#fff;cursor:pointer;color:#555">All Days</button>
+        <button onclick="clearAllSTDays()" style="font-size:11px;font-weight:700;padding:5px 12px;border-radius:10px;border:1.5px solid #ddd;background:#fff;cursor:pointer;color:#555">Clear</button>
+      </div>
+    </div>
+    <div id="st-day-label" style="font-size:11px;color:#f96400;font-weight:700;margin-top:6px">Showing: Apr 19</div>
   </div>
   <div class="search-bar">
-    <input class="search-input" id="st-q" placeholder="Filter search terms..." oninput="filterST()"/>
-    <select id="st-f" onchange="filterST()">
-      <option value="all">All</option>
-      <option value="conv">Converting only</option>
-      <option value="waste">Wasted spend only</option>
+    <input class="search-input" id="st-q" placeholder="Filter search terms..." oninput="renderSTCombined()"/>
+    <select id="st-f" onchange="renderSTCombined()">
+      <option value="all">All terms</option>
+      <option value="conv">Converting only (ROAS ≥ 1.5x)</option>
+      <option value="waste">Wasted spend only (≥$5, 0 orders)</option>
     </select>
   </div>
-  <div id="s9" class="sub-pane active">
-    <div class="tbl-wrap"><table id="st9t"><thead><tr>
-      <th onclick="srt('st9t',0)">Search Term ↕</th>
-      <th>Keyword</th>
-      <th onclick="srt('st9t',2)">Spend ↕</th>
-      <th onclick="srt('st9t',3)">Clicks ↕</th>
-      <th onclick="srt('st9t',4)">Orders ↕</th>
-      <th onclick="srt('st9t',5)">Sales ↕</th>
-      <th onclick="srt('st9t',6)">ROAS ↕</th>
-    </tr></thead><tbody id="st9b"></tbody></table></div>
-  </div>
-  <div id="s3" class="sub-pane">
-    <div class="tbl-wrap"><table id="st3t"><thead><tr>
-      <th onclick="srt('st3t',0)">Search Term ↕</th>
-      <th>Keyword</th>
-      <th onclick="srt('st3t',2)">Spend ↕</th>
-      <th onclick="srt('st3t',3)">Clicks ↕</th>
-      <th onclick="srt('st3t',4)">Orders ↕</th>
-      <th onclick="srt('st3t',5)">Sales ↕</th>
-      <th onclick="srt('st3t',6)">ROAS ↕</th>
-    </tr></thead><tbody id="st3b"></tbody></table></div>
-  </div>
+  <div class="tbl-wrap"><table id="st-main-tbl">
+    <thead><tr>
+      <th onclick="sortST('st-main-tbl',0)">Search Term</th>
+      <th onclick="sortST('st-main-tbl',1)">Keyword</th>
+      <th onclick="sortST('st-main-tbl',2)">Spend</th>
+      <th onclick="sortST('st-main-tbl',3)">Clicks</th>
+      <th onclick="sortST('st-main-tbl',4)">Orders</th>
+      <th onclick="sortST('st-main-tbl',5)">Sales</th>
+      <th onclick="sortST('st-main-tbl',6)">ROAS</th>
+    </tr></thead>
+    <tbody id="st-main-body"></tbody>
+  </table></div>
 </div>
 
 <script>
@@ -365,7 +378,15 @@ function setDate(btn,d){
   renderOverview();
   renderCampaigns();
   renderKeywordsTab();
-  filterST();
+  // Sync ST day selector to match selected date
+  if(d!=='all' && stDataMap[d]){
+    selectedSTDays = new Set([d]);
+    document.querySelectorAll('.st-day-btn').forEach(b=>b.classList.toggle('active',b.dataset.day===d));
+    updateSTDayLabel();
+  } else if(d==='all'){
+    // keep whatever is selected
+  }
+  renderSTCombined();
   // Auto-switch search terms sub-tab — use filterST() which is date-aware
   filterST();
   if(false){
@@ -558,61 +579,107 @@ function renderST(data, bodyId){
   }).join('');
 }
 
-function getSTData(date){
-  const map={
-    'apr3': apr3ST, 'apr9': apr9ST,
-    'apr14': apr14ST, 'apr15': apr15ST, 'apr16': apr16ST
-  };
-  // fallback: find nearest date with data
-  if(map[date]) return map[date];
-  const order=['apr19','apr18','apr17','apr16','apr15','apr14','apr9','apr3'];
-  for(const d of order){ if(map[d]) return map[d]; }
-  return [];
+// ===== SEARCH TERMS — MULTI-DAY SELECTOR =====
+const stDataMap = {
+  apr3: ()=>typeof apr3ST!=='undefined'?apr3ST:[],
+  apr6: ()=>typeof apr9ST!=='undefined'?apr9ST.slice(0,30):[],
+  apr9: ()=>typeof apr9ST!=='undefined'?apr9ST:[],
+  apr10: ()=>typeof apr10ST!=='undefined'?apr10ST:[],
+  apr11: ()=>typeof apr11ST!=='undefined'?apr11ST:[],
+  apr12: ()=>typeof apr12ST!=='undefined'?apr12ST:[],
+  apr13: ()=>typeof apr13ST!=='undefined'?apr13ST:[],
+  apr14: ()=>typeof apr14ST!=='undefined'?apr14ST:[],
+  apr15: ()=>typeof apr15ST!=='undefined'?apr15ST:[],
+  apr16: ()=>typeof apr16ST!=='undefined'?apr16ST:[],
+  apr17: ()=>typeof apr17ST!=='undefined'?apr17ST:[],
+  apr18: ()=>typeof apr18ST!=='undefined'?apr18ST:[],
+  apr19: ()=>typeof apr19ST!=='undefined'?apr19ST:[],
+};
+let selectedSTDays = new Set(['apr19']);
+
+function toggleSTDay(btn){
+  const day = btn.dataset.day;
+  if(selectedSTDays.has(day)){
+    if(selectedSTDays.size===1) return; // always keep at least 1
+    selectedSTDays.delete(day);
+    btn.classList.remove('active');
+  } else {
+    selectedSTDays.add(day);
+    btn.classList.add('active');
+  }
+  updateSTDayLabel();
+  renderSTCombined();
 }
-function getSTBodyId(date){
-  const map={
-    'apr3':'st3b','apr9':'st9b','apr14':'s14-body','apr15':'s15-body','apr16':'s16-body',
-    'apr17':'s17-body','apr18':'s18-body','apr19':'s19-body'
-  };
-  return map[date]||'st9b';
+function selectAllSTDays(){
+  selectedSTDays = new Set(Object.keys(stDataMap));
+  document.querySelectorAll('.st-day-btn').forEach(b=>b.classList.add('active'));
+  updateSTDayLabel();
+  renderSTCombined();
 }
-function filterST(){
+function clearAllSTDays(){
+  selectedSTDays = new Set(['apr19']);
+  document.querySelectorAll('.st-day-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.day==='apr19');
+  });
+  updateSTDayLabel();
+  renderSTCombined();
+}
+function updateSTDayLabel(){
+  const days = [...selectedSTDays].sort();
+  const labels = {'apr3':'Apr 3','apr6':'Apr 6','apr9':'Apr 9','apr10':'Apr 10','apr11':'Apr 11','apr12':'Apr 12','apr13':'Apr 13','apr14':'Apr 14','apr15':'Apr 15','apr16':'Apr 16','apr17':'Apr 17','apr18':'Apr 18','apr19':'Apr 19'};
+  const el = document.getElementById('st-day-label');
+  if(el) el.textContent = 'Showing: ' + days.map(d=>labels[d]||d).join(', ') + (selectedSTDays.size>1?' (aggregated)':'');
+}
+function renderSTCombined(){
   const q=(document.getElementById('st-q').value||'').toLowerCase();
   const f=document.getElementById('st-f').value;
-  const activeDate=curDate==='all'?'apr19':curDate;
-  // Show the correct sub-pane for this date
-  const paneMap={apr3:'s3',apr9:'s9',apr14:'s14',apr15:'s15',apr16:'s16',apr17:'s17',apr18:'s18',apr19:'s19'};
-  const targetPane=paneMap[activeDate]||'s15';
-  document.querySelectorAll('.sub-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
-  const pane=document.getElementById(targetPane);
-  if(pane) pane.classList.add('active');
-  // Also highlight the matching sub-tab
-  const tabs=document.querySelectorAll('.sub-tab');
-  tabs.forEach(t=>{if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+targetPane+"'"))t.classList.add('active');});
-  const src=getSTData(activeDate);
-  const bodyId=getSTBodyId(activeDate);
-  renderSTFiltered(src.filter(r=>{
-    const mq=!q||r.term.toLowerCase().includes(q)||(r.keyword||'').toLowerCase().includes(q);
-    const mf=f==='all'||(f==='conv'&&r.orders>0&&r.roas>=1.5)||(f==='waste'&&r.spend>=5&&r.orders===0);
-    return mq&&mf;
-  }),bodyId);
-}
-
-function renderSTFiltered(data,bodyId){
-  const body=document.getElementById(bodyId);
-  if(!data.length){body.innerHTML='<tr><td colspan="7" style="color:#aaa;text-align:center">No results</td></tr>';return;}
-  body.innerHTML=data.map(r=>{
-    const hit=r.orders>0&&r.roas>=1.5,miss=r.spend>=5&&r.orders===0;
+  // Merge data from selected days: aggregate by term+keyword
+  const merged = {};
+  selectedSTDays.forEach(day=>{
+    const data = stDataMap[day] ? stDataMap[day]() : [];
+    data.forEach(r=>{
+      const key = r.term + '||' + r.keyword;
+      if(!merged[key]){
+        merged[key] = {...r, spend:0, clicks:0, orders:0, sales:0};
+      }
+      merged[key].spend += r.spend;
+      merged[key].clicks += r.clicks;
+      merged[key].orders += r.orders;
+      merged[key].sales += r.sales;
+    });
+  });
+  // Recalculate ROAS
+  let rows = Object.values(merged).map(r=>{
+    r.roas = r.sales>0&&r.spend>0 ? Math.round(r.sales/r.spend*100)/100 : 0;
+    return r;
+  });
+  // Filter
+  rows = rows.filter(r=>{
+    const mq = !q || r.term.toLowerCase().includes(q) || (r.keyword||'').toLowerCase().includes(q);
+    const mf = f==='all' || (f==='conv'&&r.orders>0&&r.roas>=1.5) || (f==='waste'&&r.spend>=5&&r.orders===0);
+    return mq && mf;
+  });
+  // Sort by spend desc by default
+  rows.sort((a,b)=>b.spend-a.spend);
+  const body = document.getElementById('st-main-body');
+  if(!body) return;
+  if(!rows.length){
+    body.innerHTML='<tr><td colspan="7" style="color:#aaa;text-align:center;padding:20px">No data for selected days/filters</td></tr>';
+    return;
+  }
+  body.innerHTML = rows.map(r=>{
+    const hit=r.orders>0&&r.roas>=1.5, miss=r.spend>=5&&r.orders===0;
     const cls=hit?'st-hit':miss?'st-miss':'';
     const rc2=r.roas>=1.8?'rg':r.roas>=1.0?'ra':r.orders===0&&r.roas===0?'rz':'rr';
-    return`<tr class="${cls}"><td style="max-width:220px;word-break:break-word">${r.term}</td>
-      <td style="color:#888;font-size:12px">${r.keyword}</td>
+    return `<tr class="${cls}"><td style="max-width:220px;word-break:break-word">${r.term}</td>
+      <td style="color:#888;font-size:12px">${r.keyword||''}</td>
       <td>$${r.spend.toFixed(2)}</td><td>${r.clicks}</td><td>${r.orders}</td>
       <td>$${r.sales.toFixed(2)}</td>
       <td>${r.roas>0?'<span class="'+rc2+'">'+r.roas.toFixed(2)+'x</span>':'<span class="rz">0x</span>'}</td></tr>`;
   }).join('');
 }
+function filterST(){ renderSTCombined(); }
+
 
 // ===== DRILL DOWN =====
 function showView(id){
