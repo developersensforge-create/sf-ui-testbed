@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jira Feed Dashboard — SensForge</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0f1b2d; min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #fff;
+    }
+    .site-header {
+      padding: 36px 32px 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .site-header-left a {
+      font-size: 12px; color: #7a9bb5; text-decoration: none;
+      display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+    }
+    .site-header-left a:hover { color: #f96400; }
+    .site-header h1 { font-size: 26px; font-weight: 800; color: #fff; }
+    .site-header h1 span { color: #f96400; }
+    .site-header p { font-size: 13px; color: #7a9bb5; margin-top: 4px; }
+    .add-feed-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #f96400 0%, #d45200 100%);
+      color: #fff; font-size: 13px; font-weight: 700;
+      padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer;
+      box-shadow: 0 3px 12px rgba(249,100,0,0.3);
+      transition: transform 0.15s, box-shadow 0.2s; white-space: nowrap;
+    }
+    .add-feed-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,100,0,0.45); }
+
+    .main { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }
+
+    .section-label {
+      font-size: 11px; font-weight: 700; color: #7a9bb5;
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;
+    }
+
+    /* Feed Cards */
+    .feed-list { display: flex; flex-direction: column; gap: 12px; }
+    .feed-card {
+      background: #fff; border-radius: 12px; padding: 18px 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .feed-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .feed-name { font-size: 15px; font-weight: 700; color: #0f1b2d; }
+    .feed-url { font-size: 11px; color: #7a9bb5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; margin-top: 2px; }
+    .feed-meta { font-size: 11px; color: #a0b8ca; margin-top: 2px; }
+    .label-badge {
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; white-space: nowrap; flex-shrink: 0;
+    }
+    .label-cs { background: #e8f4fd; color: #1976d2; }
+    .label-mkt { background: #fce4ec; color: #c2185b; }
+    .label-pd { background: #e8f5e9; color: #388e3c; }
+    .label-custom { background: #f3e5f5; color: #7b1fa2; }
+    .feed-card-actions { display: flex; gap: 8px; }
+    .btn-sm {
+      font-size: 12px; font-weight: 600; padding: 6px 14px;
+      border-radius: 7px; border: none; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-run {
+      background: linear-gradient(135deg, #f96400, #d45200);
+      color: #fff; box-shadow: 0 2px 8px rgba(249,100,0,0.25);
+    }
+    .btn-run:hover { transform: translateY(-1px); }
+    .btn-edit { background: #f0f4f8; color: #0f1b2d; }
+    .btn-edit:hover { background: #e0eaf0; }
+    .btn-delete { background: #fff0f3; color: #ff4466; }
+    .btn-delete:hover { background: #ffe0e6; }
+    .feed-status { display: flex; align-items: center; gap: 6px; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .status-active { background: #4caf50; }
+    .status-paused { background: #9e9e9e; }
+    .status-text { font-size: 11px; color: #7a9bb5; }
+    .auto-badge {
+      font-size: 10px; font-weight: 600; background: #fff3ec;
+      color: #f96400; padding: 2px 8px; border-radius: 10px;
+    }
+    .empty-state {
+      background: rgba(255,255,255,0.04); border: 2px dashed rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 40px 24px;
+      text-align: center; color: #4a6580;
+    }
+    .empty-state p { font-size: 13px; opacity: 0.6; margin-top: 8px; }
+
+    /* Add button below list */
+    .add-feed-inline {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: rgba(249,100,0,0.08); border: 2px dashed rgba(249,100,0,0.3);
+      border-radius: 12px; padding: 14px; color: #f96400;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s; margin-top: 4px;
+    }
+    .add-feed-inline:hover { background: rgba(249,100,0,0.14); }
+
+    /* Preview Panel */
+    .preview-panel {
+      background: #fff; border-radius: 14px; padding: 22px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      display: flex; flex-direction: column; gap: 14px; height: fit-content;
+    }
+    .preview-panel-header { display: flex; align-items: center; justify-content: space-between; }
+    .preview-label { font-size: 13px; font-weight: 700; color: #0f1b2d; }
+    .preview-clear { font-size: 12px; color: #a0b8ca; background: none; border: none; cursor: pointer; }
+    .preview-clear:hover { color: #ff4466; }
+    .preview-textarea {
+      width: 100%; min-height: 280px; padding: 14px;
+      background: #f8fafc; border: 1.5px solid #e0eaf0; border-radius: 10px;
+      font-size: 13px; color: #0f1b2d; font-family: 'SFMono-Regular', Consolas, monospace;
+      resize: vertical; outline: none; line-height: 1.7;
+    }
+    .preview-textarea:focus { border-color: #f96400; }
+    .preview-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-create {
+      flex: 1; padding: 12px 20px;
+      background: linear-gradient(135deg, #f96400 0%, #d45200 100%);
+      color: #fff; font-size: 14px; font-weight: 700;
+      border: none; border-radius: 10px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(249,100,0,0.3);
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn-create:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,100,0,0.45); }
+    .btn-create:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .preview-hint { font-size: 12px; color: #a0b8ca; text-align: center; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,27,45,0.85); z-index: 1000;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: #fff; border-radius: 16px; width: 100%; max-width: 560px;
+      padding: 32px; position: relative;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      max-height: 90vh; overflow-y: auto;
+      animation: modalIn 0.2s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 18px;
+      background: none; border: none; font-size: 22px; color: #7a9bb5;
+      cursor: pointer; line-height: 1; padding: 4px; border-radius: 6px;
+    }
+    .modal-close:hover { color: #0f1b2d; background: #f0f4f8; }
+    .modal-title { font-size: 20px; font-weight: 800; color: #0f1b2d; margin-bottom: 4px; }
+    .modal-subtitle { font-size: 13px; color: #7a9bb5; margin-bottom: 24px; }
+    .form-group { margin-bottom: 18px; }
+    .form-label {
+      font-size: 11px; font-weight: 700; color: #7a9bb5;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      display: block; margin-bottom: 8px;
+    }
+    .form-input, .form-select {
+      width: 100%; padding: 10px 14px;
+      background: #f8fafc; border: 1.5px solid #e0eaf0; border-radius: 10px;
+      font-size: 14px; color: #0f1b2d; font-family: inherit; outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus, .form-select:focus { border-color: #f96400; background: #fff; }
+    .form-textarea {
+      width: 100%; min-height: 120px; padding: 12px 14px;
+      background: #f8fafc; border: 1.5px solid #e0eaf0; border-radius: 10px;
+      font-size: 13px; color: #0f1b2d; font-family: inherit; resize: vertical;
+      outline: none; transition: border-color 0.15s; line-height: 1.6;
+    }
+    .form-textarea:focus { border-color: #f96400; background: #fff; }
+    .form-hint { font-size: 12px; color: #a0b8ca; margin-top: 6px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-check { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .form-check input { width: 16px; height: 16px; accent-color: #f96400; cursor: pointer; }
+    .form-check span { font-size: 13px; color: #0f1b2d; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+    .toggle-label { font-size: 13px; color: #0f1b2d; font-weight: 600; }
+    .toggle-sub { font-size: 11px; color: #7a9bb5; margin-top: 2px; }
+    .toggle-switch { position: relative; width: 44px; height: 24px; cursor: pointer; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: #ddd; border-radius: 24px;
+      transition: background 0.2s;
+    }
+    .toggle-slider:before {
+      content: ''; position: absolute; width: 18px; height: 18px;
+      left: 3px; top: 3px; background: #fff; border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-slider { background: #f96400; }
+    .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+    .divider { border: none; border-top: 1px solid #f0f0f0; margin: 8px 0; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
+    .btn-save {
+      flex: 1; padding: 13px;
+      background: linear-gradient(135deg, #f96400 0%, #d45200 100%);
+      color: #fff; font-size: 14px; font-weight: 700;
+      border: none; border-radius: 10px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(249,100,0,0.3);
+      transition: transform 0.15s;
+    }
+    .btn-save:hover { transform: translateY(-1px); }
+    .btn-cancel {
+      padding: 13px 24px; background: #f0f4f8; color: #0f1b2d;
+      font-size: 14px; font-weight: 600; border: none; border-radius: 10px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-cancel:hover { background: #e0eaf0; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #0f1b2d; color: #fff; padding: 14px 24px;
+      border-radius: 12px; font-size: 14px; font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4); border-left: 4px solid #f96400;
+      z-index: 2000; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
+      opacity: 0; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-left">
+    <a href="../../product-toolbox.html">← Product Dev Toolbox</a>
+    <h1>Jira Feed <span>Dashboard</span></h1>
+    <p>Auto-create Jira tickets from Google Sheets and product change documents</p>
+  </div>
+  <button class="add-feed-btn" onclick="openModal()">+ Add Feed Source</button>
+</header>
+
+<main class="main">
+  <div class="two-col">
+    <!-- Left: Feed Sources -->
+    <div>
+      <div class="section-label">Feed Sources</div>
+      <div class="feed-list" id="feedList"></div>
+      <div class="add-feed-inline" onclick="openModal()" style="margin-top:12px">
+        + Add Feed Source
+      </div>
+    </div>
+
+    <!-- Right: Preview / Log -->
+    <div>
+      <div class="section-label">Preview / Run Log</div>
+      <div class="preview-panel">
+        <div class="preview-panel-header">
+          <span class="preview-label">Ticket Preview</span>
+          <button class="preview-clear" onclick="clearLog()">Clear log</button>
+        </div>
+        <textarea class="preview-textarea" id="previewLog" readonly placeholder="Run a feed source or click 'Save & Preview' to see tickets here..."></textarea>
+        <div class="preview-actions">
+          <button class="btn-create" id="createBtn" onclick="createTickets()" disabled>Create All Tickets</button>
+        </div>
+        <div class="preview-hint">Tickets will be created in Jira via the configured project</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modalTitle">Add Feed Source</div>
+    <div class="modal-subtitle">Configure a Google Sheet to auto-generate Jira tickets</div>
+
+    <div class="form-group">
+      <label class="form-label">Source Name</label>
+      <input class="form-input" id="fieldName" type="text" placeholder="e.g. Monthly Return Tracker" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Google Sheet URL</label>
+      <input class="form-input" id="fieldUrl" type="url" placeholder="https://docs.google.com/spreadsheets/d/..." />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Channel Label</label>
+        <select class="form-select" id="fieldLabel">
+          <option value="CS">CS — Customer Service</option>
+          <option value="MKT">MKT — Marketing</option>
+          <option value="PD">PD — Product Dept</option>
+          <option value="Custom">Custom</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Jira Project</label>
+        <select class="form-select" id="fieldProject">
+          <option value="SCRUM">SCRUM — Sensforge App</option>
+          <option value="NEX">NEX — NextSport</option>
+          <option value="SWC">SWC — Window Cam</option>
+          <option value="SDB">SDB — Door Bell</option>
+          <option value="SFAI">SFAI — SF AI</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Priority Rules</label>
+      <textarea class="form-textarea" id="fieldPriority">Highest — impacts many users or damages core business/revenue
+High — customer feedback that significantly impacts user experience
+Medium — cosmetic/UX polish, visual improvements, nice-to-have
+Low — minor improvement with unclear user value
+Lowest — questionable, very low value or high resource cost
+Note: visual-only changes should never exceed Medium</textarea>
+      <div class="form-hint">Edit these rules to customise how priorities are assigned for this feed.</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Starting From Date</label>
+      <input class="form-input" id="fieldDate" type="date" />
+      <div class="form-hint">Only process rows dated on or after this date.</div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Auto Refresh</div>
+        <div class="toggle-sub">Run this feed daily at 7am EST</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="fieldAutoRefresh" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Duplicate Check</div>
+        <div class="toggle-sub">Skip items already ticketed in Jira</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="fieldDupeCheck" checked />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveFeed()">Save & Preview</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const DEFAULT_PRIORITY = `Highest — impacts many users or damages core business/revenue
+High — customer feedback that significantly impacts user experience
+Medium — cosmetic/UX polish, visual improvements, nice-to-have
+Low — minor improvement with unclear user value
+Lowest — questionable, very low value or high resource cost
+Note: visual-only changes should never exceed Medium`;
+
+  let feeds = JSON.parse(localStorage.getItem('jira_feeds') || '[]');
+  let editingId = null;
+
+  function saveFeeds() {
+    localStorage.setItem('jira_feeds', JSON.stringify(feeds));
+  }
+
+  function renderFeeds() {
+    const list = document.getElementById('feedList');
+    if (feeds.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div style="font-size:32px">📋</div><p>No feed sources yet. Add one to get started.</p></div>`;
+      return;
+    }
+    list.innerHTML = feeds.map(f => {
+      const labelClass = { CS: 'label-cs', MKT: 'label-mkt', PD: 'label-pd', Custom: 'label-custom' }[f.label] || 'label-custom';
+      return `
+      <div class="feed-card">
+        <div class="feed-card-top">
+          <div>
+            <div class="feed-name">${f.name}</div>
+            <div class="feed-url">${f.url}</div>
+            <div class="feed-meta">Project: ${f.project} · From: ${f.date || 'All dates'}</div>
+          </div>
+          <span class="label-badge ${labelClass}">${f.label}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div class="feed-status">
+            <div class="status-dot status-active"></div>
+            <span class="status-text">Active</span>
+            ${f.autoRefresh ? '<span class="auto-badge">⏰ Daily 7am</span>' : ''}
+            ${f.lastRun ? `<span class="status-text">· Last run: ${f.lastRun}</span>` : ''}
+          </div>
+          <div class="feed-card-actions">
+            <button class="btn-sm btn-edit" onclick="openModal('${f.id}')">Edit</button>
+            <button class="btn-sm btn-run" onclick="runFeed('${f.id}')">▶ Run Now</button>
+            <button class="btn-sm btn-delete" onclick="deleteFeed('${f.id}')">✕</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function openModal(id) {
+    editingId = id || null;
+    const modal = document.getElementById('modalOverlay');
+    document.getElementById('modalTitle').textContent = id ? 'Edit Feed Source' : 'Add Feed Source';
+    if (id) {
+      const f = feeds.find(x => x.id === id);
+      if (f) {
+        document.getElementById('fieldName').value = f.name;
+        document.getElementById('fieldUrl').value = f.url;
+        document.getElementById('fieldLabel').value = f.label;
+        document.getElementById('fieldProject').value = f.project;
+        document.getElementById('fieldPriority').value = f.priority || DEFAULT_PRIORITY;
+        document.getElementById('fieldDate').value = f.date || '';
+        document.getElementById('fieldAutoRefresh').checked = f.autoRefresh || false;
+        document.getElementById('fieldDupeCheck').checked = f.dupeCheck !== false;
+      }
+    } else {
+      document.getElementById('fieldName').value = '';
+      document.getElementById('fieldUrl').value = '';
+      document.getElementById('fieldLabel').value = 'CS';
+      document.getElementById('fieldProject').value = 'SCRUM';
+      document.getElementById('fieldPriority').value = DEFAULT_PRIORITY;
+      document.getElementById('fieldDate').value = '';
+      document.getElementById('fieldAutoRefresh').checked = false;
+      document.getElementById('fieldDupeCheck').checked = true;
+    }
+    modal.classList.add('active');
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    editingId = null;
+  }
+
+  function saveFeed() {
+    const name = document.getElementById('fieldName').value.trim();
+    const url = document.getElementById('fieldUrl').value.trim();
+    if (!name || !url) { showToast('⚠️ Name and URL are required'); return; }
+    const feed = {
+      id: editingId || Date.now().toString(),
+      name, url,
+      label: document.getElementById('fieldLabel').value,
+      project: document.getElementById('fieldProject').value,
+      priority: document.getElementById('fieldPriority').value,
+      date: document.getElementById('fieldDate').value,
+      autoRefresh: document.getElementById('fieldAutoRefresh').checked,
+      dupeCheck: document.getElementById('fieldDupeCheck').checked,
+      lastRun: null,
+    };
+    if (editingId) {
+      const idx = feeds.findIndex(x => x.id === editingId);
+      if (idx >= 0) feeds[idx] = feed;
+    } else {
+      feeds.push(feed);
+    }
+    saveFeeds();
+    renderFeeds();
+    closeModal();
+    runFeed(feed.id, true);
+  }
+
+  function deleteFeed(id) {
+    if (!confirm('Remove this feed source?')) return;
+    feeds = feeds.filter(f => f.id !== id);
+    saveFeeds();
+    renderFeeds();
+    showToast('Feed source removed');
+  }
+
+  function runFeed(id, fromSave) {
+    const f = feeds.find(x => x.id === id);
+    if (!f) return;
+    f.lastRun = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    saveFeeds();
+    renderFeeds();
+    const preview = generatePreview(f);
+    const log = document.getElementById('previewLog');
+    const timestamp = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const entry = `── ${fromSave ? 'Save & Preview' : 'Run Now'}: ${f.name} · ${timestamp} ──\n${preview}\n\n`;
+    log.value = entry + log.value;
+    document.getElementById('createBtn').disabled = false;
+    showToast(`✓ Preview ready for "${f.name}"`);
+  }
+
+  function generatePreview(f) {
+    const mockItems = [
+      [`[${f.label}] Improve onboarding flow for new users`, 'High'],
+      [`[${f.label}] Fix broken navigation on settings page`, 'High'],
+      [`[${f.label}] Update subscription page copy and pricing`, 'Medium'],
+      [`[${f.label}] Add dark mode option to profile settings`, 'Medium'],
+      [`[${f.label}] Improve error messages for failed uploads`, 'Low'],
+    ];
+    const count = Math.floor(Math.random() * 3) + 2;
+    const selected = mockItems.slice(0, count);
+    const lines = selected.map(([title, pri]) => `• ${title} — ${pri}`);
+    lines.push(`→ ${count} new tickets ready to create in ${f.project}`);
+    if (f.dupeCheck) lines.push(`ℹ️  Duplicate check ON — previously processed items skipped`);
+    return lines.join('\n');
+  }
+
+  function createTickets() {
+    const log = document.getElementById('previewLog');
+    const ts = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    log.value = `── Tickets Created · ${ts} ──\n✓ All tickets successfully created in Jira.\n\n` + log.value;
+    document.getElementById('createBtn').disabled = true;
+    showToast('✓ Tickets created in Jira!');
+  }
+
+  function clearLog() {
+    document.getElementById('previewLog').value = '';
+    document.getElementById('createBtn').disabled = true;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  });
+
+  renderFeeds();
+</script>
+</body>
+</html>
