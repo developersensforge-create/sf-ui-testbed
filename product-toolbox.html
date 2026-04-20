@@ -7,36 +7,94 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: #0f1b2d;
-      min-height: 100vh;
+      background: #0f1b2d; min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: #fff;
     }
-    .site-header {
-      padding: 48px 32px 36px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
+
+    /* ── Login Overlay ── */
+    #login-overlay {
+      position: fixed; inset: 0; background: rgba(10,18,32,0.92);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; backdrop-filter: blur(6px);
     }
-    .site-header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; color: #fff; margin-bottom: 8px; }
+    #login-overlay.hidden { display: none; }
+    .login-card {
+      background: #fff; border-radius: 16px; padding: 40px 36px;
+      width: 380px; box-shadow: 0 24px 64px rgba(0,0,0,0.5); text-align: center;
+    }
+    .login-logo { font-size: 28px; font-weight: 800; color: #f96400; margin-bottom: 4px; }
+    .login-title { font-size: 17px; font-weight: 700; color: #0f1b2d; margin-bottom: 4px; }
+    .login-sub { font-size: 13px; color: #7a9bb5; margin-bottom: 28px; }
+    .login-users { display: flex; flex-direction: column; gap: 10px; }
+    .login-user-btn {
+      display: flex; align-items: center; gap: 14px;
+      padding: 13px 16px; border: 2px solid #e5e7eb; border-radius: 12px;
+      cursor: pointer; background: #fff; transition: all 0.15s; text-align: left;
+    }
+    .login-user-btn:hover { border-color: #f96400; background: #fff7f0; }
+    .login-avatar {
+      width: 40px; height: 40px; border-radius: 50%; background: #f96400;
+      color: #fff; font-weight: 800; font-size: 15px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .login-avatar.blue { background: #1a6bc9; }
+    .login-avatar.green { background: #1a9c4e; }
+    .login-avatar.purple { background: #7b2d9c; }
+    .login-user-info { display: flex; flex-direction: column; }
+    .login-user-name { font-weight: 700; color: #0f1b2d; font-size: 14px; }
+    .login-user-role { font-size: 12px; color: #7a9bb5; }
+    .login-divider { border: none; border-top: 1px solid #f0f4f8; margin: 18px 0; }
+    .login-guest-btn {
+      width: 100%; padding: 11px; background: #f0f4f8; border: none;
+      border-radius: 10px; color: #7a9bb5; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .login-guest-btn:hover { background: #e0eaf0; color: #0f1b2d; }
+
+    /* ── Header ── */
+    .site-header {
+      padding: 36px 32px 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .site-header h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; color: #fff; margin-bottom: 6px; }
     .site-header h1 span { color: #f96400; }
-    .site-header p { font-size: 14px; color: #7a9bb5; }
+    .site-header p { font-size: 13px; color: #7a9bb5; }
+    .user-badge {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 40px; padding: 7px 16px 7px 8px;
+    }
+    .user-badge-avatar {
+      width: 28px; height: 28px; border-radius: 50%; background: #f96400;
+      color: #fff; font-weight: 800; font-size: 12px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .user-badge-name { font-size: 13px; font-weight: 600; color: #fff; }
+    .user-badge-switch {
+      font-size: 11px; color: #7a9bb5; background: none; border: none;
+      cursor: pointer; padding: 0; margin-left: 4px;
+    }
+    .user-badge-switch:hover { color: #f96400; }
+
+    /* ── Main ── */
     .main { padding: 40px 32px; max-width: 1100px; margin: 0 auto; }
     .section-title {
-      font-size: 12px; font-weight: 600; color: #7a9bb5;
+      font-size: 11px; font-weight: 700; color: #7a9bb5;
       text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px;
     }
-    .tool-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 24px;
-    }
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+
+    /* ── Tool Card ── */
     .tool-card {
       background: #fff; border-radius: 14px; padding: 28px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.25);
       display: flex; flex-direction: column; gap: 14px;
-      transition: transform 0.15s, box-shadow 0.15s;
-      position: relative;
+      transition: transform 0.15s, box-shadow 0.15s; position: relative;
     }
-    .tool-card:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(0,0,0,0.35); }
+    .tool-card:not(.locked):hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(0,0,0,0.35); }
+    .tool-card.locked { opacity: 0.55; }
     .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
     .card-icon {
       width: 48px; height: 48px; border-radius: 12px;
@@ -44,15 +102,13 @@
       justify-content: center; font-size: 24px; flex-shrink: 0;
     }
     .card-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-    .card-tag {
-      font-size: 11px; font-weight: 600; background: #f0f4f8;
-      color: #7a9bb5; padding: 3px 10px; border-radius: 20px;
-    }
+    .card-tag { font-size: 11px; font-weight: 600; background: #f0f4f8; color: #7a9bb5; padding: 3px 10px; border-radius: 20px; }
     .card-badge-new {
       font-size: 11px; font-weight: 700;
       background: linear-gradient(135deg, #f96400, #d45200);
       color: #fff; padding: 3px 10px; border-radius: 20px;
     }
+    .card-badge-lock { font-size: 11px; font-weight: 700; background: #f0f4f8; color: #9eb0c0; padding: 3px 10px; border-radius: 20px; }
     .card-name { font-size: 19px; font-weight: 800; color: #0f1b2d; }
     .card-desc { font-size: 13px; color: #7a9bb5; line-height: 1.6; flex: 1; }
     .open-btn {
@@ -64,71 +120,165 @@
       box-shadow: 0 3px 12px rgba(249,100,0,0.3); align-self: flex-start;
     }
     .open-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,100,0,0.45); }
+    .locked-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #f0f4f8; color: #9eb0c0; font-size: 13px; font-weight: 700;
+      padding: 10px 20px; border-radius: 8px; border: none; cursor: not-allowed;
+      align-self: flex-start;
+    }
+    .locked-note { font-size: 11px; color: #b0c4d4; }
+
+    /* ── Footer ── */
     .site-footer {
-      text-align: center; padding: 48px 32px;
-      font-size: 12px; color: #3a5470;
-      border-top: 1px solid rgba(255,255,255,0.05);
-      margin-top: 40px;
+      text-align: center; padding: 40px 32px; font-size: 12px; color: #3a5470;
+      border-top: 1px solid rgba(255,255,255,0.05); margin-top: 40px;
     }
   </style>
 </head>
 <body>
 
+<!-- Login Overlay -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="login-logo">SensForge</div>
+    <div class="login-title">Product Dev Toolbox</div>
+    <div class="login-sub">Who are you? Select your name to continue.</div>
+    <div class="login-users">
+      <button class="login-user-btn" onclick="loginAs('Ruizhi', 'Product Leader', 'RH', '')">
+        <div class="login-avatar">RH</div>
+        <div class="login-user-info">
+          <span class="login-user-name">Ruizhi</span>
+          <span class="login-user-role">Product Leader</span>
+        </div>
+      </button>
+      <button class="login-user-btn" onclick="loginAs('Anna', 'Product Experience', 'AN', 'blue')">
+        <div class="login-avatar blue">AN</div>
+        <div class="login-user-info">
+          <span class="login-user-name">Anna</span>
+          <span class="login-user-role">Product Experience</span>
+        </div>
+      </button>
+      <button class="login-user-btn" onclick="loginAs('Wenbin', 'Product Manager', 'WB', 'green')">
+        <div class="login-avatar green">WB</div>
+        <div class="login-user-info">
+          <span class="login-user-name">Wenbin</span>
+          <span class="login-user-role">Product Manager</span>
+        </div>
+      </button>
+    </div>
+    <div class="login-divider"></div>
+    <button class="login-guest-btn" onclick="loginAs('Guest', 'View Only', 'G', 'purple')">Continue as Guest (view only)</button>
+  </div>
+</div>
+
+<!-- Header -->
 <header class="site-header">
-  <h1>Product Dev <span>Toolbox</span></h1>
-  <p>Internal tools for the SensForge product team</p>
+  <div>
+    <h1>Product Dev <span>Toolbox</span></h1>
+    <p>Internal tools for the SensForge product team</p>
+  </div>
+  <div class="user-badge" id="userBadge" style="display:none">
+    <div class="user-badge-avatar" id="badgeAvatar">?</div>
+    <span class="user-badge-name" id="badgeName">Guest</span>
+    <button class="user-badge-switch" onclick="switchUser()">Switch</button>
+  </div>
 </header>
 
 <main class="main">
   <div class="section-title">Available Tools</div>
-  <div class="tool-grid">
-
-    <!-- Tool 1: SF UI Testbed -->
-    <div class="tool-card">
-      <div class="card-header">
-        <div class="card-icon">🎨</div>
-        <div class="card-badges">
-          <span class="card-tag">Design</span>
-        </div>
-      </div>
-      <div class="card-name">SF UI Testbed</div>
-      <div class="card-desc">Feature prototype previews and UI design experiments. Browse and test component designs before they go to development.</div>
-      <a class="open-btn" href="index.html">Open Tool →</a>
-    </div>
-
-    <!-- Tool 2: Jira UI Flow -->
-    <div class="tool-card">
-      <div class="card-header">
-        <div class="card-icon">🔄</div>
-        <div class="card-badges">
-          <span class="card-tag">Workflow</span>
-        </div>
-      </div>
-      <div class="card-name">Jira UI Flow</div>
-      <div class="card-desc">Visualize and map Jira ticket flows and UI state transitions. Connect design specs to development tickets.</div>
-      <a class="open-btn" href="tools/jira-ui-flow/index.html">Open Tool →</a>
-    </div>
-
-    <!-- Tool 3: Jira Feed Dashboard -->
-    <div class="tool-card">
-      <div class="card-header">
-        <div class="card-icon">📋</div>
-        <div class="card-badges">
-          <span class="card-tag">Automation</span>
-          <span class="card-badge-new">New ✨</span>
-        </div>
-      </div>
-      <div class="card-name">Jira Feed Dashboard</div>
-      <div class="card-desc">Automatically create Jira tickets from Google Sheets and product change request documents. Configure feeds, preview tickets, and run on schedule.</div>
-      <a class="open-btn" href="tools/jira-feed-dashboard/index.html">Open Tool →</a>
-    </div>
-
-  </div>
+  <div class="tool-grid" id="toolGrid"></div>
 </main>
 
 <footer class="site-footer">
   SensForge Product Team · Internal Use Only
 </footer>
 
+<script>
+  const PRIVILEGED = ['Ruizhi', 'Anna', 'Wenbin'];
+  const AVATAR_COLORS = { '': '#f96400', 'blue': '#1a6bc9', 'green': '#1a9c4e', 'purple': '#7b2d9c' };
+
+  const TOOLS = [
+    {
+      icon: '🎨',
+      name: 'SF UI Testbed',
+      desc: 'Feature prototype previews and UI design experiments. Browse and test component designs before they go to development.',
+      tag: 'Design',
+      url: 'index.html',
+      restricted: false,
+    },
+    {
+      icon: '🔄',
+      name: 'Jira UI Flow',
+      desc: 'Visualize and map Jira ticket flows and UI state transitions. Connect design specs to development tickets.',
+      tag: 'Workflow',
+      url: 'tools/jira-ui-flow/index.html',
+      restricted: false,
+    },
+    {
+      icon: '📋',
+      name: 'Jira Feed Dashboard',
+      desc: 'Automatically create Jira tickets from Google Sheets and product change request documents. Configure feeds, preview tickets, and run on schedule.',
+      tag: 'Automation',
+      badgeNew: true,
+      url: 'tools/jira-feed-dashboard/index.html',
+      restricted: true,
+    },
+  ];
+
+  function loginAs(name, role, initials, colorKey) {
+    sessionStorage.setItem('toolbox_user', JSON.stringify({ name, role, initials, colorKey }));
+    document.getElementById('login-overlay').classList.add('hidden');
+    renderPage(name, initials, colorKey);
+  }
+
+  function switchUser() {
+    sessionStorage.removeItem('toolbox_user');
+    document.getElementById('login-overlay').classList.remove('hidden');
+    document.getElementById('userBadge').style.display = 'none';
+  }
+
+  function renderPage(name, initials, colorKey) {
+    const badge = document.getElementById('userBadge');
+    const badgeAvatar = document.getElementById('badgeAvatar');
+    const badgeName = document.getElementById('badgeName');
+    badge.style.display = 'flex';
+    badgeAvatar.textContent = initials;
+    badgeAvatar.style.background = AVATAR_COLORS[colorKey] || '#f96400';
+    badgeName.textContent = name;
+
+    const isPrivileged = PRIVILEGED.includes(name);
+    const grid = document.getElementById('toolGrid');
+    grid.innerHTML = TOOLS.map(t => {
+      const locked = t.restricted && !isPrivileged;
+      const openUrl = t.url + (name !== 'Guest' ? `?user=${encodeURIComponent(name)}` : '');
+      return `
+      <div class="tool-card ${locked ? 'locked' : ''}">
+        <div class="card-header">
+          <div class="card-icon">${t.icon}</div>
+          <div class="card-badges">
+            <span class="card-tag">${t.tag}</span>
+            ${t.badgeNew && !locked ? '<span class="card-badge-new">New ✨</span>' : ''}
+            ${locked ? '<span class="card-badge-lock">🔒 Restricted</span>' : ''}
+          </div>
+        </div>
+        <div class="card-name">${t.name}</div>
+        <div class="card-desc">${t.desc}</div>
+        ${locked
+          ? `<button class="locked-btn" disabled>🔒 Access Restricted</button>
+             <span class="locked-note">Available to Ruizhi, Anna, and Wenbin only</span>`
+          : `<a class="open-btn" href="${openUrl}">Open Tool →</a>`
+        }
+      </div>`;
+    }).join('');
+  }
+
+  // Auto-login if already selected this session
+  const stored = sessionStorage.getItem('toolbox_user');
+  if (stored) {
+    const u = JSON.parse(stored);
+    document.getElementById('login-overlay').classList.add('hidden');
+    renderPage(u.name, u.initials, u.colorKey);
+  }
+</script>
 </body>
 </html>

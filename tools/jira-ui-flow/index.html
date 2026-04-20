@@ -3745,6 +3745,17 @@ function logout() {
   _selectedUser = null;
 }
 
+// ── Auto-login from toolbox URL param (?user=Ruizhi etc) ──
+(function() {
+  const urlUser = new URLSearchParams(window.location.search).get('user');
+  if (urlUser) {
+    const match = USERS.find(u => u.name.toLowerCase() === urlUser.toLowerCase());
+    if (match) {
+      setCurrentUser(match);
+    }
+  }
+})();
+
 // ═══════════════════════════════════════════════════════════════════════
 initLogin();
 initIntake().then(() => reload().then(() => { mergeFigmaDataIntoTickets(); scheduleRefresh(); }));
