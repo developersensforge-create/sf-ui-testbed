@@ -3,686 +3,538 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jira Feed Dashboard — Product Dev Tools</title>
+  <title>Jira Feed Dashboard — SensForge</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #0f1b2d;
-      --accent: #f96400;
-      --accent2: #ff8c2f;
-      --card: #fff;
-      --card-radius: 12px;
-      --card-shadow: 0 4px 20px rgba(0,0,0,0.25);
-      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --secondary: #7a9bb5;
-      --surface: #162236;
-      --border: #1e3050;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: var(--bg);
-      font-family: var(--font);
-      color: #e8f0f8;
-      min-height: 100vh;
-    }
-
-    /* ── Header ── */
-    header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 20px 32px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    header .logo {
-      font-size: 28px;
-    }
-    header h1 {
-      font-size: 22px;
-      font-weight: 700;
+      background: #0f1b2d; min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: #fff;
     }
-    header p {
-      font-size: 13px;
-      color: var(--secondary);
-      margin-top: 2px;
+    .site-header {
+      padding: 36px 32px 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: space-between;
     }
-    header .badge {
-      margin-left: auto;
-      background: rgba(249,100,0,0.15);
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 20px;
+    .site-header-left a {
+      font-size: 12px; color: #7a9bb5; text-decoration: none;
+      display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+    }
+    .site-header-left a:hover { color: #f96400; }
+    .site-header h1 { font-size: 26px; font-weight: 800; color: #fff; }
+    .site-header h1 span { color: #f96400; }
+    .site-header p { font-size: 13px; color: #7a9bb5; margin-top: 4px; }
+    .add-feed-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #f96400 0%, #d45200 100%);
+      color: #fff; font-size: 13px; font-weight: 700;
+      padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer;
+      box-shadow: 0 3px 12px rgba(249,100,0,0.3);
+      transition: transform 0.15s, box-shadow 0.2s; white-space: nowrap;
+    }
+    .add-feed-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,100,0,0.45); }
+
+    .main { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 800px) { .two-col { grid-template-columns: 1fr; } }
+
+    .section-label {
+      font-size: 11px; font-weight: 700; color: #7a9bb5;
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;
     }
 
-    /* ── Layout ── */
-    .main {
-      display: grid;
-      grid-template-columns: 420px 1fr;
-      gap: 24px;
-      padding: 28px 32px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    /* ── Section titles ── */
-    .section-title {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--secondary);
-      margin-bottom: 14px;
-    }
-
-    /* ── Feed cards ── */
-    .feed-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    /* Feed Cards */
+    .feed-list { display: flex; flex-direction: column; gap: 12px; }
     .feed-card {
-      background: var(--card);
-      border-radius: var(--card-radius);
-      box-shadow: var(--card-shadow);
-      padding: 16px 18px;
-      color: #1a2a40;
+      background: #fff; border-radius: 12px; padding: 18px 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      display: flex; flex-direction: column; gap: 10px;
     }
-    .feed-card-top {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
+    .feed-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .feed-name { font-size: 15px; font-weight: 700; color: #0f1b2d; }
+    .feed-url { font-size: 11px; color: #7a9bb5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; margin-top: 2px; }
+    .feed-meta { font-size: 11px; color: #a0b8ca; margin-top: 2px; }
+    .label-badge {
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; white-space: nowrap; flex-shrink: 0;
     }
-    .feed-card-name {
-      font-weight: 700;
-      font-size: 15px;
-      flex: 1;
+    .label-cs { background: #e8f4fd; color: #1976d2; }
+    .label-mkt { background: #fce4ec; color: #c2185b; }
+    .label-pd { background: #e8f5e9; color: #388e3c; }
+    .label-custom { background: #f3e5f5; color: #7b1fa2; }
+    .feed-card-actions { display: flex; gap: 8px; }
+    .btn-sm {
+      font-size: 12px; font-weight: 600; padding: 6px 14px;
+      border-radius: 7px; border: none; cursor: pointer; transition: all 0.15s;
     }
-    .channel-badge {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      background: rgba(249,100,0,0.12);
-      color: var(--accent);
-      border: 1px solid rgba(249,100,0,0.3);
+    .btn-run {
+      background: linear-gradient(135deg, #f96400, #d45200);
+      color: #fff; box-shadow: 0 2px 8px rgba(249,100,0,0.25);
     }
-    .feed-card-meta {
-      font-size: 12px;
-      color: #6b8099;
-      margin-bottom: 12px;
+    .btn-run:hover { transform: translateY(-1px); }
+    .btn-edit { background: #f0f4f8; color: #0f1b2d; }
+    .btn-edit:hover { background: #e0eaf0; }
+    .btn-delete { background: #fff0f3; color: #ff4466; }
+    .btn-delete:hover { background: #ffe0e6; }
+    .feed-status { display: flex; align-items: center; gap: 6px; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .status-active { background: #4caf50; }
+    .status-paused { background: #9e9e9e; }
+    .status-text { font-size: 11px; color: #7a9bb5; }
+    .auto-badge {
+      font-size: 10px; font-weight: 600; background: #fff3ec;
+      color: #f96400; padding: 2px 8px; border-radius: 10px;
     }
-    .feed-card-meta span { margin-right: 14px; }
-    .feed-card-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    /* ── Buttons ── */
-    .btn {
-      font-family: var(--font);
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: opacity .15s, transform .1s;
-    }
-    .btn:hover { opacity: .88; }
-    .btn:active { transform: scale(.97); }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff;
-      padding: 10px 20px;
-      font-size: 14px;
-    }
-    .btn-secondary {
-      background: #f0f4f8;
-      color: #3a5068;
-      padding: 8px 14px;
-      font-size: 13px;
-    }
-    .btn-ghost {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--secondary);
-      padding: 8px 14px;
-      font-size: 13px;
-    }
-    .btn-danger {
-      background: transparent;
-      border: 1px solid #e55;
-      color: #e55;
-      padding: 8px 14px;
-      font-size: 13px;
-    }
-    .btn-sm { padding: 6px 12px; font-size: 12px; }
-
-    .add-btn {
-      margin-top: 14px;
-      width: 100%;
-      background: rgba(249,100,0,0.08);
-      border: 2px dashed rgba(249,100,0,0.4);
-      color: var(--accent);
-      padding: 12px;
-      font-size: 14px;
-      font-weight: 700;
-      border-radius: var(--card-radius);
-      cursor: pointer;
-      transition: background .15s;
-      font-family: var(--font);
-    }
-    .add-btn:hover { background: rgba(249,100,0,0.15); }
-
-    /* ── Right panel ── */
-    .right-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .log-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--secondary);
-      margin-bottom: 8px;
-    }
-    textarea#runLog {
-      width: 100%;
-      height: 420px;
-      background: #0a1525;
-      border: 1px solid var(--border);
-      border-radius: var(--card-radius);
-      color: #b8d4ee;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      line-height: 1.6;
-      padding: 16px;
-      resize: vertical;
-      outline: none;
-    }
-    .right-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .right-actions .btn-primary { flex: 1; text-align: center; padding: 14px; font-size: 15px; }
-
-    /* ── Modal overlay ── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(5,12,25,0.75);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-
-    .modal {
-      background: #162236;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: 0 16px 60px rgba(0,0,0,0.5);
-      width: 560px;
-      max-width: 95vw;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 32px;
-    }
-    .modal h2 {
-      font-size: 20px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 24px;
-    }
-
-    /* ── Form ── */
-    .form-group {
-      margin-bottom: 18px;
-    }
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--secondary);
-      margin-bottom: 6px;
-    }
-    input[type="text"],
-    input[type="date"],
-    select,
-    textarea.form-textarea {
-      width: 100%;
-      background: #0f1b2d;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: #e8f0f8;
-      font-family: var(--font);
-      font-size: 14px;
-      padding: 10px 14px;
-      outline: none;
-      transition: border-color .15s;
-    }
-    input:focus, select:focus, textarea.form-textarea:focus {
-      border-color: var(--accent);
-    }
-    select option { background: #0f1b2d; }
-    textarea.form-textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
-
-    /* Toggle */
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .toggle-row label { margin: 0; }
-    .toggle {
-      position: relative;
-      width: 46px;
-      height: 26px;
-    }
-    .toggle input { opacity: 0; width: 0; height: 0; }
-    .slider {
-      position: absolute;
-      inset: 0;
-      background: var(--border);
-      border-radius: 26px;
-      cursor: pointer;
-      transition: background .2s;
-    }
-    .slider::before {
-      content: '';
-      position: absolute;
-      width: 20px; height: 20px;
-      left: 3px; top: 3px;
-      background: #fff;
-      border-radius: 50%;
-      transition: transform .2s;
-    }
-    .toggle input:checked + .slider { background: var(--accent); }
-    .toggle input:checked + .slider::before { transform: translateX(20px); }
-
-    /* Checkbox */
-    .check-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      color: #e8f0f8;
-    }
-    .check-row input[type="checkbox"] {
-      width: 18px; height: 18px;
-      accent-color: var(--accent);
-      cursor: pointer;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 24px;
-    }
-    .modal-actions .btn-primary { flex: 1; padding: 13px; font-size: 15px; }
-    .modal-actions .btn-ghost { padding: 13px 22px; font-size: 14px; }
-
-    /* ── Toast ── */
-    .toast {
-      position: fixed;
-      bottom: 32px;
-      right: 32px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 14px 24px;
-      border-radius: 12px;
-      box-shadow: 0 8px 30px rgba(249,100,0,0.35);
-      z-index: 200;
-      transform: translateY(80px);
-      opacity: 0;
-      transition: transform .3s, opacity .3s;
-    }
-    .toast.show { transform: translateY(0); opacity: 1; }
-
-    /* ── Empty state ── */
     .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--secondary);
-      font-size: 14px;
+      background: rgba(255,255,255,0.04); border: 2px dashed rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 40px 24px;
+      text-align: center; color: #4a6580;
     }
-    .empty-state .icon { font-size: 36px; margin-bottom: 10px; }
+    .empty-state p { font-size: 13px; opacity: 0.6; margin-top: 8px; }
 
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    /* Add button below list */
+    .add-feed-inline {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: rgba(249,100,0,0.08); border: 2px dashed rgba(249,100,0,0.3);
+      border-radius: 12px; padding: 14px; color: #f96400;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s; margin-top: 4px;
+    }
+    .add-feed-inline:hover { background: rgba(249,100,0,0.14); }
+
+    /* Preview Panel */
+    .preview-panel {
+      background: #fff; border-radius: 14px; padding: 22px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      display: flex; flex-direction: column; gap: 14px; height: fit-content;
+    }
+    .preview-panel-header { display: flex; align-items: center; justify-content: space-between; }
+    .preview-label { font-size: 13px; font-weight: 700; color: #0f1b2d; }
+    .preview-clear { font-size: 12px; color: #a0b8ca; background: none; border: none; cursor: pointer; }
+    .preview-clear:hover { color: #ff4466; }
+    .preview-textarea {
+      width: 100%; min-height: 280px; padding: 14px;
+      background: #f8fafc; border: 1.5px solid #e0eaf0; border-radius: 10px;
+      font-size: 13px; color: #0f1b2d; font-family: 'SFMono-Regular', Consolas, monospace;
+      resize: vertical; outline: none; line-height: 1.7;
+    }
+    .preview-textarea:focus { border-color: #f96400; }
+    .preview-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-create {
+      flex: 1; padding: 12px 20px;
+      background: linear-gradient(135deg, #f96400 0%, #d45200 100%);
+      color: #fff; font-size: 14px; font-weight: 700;
+      border: none; border-radius: 10px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(249,100,0,0.3);
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn-create:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,100,0,0.45); }
+    .btn-create:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .preview-hint { font-size: 12px; color: #a0b8ca; text-align: center; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,27,45,0.85); z-index: 1000;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: #fff; border-radius: 16px; width: 100%; max-width: 560px;
+      padding: 32px; position: relative;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      max-height: 90vh; overflow-y: auto;
+      animation: modalIn 0.2s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 18px;
+      background: none; border: none; font-size: 22px; color: #7a9bb5;
+      cursor: pointer; line-height: 1; padding: 4px; border-radius: 6px;
+    }
+    .modal-close:hover { color: #0f1b2d; background: #f0f4f8; }
+    .modal-title { font-size: 20px; font-weight: 800; color: #0f1b2d; margin-bottom: 4px; }
+    .modal-subtitle { font-size: 13px; color: #7a9bb5; margin-bottom: 24px; }
+    .form-group { margin-bottom: 18px; }
+    .form-label {
+      font-size: 11px; font-weight: 700; color: #7a9bb5;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      display: block; margin-bottom: 8px;
+    }
+    .form-input, .form-select {
+      width: 100%; padding: 10px 14px;
+      background: #f8fafc; border: 1.5px solid #e0eaf0; border-radius: 10px;
+      font-size: 14px; color: #0f1b2d; font-family: inherit; outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus, .form-select:focus { border-color: #f96400; background: #fff; }
+    .form-textarea {
+      width: 100%; min-height: 120px; padding: 12px 14px;
+      background: #f8fafc; border: 1.5px solid #e0eaf0; border-radius: 10px;
+      font-size: 13px; color: #0f1b2d; font-family: inherit; resize: vertical;
+      outline: none; transition: border-color 0.15s; line-height: 1.6;
+    }
+    .form-textarea:focus { border-color: #f96400; background: #fff; }
+    .form-hint { font-size: 12px; color: #a0b8ca; margin-top: 6px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-check { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .form-check input { width: 16px; height: 16px; accent-color: #f96400; cursor: pointer; }
+    .form-check span { font-size: 13px; color: #0f1b2d; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+    .toggle-label { font-size: 13px; color: #0f1b2d; font-weight: 600; }
+    .toggle-sub { font-size: 11px; color: #7a9bb5; margin-top: 2px; }
+    .toggle-switch { position: relative; width: 44px; height: 24px; cursor: pointer; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: #ddd; border-radius: 24px;
+      transition: background 0.2s;
+    }
+    .toggle-slider:before {
+      content: ''; position: absolute; width: 18px; height: 18px;
+      left: 3px; top: 3px; background: #fff; border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-slider { background: #f96400; }
+    .toggle-switch input:checked + .toggle-slider:before { transform: translateX(20px); }
+    .divider { border: none; border-top: 1px solid #f0f0f0; margin: 8px 0; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
+    .btn-save {
+      flex: 1; padding: 13px;
+      background: linear-gradient(135deg, #f96400 0%, #d45200 100%);
+      color: #fff; font-size: 14px; font-weight: 700;
+      border: none; border-radius: 10px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(249,100,0,0.3);
+      transition: transform 0.15s;
+    }
+    .btn-save:hover { transform: translateY(-1px); }
+    .btn-cancel {
+      padding: 13px 24px; background: #f0f4f8; color: #0f1b2d;
+      font-size: 14px; font-weight: 600; border: none; border-radius: 10px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-cancel:hover { background: #e0eaf0; }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #0f1b2d; color: #fff; padding: 14px 24px;
+      border-radius: 12px; font-size: 14px; font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4); border-left: 4px solid #f96400;
+      z-index: 2000; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
+      opacity: 0; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
   </style>
 </head>
 <body>
 
-<!-- Header -->
-<header>
-  <div class="logo">📋</div>
-  <div>
-    <h1>Jira Feed Dashboard</h1>
-    <p>Product Dev Tools</p>
+<header class="site-header">
+  <div class="site-header-left">
+    <a href="../../product-toolbox.html">← Product Dev Toolbox</a>
+    <h1>Jira Feed <span>Dashboard</span></h1>
+    <p>Auto-create Jira tickets from Google Sheets and product change documents</p>
   </div>
-  <div class="badge">Internal Tool</div>
+  <button class="add-feed-btn" onclick="openModal()">+ Add Feed Source</button>
 </header>
 
-<!-- Main layout -->
-<div class="main">
-
-  <!-- LEFT: Feed Sources -->
-  <div class="left-col">
-    <div class="section-title">Feed Sources</div>
-    <div class="feed-list" id="feedList">
-      <!-- cards injected by JS -->
+<main class="main">
+  <div class="two-col">
+    <!-- Left: Feed Sources -->
+    <div>
+      <div class="section-label">Feed Sources</div>
+      <div class="feed-list" id="feedList"></div>
+      <div class="add-feed-inline" onclick="openModal()" style="margin-top:12px">
+        + Add Feed Source
+      </div>
     </div>
-    <button class="add-btn" onclick="openModal()">＋ Add Feed Source</button>
-  </div>
 
-  <!-- RIGHT: Log -->
-  <div class="right-panel">
-    <div class="log-label">Preview / Run Log</div>
-    <textarea id="runLog" readonly placeholder="Run a feed source to see a preview here…"></textarea>
-    <div class="right-actions">
-      <button class="btn btn-primary" onclick="createAllTickets()">🎟 Create All Tickets</button>
-      <button class="btn btn-ghost" onclick="clearLog()">Clear Log</button>
+    <!-- Right: Preview / Log -->
+    <div>
+      <div class="section-label">Preview / Run Log</div>
+      <div class="preview-panel">
+        <div class="preview-panel-header">
+          <span class="preview-label">Ticket Preview</span>
+          <button class="preview-clear" onclick="clearLog()">Clear log</button>
+        </div>
+        <textarea class="preview-textarea" id="previewLog" readonly placeholder="Run a feed source or click 'Save & Preview' to see tickets here..."></textarea>
+        <div class="preview-actions">
+          <button class="btn-create" id="createBtn" onclick="createTickets()" disabled>Create All Tickets</button>
+        </div>
+        <div class="preview-hint">Tickets will be created in Jira via the configured project</div>
+      </div>
     </div>
   </div>
-
-</div>
+</main>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <h2 id="modalTitle">Add Feed Source</h2>
-
-    <input type="hidden" id="editIndex" value="-1" />
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modalTitle">Add Feed Source</div>
+    <div class="modal-subtitle">Configure a Google Sheet to auto-generate Jira tickets</div>
 
     <div class="form-group">
-      <label>Source Name</label>
-      <input type="text" id="fName" placeholder="e.g. CS Feedback Sheet – April" />
+      <label class="form-label">Source Name</label>
+      <input class="form-input" id="fieldName" type="text" placeholder="e.g. Monthly Return Tracker" />
     </div>
 
     <div class="form-group">
-      <label>URL <span style="color:#7a9bb5;font-weight:400">(Google Sheet URL)</span></label>
-      <input type="text" id="fUrl" placeholder="https://docs.google.com/spreadsheets/d/…" />
+      <label class="form-label">Google Sheet URL</label>
+      <input class="form-input" id="fieldUrl" type="url" placeholder="https://docs.google.com/spreadsheets/d/..." />
     </div>
 
-    <div class="form-group">
-      <label>Channel Label</label>
-      <select id="fChannel">
-        <option value="CS">CS — Customer Service</option>
-        <option value="MKT">MKT — Marketing</option>
-        <option value="PD">PD — Product</option>
-        <option value="Custom">Custom</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Priority Rules</label>
-      <textarea class="form-textarea" id="fPriority">Highest: Impacts many users OR major revenue loss
-High: Customer feedback + significant UX impact
-Medium: Cosmetic/UX polish, nice-to-have
-Low: Minor improvement, unclear user value
-Lowest: Very low value or high cost</textarea>
-    </div>
-
-    <div class="form-group">
-      <label>Starting From Date</label>
-      <input type="date" id="fDate" />
-    </div>
-
-    <div class="form-group">
-      <div class="check-row">
-        <input type="checkbox" id="fAutoRefresh" />
-        <label for="fAutoRefresh" style="margin:0;font-size:14px;color:#e8f0f8">Auto Refresh (daily at 7:00 AM EST)</label>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Channel Label</label>
+        <select class="form-select" id="fieldLabel">
+          <option value="CS">CS — Customer Service</option>
+          <option value="MKT">MKT — Marketing</option>
+          <option value="PD">PD — Product Dept</option>
+          <option value="Custom">Custom</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Jira Project</label>
+        <select class="form-select" id="fieldProject">
+          <option value="SCRUM">SCRUM — Sensforge App</option>
+          <option value="NEX">NEX — NextSport</option>
+          <option value="SWC">SWC — Window Cam</option>
+          <option value="SDB">SDB — Door Bell</option>
+          <option value="SFAI">SFAI — SF AI</option>
+        </select>
       </div>
     </div>
 
     <div class="form-group">
-      <label>Jira Project</label>
-      <select id="fProject">
-        <option value="SCRUM">SCRUM</option>
-        <option value="NEX">NEX</option>
-        <option value="SWC">SWC</option>
-        <option value="SDB">SDB</option>
-        <option value="SFAI">SFAI</option>
-      </select>
+      <label class="form-label">Priority Rules</label>
+      <textarea class="form-textarea" id="fieldPriority">Highest — impacts many users or damages core business/revenue
+High — customer feedback that significantly impacts user experience
+Medium — cosmetic/UX polish, visual improvements, nice-to-have
+Low — minor improvement with unclear user value
+Lowest — questionable, very low value or high resource cost
+Note: visual-only changes should never exceed Medium</textarea>
+      <div class="form-hint">Edit these rules to customise how priorities are assigned for this feed.</div>
     </div>
 
     <div class="form-group">
-      <div class="toggle-row">
-        <label>Duplicate Check</label>
-        <label class="toggle">
-          <input type="checkbox" id="fDupCheck" checked />
-          <span class="slider"></span>
-        </label>
-      </div>
+      <label class="form-label">Starting From Date</label>
+      <input class="form-input" id="fieldDate" type="date" />
+      <div class="form-hint">Only process rows dated on or after this date.</div>
     </div>
+
+    <hr class="divider" />
+
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Auto Refresh</div>
+        <div class="toggle-sub">Run this feed daily at 7am EST</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="fieldAutoRefresh" />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Duplicate Check</div>
+        <div class="toggle-sub">Skip items already ticketed in Jira</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="fieldDupeCheck" checked />
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <hr class="divider" />
 
     <div class="modal-actions">
-      <button class="btn btn-primary" onclick="saveAndPreview()">💾 Save &amp; Preview</button>
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveFeed()">Save & Preview</button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-  const STORAGE_KEY = 'jira_feed_sources_v1';
+  const DEFAULT_PRIORITY = `Highest — impacts many users or damages core business/revenue
+High — customer feedback that significantly impacts user experience
+Medium — cosmetic/UX polish, visual improvements, nice-to-have
+Low — minor improvement with unclear user value
+Lowest — questionable, very low value or high resource cost
+Note: visual-only changes should never exceed Medium`;
 
-  function loadSources() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-    catch { return []; }
-  }
-  function saveSources(sources) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sources));
-  }
+  let feeds = JSON.parse(localStorage.getItem('jira_feeds') || '[]');
+  let editingId = null;
 
-  function formatDate(iso) {
-    if (!iso) return '—';
-    const d = new Date(iso + 'T00:00:00');
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  function saveFeeds() {
+    localStorage.setItem('jira_feeds', JSON.stringify(feeds));
   }
 
   function renderFeeds() {
-    const sources = loadSources();
     const list = document.getElementById('feedList');
-    if (sources.length === 0) {
-      list.innerHTML = `<div class="empty-state"><div class="icon">📂</div>No feed sources yet.<br>Add one to get started.</div>`;
+    if (feeds.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div style="font-size:32px">📋</div><p>No feed sources yet. Add one to get started.</p></div>`;
       return;
     }
-    list.innerHTML = sources.map((s, i) => `
+    list.innerHTML = feeds.map(f => {
+      const labelClass = { CS: 'label-cs', MKT: 'label-mkt', PD: 'label-pd', Custom: 'label-custom' }[f.label] || 'label-custom';
+      return `
       <div class="feed-card">
         <div class="feed-card-top">
-          <div class="feed-card-name">${esc(s.name)}</div>
-          <span class="channel-badge">${esc(s.channel)}</span>
+          <div>
+            <div class="feed-name">${f.name}</div>
+            <div class="feed-url">${f.url}</div>
+            <div class="feed-meta">Project: ${f.project} · From: ${f.date || 'All dates'}</div>
+          </div>
+          <span class="label-badge ${labelClass}">${f.label}</span>
         </div>
-        <div class="feed-card-meta">
-          <span>🗂 ${esc(s.project)}</span>
-          <span>📅 From: ${formatDate(s.startDate)}</span>
-          <span>⏱ Last run: ${s.lastRun ? s.lastRun : 'Never'}</span>
-          ${s.autoRefresh ? '<span>🔄 Auto</span>' : ''}
-          ${s.dupCheck ? '<span>🛡 Dup-check</span>' : ''}
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div class="feed-status">
+            <div class="status-dot status-active"></div>
+            <span class="status-text">Active</span>
+            ${f.autoRefresh ? '<span class="auto-badge">⏰ Daily 7am</span>' : ''}
+            ${f.lastRun ? `<span class="status-text">· Last run: ${f.lastRun}</span>` : ''}
+          </div>
+          <div class="feed-card-actions">
+            <button class="btn-sm btn-edit" onclick="openModal('${f.id}')">Edit</button>
+            <button class="btn-sm btn-run" onclick="runFeed('${f.id}')">▶ Run Now</button>
+            <button class="btn-sm btn-delete" onclick="deleteFeed('${f.id}')">✕</button>
+          </div>
         </div>
-        <div class="feed-card-actions">
-          <button class="btn btn-secondary btn-sm" onclick="editFeed(${i})">✏️ Edit</button>
-          <button class="btn btn-primary btn-sm" onclick="runFeed(${i})">▶ Run Now</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteFeed(${i})" style="margin-left:auto">🗑</button>
-        </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
-  function esc(str) {
-    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  function openModal(idx = -1) {
-    document.getElementById('editIndex').value = idx;
-    const overlay = document.getElementById('modalOverlay');
-    overlay.classList.add('open');
-
-    if (idx === -1) {
-      document.getElementById('modalTitle').textContent = 'Add Feed Source';
-      document.getElementById('fName').value = '';
-      document.getElementById('fUrl').value = '';
-      document.getElementById('fChannel').value = 'CS';
-      document.getElementById('fPriority').value = `Highest: Impacts many users OR major revenue loss\nHigh: Customer feedback + significant UX impact\nMedium: Cosmetic/UX polish, nice-to-have\nLow: Minor improvement, unclear user value\nLowest: Very low value or high cost`;
-      document.getElementById('fDate').value = '';
-      document.getElementById('fAutoRefresh').checked = false;
-      document.getElementById('fProject').value = 'SCRUM';
-      document.getElementById('fDupCheck').checked = true;
+  function openModal(id) {
+    editingId = id || null;
+    const modal = document.getElementById('modalOverlay');
+    document.getElementById('modalTitle').textContent = id ? 'Edit Feed Source' : 'Add Feed Source';
+    if (id) {
+      const f = feeds.find(x => x.id === id);
+      if (f) {
+        document.getElementById('fieldName').value = f.name;
+        document.getElementById('fieldUrl').value = f.url;
+        document.getElementById('fieldLabel').value = f.label;
+        document.getElementById('fieldProject').value = f.project;
+        document.getElementById('fieldPriority').value = f.priority || DEFAULT_PRIORITY;
+        document.getElementById('fieldDate').value = f.date || '';
+        document.getElementById('fieldAutoRefresh').checked = f.autoRefresh || false;
+        document.getElementById('fieldDupeCheck').checked = f.dupeCheck !== false;
+      }
     } else {
-      const sources = loadSources();
-      const s = sources[idx];
-      document.getElementById('modalTitle').textContent = 'Edit Feed Source';
-      document.getElementById('fName').value = s.name;
-      document.getElementById('fUrl').value = s.url;
-      document.getElementById('fChannel').value = s.channel;
-      document.getElementById('fPriority').value = s.priority;
-      document.getElementById('fDate').value = s.startDate || '';
-      document.getElementById('fAutoRefresh').checked = !!s.autoRefresh;
-      document.getElementById('fProject').value = s.project;
-      document.getElementById('fDupCheck').checked = !!s.dupCheck;
+      document.getElementById('fieldName').value = '';
+      document.getElementById('fieldUrl').value = '';
+      document.getElementById('fieldLabel').value = 'CS';
+      document.getElementById('fieldProject').value = 'SCRUM';
+      document.getElementById('fieldPriority').value = DEFAULT_PRIORITY;
+      document.getElementById('fieldDate').value = '';
+      document.getElementById('fieldAutoRefresh').checked = false;
+      document.getElementById('fieldDupeCheck').checked = true;
     }
+    modal.classList.add('active');
   }
 
   function closeModal() {
-    document.getElementById('modalOverlay').classList.remove('open');
+    document.getElementById('modalOverlay').classList.remove('active');
+    editingId = null;
   }
 
-  function editFeed(idx) { openModal(idx); }
-
-  function deleteFeed(idx) {
-    if (!confirm('Delete this feed source?')) return;
-    const sources = loadSources();
-    sources.splice(idx, 1);
-    saveSources(sources);
+  function saveFeed() {
+    const name = document.getElementById('fieldName').value.trim();
+    const url = document.getElementById('fieldUrl').value.trim();
+    if (!name || !url) { showToast('⚠️ Name and URL are required'); return; }
+    const feed = {
+      id: editingId || Date.now().toString(),
+      name, url,
+      label: document.getElementById('fieldLabel').value,
+      project: document.getElementById('fieldProject').value,
+      priority: document.getElementById('fieldPriority').value,
+      date: document.getElementById('fieldDate').value,
+      autoRefresh: document.getElementById('fieldAutoRefresh').checked,
+      dupeCheck: document.getElementById('fieldDupeCheck').checked,
+      lastRun: null,
+    };
+    if (editingId) {
+      const idx = feeds.findIndex(x => x.id === editingId);
+      if (idx >= 0) feeds[idx] = feed;
+    } else {
+      feeds.push(feed);
+    }
+    saveFeeds();
     renderFeeds();
-  }
-
-  function saveAndPreview() {
-    const name = document.getElementById('fName').value.trim();
-    const url  = document.getElementById('fUrl').value.trim();
-    if (!name) { alert('Please enter a Source Name.'); return; }
-    if (!url)  { alert('Please enter a URL.'); return; }
-
-    const idx      = parseInt(document.getElementById('editIndex').value, 10);
-    const sources  = loadSources();
-    const channel  = document.getElementById('fChannel').value;
-    const priority = document.getElementById('fPriority').value;
-    const startDate = document.getElementById('fDate').value;
-    const autoRefresh = document.getElementById('fAutoRefresh').checked;
-    const project  = document.getElementById('fProject').value;
-    const dupCheck = document.getElementById('fDupCheck').checked;
-    const now      = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'short', timeStyle: 'short' });
-
-    const entry = { name, url, channel, priority, startDate, autoRefresh, project, dupCheck, lastRun: now };
-
-    if (idx === -1) sources.push(entry);
-    else sources[idx] = entry;
-
-    saveSources(sources);
     closeModal();
-    renderFeeds();
-
-    // Mock preview
-    const log = document.getElementById('runLog');
-    const ts  = new Date().toLocaleTimeString();
-    const rows = Math.floor(Math.random() * 5) + 3;
-    let preview = `[${ts}] Running: ${name}\n`;
-    preview += `Source URL: ${url}\n`;
-    preview += `Project: ${project} | Channel: [${channel}]\n`;
-    if (startDate) preview += `Filtering from: ${formatDate(startDate)}\n`;
-    if (dupCheck) preview += `Duplicate check: ON\n`;
-    preview += `─────────────────────────────────\n`;
-    const mockItems = [
-      `[${channel}] Improve onboarding flow — Priority: High`,
-      `[${channel}] Fix login timeout on mobile — Priority: Highest`,
-      `[${channel}] Add dark mode toggle — Priority: Medium`,
-      `[${channel}] Notification settings reset on update — Priority: High`,
-      `[${channel}] Performance lag on Events tab — Priority: High`,
-      `[${channel}] Camera offline alert delay — Priority: High`,
-      `[${channel}] Export button missing in Reports — Priority: Medium`,
-    ];
-    for (let i = 0; i < rows; i++) {
-      preview += `• ${mockItems[i % mockItems.length]}\n`;
-    }
-    preview += `─────────────────────────────────\n`;
-    preview += `✅ ${rows} ticket(s) ready to create in ${project}\n\n`;
-    log.value = preview + log.value;
-    showToast(`✅ "${name}" saved and preview generated!`);
+    runFeed(feed.id, true);
   }
 
-  function runFeed(idx) {
-    const sources = loadSources();
-    const s = sources[idx];
-    const now = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'short', timeStyle: 'short' });
-    sources[idx].lastRun = now;
-    saveSources(sources);
+  function deleteFeed(id) {
+    if (!confirm('Remove this feed source?')) return;
+    feeds = feeds.filter(f => f.id !== id);
+    saveFeeds();
     renderFeeds();
-
-    const log = document.getElementById('runLog');
-    const ts  = new Date().toLocaleTimeString();
-    const rows = Math.floor(Math.random() * 4) + 2;
-    let preview = `[${ts}] Running: ${s.name}\n`;
-    preview += `Project: ${s.project} | Channel: [${s.channel}]\n`;
-    preview += `─────────────────────────────────\n`;
-    const mockItems = [
-      `[${s.channel}] Subscription renewal notification — Priority: High`,
-      `[${s.channel}] Camera thumbnail not loading — Priority: High`,
-      `[${s.channel}] Two-factor auth not sending SMS — Priority: Highest`,
-      `[${s.channel}] Improve clip sharing UX — Priority: Medium`,
-      `[${s.channel}] Add battery level indicator — Priority: Low`,
-    ];
-    for (let i = 0; i < rows; i++) {
-      preview += `• ${mockItems[i % mockItems.length]}\n`;
-    }
-    preview += `─────────────────────────────────\n`;
-    preview += `✅ ${rows} ticket(s) ready to create in ${s.project}\n\n`;
-    log.value = preview + log.value;
-    showToast(`▶ "${s.name}" run complete — ${rows} items previewed`);
+    showToast('Feed source removed');
   }
 
-  function createAllTickets() {
-    const log = document.getElementById('runLog');
-    if (!log.value.trim()) {
-      showToast('⚠️ Run a feed source first to generate a preview.');
-      return;
-    }
-    showToast('🎟 All tickets queued for creation in Jira!');
+  function runFeed(id, fromSave) {
+    const f = feeds.find(x => x.id === id);
+    if (!f) return;
+    f.lastRun = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    saveFeeds();
+    renderFeeds();
+    const preview = generatePreview(f);
+    const log = document.getElementById('previewLog');
+    const timestamp = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const entry = `── ${fromSave ? 'Save & Preview' : 'Run Now'}: ${f.name} · ${timestamp} ──\n${preview}\n\n`;
+    log.value = entry + log.value;
+    document.getElementById('createBtn').disabled = false;
+    showToast(`✓ Preview ready for "${f.name}"`);
+  }
+
+  function generatePreview(f) {
+    const mockItems = [
+      [`[${f.label}] Improve onboarding flow for new users`, 'High'],
+      [`[${f.label}] Fix broken navigation on settings page`, 'High'],
+      [`[${f.label}] Update subscription page copy and pricing`, 'Medium'],
+      [`[${f.label}] Add dark mode option to profile settings`, 'Medium'],
+      [`[${f.label}] Improve error messages for failed uploads`, 'Low'],
+    ];
+    const count = Math.floor(Math.random() * 3) + 2;
+    const selected = mockItems.slice(0, count);
+    const lines = selected.map(([title, pri]) => `• ${title} — ${pri}`);
+    lines.push(`→ ${count} new tickets ready to create in ${f.project}`);
+    if (f.dupeCheck) lines.push(`ℹ️  Duplicate check ON — previously processed items skipped`);
+    return lines.join('\n');
+  }
+
+  function createTickets() {
+    const log = document.getElementById('previewLog');
+    const ts = new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    log.value = `── Tickets Created · ${ts} ──\n✓ All tickets successfully created in Jira.\n\n` + log.value;
+    document.getElementById('createBtn').disabled = true;
+    showToast('✓ Tickets created in Jira!');
   }
 
   function clearLog() {
-    document.getElementById('runLog').value = '';
+    document.getElementById('previewLog').value = '';
+    document.getElementById('createBtn').disabled = true;
   }
 
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3200);
+    setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  // Close modal on overlay click
-  document.getElementById('modalOverlay').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
   });
 
-  // Init
   renderFeeds();
 </script>
 </body>
