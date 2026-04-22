@@ -96,8 +96,8 @@ select{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px
 <body>
 
 <div class="header">
-  <div><h1>🛒 SensForge Amazon Ads Dashboard</h1><div class="sub">Apr 3 → Apr 16 · Goal: 2.0x ROAS</div></div>
-  <div style="font-size:11px;color:rgba(255,255,255,0.5)">Last updated: Apr 16, 2026</div>
+  <div><h1>🛒 SensForge Amazon Ads Dashboard</h1><div class="sub">Apr 3 → Apr 21 · Goal: 2.0x ROAS</div></div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.5)">Last updated: Apr 21, 2026</div>
 </div>
 <div class="date-bar">
   <button class="date-btn active" onclick="setDate(this,'all')">📊 All Days</button>
@@ -337,12 +337,12 @@ const campaigns=[
 ];
 
 const keywords=[
-  {kw:"indoor camera",         apr3:1.73,apr6:2.27,apr7:1.51,apr8:1.40,apr9:1.56,apr10:0.61,apr11:null,apr12:2.26,apr13:1.31,apr14:1.07,apr15:0.87,apr16:1.25,prof:5,rec:"⚠️ Reduce bid $2.50→$2.20 — volatile but volume driver"},
-  {kw:"home security",         apr3:1.91,apr6:1.44,apr7:0.66,apr8:null,apr9:0.89,apr10:1.17,apr11:null,apr12:0.32,apr13:0.98,apr14:5.32,apr15:null,apr16:5.32,prof:4,rec:"✅ Keep — often converts well, add targeted negatives"},
-  {kw:"baby monitor",          apr3:2.02,apr6:null,apr7:null,apr8:null,apr9:null,apr10:4.04,apr11:null,apr12:1.18,apr13:1.68,apr14:4.27,apr15:0.9,apr16:null,prof:4,rec:"✅ Scale bid — avg 2.8x across 6 days"},
-  {kw:"home camera",           apr3:1.77,apr6:2.71,apr7:0,   apr8:0.68,apr9:0,   prof:2,rec:"⬇️ Reduce bid $2.00→$1.40"},
+  {kw:"indoor camera",         apr3:1.73,apr6:2.27,apr7:1.51,apr8:1.40,apr9:1.56,apr10:0.61,apr11:null,apr12:2.26,apr13:1.31,apr14:1.07,apr15:0.87,apr16:1.25,apr17:2.25,apr18:1.11,apr19:2.05,apr20:1.62,apr21:1.54,prof:5,rec:"⬆️ Raise bid $2.60→$3.00 — 44% underbid vs median"},
+  {kw:"home security",         apr3:1.91,apr6:1.44,apr7:0.66,apr8:null,apr9:0.89,apr10:1.17,apr11:null,apr12:0.32,apr13:0.98,apr14:5.32,apr15:null,apr16:5.32,apr17:0,apr18:0,apr19:0,apr20:0,apr21:0,prof:2,rec:"⬇️ Reduce bid — 0x ROAS every day Apr 17-21"},
+  {kw:"baby monitor",          apr3:2.02,apr6:null,apr7:null,apr8:null,apr9:null,apr10:4.04,apr11:null,apr12:1.18,apr13:1.68,apr14:4.27,apr15:0.9,apr16:null,apr17:2.56,apr18:1.53,apr19:1.83,apr20:2.97,apr21:0.52,prof:5,rec:"✅ Scale — avg 2.0x over 7 days"},
+  {kw:"home camera",           apr3:1.77,apr6:2.71,apr7:0,   apr8:0.68,apr9:0,   apr17:0.92,apr18:1.36,apr19:2.42,apr20:0,apr21:0, prof:2,rec:"⚠️ Volatile — hold at $2.20"},
   {kw:"wifi camera",           apr3:2.97,apr6:0,   apr7:0,   apr8:0,   apr9:0,   prof:1,rec:"⬆️ Raise bid $1.20→$1.80"},
-  {kw:"security cameras",      apr3:1.67,apr6:null,apr7:null,apr8:null,apr9:null, prof:1,rec:"🚨 RESTORE to ad group"},
+  {kw:"security cameras",      apr3:1.67,apr6:null,apr7:null,apr8:null,apr9:2.21,apr17:3.42,apr18:2.46,apr19:2.74,apr20:1.92,apr21:2.35,prof:4,rec:"✅ Strong — avg 2.5x, keep at $2.32"},
   {kw:"indoor home camera",    apr3:1.05,apr6:5.62,apr7:1.49,apr8:0,   apr9:0,   prof:2,rec:"⬇️ Reduce bid"},
   {kw:"camera for pets",       apr3:2.03,apr6:null,apr7:null,apr8:null,apr9:null, prof:1,rec:"📊 Monitor"},
   {kw:"pan tilt camera",       apr3:0,   apr6:0,   apr7:0,   apr8:0,   apr9:0,   prof:0,rec:"❌ PAUSE"},
