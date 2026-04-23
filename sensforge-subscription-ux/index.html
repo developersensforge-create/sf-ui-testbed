@@ -747,6 +747,23 @@
 </div><!-- end phone -->
 
 <script>
+function dismissEventsBanner() {
+  var banner = document.getElementById('events-top-banner');
+  if (banner) {
+    banner.style.display = 'none';
+    // Store dismiss time (simulated — in real app use AsyncStorage)
+    try { sessionStorage.setItem('events_banner_dismissed', Date.now()); } catch(e) {}
+  }
+}
+// Re-show banner if new day (simulated: always show on fresh load unless dismissed in this session)
+(function() {
+  var dismissed = sessionStorage.getItem('events_banner_dismissed');
+  if (dismissed) {
+    var banner = document.getElementById('events-top-banner');
+    if (banner) banner.style.display = 'none';
+  }
+})();
+
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
