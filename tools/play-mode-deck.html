@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Play Mode — AI Camera Games for Kids</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0f1b2d;
+    --navy2: #162436;
+    --orange: #f96400;
+    --orange-lt: #fff0e6;
+    --white: #ffffff;
+    --gray: #7a9bb5;
+    --border: rgba(255,255,255,0.08);
+    --green: #22c55e;
+  }
+  html { scroll-behavior: smooth; font-family: 'Inter', sans-serif; }
+  body { background: var(--navy); color: var(--white); overflow-x: hidden; }
+
+  /* Slides */
+  .slide {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+  @media print {
+    .slide { page-break-after: always; min-height: 100vh; padding: 48px 64px; }
+    .nav-dots { display: none; }
+  }
+
+  /* Nav dots */
+  .nav-dots {
+    position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 10px; z-index: 100;
+  }
+  .nav-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.25); cursor: pointer;
+    transition: all 0.2s; border: none;
+  }
+  .nav-dot.active, .nav-dot:hover { background: var(--orange); transform: scale(1.3); }
+
+  /* Brand */
+  .brand {
+    position: absolute; top: 28px; left: 48px;
+    font-size: 13px; font-weight: 700; color: var(--orange);
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .slide-num {
+    position: absolute; bottom: 28px; right: 48px;
+    font-size: 12px; color: var(--gray); font-weight: 600;
+  }
+
+  /* Typography */
+  .eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--orange); margin-bottom: 14px; }
+  h1 { font-size: clamp(36px, 5vw, 64px); font-weight: 900; line-height: 1.1; letter-spacing: -1px; }
+  h2 { font-size: clamp(28px, 3.5vw, 44px); font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; }
+  h3 { font-size: 18px; font-weight: 700; }
+  p { font-size: 16px; line-height: 1.7; color: rgba(255,255,255,0.8); }
+  .highlight { color: var(--orange); }
+
+  /* Cards / boxes */
+  .card {
+    background: var(--navy2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px 28px;
+  }
+  .card-orange { border-color: var(--orange); background: rgba(249,100,0,0.06); }
+
+  /* Game chips */
+  .game-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  .game-chip {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--navy2); border: 1px solid var(--border);
+    border-radius: 40px; padding: 10px 20px;
+    font-size: 14px; font-weight: 600;
+    transition: border-color 0.2s;
+  }
+  .game-chip:hover { border-color: var(--orange); }
+  .game-chip .em { font-size: 20px; }
+
+  /* Steps */
+  .steps { display: flex; gap: 20px; margin-top: 8px; }
+  .step {
+    flex: 1; background: var(--navy2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+  }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--orange); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; margin-bottom: 12px;
+  }
+  .step h3 { font-size: 15px; margin-bottom: 6px; }
+  .step p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+
+  /* Tier table */
+  .tier-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .tier-table th, .tier-table td {
+    padding: 12px 16px; text-align: left; font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tier-table th { color: var(--gray); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .tier-table td:first-child { font-weight: 700; }
+  .pill {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 700;
+  }
+  .pill-orange { background: rgba(249,100,0,0.15); color: var(--orange); border: 1px solid rgba(249,100,0,0.3); }
+  .pill-gray { background: rgba(255,255,255,0.06); color: var(--gray); border: 1px solid var(--border); }
+  .pill-green { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+
+  /* Action list */
+  .action-list { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .action-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: var(--navy2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px;
+  }
+  .action-item.done { border-color: rgba(34,197,94,0.25); background: rgba(34,197,94,0.04); }
+  .action-item.now { border-color: rgba(249,100,0,0.3); background: rgba(249,100,0,0.05); }
+  .action-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .action-content {}
+  .action-label { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .action-label.done-label { color: var(--green); }
+  .action-label.now-label { color: var(--orange); }
+  .action-label.next-label { color: rgba(255,255,255,0.9); }
+  .action-desc { font-size: 12px; color: var(--gray); line-height: 1.5; }
+
+  /* Two col */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+  /* Metric chips */
+  .metrics { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+  .metric {
+    flex: 1; min-width: 140px;
+    background: var(--navy2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .metric-val { font-size: 24px; font-weight: 900; color: var(--orange); }
+  .metric-label { font-size: 11px; color: var(--gray); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Title slide specific */
+  .title-slide { background: var(--navy); }
+  .title-slide h1 span { color: var(--orange); }
+  .big-icon { font-size: 80px; margin-bottom: 20px; }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<!-- Nav dots -->
+<nav class="nav-dots" id="navDots"></nav>
+
+<!-- SLIDE 0: Title -->
+<section class="slide title-slide" id="slide-0">
+  <div class="brand">SensForge</div>
+  <div class="slide-num">1 / 4</div>
+
+  <div style="max-width:700px">
+    <div class="eyebrow">2026 Product Initiative</div>
+    <h1>Play Mode<br/><span>AI Camera Games<br/>for Kids</span></h1>
+    <p style="margin-top:24px; font-size:18px; max-width:500px">
+      Turning the SensForge smart camera from a passive observer into an interactive play partner — no extra hardware required.
+    </p>
+    <div style="margin-top:40px; display:flex; gap:12px; flex-wrap:wrap">
+      <span class="pill pill-orange">🎮 5 AI-Powered Games</span>
+      <span class="pill pill-orange">📸 Shareable Highlights</span>
+      <span class="pill pill-orange">🔒 Parent-Controlled</span>
+      <span class="pill pill-orange">💰 Pro Upsell Driver</span>
+    </div>
+    <p style="margin-top:32px; font-size:13px; color:var(--gray)">April 2026 · Olivia, Product Manager · SensForge AI Team</p>
+  </div>
+
+  <div style="position:absolute; right:80px; bottom:80px; opacity:0.07; font-size:200px; line-height:1">🎮</div>
+</section>
+
+<!-- SLIDE 1: The Idea -->
+<section class="slide" id="slide-1">
+  <div class="brand">SensForge · Play Mode</div>
+  <div class="slide-num">2 / 4</div>
+
+  <div class="eyebrow">The Idea</div>
+  <h2>Your Camera Becomes<br/>a <span class="highlight">Play Partner</span></h2>
+
+  <div class="two-col" style="margin-top:32px; align-items:start">
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <h3 style="margin-bottom:10px; color:var(--gray); font-size:13px; text-transform:uppercase; letter-spacing:1px">The Problem</h3>
+        <p style="font-size:15px">Security cameras sit in living rooms and playrooms doing <strong>nothing interactive</strong>. Families already have the hardware. The AI vision is already there. We're just not using it.</p>
+      </div>
+      <div class="card card-orange">
+        <h3 style="margin-bottom:10px; color:var(--gray); font-size:13px; text-transform:uppercase; letter-spacing:1px">The Opportunity</h3>
+        <p style="font-size:15px">Nex Playground — a $99 dedicated device + $8/mo subscription — proves parents will pay for camera-based kids games. <strong>We don't need the hardware.</strong> We just need the software.</p>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--gray); margin-bottom:14px">5 Games — No Display Needed</h3>
+      <div class="game-grid">
+        <div class="game-chip"><span class="em">🙋</span>Simon Says</div>
+        <div class="game-chip"><span class="em">🌋</span>Floor is Lava</div>
+        <div class="game-chip"><span class="em">🧊</span>1-2-3 Freeze</div>
+        <div class="game-chip"><span class="em">🔍</span>Hide &amp; Seek</div>
+        <div class="game-chip"><span class="em">👁️</span>I Spy</div>
+      </div>
+      <p style="margin-top:16px; font-size:13px; color:var(--gray)">All game output via camera speaker. Parent starts from app. Kids play independently. Camera captures shareable highlight moments.</p>
+
+      <div class="metrics" style="margin-top:20px">
+        <div class="metric">
+          <div class="metric-val">4–10</div>
+          <div class="metric-label">Target age range</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">$0.02–0.04</div>
+          <div class="metric-label">Cost per session</div>
+        </div>
+        <div class="metric">
+          <div class="metric-val">0</div>
+          <div class="metric-label">Extra hardware needed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 2: How It Works + Business Model -->
+<section class="slide" id="slide-2">
+  <div class="brand">SensForge · Play Mode</div>
+  <div class="slide-num">3 / 4</div>
+
+  <div class="eyebrow">How It Works · Business Model</div>
+  <h2>Simple to Play.<br/><span class="highlight">Strong to Monetize.</span></h2>
+
+  <div style="margin-top:28px">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Parent Starts</h3>
+        <p>Opens Play Mode in app, selects a game, taps Start. One-time parental consent. Kids play independently after that.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Camera Runs the Game</h3>
+        <p>AI vision watches movement via 480p frames sent to cloud. Game narrated via camera speaker. No display, no controller.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Highlights Auto-Captured</h3>
+        <p>Funny freeze poses, epic near-misses, first-clue I Spy wins — saved as shareable clips. Push notification to parent.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" style="margin:24px 0" />
+
+  <div class="two-col" style="align-items:start">
+    <div>
+      <h3 style="font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--gray); margin-bottom:12px">Subscription Tier Logic</h3>
+      <table class="tier-table">
+        <thead>
+          <tr><th>Tier</th><th>Play Mode Access</th><th>Key Unlock</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="pill pill-gray">Free</span></td>
+            <td>3 sessions/week<br/>Basic rules only</td>
+            <td style="color:var(--gray); font-size:13px">Hook families</td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-orange">Single Pro</span></td>
+            <td>Unlimited sessions<br/>All games &amp; difficulty</td>
+            <td style="color:var(--orange); font-size:13px">Highlights + history</td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-green">Family Pro</span></td>
+            <td>Multi-kid multiplayer<br/>Household leaderboard</td>
+            <td style="color:var(--green); font-size:13px">Full experience</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h3 style="font-size:13px; text-transform:uppercase; letter-spacing:1px; color:var(--gray); margin-bottom:12px">Why It Wins</h3>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <div class="card" style="padding:14px 18px">
+          <p style="font-size:13px"><strong style="color:white">🔒 Acquisition hook</strong> — Free tier gets families playing. Highlights are the carrot to upgrade.</p>
+        </div>
+        <div class="card" style="padding:14px 18px">
+          <p style="font-size:13px"><strong style="color:white">📲 Viral growth</strong> — Funny freeze photos and "Floor is Lava" clips are inherently shareable on social media.</p>
+        </div>
+        <div class="card" style="padding:14px 18px">
+          <p style="font-size:13px"><strong style="color:white">📊 Proven market</strong> — Nex Playground validates willingness to pay. We have the device already in homes.</p>
+        </div>
+        <div class="card card-orange" style="padding:14px 18px">
+          <p style="font-size:13px"><strong style="color:var(--orange)">🎯 Target:</strong> ≥20% of active households play weekly within 90 days of launch</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: Action List -->
+<section class="slide" id="slide-3">
+  <div class="brand">SensForge · Play Mode</div>
+  <div class="slide-num">4 / 4</div>
+
+  <div class="eyebrow">Action List</div>
+  <h2>What's Done.<br/><span class="highlight">What's Next.</span></h2>
+
+  <div class="two-col" style="margin-top:28px; align-items:start">
+    <div>
+      <h3 style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--green); margin-bottom:12px">✅ Completed</h3>
+      <div class="action-list">
+        <div class="action-item done">
+          <div class="action-icon">✅</div>
+          <div class="action-content">
+            <div class="action-label done-label">PRD v2 — All 5 games specced</div>
+            <div class="action-desc">Trigger flow, rules, data flow, cost analysis, tier logic, edge cases per game. Published on Confluence.</div>
+          </div>
+        </div>
+        <div class="action-item done">
+          <div class="action-icon">✅</div>
+          <div class="action-content">
+            <div class="action-label done-label">Camera Voice Script</div>
+            <div class="action-desc">Every camera utterance written for all 5 games. Ready for copywriter polish + TTS integration.</div>
+          </div>
+        </div>
+        <div class="action-item done">
+          <div class="action-icon">✅</div>
+          <div class="action-content">
+            <div class="action-label done-label">Survey Plan — Versions A–J (SCRUM-244/245)</div>
+            <div class="action-desc">10 survey versions to validate game demand, willingness to pay, and feature priority. Ready to launch.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--orange); margin-bottom:12px">🔲 Up Next</h3>
+      <div class="action-list">
+        <div class="action-item now">
+          <div class="action-icon">🚀</div>
+          <div class="action-content">
+            <div class="action-label now-label">Phase 1 — In-App Survey</div>
+            <div class="action-desc">Launch survey to 150–300 Sensforge app users. Validate top game + willingness to pay. Gate: &gt;55% excited, &gt;20% willing to pay.</div>
+          </div>
+        </div>
+        <div class="action-item now">
+          <div class="action-icon">⚖️</div>
+          <div class="action-content">
+            <div class="action-label now-label">Legal — COPPA + Child Privacy Review</div>
+            <div class="action-desc">Parental consent adequacy, DPA for AI vendors, child voice data (Hide &amp; Seek B + I Spy). Cannot ship without sign-off.</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-icon">🔧</div>
+          <div class="action-content">
+            <div class="action-label next-label">Engineering Spike (post-survey)</div>
+            <div class="action-desc">AI accuracy on kids ages 4–10. Firmware: 3fps sustained upload + music playback + LED pulsing green.</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-icon">🏗️</div>
+          <div class="action-content">
+            <div class="action-label next-label">Technical Design Doc</div>
+            <div class="action-desc">Session state machine, API contracts, model selection, highlight pipeline. Backend + firmware teams.</div>
+          </div>
+        </div>
+        <div class="action-item">
+          <div class="action-icon">🎮</div>
+          <div class="action-content">
+            <div class="action-label next-label">MVP Build — Top 1–2 games from survey</div>
+            <div class="action-desc">Prototype with 5–10 families. Then internal beta → public launch with highlight capture.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const navDots = document.getElementById('navDots');
+
+  // Create dots
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => slides[i].scrollIntoView({ behavior: 'smooth' });
+    navDots.appendChild(dot);
+  });
+
+  // Update active dot on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = Array.from(slides).indexOf(entry.target);
+        document.querySelectorAll('.nav-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === idx);
+        });
+      }
+    });
+  }, { threshold: 0.5 });
+  slides.forEach(s => observer.observe(s));
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    const active = Array.from(document.querySelectorAll('.nav-dot')).findIndex(d => d.classList.contains('active'));
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      if (active < slides.length - 1) slides[active + 1].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      if (active > 0) slides[active - 1].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+</script>
+</body>
+</html>
