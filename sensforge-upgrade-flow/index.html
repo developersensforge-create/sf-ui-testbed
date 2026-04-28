@@ -728,8 +728,6 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
 <script>
 function toggleDevice(el, camId) {
   var check = document.getElementById('check-' + camId);
-  var selected = check.style.background === 'rgb(249, 100, 0)' || check.style.background === 'var(--orange)' || check.textContent === '✓' && check.style.background !== 'rgb(255, 255, 255)';
-  // Toggle
   var isOn = check.style.background !== 'rgb(255, 255, 255)' && check.style.background !== '' && check.style.color !== 'rgb(221, 221, 221)';
   if (isOn) {
     check.style.background = '#fff'; check.style.borderColor = '#ddd'; check.style.color = '#ddd';
@@ -738,6 +736,40 @@ function toggleDevice(el, camId) {
     check.style.background = 'var(--orange)'; check.style.borderColor = 'var(--orange)'; check.style.color = '#fff';
     el.style.opacity = '1';
   }
+  updateSavingsFormula();
+}
+function updateSavingsFormula() {
+  // Count selected single/basic cams
+  var selectedCount = 0;
+  ['cam1','cam2','cam3'].forEach(function(id) {
+    var c = document.getElementById('check-' + id);
+    if (c && c.style.background !== 'rgb(255, 255, 255)' && c.style.color !== 'rgb(221, 221, 221)') selectedCount++;
+  });
+  // cam1, cam2 are single pro ($4.99 each), cam3 is basic
+  // savings = (single pro cams selected * 4.99) - 9.99, minimum 0
+  var singleCamsSelected = 0;
+  var c1 = document.getElementById('check-cam1');
+  var c2 = document.getElementById('check-cam2');
+  if (c1 && c1.style.color !== 'rgb(221, 221, 221)' && c1.style.background !== 'rgb(255, 255, 255)') singleCamsSelected++;
+  if (c2 && c2.style.color !== 'rgb(221, 221, 221)' && c2.style.background !== 'rgb(255, 255, 255)') singleCamsSelected++;
+  var currentCost = singleCamsSelected * 4.99;
+  var saving = Math.max(0, currentCost - 9.99).toFixed(2);
+  var annual = (saving * 12).toFixed(2);
+  // Update banner
+  var bs = document.getElementById('banner-saving');
+  if (bs) bs.textContent = '$' + saving + '/mo';
+  // Update formula card
+  var l1 = document.getElementById('sf-line1-label');
+  var l1v = document.getElementById('sf-line1-val');
+  var sfSaving = document.getElementById('sf-saving');
+  var sfAnnual = document.getElementById('sf-annual');
+  if (l1) l1.textContent = singleCamsSelected + '× Single Pro Coverage';
+  if (l1v) l1v.textContent = '$' + currentCost.toFixed(2);
+  if (sfSaving) sfSaving.textContent = '$' + saving;
+  if (sfAnnual) sfAnnual.textContent = 'Consolidating saves you $' + annual + ' annually compared to individual Pro subscriptions for each device.';
+  // Update selection summary
+  var ss = document.getElementById('selection-summary');
+  if (ss) ss.textContent = selectedCount + ' camera' + (selectedCount !== 1 ? 's' : '') + ' selected · Savings: $' + saving + '/mo';
 }
 function toggleDeviceB(el) {
   var check = el.querySelector('.check-b');
