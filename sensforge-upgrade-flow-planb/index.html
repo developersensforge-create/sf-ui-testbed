@@ -360,8 +360,186 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
   </div>
 </div>
 
+
+<!-- ════ PLAN B — CASE B1: Only Basic cameras ════ -->
+<div class="screen" id="s-b-case-b1">
+  <div class="status">9:41 <span>📶 🔋</span></div>
+  <div class="page-header">
+    <span class="back">←</span>
+    <span class="title">Upgrade to Family Pro</span>
+    <span style="font-size:11px;background:#e8f5e9;color:var(--green);padding:3px 8px;border-radius:20px;font-weight:700;">Plan B</span>
+  </div>
+  <div class="scroll">
+    <div style="margin:12px 12px 0;background:#e8eaf6;border-radius:10px;padding:8px 12px;font-size:12px;color:#3949ab;font-weight:600;">Case B1 — Only Basic cameras, no Single Pro</div>
+
+    <!-- No proration — user pays full $9.99 -->
+    <div style="margin:10px 12px 0;background:linear-gradient(135deg,#f96400,#ff8c00);border-radius:14px;padding:14px 16px;">
+      <div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:3px;">Create a Family Pro Plan</div>
+      <div style="color:rgba(255,255,255,0.88);font-size:12px;margin-bottom:12px;">No Single Pro to upgrade — subscribe to Family Pro directly. Your Basic cameras automatically move in.</div>
+      <div style="background:rgba(0,0,0,0.18);border-radius:10px;padding:10px 12px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.8);margin-bottom:4px;"><span>Family Pro subscription</span><span>$9.99/mo</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.8);margin-bottom:4px;"><span>Cameras auto-included</span><span>3 Basic cams</span></div>
+        <div style="height:1px;background:rgba(255,255,255,0.2);margin:6px 0;"></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#fff;font-weight:800;"><span>Due today</span><span>$9.99</span></div>
+      </div>
+      <button style="width:100%;background:#fff;color:var(--orange);border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;" onclick="showModal('modal-b1-confirm')">Subscribe — $9.99/mo</button>
+    </div>
+
+    <!-- Cameras that will auto-join -->
+    <div style="padding:12px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Cameras auto-added to Family Pro</div>
+    <div class="cam-row" style="margin:0 12px 6px;"><div class="cam-icon-box" style="background:#f5f5f5;">📷</div><div style="flex:1;"><div class="cam-name">Living Room Cam</div><div class="cam-sub">Basic → automatically moves to Family Pro</div></div><span class="tag basic">Basic</span></div>
+    <div class="cam-row" style="margin:0 12px 6px;"><div class="cam-icon-box" style="background:#f5f5f5;">📷</div><div style="flex:1;"><div class="cam-name">Bedroom Cam</div><div class="cam-sub">Basic → automatically moves to Family Pro</div></div><span class="tag basic">Basic</span></div>
+    <div class="cam-row" style="margin:0 12px 6px;"><div class="cam-icon-box" style="background:#f5f5f5;">📷</div><div style="flex:1;"><div class="cam-name">Office Cam</div><div class="cam-sub">Basic → automatically moves to Family Pro</div></div><span class="tag basic">Basic</span></div>
+    <div style="margin:6px 12px 0;background:#fffbf0;border-radius:10px;padding:8px 12px;font-size:11px;color:#a05000;line-height:1.5;">ℹ️ After subscribing, all Basic cameras are automatically placed in Family Pro. You can add more cameras any time (up to 10).</div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- ════ PLAN B — CASE B2: Has 1+ Single Pro ════ -->
+<div class="screen" id="s-b-case-b2">
+  <div class="status">9:41 <span>📶 🔋</span></div>
+  <div class="page-header">
+    <span class="back">←</span>
+    <span class="title">Upgrade a Single Pro Plan</span>
+    <span style="font-size:11px;background:#e8f5e9;color:var(--green);padding:3px 8px;border-radius:20px;font-weight:700;">Plan B</span>
+  </div>
+  <div class="scroll">
+    <div style="margin:12px 12px 0;background:#e8eaf6;border-radius:10px;padding:8px 12px;font-size:12px;color:#3949ab;font-weight:600;">Case B2 — Has 1+ Single Pro plans</div>
+
+    <div style="padding:12px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Select a Single Pro to upgrade</div>
+    <div style="padding:0 12px;font-size:11px;color:#aaa;margin-bottom:10px;">Tap "Upgrade" on one plan. Stripe upgrades it to Family Pro and charges only the price difference. You can then add other cameras to the new plan.</div>
+
+    <!-- Single Pro 1 — with upgrade button -->
+    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1.5px solid var(--divider);overflow:hidden;">
+      <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;">
+        <div class="cam-icon-box" style="background:var(--orange-light);">📷</div>
+        <div style="flex:1;"><div class="cam-name">Living Room Cam</div><div class="cam-sub">Single Pro · $4.99/mo · renews May 15</div></div>
+        <button onclick="showModal('modal-b2-upgrade1')" style="background:var(--orange);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;">Upgrade</button>
+      </div>
+    </div>
+
+    <!-- Single Pro 2 — with upgrade button -->
+    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1.5px solid var(--divider);overflow:hidden;">
+      <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;">
+        <div class="cam-icon-box" style="background:var(--orange-light);">🚪</div>
+        <div style="flex:1;"><div class="cam-name">Front Door Cam</div><div class="cam-sub">Single Pro · $4.99/mo · renews May 22</div></div>
+        <button onclick="showModal('modal-b2-upgrade2')" style="background:var(--orange);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;">Upgrade</button>
+      </div>
+    </div>
+
+    <!-- Basic cameras -->
+    <div class="cam-row" style="margin:0 12px 6px;opacity:0.75;"><div class="cam-icon-box" style="background:#f5f5f5;">📷</div><div style="flex:1;"><div class="cam-name">Bedroom Cam</div><div class="cam-sub">Basic · will join Family Pro after upgrade</div></div><span class="tag basic">Basic</span></div>
+
+    <!-- Multi-Single Pro warning -->
+    <div style="margin:6px 12px 0;background:#fff3e0;border:1px solid #ffe0b2;border-radius:10px;padding:10px 12px;font-size:11px;color:#e65100;line-height:1.5;">
+      ⚠️ <strong>Multiple Single Pro plans:</strong> After upgrading one plan to Family Pro, you'll need to manually cancel your other Single Pro subscription. The cameras from that plan can then be added to the new Family Pro.
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- ════ PLAN B — CASE B3: Already has Family Pro ════ -->
+<div class="screen" id="s-b-case-b3">
+  <div class="status">9:41 <span>📶 🔋</span></div>
+  <div class="page-header">
+    <span class="back">←</span>
+    <span class="title">Add to Family Pro</span>
+    <span style="font-size:11px;background:#e8f5e9;color:var(--green);padding:3px 8px;border-radius:20px;font-weight:700;">Plan B</span>
+  </div>
+  <div class="scroll">
+    <div style="margin:12px 12px 0;background:#e8eaf6;border-radius:10px;padding:8px 12px;font-size:12px;color:#3949ab;font-weight:600;">Case B3 — Already has Family Pro with available slots</div>
+
+    <!-- Family Pro status -->
+    <div style="margin:10px 12px 0;background:linear-gradient(135deg,#27ae60,#2e7d32);border-radius:14px;padding:14px 16px;">
+      <div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:3px;">👨‍👩‍👧 Your Family Pro</div>
+      <div style="color:rgba(255,255,255,0.85);font-size:12px;margin-bottom:10px;">3 of 10 slots used · 7 available · $9.99/mo</div>
+      <div style="background:rgba(0,0,0,0.15);border-radius:8px;overflow:hidden;"><div style="height:8px;background:#fff;width:30%;border-radius:8px;"></div></div>
+    </div>
+
+    <div style="padding:12px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">No purchase needed — just add cameras</div>
+    <div style="padding:0 12px;font-size:11px;color:#aaa;margin-bottom:10px;">Tap "Add to Family Pro" on any camera. It moves from its current plan into your Family Pro at no extra charge. Then cancel the empty plan for a refund.</div>
+
+    <!-- Cameras to add -->
+    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1.5px solid var(--divider);overflow:hidden;">
+      <div style="padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;">
+        <div class="cam-icon-box" style="background:var(--orange-light);">📷</div>
+        <div style="flex:1;"><div class="cam-name">Office Cam</div><div class="cam-sub">Single Pro · $4.99/mo</div></div>
+        <button id="add-btn-office" onclick="addToFamily('add-btn-office','office-tag')" style="background:var(--orange);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;">Add →</button>
+        <span id="office-tag" class="tag single" style="display:none;">Added ✓</span>
+      </div>
+      <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;">
+        <div class="cam-icon-box" style="background:#f5f5f5;">📷</div>
+        <div style="flex:1;"><div class="cam-name">Bedroom Cam</div><div class="cam-sub">Basic · free to add</div></div>
+        <button id="add-btn-bedroom" onclick="addToFamily('add-btn-bedroom','bedroom-tag')" style="background:var(--orange);color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;">Add →</button>
+        <span id="bedroom-tag" class="tag family" style="display:none;">Added ✓</span>
+      </div>
+    </div>
+
+    <div style="margin:6px 12px 0;background:#e8f5e9;border-radius:10px;padding:10px 12px;font-size:12px;color:#1b5e20;line-height:1.5;">
+      ✅ After moving cameras, cancel empty Single Pro subscriptions from your App Store or Play Store settings to receive a prorated refund.
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- Modal: B1 confirm -->
+<div class="modal-overlay" id="modal-b1-confirm">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="font-size:20px;text-align:center;margin-bottom:8px;">💳</div>
+    <div style="font-size:17px;font-weight:800;color:var(--text);text-align:center;margin-bottom:6px;">Subscribe to Family Pro</div>
+    <div style="font-size:13px;color:#666;text-align:center;margin-bottom:14px;">3 Basic cameras will automatically move into your new Family Pro plan.</div>
+    <div class="charge-box">
+      <div class="charge-row"><span>Family Pro subscription</span><span>$9.99/mo</span></div>
+      <div class="charge-row green"><span>Basic cameras included</span><span>3 cameras</span></div>
+      <div class="charge-row total"><span>Due today</span><span>$9.99</span></div>
+    </div>
+    <button class="modal-btn green" onclick="closeModal('modal-b1-confirm'); showScreen('s-b-complete');">Confirm — Subscribe $9.99/mo</button>
+    <button class="modal-btn gray" onclick="closeModal('modal-b1-confirm')">Cancel</button>
+  </div>
+</div>
+
+<!-- Modal: B2 upgrade plan 1 -->
+<div class="modal-overlay" id="modal-b2-upgrade1">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="font-size:20px;text-align:center;margin-bottom:8px;">💳</div>
+    <div style="font-size:17px;font-weight:800;color:var(--text);text-align:center;margin-bottom:6px;">Upgrade to Family Pro</div>
+    <div style="font-size:13px;color:#666;text-align:center;margin-bottom:14px;">Stripe upgrades your <strong>Living Room Cam</strong> Single Pro subscription to Family Pro, charging only the prorated difference.</div>
+    <div class="charge-box">
+      <div class="charge-row"><span>Single Pro → Family Pro</span><span>+$5.00/mo</span></div>
+      <div class="charge-row green"><span>Prorated today (18 days)</span><span>$2.97</span></div>
+      <div class="charge-row total"><span>Due now</span><span>$2.97</span></div>
+    </div>
+    <div style="background:#fff3e0;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:11px;color:#e65100;line-height:1.5;">⚠️ After this, cancel your Front Door Cam Single Pro manually to add it to Family Pro.</div>
+    <button class="modal-btn green" onclick="closeModal('modal-b2-upgrade1'); showScreen('s-b-move-cameras');">Confirm &amp; Pay $2.97</button>
+    <button class="modal-btn gray" onclick="closeModal('modal-b2-upgrade1')">Cancel</button>
+  </div>
+</div>
+
+<!-- Modal: B2 upgrade plan 2 -->
+<div class="modal-overlay" id="modal-b2-upgrade2">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="font-size:20px;text-align:center;margin-bottom:8px;">💳</div>
+    <div style="font-size:17px;font-weight:800;color:var(--text);text-align:center;margin-bottom:6px;">Upgrade to Family Pro</div>
+    <div style="font-size:13px;color:#666;text-align:center;margin-bottom:14px;">Stripe upgrades your <strong>Front Door Cam</strong> Single Pro subscription to Family Pro, charging only the prorated difference.</div>
+    <div class="charge-box">
+      <div class="charge-row"><span>Single Pro → Family Pro</span><span>+$5.00/mo</span></div>
+      <div class="charge-row green"><span>Prorated today (22 days)</span><span>$3.55</span></div>
+      <div class="charge-row total"><span>Due now</span><span>$3.55</span></div>
+    </div>
+    <div style="background:#fff3e0;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:11px;color:#e65100;line-height:1.5;">⚠️ After this, cancel your Living Room Cam Single Pro manually to add it to Family Pro.</div>
+    <button class="modal-btn green" onclick="closeModal('modal-b2-upgrade2'); showScreen('s-b-move-cameras');">Confirm &amp; Pay $3.55</button>
+    <button class="modal-btn gray" onclick="closeModal('modal-b2-upgrade2')">Cancel</button>
+  </div>
+</div>
+
 <!-- Dev nav -->
 <div class="dev-nav">
+  <button class="dev-btn" onclick="showScreen('s-b-case-b1')">B1:Basic Only</button>
+  <button class="dev-btn" onclick="showScreen('s-b-case-b2')">B2:Has Single</button>
+  <button class="dev-btn" onclick="showScreen('s-b-case-b3')">B3:Has Family</button>
   <button class="dev-btn o" onclick="showScreen('s-b-case21')">2.1: 1 Single</button>
   <button class="dev-btn p" onclick="showScreen('s-b-case22')">2.2: N Singles</button>
   <button class="dev-btn" onclick="showScreen('s-b-move-cameras')">Step 3: Move</button>
@@ -415,6 +593,12 @@ function markMoved(rowId, tagId) {
   tag.textContent = 'In Family Pro ✓';
 }
 
+function addToFamily(btnId, tagId) {
+  var btn = document.getElementById(btnId);
+  var tag = document.getElementById(tagId);
+  if (btn) { btn.style.display = 'none'; }
+  if (tag) { tag.style.display = 'inline-block'; tag.className = 'tag family'; tag.textContent = 'Added ✓'; }
+}
 // Feedback
 var WEBHOOK='https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
 function openFB(){document.getElementById('feedback-modal').style.display='flex';}
