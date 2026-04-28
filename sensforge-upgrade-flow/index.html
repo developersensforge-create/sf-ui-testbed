@@ -542,31 +542,95 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
   </div>
 </div>
 
-<!-- Modal: Step B — Move devices -->
+<!-- Modal: Step B — Camera Assignment Editor -->
 <div class="modal-overlay" id="modal-step-b">
-  <div class="modal-sheet">
+  <div class="modal-sheet" style="max-height:90vh;overflow-y:auto;">
     <div class="modal-handle"></div>
-    <div class="modal-icon">📦</div>
-    <div class="modal-title">Step 2: Move Your Cameras</div>
-    <div class="modal-sub">You've purchased Family Pro. Now move your cameras into it to activate full coverage.</div>
-    <div class="step-list">
-      <div class="step-item">
-        <div class="step-num done">✓</div>
-        <div class="step-content"><div class="step-title">Family Pro purchased</div></div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">B</div>
-        <div class="step-content">
-          <div class="step-title">Move cameras → Family Pro</div>
-          <div class="step-desc">Living Room Cam + Front Door Cam will be moved from Single Pro to your new Family Pro plan</div>
-        </div>
-      </div>
-      <div class="step-item">
-        <div class="step-num pending">C</div>
-        <div class="step-content"><div class="step-title">Cancel empty subscriptions</div><div class="step-desc">Coming after step B</div></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+      <div class="step-num done" style="font-size:11px;width:24px;height:24px;">✓</div>
+      <span style="font-size:12px;color:#888;">Family Pro purchased</span>
+      <div style="margin-left:auto;display:flex;gap:6px;">
+        <div class="step-num" style="width:24px;height:24px;font-size:11px;">B</div>
+        <div class="step-num pending" style="width:24px;height:24px;font-size:11px;">C</div>
       </div>
     </div>
-    <button class="modal-btn" onclick="completeStepB()">Move Cameras Now</button>
+    <div class="modal-title" style="margin-top:8px;">Assign Cameras to Plans</div>
+    <div class="modal-sub">Choose which plan each camera belongs to. Move cameras in or out of Family Pro, or keep them on their current plan.</div>
+
+    <!-- Family Pro target display -->
+    <div style="background:#f0fff4;border:1.5px solid #b2dfdb;border-radius:10px;padding:10px 12px;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+      <span style="font-size:18px;">👨‍👩‍👧</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;color:#27ae60;">Family Pro</div>
+        <div style="font-size:11px;color:#888;" id="slot-count">0 of 10 slots used</div>
+      </div>
+      <span style="font-size:11px;color:#27ae60;font-weight:600;">$9.99/mo</span>
+    </div>
+
+    <!-- Camera assignment rows -->
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+
+      <!-- Camera 1 -->
+      <div style="background:#fff;border-radius:12px;border:1px solid var(--divider);padding:12px 14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="width:32px;height:32px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">📷</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;color:var(--text);">Living Room Cam</div>
+            <div style="font-size:11px;color:#888;">Currently: Single Pro · $4.99/mo</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#888;margin-bottom:4px;">Move to:</div>
+        <select id="assign-cam1" onchange="updateSlots()" style="width:100%;border:1.5px solid #eee;border-radius:8px;padding:8px 10px;font-size:13px;font-weight:600;color:var(--text);background:#fafafa;outline:none;cursor:pointer;">
+          <option value="family" selected>👨‍👩‍👧 Family Pro (recommended)</option>
+          <option value="single">✨ Keep on Single Pro ($4.99/mo)</option>
+          <option value="basic">⭐ Move to Basic (remove AI features)</option>
+        </select>
+        <div id="tag-cam1" style="margin-top:6px;font-size:11px;color:#27ae60;font-weight:600;">→ Will join Family Pro ✓</div>
+      </div>
+
+      <!-- Camera 2 -->
+      <div style="background:#fff;border-radius:12px;border:1px solid var(--divider);padding:12px 14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="width:32px;height:32px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🚪</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;color:var(--text);">Front Door Cam</div>
+            <div style="font-size:11px;color:#888;">Currently: Single Pro · $4.99/mo</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#888;margin-bottom:4px;">Move to:</div>
+        <select id="assign-cam2" onchange="updateSlots()" style="width:100%;border:1.5px solid #eee;border-radius:8px;padding:8px 10px;font-size:13px;font-weight:600;color:var(--text);background:#fafafa;outline:none;cursor:pointer;">
+          <option value="family" selected>👨‍👩‍👧 Family Pro (recommended)</option>
+          <option value="single">✨ Keep on Single Pro ($4.99/mo)</option>
+          <option value="basic">⭐ Move to Basic (remove AI features)</option>
+        </select>
+        <div id="tag-cam2" style="margin-top:6px;font-size:11px;color:#27ae60;font-weight:600;">→ Will join Family Pro ✓</div>
+      </div>
+
+      <!-- Camera 3: Basic -->
+      <div style="background:#fff;border-radius:12px;border:1px solid var(--divider);padding:12px 14px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="width:32px;height:32px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">📷</div>
+          <div style="flex:1;">
+            <div style="font-size:14px;font-weight:700;color:var(--text);">Bedroom Cam</div>
+            <div style="font-size:11px;color:#888;">Currently: Basic · No AI</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#888;margin-bottom:4px;">Move to:</div>
+        <select id="assign-cam3" onchange="updateSlots()" style="width:100%;border:1.5px solid #eee;border-radius:8px;padding:8px 10px;font-size:13px;font-weight:600;color:var(--text);background:#fafafa;outline:none;cursor:pointer;">
+          <option value="family">👨‍👩‍👧 Family Pro (unlocks AI ✨)</option>
+          <option value="basic" selected>⭐ Stay on Basic (no AI)</option>
+        </select>
+        <div id="tag-cam3" style="margin-top:6px;font-size:11px;color:#aaa;">→ Stays on Basic</div>
+      </div>
+    </div>
+
+    <!-- Impact summary -->
+    <div id="impact-summary" style="background:#f5f5f5;border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:#555;line-height:1.6;">
+      <div style="font-weight:700;color:var(--text);margin-bottom:4px;">Impact preview</div>
+      <div id="impact-text">2 cameras → Family Pro · 0 staying on Single Pro · Single Pro plans will be empty → eligible for refund</div>
+    </div>
+
+    <button class="modal-btn" onclick="completeStepB()">Confirm Camera Assignments</button>
     <button class="modal-btn outline" onclick="dismissStepModal('modal-step-b')">Cancel — I'll do this manually</button>
   </div>
 </div>
@@ -719,6 +783,38 @@ function completeStepB() {
 function completeStepC() {
   closeModal('modal-step-c');
   showScreen('s-complete');
+}
+
+// Camera assignment logic
+function updateSlots() {
+  var cams = ['cam1','cam2','cam3'];
+  var familyCount = 0;
+  var singleCount = 0;
+  cams.forEach(function(cam) {
+    var sel = document.getElementById('assign-' + cam);
+    var tag = document.getElementById('tag-' + cam);
+    if (!sel) return;
+    var val = sel.value;
+    if (val === 'family') {
+      familyCount++;
+      tag.textContent = '→ Will join Family Pro ✓';
+      tag.style.color = '#27ae60';
+    } else if (val === 'single') {
+      singleCount++;
+      tag.textContent = '→ Stays on Single Pro ($4.99/mo)';
+      tag.style.color = '#f96400';
+    } else {
+      tag.textContent = '→ Stays on Basic';
+      tag.style.color = '#aaa';
+    }
+  });
+  var slotEl = document.getElementById('slot-count');
+  if (slotEl) slotEl.textContent = familyCount + ' of 10 slots used';
+  var impact = document.getElementById('impact-text');
+  if (impact) {
+    var emptyPlans = singleCount === 0 && familyCount > 0 ? '· Single Pro plans will be empty → eligible for refund' : '';
+    impact.textContent = familyCount + ' camera' + (familyCount !== 1 ? 's' : '') + ' → Family Pro · ' + singleCount + ' staying on Single Pro ' + emptyPlans;
+  }
 }
 
 // Feedback FAB
