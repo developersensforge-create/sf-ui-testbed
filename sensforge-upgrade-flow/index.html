@@ -108,64 +108,112 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
 <body>
 <div class="phone">
 
-<!-- ═══ EXPLORE PAGE (entry point) ═══ -->
-<div class="screen" id="s-explore-entry">
+<!-- ═══ EXPLORE PAGE — 4 Cases ═══ -->
+
+<!-- CASE 1: 1 Single Pro (no savings, don't show upgrade) -->
+<div class="screen" id="s-explore-case1">
   <div class="status">9:41 <span>📶 🔋</span></div>
   <div style="padding:12px 14px 6px;font-size:20px;font-weight:800;color:var(--text);">Explore</div>
   <div class="scroll">
-
-    <!-- Upgrade opportunity banner — primary entry point -->
-    <div style="margin:4px 12px 0;background:linear-gradient(135deg,#1a1a2e,#0f2040);border-radius:16px;padding:16px;position:relative;overflow:hidden;cursor:pointer;" onclick="showScreen('s-memberships')">
-      <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:radial-gradient(circle,rgba(249,100,0,0.3),transparent 70%);"></div>
-      <!-- Smart detection tag -->
-      <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(249,100,0,0.2);border:1px solid rgba(249,100,0,0.4);border-radius:20px;padding:4px 10px;margin-bottom:10px;">
-        <span style="font-size:12px;">💡</span>
-        <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:0.5px;">Savings Opportunity Detected</span>
-      </div>
-      <div style="color:#fff;font-size:17px;font-weight:800;margin-bottom:4px;line-height:1.25;">You could save $4.98/mo<br>by switching to Family Pro</div>
-      <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-bottom:14px;line-height:1.4;">You have 2 × Single Pro plans ($9.98/mo total). Family Pro covers all cameras for $9.99/mo.</div>
-      <!-- Mini comparison -->
-      <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;margin-bottom:14px;">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:3px;"><span>2× Single Pro (now)</span><span style="text-decoration:line-through;color:rgba(255,255,255,0.4);">$9.98/mo</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.7);"><span>Family Pro (up to 10 cams)</span><span style="color:#4ade80;font-weight:700;">$9.99/mo</span></div>
-      </div>
-      <div style="background:var(--orange);border-radius:10px;padding:12px;text-align:center;">
-        <div style="color:#fff;font-size:14px;font-weight:800;">Switch to Family Pro &amp; Save →</div>
-        <div style="color:rgba(255,255,255,0.8);font-size:11px;margin-top:2px;">Tap to see how it works</div>
-      </div>
+    <div style="margin:4px 12px 8px;background:#f5f5f5;border-radius:10px;padding:8px 12px;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Case 1 — 1 Single Pro + Basic cameras</div>
+    <!-- No upgrade banner shown — Family Pro would cost MORE -->
+    <!-- Standard membership section only -->
+    <div style="padding:10px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Your Plans</div>
+    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1px solid var(--divider);overflow:hidden;">
+      <div style="padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:var(--orange-light);display:flex;align-items:center;justify-content:center;font-size:16px;">✨</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Single Pro × 1</div><div style="font-size:11px;color:#888;">Living Room Cam · $4.99/mo</div></div><span style="color:#aaa;font-size:16px;">›</span></div>
+      <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:16px;">⭐</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Basic × 2</div><div style="font-size:11px;color:#888;">Bedroom + Office Cam · Free</div></div><span style="color:#aaa;font-size:16px;">›</span></div>
     </div>
+    <!-- Informational note (no banner, no upsell pressure) -->
+    <div style="margin:0 12px;background:#f5f5f5;border-radius:12px;padding:12px 14px;font-size:12px;color:#888;line-height:1.5;">ℹ️ Family Pro ($9.99/mo) covers more cameras but costs more than your current plan. It becomes a better deal once you have 3+ Single Pro subscriptions.</div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="bottom-nav"><div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div><div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div><div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div><div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div><div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div></div>
+</div>
 
-    <!-- Other Explore content (Membership section) -->
-    <div style="padding:14px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Your Plans</div>
-
-    <!-- Current Single Pro plans (summarized) -->
-    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1.5px solid var(--divider);overflow:hidden;">
-      <div style="padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;">
-        <div style="width:36px;height:36px;border-radius:50%;background:var(--orange-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">✨</div>
-        <div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Single Pro × 2</div><div style="font-size:11px;color:#888;">Living Room + Front Door · $9.98/mo total</div></div>
-        <span style="color:#aaa;font-size:16px;">›</span>
+<!-- CASE 2: 2 Single Pro (same price ~$0 savings, "same cost more coverage") -->
+<div class="screen" id="s-explore-case2">
+  <div class="status">9:41 <span>📶 🔋</span></div>
+  <div style="padding:12px 14px 6px;font-size:20px;font-weight:800;color:var(--text);">Explore</div>
+  <div class="scroll">
+    <div style="margin:4px 12px 8px;background:#f5f5f5;border-radius:10px;padding:8px 12px;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Case 2 — 2 Single Pro + Basic cameras</div>
+    <!-- "Same price, more coverage" banner — no savings claim, but value angle -->
+    <div style="margin:0 12px 0;background:linear-gradient(135deg,#1565c0,#1976d2);border-radius:16px;padding:16px;cursor:pointer;" onclick="showScreen('s-memberships')">
+      <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.15);border-radius:20px;padding:4px 10px;margin-bottom:10px;"><span style="font-size:11px;">🔄</span><span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.85);text-transform:uppercase;letter-spacing:0.5px;">Simplify Your Plans</span></div>
+      <div style="color:#fff;font-size:16px;font-weight:800;margin-bottom:4px;line-height:1.3;">Same price.<br>Fewer bills. More cameras.</div>
+      <div style="color:rgba(255,255,255,0.75);font-size:12px;margin-bottom:14px;line-height:1.4;">2× Single Pro costs ~$9.98/mo. Family Pro is $9.99/mo — covers up to 10 cameras under one subscription.</div>
+      <div style="background:rgba(0,0,0,0.18);border-radius:10px;padding:10px 12px;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.8);margin-bottom:3px;"><span>2× Single Pro (2 bills)</span><span>$9.98/mo</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#fff;font-weight:800;"><span>Family Pro (1 bill, 10 slots)</span><span>$9.99/mo</span></div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:4px;">Difference: only $0.01/mo more for 10× the capacity</div>
       </div>
-      <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;">
-        <div style="width:36px;height:36px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">⭐</div>
-        <div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Basic</div><div style="font-size:11px;color:#888;">Bedroom Cam · Free</div></div>
-        <span style="color:#aaa;font-size:16px;">›</span>
-      </div>
+      <div style="background:#fff;border-radius:10px;padding:12px;text-align:center;"><div style="color:#1565c0;font-size:14px;font-weight:800;">Consolidate to Family Pro →</div><div style="color:#1976d2;font-size:11px;margin-top:2px;">Simplify billing · same monthly cost</div></div>
     </div>
-
-    <!-- Shop section placeholder -->
-    <div style="padding:14px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Discover</div>
-    <div style="margin:0 12px;background:#fff;border-radius:14px;border:1px solid var(--divider);padding:14px;opacity:0.4;">
-      <div style="font-size:14px;color:#888;text-align:center;">More content...</div>
+    <div style="padding:12px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Your Plans</div>
+    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1px solid var(--divider);overflow:hidden;">
+      <div style="padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:var(--orange-light);display:flex;align-items:center;justify-content:center;font-size:16px;">✨</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Single Pro × 2</div><div style="font-size:11px;color:#888;">Living Room + Front Door · $9.98/mo</div></div><span style="color:#aaa;font-size:16px;">›</span></div>
+      <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:16px;">⭐</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Basic × 1</div><div style="font-size:11px;color:#888;">Bedroom Cam · Free</div></div><span style="color:#aaa;font-size:16px;">›</span></div>
     </div>
     <div style="height:16px;"></div>
   </div>
-  <div class="bottom-nav">
-    <div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
-    <div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div>
-    <div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div>
-    <div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div>
-    <div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div>
+  <div class="bottom-nav"><div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div><div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div><div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div><div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div><div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div></div>
+</div>
+
+<!-- CASE 3: 3+ Single Pro (clear savings) -->
+<div class="screen" id="s-explore-case3">
+  <div class="status">9:41 <span>📶 🔋</span></div>
+  <div style="padding:12px 14px 6px;font-size:20px;font-weight:800;color:var(--text);">Explore</div>
+  <div class="scroll">
+    <div style="margin:4px 12px 8px;background:#f5f5f5;border-radius:10px;padding:8px 12px;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Case 3 — 3+ Single Pro + Basic cameras</div>
+    <!-- Strong savings banner -->
+    <div style="margin:0 12px 0;background:linear-gradient(135deg,#1a1a2e,#0f2040);border-radius:16px;padding:16px;cursor:pointer;" onclick="showScreen('s-memberships')">
+      <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(249,100,0,0.2);border:1px solid rgba(249,100,0,0.4);border-radius:20px;padding:4px 10px;margin-bottom:10px;"><span style="font-size:12px;">💡</span><span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:0.5px;">Savings Opportunity Detected</span></div>
+      <div style="color:#fff;font-size:17px;font-weight:800;margin-bottom:4px;line-height:1.25;">Save $5.98/mo<br>switching to Family Pro</div>
+      <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-bottom:14px;line-height:1.4;">You're paying $14.97/mo for 3 × Single Pro. Family Pro covers all cameras for $9.99/mo.</div>
+      <div style="background:rgba(0,0,0,0.18);border-radius:10px;padding:10px 12px;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.75);margin-bottom:3px;"><span>3× Single Pro (current)</span><span style="text-decoration:line-through;color:rgba(255,255,255,0.45);">$14.97/mo</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#4ade80;font-weight:800;"><span>Family Pro</span><span>$9.99/mo</span></div>
+        <div style="height:1px;background:rgba(255,255,255,0.15);margin:6px 0;"></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#fff;font-weight:800;"><span>You save</span><span style="color:#4ade80;">$5.98/mo · $71.76/yr</span></div>
+      </div>
+      <div style="background:var(--orange);border-radius:10px;padding:12px;text-align:center;"><div style="color:#fff;font-size:14px;font-weight:800;">Switch to Family Pro &amp; Save →</div><div style="color:rgba(255,255,255,0.8);font-size:11px;margin-top:2px;">Tap to see how it works</div></div>
+    </div>
+    <div style="padding:12px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Your Plans</div>
+    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1px solid var(--divider);overflow:hidden;">
+      <div style="padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:var(--orange-light);display:flex;align-items:center;justify-content:center;font-size:16px;">✨</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Single Pro × 3</div><div style="font-size:11px;color:#888;">Living Room + Front Door + Office · $14.97/mo</div></div><span style="color:#aaa;font-size:16px;">›</span></div>
+      <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:16px;">⭐</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Basic × 1</div><div style="font-size:11px;color:#888;">Bedroom Cam · Free</div></div><span style="color:#aaa;font-size:16px;">›</span></div>
+    </div>
+    <div style="height:16px;"></div>
   </div>
+  <div class="bottom-nav"><div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div><div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div><div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div><div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div><div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div></div>
+</div>
+
+<!-- CASE 4: Has existing Family Pro with available slots -->
+<div class="screen" id="s-explore-case4">
+  <div class="status">9:41 <span>📶 🔋</span></div>
+  <div style="padding:12px 14px 6px;font-size:20px;font-weight:800;color:var(--text);">Explore</div>
+  <div class="scroll">
+    <div style="margin:4px 12px 8px;background:#f5f5f5;border-radius:10px;padding:8px 12px;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Case 4 — Has existing Family Pro with available slots</div>
+    <!-- "Add cameras to your existing Family Pro" banner -->
+    <div style="margin:0 12px 0;background:linear-gradient(135deg,#1b5e20,#2e7d32);border-radius:16px;padding:16px;cursor:pointer;" onclick="showScreen('s-add-to-existing')">
+      <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.15);border-radius:20px;padding:4px 10px;margin-bottom:10px;"><span style="font-size:11px;">👨‍👩‍👧</span><span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.85);text-transform:uppercase;letter-spacing:0.5px;">Family Pro Has Open Slots</span></div>
+      <div style="color:#fff;font-size:16px;font-weight:800;margin-bottom:4px;line-height:1.3;">Move cameras to your<br>existing Family Pro</div>
+      <div style="color:rgba(255,255,255,0.75);font-size:12px;margin-bottom:14px;line-height:1.4;">You have 7 unused Family Pro slots. Add your Single Pro cameras for free — cancel Single Pro plans and get a refund.</div>
+      <div style="background:rgba(0,0,0,0.18);border-radius:10px;padding:10px 12px;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.8);margin-bottom:3px;"><span>Family Pro (active)</span><span style="color:#4ade80;font-weight:700;">3 / 10 slots used</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.8);"><span>Single Pro cameras to move</span><span>2 cameras → save $9.98/mo</span></div>
+      </div>
+      <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:10px;padding:12px;text-align:center;"><div style="color:#fff;font-size:14px;font-weight:800;">Move Cameras to Family Pro →</div><div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Cancel Single Pro · get prorated refund</div></div>
+    </div>
+    <div style="padding:12px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Your Plans</div>
+    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1.5px solid #27ae60;overflow:hidden;">
+      <div style="padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:16px;">👨‍👩‍👧</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:#27ae60;">Family Pro (Active)</div><div style="font-size:11px;color:#888;">3 cameras · 7 slots available · $9.99/mo</div></div><span style="color:#aaa;font-size:16px;">›</span></div>
+    </div>
+    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1px solid var(--divider);overflow:hidden;">
+      <div style="padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:var(--orange-light);display:flex;align-items:center;justify-content:center;font-size:16px;">✨</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Single Pro × 2</div><div style="font-size:11px;color:#888;">Bedroom + Office Cam · $9.98/mo</div></div><div style="text-align:right;"><span style="color:var(--orange);font-size:11px;font-weight:600;">Move to Family Pro</span></div></div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="bottom-nav"><div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div><div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div><div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div><div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div><div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div></div>
 </div>
 
 <!-- ═══ S1: MEMBERSHIPS PAGE — No existing Family Pro (Case A) ═══ -->
@@ -773,7 +821,10 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
 
 <!-- Dev nav -->
 <div class="dev-nav">
-  <button class="dev-btn o" onclick="showScreen('s-explore-entry')">0: Explore</button>
+  <button class="dev-btn" onclick="showScreen('s-explore-case1')">Ex:1 Single</button>
+  <button class="dev-btn" onclick="showScreen('s-explore-case2')">Ex:2 Singles</button>
+  <button class="dev-btn o" onclick="showScreen('s-explore-case3')">Ex:3+ Singles</button>
+  <button class="dev-btn" onclick="showScreen('s-explore-case4')">Ex:Has Family</button>
   <button class="dev-btn orange" onclick="showScreen('s-memberships')">①No Family Pro</button>
   <button class="dev-btn orange" onclick="showScreen('s-add-to-existing')">①b Has Family Pro</button>
   <button class="dev-btn" onclick="showScreen('s-memberships-post')">②After Purchase</button>
