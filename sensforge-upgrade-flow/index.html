@@ -791,8 +791,9 @@ function closeModal(id) {
   document.getElementById(id).classList.remove('show');
 }
 function toggleTooltip() {
-  const t = document.getElementById('savings-tooltip');
-  t.classList.toggle('show');
+  var t = document.getElementById('savings-tooltip');
+  t.style.display = t.style.display === 'block' ? 'none' : 'block';
+  updateSavingsFormula();
 }
 function startUpgrade() {
   closeModal('modal-upgrade-overview');
