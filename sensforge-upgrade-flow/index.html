@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sensforge — Family Plan Upgrade Flow</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { background:#e8ecf0; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+.phone { width:390px; height:844px; background:#f5f5f5; border-radius:44px; box-shadow:0 24px 80px rgba(0,0,0,0.28); overflow:hidden; position:relative; }
+.screen { display:none; flex-direction:column; height:844px; background:#f5f5f5; }
+.screen.active { display:flex; }
+.scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+:root { --orange:#f96400; --orange-light:#fff3ec; --green:#27ae60; --red:#e74c3c; --divider:#e8e8e8; --text:#1a1a1a; --gray:#888; }
+
+/* Status + Header */
+.status { height:40px; background:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 18px; font-size:13px; font-weight:600; color:#1a1a1a; flex-shrink:0; }
+.page-header { background:#fff; padding:12px 14px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--divider); flex-shrink:0; }
+.page-header .back { font-size:22px; color:var(--orange); cursor:pointer; }
+.page-header .title { font-size:17px; font-weight:700; color:var(--text); flex:1; text-align:center; }
+
+/* Bottom nav */
+.bottom-nav { height:64px; background:#fff; border-top:1px solid var(--divider); display:flex; align-items:center; flex-shrink:0; }
+.nav-tab { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; }
+.nav-tab .nav-icon { font-size:22px; color:#888; }
+.nav-tab .nav-label { font-size:10px; color:#888; }
+.nav-tab.active .nav-icon, .nav-tab.active .nav-label { color:var(--orange); font-weight:700; }
+
+/* Plan cards */
+.plan-section { padding:12px 12px 0; }
+.plan-label { font-size:11px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; padding-left:2px; }
+.plan-card { background:#fff; border-radius:14px; border:1.5px solid var(--divider); margin-bottom:10px; overflow:hidden; }
+.plan-card-header { padding:14px 16px 10px; display:flex; align-items:center; gap:10px; }
+.plan-badge { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.plan-badge.basic { background:#f5f5f5; }
+.plan-badge.single { background:var(--orange-light); }
+.plan-badge.family { background:linear-gradient(135deg,#7c3aed22,#9b59b622); }
+.plan-name { font-size:15px; font-weight:700; color:var(--text); }
+.plan-status { font-size:11px; color:#aaa; margin-top:1px; }
+.plan-price { margin-left:auto; font-size:15px; font-weight:800; color:var(--orange); }
+.device-row { padding:10px 16px; border-top:1px solid #f5f5f5; display:flex; align-items:center; gap:10px; }
+.device-icon { width:32px; height:32px; background:#f5f5f5; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+.device-name { font-size:13px; font-weight:500; color:var(--text); flex:1; }
+.device-badge { font-size:10px; font-weight:700; padding:3px 8px; border-radius:20px; }
+.device-badge.active { background:#e8f5e9; color:#2e7d32; }
+.device-badge.basic { background:#f5f5f5; color:#888; }
+
+/* Upgrade banner */
+.upgrade-banner { margin:0 12px 10px; background:linear-gradient(135deg,#f96400,#ff8c00); border-radius:14px; padding:14px 16px; position:relative; }
+.upgrade-title { color:#fff; font-size:14px; font-weight:800; margin-bottom:3px; }
+.upgrade-saving { color:rgba(255,255,255,0.9); font-size:12px; margin-bottom:12px; }
+.upgrade-saving strong { color:#fff; font-size:16px; font-weight:900; }
+.upgrade-actions { display:flex; gap:8px; align-items:center; }
+.upgrade-btn { background:#fff; color:var(--orange); border:none; border-radius:10px; padding:10px 18px; font-size:13px; font-weight:700; cursor:pointer; flex:1; }
+.upgrade-info-btn { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.2); border:none; color:#fff; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+/* Tooltip */
+.tooltip-box { margin:0 12px 10px; background:#1a1a2e; border-radius:12px; padding:14px 16px; display:none; }
+.tooltip-box.show { display:block; }
+.tooltip-title { color:#fff; font-size:13px; font-weight:700; margin-bottom:8px; }
+.tooltip-row { display:flex; justify-content:space-between; font-size:12px; color:rgba(255,255,255,0.75); margin-bottom:4px; }
+.tooltip-row.save { color:#4ade80; font-weight:700; font-size:13px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.15); margin-top:4px; }
+
+/* Modals */
+.modal-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.5); z-index:200; display:none; align-items:flex-end; }
+.modal-overlay.show { display:flex; }
+.modal-sheet { background:#fff; border-radius:20px 20px 0 0; padding:20px 18px 32px; width:100%; }
+.modal-handle { width:36px; height:4px; background:#ddd; border-radius:2px; margin:0 auto 16px; }
+.modal-icon { font-size:36px; text-align:center; margin-bottom:10px; }
+.modal-title { font-size:18px; font-weight:800; color:var(--text); text-align:center; margin-bottom:6px; }
+.modal-sub { font-size:13px; color:#666; text-align:center; line-height:1.5; margin-bottom:18px; }
+.step-list { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+.step-item { display:flex; align-items:flex-start; gap:12px; }
+.step-num { width:28px; height:28px; border-radius:50%; background:var(--orange); color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.step-num.done { background:var(--green); }
+.step-num.pending { background:#ddd; color:#888; }
+.step-content .step-title { font-size:14px; font-weight:700; color:var(--text); }
+.step-content .step-desc { font-size:12px; color:#888; margin-top:2px; line-height:1.4; }
+.modal-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:12px; padding:15px; font-size:16px; font-weight:700; cursor:pointer; margin-bottom:8px; }
+.modal-btn.outline { background:#fff; color:var(--orange); border:1.5px solid var(--orange); }
+.modal-btn.gray { background:#f5f5f5; color:#555; border:none; }
+.modal-btn.green { background:var(--green); }
+
+/* Sticky reminder */
+.sticky-reminder { margin:8px 12px 0; background:#fff8f5; border:1.5px solid var(--orange-light); border-left:3px solid var(--orange); border-radius:12px; padding:12px 14px; display:flex; align-items:center; gap:10px; cursor:pointer; }
+.reminder-icon { font-size:20px; flex-shrink:0; }
+.reminder-text { flex:1; }
+.reminder-title { font-size:13px; font-weight:700; color:var(--orange); }
+.reminder-sub { font-size:11px; color:#a05000; margin-top:1px; }
+.reminder-arrow { color:var(--orange); font-size:16px; }
+
+/* Manual hint */
+.manual-hint { margin:8px 12px 0; background:#f5f5f5; border-radius:10px; padding:10px 14px; font-size:12px; color:#666; line-height:1.5; display:none; }
+.manual-hint.show { display:block; }
+
+/* Success card */
+.success-card { margin:12px; background:linear-gradient(135deg,#27ae60,#2ecc71); border-radius:14px; padding:16px; text-align:center; }
+.success-card .s-icon { font-size:32px; margin-bottom:8px; }
+.success-card .s-title { color:#fff; font-size:16px; font-weight:800; margin-bottom:4px; }
+.success-card .s-sub { color:rgba(255,255,255,0.85); font-size:12px; }
+
+/* Dev nav */
+.dev-nav { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); padding:5px; display:flex; gap:3px; z-index:500; overflow-x:auto; }
+.dev-btn { flex-shrink:0; background:#333; color:#fff; border:none; padding:5px 9px; border-radius:6px; font-size:9px; cursor:pointer; }
+.dev-btn.orange { background:var(--orange); }
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- ═══ S1: MEMBERSHIPS PAGE (upgrade prompt visible) ═══ -->
+<div class="screen active" id="s-memberships">
+  <div class="status">9:41 <span>📶 🔋</span></div>
+  <div class="page-header">
+    <span class="back" onclick="">←</span>
+    <span class="title">Memberships</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div class="scroll">
+
+    <!-- Sticky upgrade reminder (shown when steps b/c pending) -->
+    <div class="sticky-reminder" id="sticky-reminder" style="display:none;" onclick="showModal('modal-step-tracker')">
+      <div class="reminder-icon">⏳</div>
+      <div class="reminder-text">
+        <div class="reminder-title">Upgrade steps not complete</div>
+        <div class="reminder-sub">Tap to continue — device migration pending</div>
+      </div>
+      <span class="reminder-arrow">›</span>
+    </div>
+
+    <!-- Manual operation hint (shown when user manually dismissed a step) -->
+    <div class="manual-hint" id="manual-hint">
+      📋 You dismissed the guided flow. Go to <strong>Manage → Move Devices</strong> to transfer cameras to your new Family Pro plan, then delete the empty Single Pro subscription from Settings to get a prorated refund.
+    </div>
+
+    <!-- Upgrade savings banner -->
+    <div class="plan-section" style="margin-top:12px;">
+      <div class="upgrade-banner" id="upgrade-banner">
+        <div class="upgrade-title">💡 Switch to Family Pro &amp; Save</div>
+        <div class="upgrade-saving">Save <strong>$4.98/mo</strong> vs keeping 2 × Single Pro</div>
+        <div class="upgrade-actions">
+          <button class="upgrade-btn" onclick="showModal('modal-upgrade-overview')">Upgrade to Family Pro</button>
+          <button class="upgrade-info-btn" onclick="toggleTooltip()">?</button>
+        </div>
+      </div>
+
+      <!-- Savings breakdown tooltip -->
+      <div class="tooltip-box" id="savings-tooltip">
+        <div class="tooltip-title">💰 Your savings breakdown</div>
+        <div class="tooltip-row"><span>2 × Single Pro (current)</span><span>$9.98/mo</span></div>
+        <div class="tooltip-row"><span>Family Pro (up to 10 cams)</span><span>$9.99/mo</span></div>
+        <div class="tooltip-row save"><span>✅ You save per month</span><span>~$4.98/mo</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.55);margin-top:8px;">*Savings calculated vs all devices on Single Pro ($4.99/cam/mo). Family Pro covers up to 10 cameras.</div>
+      </div>
+    </div>
+
+    <!-- Basic plan -->
+    <div class="plan-section">
+      <div class="plan-label">Basic</div>
+      <div class="plan-card">
+        <div class="plan-card-header">
+          <div class="plan-badge basic">⭐</div>
+          <div><div class="plan-name">Basic</div><div class="plan-status">Free tier</div></div>
+          <div class="plan-price" style="color:#888;font-size:13px;">Free</div>
+        </div>
+        <div class="device-row">
+          <div class="device-icon">📷</div>
+          <div class="device-name">Bedroom Cam</div>
+          <span class="device-badge basic">Basic</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Single Pro plans -->
+    <div class="plan-section">
+      <div class="plan-label">Single Pro</div>
+      <div class="plan-card">
+        <div class="plan-card-header">
+          <div class="plan-badge single">✨</div>
+          <div><div class="plan-name">Single Pro</div><div class="plan-status">1 camera slot</div></div>
+          <div class="plan-price">$4.99/mo</div>
+        </div>
+        <div class="device-row">
+          <div class="device-icon">📷</div>
+          <div class="device-name">Living Room Cam</div>
+          <span class="device-badge active">Active</span>
+        </div>
+      </div>
+      <div class="plan-card">
+        <div class="plan-card-header">
+          <div class="plan-badge single">✨</div>
+          <div><div class="plan-name">Single Pro</div><div class="plan-status">1 camera slot</div></div>
+          <div class="plan-price">$4.99/mo</div>
+        </div>
+        <div class="device-row">
+          <div class="device-icon">🚪</div>
+          <div class="device-name">Front Door Cam</div>
+          <span class="device-badge active">Active</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:16px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab" onclick="showScreen('s-memberships')"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══ S2: MEMBERSHIPS (post-upgrade, steps pending) ═══ -->
+<div class="screen" id="s-memberships-post">
+  <div class="status">9:41 <span>📶 🔋</span></div>
+  <div class="page-header">
+    <span class="back" onclick="">←</span>
+    <span class="title">Memberships</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div class="scroll">
+    <div class="sticky-reminder" style="margin-top:12px;" onclick="showModal('modal-step-b')">
+      <div class="reminder-icon">⏳</div>
+      <div class="reminder-text">
+        <div class="reminder-title">Step 2 of 3: Move cameras to Family Pro</div>
+        <div class="reminder-sub">Tap to continue your upgrade</div>
+      </div>
+      <span class="reminder-arrow">›</span>
+    </div>
+
+    <div class="plan-section" style="margin-top:10px;">
+      <div class="plan-label">New — Family Pro ✅</div>
+      <div class="plan-card" style="border-color:#27ae60;">
+        <div class="plan-card-header">
+          <div class="plan-badge family">👨‍👩‍👧</div>
+          <div><div class="plan-name" style="color:#27ae60;">Family Pro</div><div class="plan-status">0 / 10 cameras added</div></div>
+          <div class="plan-price" style="color:#27ae60;">$9.99/mo</div>
+        </div>
+        <div style="padding:10px 16px;background:#f9fff9;font-size:12px;color:#555;">📋 Move your cameras here — tap the reminder above to continue</div>
+      </div>
+    </div>
+
+    <div class="plan-section">
+      <div class="plan-label">Old — Single Pro (to be cancelled)</div>
+      <div class="plan-card" style="opacity:0.7;">
+        <div class="plan-card-header">
+          <div class="plan-badge single">✨</div>
+          <div><div class="plan-name">Single Pro</div><div class="plan-status">Will cancel after migration</div></div>
+          <div class="plan-price">$4.99/mo</div>
+        </div>
+        <div class="device-row">
+          <div class="device-icon">📷</div>
+          <div class="device-name">Living Room Cam</div>
+          <span class="device-badge active">Active</span>
+        </div>
+      </div>
+      <div class="plan-card" style="opacity:0.7;">
+        <div class="plan-card-header">
+          <div class="plan-badge single">✨</div>
+          <div><div class="plan-name">Single Pro</div><div class="plan-status">Will cancel after migration</div></div>
+          <div class="plan-price">$4.99/mo</div>
+        </div>
+        <div class="device-row">
+          <div class="device-icon">🚪</div>
+          <div class="device-name">Front Door Cam</div>
+          <span class="device-badge active">Active</span>
+        </div>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══ S3: MEMBERSHIPS (step c — delete empty subscriptions) ═══ -->
+<div class="screen" id="s-memberships-step-c">
+  <div class="status">9:41 <span>📶 🔋</span></div>
+  <div class="page-header">
+    <span class="back" onclick="">←</span>
+    <span class="title">Memberships</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div class="scroll">
+    <div class="sticky-reminder" style="margin-top:12px;" onclick="showModal('modal-step-c')">
+      <div class="reminder-icon">🗑️</div>
+      <div class="reminder-text">
+        <div class="reminder-title">Step 3 of 3: Cancel empty subscriptions</div>
+        <div class="reminder-sub">Get prorated refund on unused Single Pro plans</div>
+      </div>
+      <span class="reminder-arrow">›</span>
+    </div>
+
+    <div class="plan-section" style="margin-top:10px;">
+      <div class="plan-label">Family Pro ✅ Active</div>
+      <div class="plan-card" style="border-color:#27ae60;">
+        <div class="plan-card-header">
+          <div class="plan-badge family">👨‍👩‍👧</div>
+          <div><div class="plan-name" style="color:#27ae60;">Family Pro</div><div class="plan-status">2 / 10 cameras</div></div>
+          <div class="plan-price" style="color:#27ae60;">$9.99/mo</div>
+        </div>
+        <div class="device-row">
+          <div class="device-icon">📷</div>
+          <div class="device-name">Living Room Cam</div>
+          <span class="device-badge active">Active</span>
+        </div>
+        <div class="device-row">
+          <div class="device-icon">🚪</div>
+          <div class="device-name">Front Door Cam</div>
+          <span class="device-badge active">Active</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="plan-section">
+      <div class="plan-label" style="color:var(--red);">⚠️ Empty — Cancel to get refund</div>
+      <div class="plan-card" style="border-color:#ffeaea;background:#fff8f8;">
+        <div class="plan-card-header">
+          <div class="plan-badge single" style="background:#ffeaea;">✨</div>
+          <div><div class="plan-name" style="color:var(--red);">Single Pro (empty)</div><div class="plan-status">No cameras — cancel to get refund</div></div>
+          <div class="plan-price" style="color:var(--red);">$4.99/mo</div>
+        </div>
+        <div style="padding:10px 16px;background:#fff8f8;font-size:12px;color:var(--red);">💰 Estimated refund: ~$3.20 prorated</div>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══ S4: COMPLETE ═══ -->
+<div class="screen" id="s-complete">
+  <div class="status">9:41 <span>📶 🔋</span></div>
+  <div class="page-header">
+    <span class="back" onclick="">←</span>
+    <span class="title">Memberships</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div class="scroll">
+    <div style="margin:20px 12px 0;">
+      <div class="success-card">
+        <div class="s-icon">🎉</div>
+        <div class="s-title">Upgrade Complete!</div>
+        <div class="s-sub">You're now on Family Pro. All cameras migrated, old subscriptions cancelled.</div>
+      </div>
+    </div>
+    <div class="plan-section" style="margin-top:12px;">
+      <div class="plan-label">Family Pro ✅ Active</div>
+      <div class="plan-card" style="border-color:#27ae60;">
+        <div class="plan-card-header">
+          <div class="plan-badge family">👨‍👩‍👧</div>
+          <div><div class="plan-name" style="color:#27ae60;">Family Pro</div><div class="plan-status">2 / 10 cameras</div></div>
+          <div class="plan-price" style="color:#27ae60;">$9.99/mo</div>
+        </div>
+        <div class="device-row"><div class="device-icon">📷</div><div class="device-name">Living Room Cam</div><span class="device-badge active">Active</span></div>
+        <div class="device-row"><div class="device-icon">🚪</div><div class="device-name">Front Door Cam</div><span class="device-badge active">Active</span></div>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ MODALS ═══════════ -->
+
+<!-- Modal: Upgrade Overview (3-step guide) -->
+<div class="modal-overlay" id="modal-upgrade-overview">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-icon">💡</div>
+    <div class="modal-title">Upgrade to Family Pro</div>
+    <div class="modal-sub">Here's what will happen step by step after you purchase:</div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">A</div>
+        <div class="step-content">
+          <div class="step-title">Purchase Family Pro</div>
+          <div class="step-desc">$9.99/mo — covers up to 10 cameras, saving you $4.98/mo vs 2 × Single Pro</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">B</div>
+        <div class="step-content">
+          <div class="step-title">Move cameras to Family Pro</div>
+          <div class="step-desc">After purchase, we'll guide you to transfer your cameras from Single Pro to the new Family Pro plan</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">C</div>
+        <div class="step-content">
+          <div class="step-title">Cancel empty subscriptions &amp; get refund</div>
+          <div class="step-desc">Once cameras are moved, we'll help you cancel the now-empty Single Pro plans and receive a prorated refund</div>
+        </div>
+      </div>
+    </div>
+    <button class="modal-btn" onclick="startUpgrade()">Start Upgrade — Buy Family Pro</button>
+    <button class="modal-btn gray" onclick="closeModal('modal-upgrade-overview')">Maybe Later</button>
+  </div>
+</div>
+
+<!-- Modal: Step B — Move devices -->
+<div class="modal-overlay" id="modal-step-b">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-icon">📦</div>
+    <div class="modal-title">Step 2: Move Your Cameras</div>
+    <div class="modal-sub">You've purchased Family Pro. Now move your cameras into it to activate full coverage.</div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num done">✓</div>
+        <div class="step-content"><div class="step-title">Family Pro purchased</div></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">B</div>
+        <div class="step-content">
+          <div class="step-title">Move cameras → Family Pro</div>
+          <div class="step-desc">Living Room Cam + Front Door Cam will be moved from Single Pro to your new Family Pro plan</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num pending">C</div>
+        <div class="step-content"><div class="step-title">Cancel empty subscriptions</div><div class="step-desc">Coming after step B</div></div>
+      </div>
+    </div>
+    <button class="modal-btn" onclick="completeStepB()">Move Cameras Now</button>
+    <button class="modal-btn outline" onclick="dismissStepModal('modal-step-b')">Cancel — I'll do this manually</button>
+  </div>
+</div>
+
+<!-- Modal: Step C — Delete empty subs -->
+<div class="modal-overlay" id="modal-step-c">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-icon">🗑️</div>
+    <div class="modal-title">Step 3: Cancel Empty Subscriptions</div>
+    <div class="modal-sub">Your cameras have been moved. These Single Pro plans are now empty — cancel them to receive a prorated refund.</div>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num done">✓</div>
+        <div class="step-content"><div class="step-title">Family Pro purchased</div></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num done">✓</div>
+        <div class="step-content"><div class="step-title">Cameras moved to Family Pro</div></div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">C</div>
+        <div class="step-content">
+          <div class="step-title">Cancel 2 × empty Single Pro</div>
+          <div class="step-desc">Estimated refund: ~$6.40 combined prorated amount</div>
+        </div>
+      </div>
+    </div>
+    <button class="modal-btn green" onclick="completeStepC()">Cancel Empty Plans &amp; Get Refund</button>
+    <button class="modal-btn outline" onclick="dismissStepModal('modal-step-c')">Cancel — I'll do this manually</button>
+  </div>
+</div>
+
+<!-- Modal: Step tracker (re-entry) -->
+<div class="modal-overlay" id="modal-step-tracker">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Upgrade Steps Pending</div>
+    <div class="modal-sub">You started upgrading to Family Pro. Here's where you are:</div>
+    <div class="step-list">
+      <div class="step-item"><div class="step-num done">✓</div><div class="step-content"><div class="step-title">Family Pro purchased</div></div></div>
+      <div class="step-item"><div class="step-num">B</div><div class="step-content"><div class="step-title">Move cameras to Family Pro</div><div class="step-desc">2 cameras waiting to be moved</div></div></div>
+      <div class="step-item"><div class="step-num pending">C</div><div class="step-content"><div class="step-title">Cancel empty subscriptions</div></div></div>
+    </div>
+    <button class="modal-btn" onclick="closeModal('modal-step-tracker'); showModal('modal-step-b');">Continue Step B</button>
+    <button class="modal-btn gray" onclick="closeModal('modal-step-tracker')">Dismiss for Now</button>
+  </div>
+</div>
+
+<!-- Feedback FAB -->
+<button id="feedback-fab" onclick="openFB()" style="position:absolute;bottom:76px;right:14px;width:44px;height:44px;border-radius:50%;background:var(--orange);color:#fff;border:none;box-shadow:0 4px 16px rgba(249,100,0,0.5);font-size:18px;cursor:pointer;z-index:200;">💬</button>
+<div id="feedback-modal" onclick="if(event.target===this)closeFB()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:300;align-items:flex-end;">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:18px 18px 28px;width:100%;">
+    <div style="width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 14px;"></div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:8px;">Leave Design Feedback</div>
+    <textarea id="fb-text" style="width:100%;border:1.5px solid #eee;border-radius:10px;padding:10px;font-size:13px;font-family:inherit;outline:none;resize:none;min-height:90px;box-sizing:border-box;margin-bottom:10px;" placeholder="Your name + feedback"></textarea>
+    <div style="display:flex;gap:8px;">
+      <button onclick="closeFB()" style="flex:1;background:#f5f5f5;color:#555;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;">Cancel</button>
+      <button onclick="submitFB()" style="flex:2;background:var(--orange);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;">Submit →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dev nav -->
+<div class="dev-nav">
+  <button class="dev-btn orange" onclick="showScreen('s-memberships')">①Pre-Upgrade</button>
+  <button class="dev-btn" onclick="showScreen('s-memberships-post')">②After Purchase</button>
+  <button class="dev-btn" onclick="showScreen('s-memberships-step-c')">③Step C</button>
+  <button class="dev-btn" onclick="showScreen('s-complete')">④Complete</button>
+  <button class="dev-btn" onclick="showModal('modal-upgrade-overview')">Modal: Guide</button>
+  <button class="dev-btn" onclick="showModal('modal-step-b')">Modal: Step B</button>
+  <button class="dev-btn" onclick="showModal('modal-step-c')">Modal: Step C</button>
+</div>
+
+</div>
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showModal(id) {
+  document.getElementById(id).classList.add('show');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+function toggleTooltip() {
+  const t = document.getElementById('savings-tooltip');
+  t.classList.toggle('show');
+}
+function startUpgrade() {
+  closeModal('modal-upgrade-overview');
+  // Simulate purchase → go to post-purchase screen
+  setTimeout(() => {
+    showScreen('s-memberships-post');
+    setTimeout(() => showModal('modal-step-b'), 600);
+  }, 300);
+}
+function dismissStepModal(id) {
+  closeModal(id);
+  document.getElementById('manual-hint').classList.add('show');
+  document.getElementById('sticky-reminder').style.display = 'none';
+}
+function completeStepB() {
+  closeModal('modal-step-b');
+  showScreen('s-memberships-step-c');
+  setTimeout(() => showModal('modal-step-c'), 600);
+}
+function completeStepC() {
+  closeModal('modal-step-c');
+  showScreen('s-complete');
+}
+
+// Feedback FAB
+var WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+function openFB() { document.getElementById('feedback-modal').style.display='flex'; }
+function closeFB() { document.getElementById('feedback-modal').style.display='none'; }
+async function submitFB() {
+  var text = document.getElementById('fb-text').value.trim();
+  if (!text) return;
+  var screen = (document.querySelector('.screen.active')||{}).id||'unknown';
+  var t = new Date().toLocaleString('en-US',{timeZone:'America/New_York',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+  var msg = '<@&1487656704463208592> Design Feedback\nFeature: Family Plan Upgrade Flow | Screen: '+screen+'\nTime: '+t+' ET\nFeedback: '+text;
+  try { await fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:msg})}); } catch(e){}
+  document.getElementById('fb-text').value='';
+  closeFB();
+}
+</script>
+</body>
+</html>
