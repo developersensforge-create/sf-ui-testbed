@@ -158,33 +158,70 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
   <div class="bottom-nav"><div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div><div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div><div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div><div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div><div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div></div>
 </div>
 
-<!-- CASE 3: 3+ Single Pro (clear savings) -->
+<!-- CASE 3: Explore page matching Screenshot 1 design exactly -->
 <div class="screen" id="s-explore-case3">
-  <div class="status">9:41 <span>📶 🔋</span></div>
-  <div style="padding:12px 14px 6px;font-size:20px;font-weight:800;color:var(--text);">Explore</div>
-  <div class="scroll">
-    <div style="margin:4px 12px 8px;background:#f5f5f5;border-radius:10px;padding:8px 12px;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Case 3 — 3+ Single Pro + Basic cameras</div>
-    <!-- Strong savings banner -->
-    <div style="margin:0 12px 0;background:linear-gradient(135deg,#1a1a2e,#0f2040);border-radius:16px;padding:16px;cursor:pointer;" onclick="showScreen('s-memberships')">
-      <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(249,100,0,0.2);border:1px solid rgba(249,100,0,0.4);border-radius:20px;padding:4px 10px;margin-bottom:10px;"><span style="font-size:12px;">💡</span><span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:0.5px;">Savings Opportunity Detected</span></div>
-      <div style="color:#fff;font-size:17px;font-weight:800;margin-bottom:4px;line-height:1.25;">Save $5.98/mo<br>switching to Family Pro</div>
-      <div style="color:rgba(255,255,255,0.65);font-size:12px;margin-bottom:14px;line-height:1.4;">You're paying $14.97/mo for 3 × Single Pro. Family Pro covers all cameras for $9.99/mo.</div>
-      <div style="background:rgba(0,0,0,0.18);border-radius:10px;padding:10px 12px;margin-bottom:14px;">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.75);margin-bottom:3px;"><span>3× Single Pro (current)</span><span style="text-decoration:line-through;color:rgba(255,255,255,0.45);">$14.97/mo</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:#4ade80;font-weight:800;"><span>Family Pro</span><span>$9.99/mo</span></div>
-        <div style="height:1px;background:rgba(255,255,255,0.15);margin:6px 0;"></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:#fff;font-weight:800;"><span>You save</span><span style="color:#4ade80;">$5.98/mo · $71.76/yr</span></div>
+  <div class="status" style="background:#f5f5f5;">9:41 ▲ <span style="display:flex;gap:4px;align-items:center;">📶 🔋</span></div>
+  <div style="padding:10px 14px 6px;font-size:20px;font-weight:700;color:var(--text);background:#f5f5f5;">Explore</div>
+  <div class="scroll" style="background:#f5f5f5;">
+
+    <!-- "My Membership" card — orange, matching screenshot 1 exactly -->
+    <div style="margin:0 12px 10px;background:var(--orange);border-radius:16px;padding:16px;overflow:hidden;position:relative;">
+      <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);margin-bottom:4px;">My Membership</div>
+      <div style="color:#fff;font-size:18px;font-weight:800;margin-bottom:3px;">Not all cameras are on Pro!</div>
+      <div style="color:rgba(255,255,255,0.85);font-size:12px;margin-bottom:14px;">Upgrade to cover all of your cameras</div>
+      <!-- Feature grid 2×2 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+        <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+          <div style="width:30px;height:30px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🎬</div>
+          <div><div style="color:#fff;font-size:11px;font-weight:700;line-height:1.2;">Highlight<br>Reels</div></div>
+        </div>
+        <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+          <div style="width:30px;height:30px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">☁️</div>
+          <div><div style="color:#fff;font-size:11px;font-weight:700;line-height:1.2;">60-Day<br>Cloud</div></div>
+        </div>
+        <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+          <div style="width:30px;height:30px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">📝</div>
+          <div><div style="color:#fff;font-size:11px;font-weight:700;line-height:1.2;">Video<br>Descriptions</div></div>
+        </div>
+        <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+          <div style="width:30px;height:30px;background:rgba(255,255,255,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">📷</div>
+          <div><div style="color:#fff;font-size:11px;font-weight:700;line-height:1.2;">Up to<br>10 Cameras</div></div>
+        </div>
       </div>
-      <div style="background:var(--orange);border-radius:10px;padding:12px;text-align:center;"><div style="color:#fff;font-size:14px;font-weight:800;">Switch to Family Pro &amp; Save →</div><div style="color:rgba(255,255,255,0.8);font-size:11px;margin-top:2px;">Tap to see how it works</div></div>
+      <!-- Upgrade for Family Pro CTA -->
+      <button style="width:100%;background:#fff;color:var(--orange);border:none;border-radius:24px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;" onclick="showScreen('s-memberships')">Upgrade for Family Pro</button>
     </div>
-    <div style="padding:12px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Your Plans</div>
-    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1px solid var(--divider);overflow:hidden;">
-      <div style="padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:var(--orange-light);display:flex;align-items:center;justify-content:center;font-size:16px;">✨</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Single Pro × 3</div><div style="font-size:11px;color:#888;">Living Room + Front Door + Office · $14.97/mo</div></div><span style="color:#aaa;font-size:16px;">›</span></div>
-      <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:16px;">⭐</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Basic × 1</div><div style="font-size:11px;color:#888;">Bedroom Cam · Free</div></div><span style="color:#aaa;font-size:16px;">›</span></div>
+
+    <!-- "2 Cameras Not Covered" strip -->
+    <div style="margin:0 12px 10px;background:#fff;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;border:1px solid var(--divider);cursor:pointer;" onclick="showScreen('s-memberships')">
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);">2 Cameras Not Covered</div>
+        <div style="font-size:11px;color:#888;margin-top:1px;">Cover all cameras · $9.99/mo</div>
+      </div>
+      <button style="background:var(--orange);color:#fff;border:none;border-radius:20px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">Upgrade</button>
     </div>
-    <div style="height:16px;"></div>
+
+    <!-- What's New section -->
+    <div style="padding:10px 14px 6px;font-size:15px;font-weight:700;color:var(--text);">What's New</div>
+    <div style="display:flex;gap:10px;padding:0 12px 12px;overflow-x:auto;">
+      <div style="min-width:148px;background:#fff;border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+        <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#f96400,#ff8c00);display:flex;align-items:center;justify-content:center;font-size:28px;">🎬</div>
+        <div style="padding:8px 10px;"><div style="font-size:12px;font-weight:700;color:var(--text);">Weekly Highlight Reel</div><div style="font-size:10px;color:var(--orange);margin-top:2px;font-weight:600;">New · AI-powered</div></div>
+      </div>
+      <div style="min-width:148px;background:#fff;border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+        <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#555,#333);display:flex;align-items:center;justify-content:center;font-size:28px;">📝</div>
+        <div style="padding:8px 10px;"><div style="font-size:12px;font-weight:700;color:var(--text);">Smart Event Descriptions</div><div style="font-size:10px;color:var(--orange);margin-top:2px;font-weight:600;">New · Up to 10 cameras</div></div>
+      </div>
+    </div>
+    <div style="height:8px;"></div>
   </div>
-  <div class="bottom-nav"><div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div><div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div><div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div><div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div><div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div></div>
+  <div class="bottom-nav">
+    <div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div>
+  </div>
 </div>
 
 <!-- CASE 4: Has existing Family Pro with available slots -->
