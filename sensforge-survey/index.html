@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sensforge — In-App Survey Flows</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { background:#e8ecf0; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+.phone { width:390px; height:844px; background:#1a1a1a; border-radius:44px; box-shadow:0 24px 80px rgba(0,0,0,0.35); overflow:hidden; position:relative; }
+.screen { display:none; flex-direction:column; height:844px; background:#111; }
+.screen.active { display:flex; }
+:root { --orange:#f96400; --orange-light:#fff3ec; --gray:#888; --divider:#333; }
+
+/* Highlights background */
+.highlights-bg { flex:1; background:#111; overflow:hidden; position:relative; }
+.hl-header { background:#111; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+.hl-title { color:#fff; font-size:17px; font-weight:700; }
+.hl-tabs { display:flex; padding:0 14px; border-bottom:1px solid #333; flex-shrink:0; }
+.hl-tab { color:#666; font-size:13px; padding:8px 12px 8px 0; cursor:pointer; }
+.hl-tab.active { color:var(--orange); border-bottom:2px solid var(--orange); }
+.hl-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; padding:2px; flex:1; overflow-y:auto; }
+.hl-card { background:#222; aspect-ratio:9/16; position:relative; cursor:pointer; overflow:hidden; }
+.hl-card-thumb { width:100%; height:100%; background:linear-gradient(135deg,#2a2a2a,#1a1a1a); display:flex; align-items:flex-end; padding:8px; }
+.hl-card-caption { color:rgba(255,255,255,0.85); font-size:10px; line-height:1.3; }
+.hl-card-seemore { color:var(--orange); font-size:9px; font-weight:600; margin-top:2px; }
+.status-bar { height:40px; background:#111; display:flex; align-items:center; justify-content:space-between; padding:0 18px; font-size:12px; font-weight:600; color:#fff; flex-shrink:0; }
+.bottom-nav { height:56px; background:#1a1a1a; border-top:1px solid #333; display:flex; align-items:center; flex-shrink:0; }
+.nav-tab { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; }
+.nav-tab .icon { font-size:20px; color:#666; }
+.nav-tab .label { font-size:9px; color:#666; }
+.nav-tab.active .icon, .nav-tab.active .label { color:var(--orange); }
+
+/* Modal overlay */
+.modal-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.65); z-index:100; display:none; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay.show { display:flex; }
+.modal-sheet { background:#fff; border-radius:16px; padding:20px; width:100%; position:relative; }
+.modal-sheet-bottom { background:#fff; border-radius:20px 20px 0 0; padding:20px 18px 28px; width:100%; position:absolute; bottom:0; left:0; right:0; }
+.modal-title { font-size:15px; font-weight:800; color:#1a1a1a; margin-bottom:3px; }
+.modal-sub { font-size:12px; color:#888; margin-bottom:14px; line-height:1.4; }
+.close-btn { position:absolute; top:14px; right:14px; font-size:20px; color:#aaa; cursor:pointer; background:none; border:none; line-height:1; }
+
+/* Stars */
+.stars { display:flex; gap:4px; margin-bottom:14px; }
+.star { font-size:28px; cursor:pointer; color:#ddd; transition:color 0.15s; }
+.star.filled { color:var(--orange); }
+
+/* Form elements */
+.survey-label { font-size:12px; font-weight:600; color:#555; margin-bottom:6px; margin-top:10px; }
+.survey-input { width:100%; border:1.5px solid #eee; border-radius:8px; padding:8px 10px; font-size:13px; font-family:inherit; outline:none; }
+.survey-input:focus { border-color:var(--orange); }
+.survey-textarea { width:100%; border:1.5px solid #eee; border-radius:8px; padding:8px 10px; font-size:12px; font-family:inherit; outline:none; resize:none; min-height:70px; }
+.survey-textarea:focus { border-color:var(--orange); }
+.submit-btn { width:100%; background:var(--orange); color:#fff; border:none; border-radius:12px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; margin-top:14px; }
+.submit-btn:disabled { background:#ddd; color:#aaa; cursor:default; }
+.secondary-btn { width:100%; background:#f5f5f5; color:#555; border:none; border-radius:10px; padding:12px; font-size:14px; font-weight:600; cursor:pointer; margin-top:8px; }
+
+/* Checkbox options */
+.checkbox-option { display:flex; align-items:center; gap:10px; padding:9px 12px; border:1.5px solid #eee; border-radius:10px; margin-bottom:6px; cursor:pointer; }
+.checkbox-option.selected { border-color:var(--orange); background:var(--orange-light); }
+.checkbox-box { width:20px; height:20px; border-radius:5px; border:2px solid #ddd; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.checkbox-option.selected .checkbox-box { border-color:var(--orange); background:var(--orange); }
+.checkbox-option.selected .checkbox-box::after { content:"✓"; color:#fff; font-size:12px; font-weight:800; }
+.checkbox-label { font-size:13px; color:#1a1a1a; }
+.checkbox-option.selected .checkbox-label { font-weight:600; color:var(--orange); }
+
+/* Smiley rating */
+.smiley-row { display:flex; justify-content:space-around; margin-bottom:14px; }
+.smiley-btn { display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer; padding:6px; border-radius:10px; }
+.smiley-btn.selected { background:var(--orange-light); }
+.smiley-emoji { font-size:28px; }
+.smiley-label { font-size:9px; color:#888; }
+.smiley-btn.selected .smiley-label { color:var(--orange); font-weight:700; }
+
+/* Confirmation card */
+.confirm-card { background:#f0fff4; border:1.5px solid #b2dfdb; border-radius:14px; padding:16px; text-align:center; }
+.confirm-icon { font-size:32px; margin-bottom:8px; }
+.confirm-title { font-size:15px; font-weight:800; color:#1b5e20; margin-bottom:4px; }
+.confirm-sub { font-size:12px; color:#2e7d32; line-height:1.4; margin-bottom:14px; }
+.appstore-btn { width:100%; background:#1a1a1a; color:#fff; border:none; border-radius:10px; padding:12px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+
+/* Version label */
+.version-label { position:absolute; top:52px; right:14px; background:rgba(249,100,0,0.9); color:#fff; font-size:9px; font-weight:800; padding:3px 8px; border-radius:20px; z-index:50; letter-spacing:0.5px; }
+
+/* Dev nav */
+.dev-nav { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.85); padding:5px; display:flex; gap:3px; z-index:500; overflow-x:auto; }
+.dev-btn { flex-shrink:0; background:#333; color:#fff; border:none; padding:5px 9px; border-radius:6px; font-size:9px; cursor:pointer; white-space:nowrap; }
+.dev-btn.o { background:var(--orange); }
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- Shared Highlights background (used across all versions) -->
+
+<!-- ═══ VERSION A — Happy path ═══ -->
+<div class="screen active" id="s-ver-a">
+  <div class="status-bar">4:01 <span style="display:flex;gap:6px;align-items:center;"><span>▲</span><span>WiFi</span><span>🔋</span></span></div>
+  <div class="version-label">Version A</div>
+  <div class="hl-header"><div class="hl-title">Highlights</div><div style="display:flex;gap:10px;"><span style="font-size:18px;color:#fff;">🎬</span><span style="font-size:18px;color:#fff;">⚙️</span></div></div>
+  <div class="hl-tabs"><div class="hl-tab active">Today</div><div class="hl-tab">This Week</div></div>
+  <div class="highlights-bg">
+    <div class="hl-grid">
+      <div class="hl-card"><div class="hl-card-thumb"><div><div class="hl-card-caption">A Day in the Life of a Curious Cat by the Window</div><div class="hl-card-seemore">See more</div></div></div></div>
+      <div class="hl-card"><div class="hl-card-thumb" style="background:linear-gradient(135deg,#2a3a2a,#1a2a1a);"><div><div class="hl-card-caption">A curious cat's day unfolds by the window, filled with watching...</div><div class="hl-card-seemore">See more</div></div></div></div>
+      <div class="hl-card"><div class="hl-card-thumb" style="background:linear-gradient(135deg,#3a2a1a,#2a1a0a);"><div><div class="hl-card-caption">A Day of Window Watching and Play for the Cats</div><div class="hl-card-seemore">See more</div></div></div></div>
+      <div class="hl-card"><div class="hl-card-thumb" style="background:linear-gradient(135deg,#1a2a3a,#0a1a2a);"><div><div class="hl-card-caption">Cats spent their day intently watching the outside world...</div><div class="hl-card-seemore">See more</div></div></div></div>
+    </div>
+  </div>
+  <div class="bottom-nav"><div class="nav-tab"><div class="icon">🏠</div><div class="label">Home</div></div><div class="nav-tab"><div class="icon">☰</div><div class="label">Events</div></div><div class="nav-tab active"><div class="icon">⭐</div><div class="label">Highlights</div></div><div class="nav-tab"><div class="icon">🛡️</div><div class="label">Security</div></div><div class="nav-tab"><div class="icon">🏪</div><div class="label">Explore</div></div></div>
+
+  <!-- Survey popup Version A -->
+  <div class="modal-overlay show" id="modal-a-survey">
+    <div class="modal-sheet">
+      <button class="close-btn" onclick="closeModal('modal-a-survey')">×</button>
+      <div class="modal-title">Share your feedback</div>
+      <div class="modal-sub">Rate your overall experience</div>
+      <div class="stars" id="stars-a">
+        <span class="star" onclick="setStars('stars-a',1)">★</span>
+        <span class="star" onclick="setStars('stars-a',2)">★</span>
+        <span class="star" onclick="setStars('stars-a',3)">★</span>
+        <span class="star" onclick="setStars('stars-a',4)">★</span>
+        <span class="star" onclick="setStars('stars-a',5)">★</span>
+      </div>
+      <div class="survey-label">Choose best highlighted</div>
+      <select class="survey-input" style="appearance:none;cursor:pointer;">
+        <option>Select</option><option>Pets</option><option>Security events</option><option>Family moments</option>
+      </select>
+      <div class="survey-label">Comment</div>
+      <input class="survey-input" placeholder="Share your experience here..." style="margin-bottom:4px;">
+      <div class="survey-label">Your email (optional)</div>
+      <input class="survey-input" placeholder="Only share if you'd like us to contact you" style="margin-bottom:0px;">
+      <button class="submit-btn" onclick="showHappyFlow()">Submit Review</button>
+    </div>
+  </div>
+
+  <!-- Happy path: "Enjoying Sensforge?" -->
+  <div class="modal-overlay" id="modal-a-happy">
+    <div class="modal-sheet" style="text-align:center;">
+      <div style="font-size:24px;margin-bottom:10px;">🎉</div>
+      <div class="modal-title">Enjoying Sensforge?</div>
+      <div class="modal-sub">Your experience matters to us!</div>
+      <button class="submit-btn" onclick="showConfirmA()">It's Awesome!</button>
+      <button class="secondary-btn" onclick="showNegativeFlow()">Could be Better...</button>
+      <button style="background:none;border:none;color:#aaa;font-size:12px;cursor:pointer;margin-top:8px;width:100%;padding:8px;">Maybe Later</button>
+    </div>
+  </div>
+
+  <!-- Negative flow -->
+  <div class="modal-overlay" id="modal-a-negative">
+    <div class="modal-sheet">
+      <button class="close-btn" onclick="closeModal('modal-a-negative')">×</button>
+      <div class="modal-title" style="color:#e53935;">We're sorry you're not having a good time with this app.</div>
+      <div class="modal-sub">Your feedback helps us improve. Please tell us more.</div>
+      <div class="survey-label">Tell us more</div>
+      <textarea class="survey-textarea" placeholder="Describe your experience..."></textarea>
+      <div class="survey-label">Name (optional)</div>
+      <input class="survey-input" placeholder="Your name">
+      <button class="submit-btn" style="background:#e53935;" onclick="showConfirmA()">Submit</button>
+    </div>
+  </div>
+
+  <!-- Confirmation -->
+  <div class="modal-overlay" id="modal-a-confirm">
+    <div class="modal-sheet" style="text-align:center;">
+      <div class="confirm-card">
+        <div class="confirm-icon">✅</div>
+        <div class="confirm-title">Feedback Submitted</div>
+        <div class="confirm-sub">Thank you for your feedback! We'll review the item from Sensforge and continue to innovate!</div>
+      </div>
+      <button class="secondary-btn" style="margin-top:12px;" onclick="closeAllModals('s-ver-a')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VERSION B — Pre-filled stars ═══ -->
+<div class="screen" id="s-ver-b">
+  <div class="status-bar">4:01 <span style="display:flex;gap:6px;align-items:center;"><span>▲</span><span>WiFi</span><span>🔋</span></span></div>
+  <div class="version-label">Version B</div>
+  <div class="hl-header"><div class="hl-title">Highlights</div><div style="display:flex;gap:10px;"><span style="font-size:18px;color:#fff;">🎬</span><span style="font-size:18px;color:#fff;">⚙️</span></div></div>
+  <div class="hl-tabs"><div class="hl-tab active">Today</div><div class="hl-tab">This Week</div></div>
+  <div class="highlights-bg">
+    <div class="hl-grid">
+      <div class="hl-card"><div class="hl-card-thumb"><div><div class="hl-card-caption">A Day in the Life of a Curious Cat by the Window</div></div></div></div>
+      <div class="hl-card"><div class="hl-card-thumb" style="background:linear-gradient(135deg,#2a3a2a,#1a2a1a);"><div><div class="hl-card-caption">A curious cat's day unfolds by the window...</div></div></div></div>
+      <div class="hl-card"><div class="hl-card-thumb" style="background:linear-gradient(135deg,#3a2a1a,#2a1a0a);"><div><div class="hl-card-caption">A Day of Window Watching and Play for the Cats</div></div></div></div>
+      <div class="hl-card"><div class="hl-card-thumb" style="background:linear-gradient(135deg,#1a2a3a,#0a1a2a);"><div><div class="hl-card-caption">Cats spent their day intently watching...</div></div></div></div>
+    </div>
+  </div>
+  <div class="bottom-nav"><div class="nav-tab"><div class="icon">🏠</div><div class="label">Home</div></div><div class="nav-tab"><div class="icon">☰</div><div class="label">Events</div></div><div class="nav-tab active"><div class="icon">⭐</div><div class="label">Highlights</div></div><div class="nav-tab"><div class="icon">🛡️</div><div class="label">Security</div></div><div class="nav-tab"><div class="icon">🏪</div><div class="label">Explore</div></div></div>
+
+  <!-- Survey popup Version B — 4 stars pre-filled -->
+  <div class="modal-overlay show" id="modal-b-survey">
+    <div class="modal-sheet">
+      <button class="close-btn" onclick="closeModal('modal-b-survey')">×</button>
+      <div class="modal-title">Share your feedback</div>
+      <div class="modal-sub">Rate your overall experience</div>
+      <div class="stars">
+        <span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star filled">★</span><span class="star">★</span>
+      </div>
+      <div class="survey-label">Choose best highlighted</div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px;">
+        <div class="checkbox-option selected" onclick="toggleCheck(this)"><div class="checkbox-box"></div><div class="checkbox-label">Pet AI</div></div>
+        <div class="checkbox-option" onclick="toggleCheck(this)"><div class="checkbox-box"></div><div class="checkbox-label">Privacy</div></div>
+        <div class="checkbox-option" onclick="toggleCheck(this)"><div class="checkbox-box"></div><div class="checkbox-label">App stability</div></div>
+        <div class="checkbox-option" onclick="toggleCheck(this)"><div class="checkbox-box"></div><div class="checkbox-label">Day recap</div></div>
+        <div class="checkbox-option" onclick="toggleCheck(this)"><div class="checkbox-box"></div><div class="checkbox-label">See more ▾</div></div>
+      </div>
+      <div class="survey-label">Your comment (optional)</div>
+      <input class="survey-input" placeholder="Share your experience here..." style="margin-bottom:4px;">
+      <button class="submit-btn" onclick="showConfirmB()">Submit Review</button>
+    </div>
+  </div>
+
+  <!-- Confirmation B → App Store -->
+  <div class="modal-overlay" id="modal-b-confirm">
+    <div class="modal-sheet" style="text-align:center;">
+      <div class="confirm-card">
+        <div class="confirm-icon">✅</div>
+        <div class="confirm-title">Feedback Submitted</div>
+        <div class="confirm-sub">Thank you! We'd love it if you left a review on the App Store — it helps others discover Sensforge.</div>
+        <button class="appstore-btn" onclick="closeAllModals('s-ver-b')"><span>🍎</span> Rate Us on App Store</button>
+      </div>
+      <button class="secondary-btn" style="margin-top:8px;" onclick="closeAllModals('s-ver-b')">Maybe Later</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VERSION J — Full satisfaction survey ═══ -->
+<div class="screen" id="s-ver-j">
+  <div class="status-bar">4:01 <span style="display:flex;gap:6px;align-items:center;"><span>▲</span><span>WiFi</span><span>🔋</span></span></div>
+  <div class="version-label">Version J</div>
+  <div class="hl-header"><div class="hl-title">Highlights</div><div style="display:flex;gap:10px;"><span style="font-size:18px;color:#fff;">🎬</span><span style="font-size:18px;color:#fff;">⚙️</span></div></div>
+  <div class="hl-tabs"><div class="hl-tab active">Today</div><div class="hl-tab">This Week</div></div>
+  <div class="highlights-bg">
+    <div class="hl-grid">
+      <div class="hl-card"><div class="hl-card-thumb"><div><div class="hl-card-caption">A Day in the Life of a Curious Cat by the Window</div></div></div></div>
+      <div class="hl-card"><div class="hl-card-thumb" style="background:linear-gradient(135deg,#2a3a2a,#1a2a1a);"><div><div class="hl-card-caption">A curious cat's day unfolds by the window...</div></div></div></div>
+      <div class="hl-card"><div class="hl-card-thumb" style="background:linear-gradient(135deg,#3a2a1a,#2a1a0a);"><div><div class="hl-card-caption">A Day of Window Watching and Play for the Cats</div></div></div></div>
+      <div class="hl-card"><div class="hl-card-thumb" style="background:linear-gradient(135deg,#1a2a3a,#0a1a2a);"><div><div class="hl-card-caption">Cats spent their day intently watching...</div></div></div></div>
+    </div>
+  </div>
+  <div class="bottom-nav"><div class="nav-tab"><div class="icon">🏠</div><div class="label">Home</div></div><div class="nav-tab"><div class="icon">☰</div><div class="label">Events</div></div><div class="nav-tab active"><div class="icon">⭐</div><div class="label">Highlights</div></div><div class="nav-tab"><div class="icon">🛡️</div><div class="label">Security</div></div><div class="nav-tab"><div class="icon">🏪</div><div class="label">Explore</div></div></div>
+
+  <!-- Version J — Full survey sheet -->
+  <div class="modal-overlay show" id="modal-j-survey" style="align-items:flex-end;padding:0;">
+    <div class="modal-sheet-bottom" style="max-height:88%;overflow-y:auto;">
+      <div style="width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 14px;"></div>
+      <div class="modal-title">Share your feedback</div>
+      <div class="modal-sub" style="margin-bottom:10px;">Rate your experience</div>
+      <!-- Star rating -->
+      <div class="stars" id="stars-j" style="margin-bottom:14px;">
+        <span class="star" onclick="setStars('stars-j',1)">★</span>
+        <span class="star" onclick="setStars('stars-j',2)">★</span>
+        <span class="star" onclick="setStars('stars-j',3)">★</span>
+        <span class="star" onclick="setStars('stars-j',4)">★</span>
+        <span class="star" onclick="setStars('stars-j',5)">★</span>
+      </div>
+      <div class="survey-label">How satisfied are you with Sensforge overall?</div>
+      <div id="satisfaction-options">
+        <div class="checkbox-option" onclick="selectSatisfaction(this,'great')"><div class="checkbox-box"></div><div class="checkbox-label">Very satisfied</div></div>
+        <div class="checkbox-option" onclick="selectSatisfaction(this,'good')"><div class="checkbox-box"></div><div class="checkbox-label">Satisfied</div></div>
+        <div class="checkbox-option" onclick="selectSatisfaction(this,'okay')"><div class="checkbox-box"></div><div class="checkbox-label">Okay</div></div>
+        <div class="checkbox-option" onclick="selectSatisfaction(this,'bad')"><div class="checkbox-box"></div><div class="checkbox-label">Not satisfied</div></div>
+        <div class="checkbox-option" onclick="selectSatisfaction(this,'terrible')"><div class="checkbox-box"></div><div class="checkbox-label">Terrible</div></div>
+      </div>
+      <!-- Improvement multi-select (shown after satisfaction selection) -->
+      <div id="improvement-section" style="display:none;">
+        <div class="survey-label" style="margin-top:12px;">What could be most improved?</div>
+        <div class="checkbox-option" onclick="toggleCheck(this)"><div class="checkbox-box"></div><div class="checkbox-label">App stability</div></div>
+        <div class="checkbox-option" onclick="toggleCheck(this)"><div class="checkbox-box"></div><div class="checkbox-label">Video quality</div></div>
+        <div class="checkbox-option" onclick="toggleCheck(this)"><div class="checkbox-box"></div><div class="checkbox-label">Notifications</div></div>
+        <div class="checkbox-option" onclick="toggleCheck(this)"><div class="checkbox-box"></div><div class="checkbox-label">Price value</div></div>
+        <div class="checkbox-option" onclick="toggleCheck(this)"><div class="checkbox-box"></div><div class="checkbox-label">AI features</div></div>
+      </div>
+      <div class="survey-label" style="margin-top:10px;">Your comment (optional)</div>
+      <textarea class="survey-textarea" placeholder="Describe your experience here..."></textarea>
+      <button class="submit-btn" onclick="showConfirmJ()">Submit Review</button>
+    </div>
+  </div>
+
+  <!-- Version J — Confirmation (happy → App Store) -->
+  <div class="modal-overlay" id="modal-j-confirm-happy" style="align-items:flex-end;padding:0;">
+    <div class="modal-sheet-bottom">
+      <div style="width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 14px;"></div>
+      <div class="confirm-card">
+        <div class="confirm-icon">⭐</div>
+        <div class="confirm-title">Review Submitted</div>
+        <div class="confirm-sub">Your input helps us improve! If you had a great experience, would you consider leaving a review on the App Store?</div>
+        <button class="appstore-btn" onclick="closeAllModals('s-ver-j')"><span>🍎</span> Rate Us on App Store</button>
+      </div>
+      <button class="secondary-btn" style="margin-top:8px;" onclick="closeAllModals('s-ver-j')">Close</button>
+    </div>
+  </div>
+
+  <!-- Version J — Confirmation (not satisfied → no App Store push) -->
+  <div class="modal-overlay" id="modal-j-confirm-bad" style="align-items:flex-end;padding:0;">
+    <div class="modal-sheet-bottom">
+      <div style="width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 14px;"></div>
+      <div class="confirm-card" style="background:#fff8f8;border-color:#ffeaea;">
+        <div class="confirm-icon">🙏</div>
+        <div class="confirm-title" style="color:#c62828;">Thank you for your feedback</div>
+        <div class="confirm-sub" style="color:#b71c1c;">We're sorry to hear your experience wasn't great. Our team will review your feedback and work to improve.</div>
+      </div>
+      <button class="secondary-btn" style="margin-top:12px;" onclick="closeAllModals('s-ver-j')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Feedback FAB -->
+<button onclick="openFB()" style="position:absolute;bottom:66px;right:14px;width:40px;height:40px;border-radius:50%;background:var(--orange);color:#fff;border:none;box-shadow:0 4px 16px rgba(249,100,0,0.5);font-size:16px;cursor:pointer;z-index:200;">💬</button>
+<div id="feedback-modal" onclick="if(event.target===this)closeFB()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:flex-end;">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:18px 18px 28px;width:100%;">
+    <div style="width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 14px;"></div>
+    <div style="font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:8px;">Leave Design Feedback</div>
+    <textarea id="fb-text" style="width:100%;border:1.5px solid #eee;border-radius:10px;padding:10px;font-size:13px;font-family:inherit;outline:none;resize:none;min-height:80px;box-sizing:border-box;margin-bottom:10px;" placeholder="Your name + feedback"></textarea>
+    <div style="display:flex;gap:8px;">
+      <button onclick="closeFB()" style="flex:1;background:#f5f5f5;color:#555;border:none;border-radius:10px;padding:12px;cursor:pointer;">Cancel</button>
+      <button onclick="submitFB()" style="flex:2;background:var(--orange);color:#fff;border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;">Submit →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dev nav -->
+<div class="dev-nav">
+  <button class="dev-btn o" onclick="showVersion('s-ver-a')">Version A</button>
+  <button class="dev-btn" onclick="showVersion('s-ver-b')">Version B</button>
+  <button class="dev-btn" onclick="showVersion('s-ver-j')">Version J</button>
+  <button class="dev-btn" onclick="showModal('modal-a-happy')">A: Happy</button>
+  <button class="dev-btn" onclick="showModal('modal-a-negative')">A: Negative</button>
+  <button class="dev-btn" onclick="showModal('modal-a-confirm')">A: Confirm</button>
+  <button class="dev-btn" onclick="showModal('modal-b-confirm')">B: Confirm</button>
+  <button class="dev-btn" onclick="showModal('modal-j-confirm-happy')">J: Confirm+</button>
+  <button class="dev-btn" onclick="showModal('modal-j-confirm-bad')">J: Confirm-</button>
+</div>
+
+</div>
+<script>
+function showVersion(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function closeAllModals(screenId) {
+  var screen = document.getElementById(screenId);
+  if (screen) screen.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show'));
+}
+function setStars(containerId, n) {
+  var stars = document.getElementById(containerId).querySelectorAll('.star');
+  stars.forEach(function(s, i) { s.classList.toggle('filled', i < n); });
+}
+function toggleCheck(el) { el.classList.toggle('selected'); }
+function selectSatisfaction(el, type) {
+  document.querySelectorAll('#satisfaction-options .checkbox-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('improvement-section').style.display = 'block';
+}
+function showHappyFlow() {
+  closeModal('modal-a-survey');
+  showModal('modal-a-happy');
+}
+function showNegativeFlow() {
+  closeModal('modal-a-happy');
+  showModal('modal-a-negative');
+}
+function showConfirmA() {
+  closeModal('modal-a-happy');
+  closeModal('modal-a-negative');
+  showModal('modal-a-confirm');
+}
+function showConfirmB() {
+  closeModal('modal-b-survey');
+  showModal('modal-b-confirm');
+}
+var jSatisfied = true;
+function showConfirmJ() {
+  var selected = document.querySelector('#satisfaction-options .checkbox-option.selected');
+  var isGood = selected && (selected.querySelector('.checkbox-label').textContent === 'Very satisfied' || selected.querySelector('.checkbox-label').textContent === 'Satisfied');
+  closeModal('modal-j-survey');
+  if (isGood || !selected) {
+    showModal('modal-j-confirm-happy');
+  } else {
+    showModal('modal-j-confirm-bad');
+  }
+}
+var WEBHOOK='https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+function openFB(){document.getElementById('feedback-modal').style.display='flex';}
+function closeFB(){document.getElementById('feedback-modal').style.display='none';}
+async function submitFB(){
+  var text=document.getElementById('fb-text').value.trim();if(!text)return;
+  var screen=(document.querySelector('.screen.active')||{}).id||'unknown';
+  var t=new Date().toLocaleString('en-US',{timeZone:'America/New_York',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true});
+  var msg='<@&1487656704463208592> Design Feedback\nFeature: In-App Survey | Screen: '+screen+'\nTime: '+t+' ET\nFeedback: '+text;
+  try{await fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:msg})});}catch(e){}
+  document.getElementById('fb-text').value='';closeFB();
+}
+</script>
+</body>
+</html>
