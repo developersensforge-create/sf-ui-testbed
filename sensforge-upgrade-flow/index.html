@@ -226,22 +226,26 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
 
 <!-- CASE 4: Has existing Family Pro with available slots -->
 <div class="screen" id="s-explore-case4">
-  <div class="status">9:41 <span>📶 🔋</span></div>
-  <div style="padding:12px 14px 6px;font-size:20px;font-weight:800;color:var(--text);">Explore</div>
-  <div class="scroll">
-    <div style="margin:4px 12px 8px;background:#f5f5f5;border-radius:10px;padding:8px 12px;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Case 4 — Has existing Family Pro with available slots</div>
-    <!-- "Add cameras to your existing Family Pro" banner -->
-    <div style="margin:0 12px 0;background:linear-gradient(135deg,#1b5e20,#2e7d32);border-radius:16px;padding:16px;cursor:pointer;" onclick="showScreen('s-add-to-existing')">
-      <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.15);border-radius:20px;padding:4px 10px;margin-bottom:10px;"><span style="font-size:11px;">👨‍👩‍👧</span><span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.85);text-transform:uppercase;letter-spacing:0.5px;">Family Pro Has Open Slots</span></div>
+  <div class="status" style="background:#f5f5f5;">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
+  <div style="padding:10px 14px 4px;font-size:20px;font-weight:700;color:var(--text);background:#f5f5f5;">Explore</div>
+  <div class="scroll" style="background:#f5f5f5;">
+
+    <!-- Adjusted green banner for "has Family Pro" case -->
+    <div style="margin:0 12px 10px;background:linear-gradient(135deg,#1b5e20,#2e7d32);border-radius:16px;padding:16px;cursor:pointer;" onclick="showScreen('s-add-to-existing')">
+      <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.15);border-radius:20px;padding:4px 10px;margin-bottom:10px;"><span style="font-size:11px;">&#x1F465;</span><span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.85);text-transform:uppercase;letter-spacing:0.5px;">Family Pro Has Open Slots</span></div>
       <div style="color:#fff;font-size:16px;font-weight:800;margin-bottom:4px;line-height:1.3;">Move cameras to your<br>existing Family Pro</div>
-      <div style="color:rgba(255,255,255,0.75);font-size:12px;margin-bottom:14px;line-height:1.4;">You have 7 unused Family Pro slots. Add your Single Pro cameras for free — cancel Single Pro plans and get a refund.</div>
+      <div style="color:rgba(255,255,255,0.75);font-size:12px;margin-bottom:14px;line-height:1.4;">You have 7 unused Family Pro slots. Add your Single Pro cameras for free &#x2014; cancel Single Pro plans and get a refund.</div>
       <div style="background:rgba(0,0,0,0.18);border-radius:10px;padding:10px 12px;margin-bottom:14px;">
         <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.8);margin-bottom:3px;"><span>Family Pro (active)</span><span style="color:#4ade80;font-weight:700;">3 / 10 slots used</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.8);"><span>Single Pro cameras to move</span><span>2 cameras → save $9.98/mo</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.8);"><span>Single Pro cameras to move</span><span>2 cameras &#x2192; save $9.98/mo</span></div>
       </div>
-      <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:10px;padding:12px;text-align:center;"><div style="color:#fff;font-size:14px;font-weight:800;">Move Cameras to Family Pro →</div><div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Cancel Single Pro · get prorated refund</div></div>
+      <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:10px;padding:12px;text-align:center;">
+        <div style="color:#fff;font-size:14px;font-weight:800;">Move Cameras to Family Pro &#x2192;</div>
+        <div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:3px;">Cancel Single Pro &#xB7; get prorated refund</div>
+      </div>
     </div>
-        <!-- My Membership link -->
+
+    <!-- My Membership row -->
     <div style="margin:0 12px 10px;background:#fff;border-radius:12px;border:1px solid #e8e8e8;padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showScreen('s-device-list')">
       <div style="width:36px;height:36px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">&#x1F4CB;</div>
       <div style="flex:1;">
@@ -251,206 +255,19 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
       <span style="color:#aaa;font-size:20px;">&#8250;</span>
     </div>
 
-    <div style="padding:12px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Your Plans</div>
-    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1.5px solid #27ae60;overflow:hidden;">
-      <div style="padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:16px;">👨‍👩‍👧</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:#27ae60;">Family Pro (Active)</div><div style="font-size:11px;color:#888;">3 cameras · 7 slots available · $9.99/mo</div></div><span style="color:#aaa;font-size:16px;">›</span></div>
-    </div>
-    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1px solid var(--divider);overflow:hidden;">
-      <div style="padding:12px 14px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:var(--orange-light);display:flex;align-items:center;justify-content:center;font-size:16px;">✨</div><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:var(--text);">Single Pro × 2</div><div style="font-size:11px;color:#888;">Bedroom + Office Cam · $9.98/mo</div></div><div style="text-align:right;"><span style="color:var(--orange);font-size:11px;font-weight:600;">Move to Family Pro</span></div></div>
-    </div>
-    <div style="height:16px;"></div>
-  </div>
-  <div class="bottom-nav"><div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div><div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div><div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div><div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div><div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div></div>
-</div>
-
-<!-- ═══ S1: MEMBERSHIPS PAGE — No existing Family Pro (Case A) ═══ -->
-<div class="screen active" id="s-memberships">
-  <div class="status">9:41 <span>📶 🔋</span></div>
-  <div class="page-header">
-    <span class="back" onclick="">←</span>
-    <span class="title">Upgrade to Family Pro</span>
-    <span style="width:22px;"></span>
-  </div>
-  <div class="scroll">
-
-    <!-- Savings summary card -->
-    <div style="margin:12px 12px 0;background:linear-gradient(135deg,#f96400,#ff8c00);border-radius:14px;padding:14px 16px;">
-      <div style="color:#fff;font-size:13px;font-weight:800;margin-bottom:3px;">💡 Switch to Family Pro &amp; Save</div>
-      <div style="color:rgba(255,255,255,0.9);font-size:12px;margin-bottom:10px;">Family Pro covers up to 10 cameras for $9.99/mo</div>
-      <div style="background:rgba(0,0,0,0.15);border-radius:10px;padding:10px 12px;">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.85);margin-bottom:3px;"><span>2 × Single Pro (current)</span><span>$9.98/mo</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.85);margin-bottom:3px;"><span>1 × Basic (current, no AI)</span><span>Free</span></div>
-        <div style="width:100%;height:1px;background:rgba(255,255,255,0.2);margin:6px 0;"></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:#fff;font-weight:800;"><span>→ Family Pro (all 3 cameras)</span><span>$9.99/mo</span></div>
-        <div style="color:#ffe; font-size:11px;margin-top:4px;text-align:right;">Same price — covers 3× cameras + Basic cam gets AI ✨</div>
+    <!-- What's New section (same as Explore Case3) -->
+    <div style="padding:10px 14px 6px;font-size:15px;font-weight:700;color:var(--text);">What's New</div>
+    <div style="display:flex;gap:10px;padding:0 12px 12px;overflow-x:auto;">
+      <div style="min-width:148px;background:#fff;border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+        <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#f96400,#ff8c00);display:flex;align-items:center;justify-content:center;font-size:28px;">&#x1F3AC;</div>
+        <div style="padding:8px 10px;"><div style="font-size:12px;font-weight:700;color:var(--text);">Weekly Highlight Reel</div><div style="font-size:10px;color:var(--orange);margin-top:2px;font-weight:600;">New &#xB7; AI-powered</div></div>
+      </div>
+      <div style="min-width:148px;background:#fff;border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+        <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#555,#333);display:flex;align-items:center;justify-content:center;font-size:28px;">&#x1F4DD;</div>
+        <div style="padding:8px 10px;"><div style="font-size:12px;font-weight:700;color:var(--text);">Smart Event Descriptions</div><div style="font-size:10px;color:var(--orange);margin-top:2px;font-weight:600;">New &#xB7; Up to 10 cameras</div></div>
       </div>
     </div>
-
-    <!-- Device selection -->
-    <div style="padding:14px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Select cameras to move to Family Pro</div>
-    <div style="padding:0 12px;font-size:11px;color:#aaa;margin-bottom:10px;">Choose which devices to include. You can add or remove cameras later.</div>
-
-    <!-- Camera 1: Single Pro -->
-    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1.5px solid var(--divider);overflow:hidden;cursor:pointer;" onclick="toggleDevice(this, 'cam1')">
-      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;">
-        <div id="check-cam1" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--orange);background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0;">✓</div>
-        <div style="width:36px;height:36px;background:#fff3ec;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📷</div>
-        <div style="flex:1;">
-          <div style="font-size:15px;font-weight:700;color:var(--text);">Living Room Cam</div>
-          <div style="font-size:11px;color:#888;margin-top:1px;">Single Pro · $4.99/mo · expires May 15</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="background:var(--orange-light);color:var(--orange);font-size:9px;font-weight:800;padding:3px 7px;border-radius:20px;">Single Pro</div>
-          <div style="font-size:10px;color:var(--green);margin-top:3px;">Included ✓</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Camera 2: Single Pro -->
-    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1.5px solid var(--divider);overflow:hidden;cursor:pointer;" onclick="toggleDevice(this, 'cam2')">
-      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;">
-        <div id="check-cam2" style="width:24px;height:24px;border-radius:50%;border:2px solid var(--orange);background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;flex-shrink:0;">✓</div>
-        <div style="width:36px;height:36px;background:#fff3ec;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🚪</div>
-        <div style="flex:1;">
-          <div style="font-size:15px;font-weight:700;color:var(--text);">Front Door Cam</div>
-          <div style="font-size:11px;color:#888;margin-top:1px;">Single Pro · $4.99/mo · expires May 22</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="background:var(--orange-light);color:var(--orange);font-size:9px;font-weight:800;padding:3px 7px;border-radius:20px;">Single Pro</div>
-          <div style="font-size:10px;color:var(--green);margin-top:3px;">Included ✓</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Camera 3: Basic (no paid plan) -->
-    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1.5px solid var(--divider);overflow:hidden;cursor:pointer;" onclick="toggleDevice(this, 'cam3')">
-      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;">
-        <div id="check-cam3" style="width:24px;height:24px;border-radius:50%;border:2px solid #ddd;background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;color:#ddd;flex-shrink:0;">✓</div>
-        <div style="width:36px;height:36px;background:#f5f5f5;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📷</div>
-        <div style="flex:1;">
-          <div style="font-size:15px;font-weight:700;color:var(--text);">Bedroom Cam</div>
-          <div style="font-size:11px;color:#aaa;margin-top:1px;">Basic · No AI · Live view only</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="background:#f5f5f5;color:#888;font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px;">Basic</div>
-          <div style="font-size:10px;color:var(--orange);margin-top:3px;">Tap to add</div>
-        </div>
-      </div>
-      <!-- Upgrade benefit tag -->
-      <div style="padding:8px 16px;background:#fffbf0;border-top:1px solid #fff3e0;font-size:11px;color:#a05000;">✨ Adding to Family Pro unlocks AI features for this camera</div>
-    </div>
-
-    <!-- Summary + CTA -->
-    <div style="margin:10px 12px 0;background:#fff;border-radius:14px;border:1.5px solid var(--divider);padding:14px 16px;">
-      <div id="selection-summary" style="font-size:13px;color:#555;margin-bottom:12px;">2 cameras selected · Savings: $4.98/mo</div>
-      <button class="modal-btn" onclick="showModal('modal-upgrade-overview')">See Upgrade Steps &amp; Confirm</button>
-      <div style="text-align:center;margin-top:8px;font-size:11px;color:#aaa;">Family Pro · $9.99/mo · up to 10 cameras</div>
-    </div>
-
-    <!-- Case B: Has existing Family Pro -->
-    <div style="margin:10px 12px 0;border-top:1px solid var(--divider);padding-top:14px;">
-      <div style="font-size:12px;color:#888;margin-bottom:8px;font-weight:600;">Already have Family Pro?</div>
-      <div style="background:#f5f5f5;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showScreen('s-add-to-existing')">
-        <div style="font-size:20px;">👨‍👩‍👧</div>
-        <div style="flex:1;">
-          <div style="font-size:13px;font-weight:700;color:var(--text);">Add cameras to existing Family Pro</div>
-          <div style="font-size:11px;color:#888;margin-top:1px;">Move cameras from Single Pro into your current Family plan</div>
-        </div>
-        <span style="color:#aaa;font-size:16px;">›</span>
-      </div>
-    </div>
-    <div style="height:16px;"></div>
-  </div>
-  <div class="bottom-nav">
-    <div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
-    <div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div>
-    <div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div>
-    <div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div>
-    <div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div>
-  </div>
-</div>
-
-
-<!-- Device List Screen — standalone, matching screenshot -->
-<div class="screen" id="s-device-list">
-  <div style="height:40px;background:#f5f5f5;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:12px;font-weight:600;color:#1a1a1a;flex-shrink:0;">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
-  <div style="padding:10px 14px 4px;font-size:20px;font-weight:700;color:#1a1a1a;background:#f5f5f5;flex-shrink:0;">My Membership</div>
-  <div style="flex:1;overflow-y:auto;background:#f5f5f5;padding:8px 14px;">
-
-    <!-- Basic Plan card — no "no active" text, just camera -->
-    <div style="background:#fff;border-radius:14px;border:1px solid #e8e8e8;margin-bottom:10px;overflow:hidden;">
-      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:#f0f0f0;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">&#9733;</div>
-        <div style="font-size:17px;font-weight:700;color:#1a1a1a;">Basic Plan</div>
-      </div>
-      <div style="height:1px;background:#f0f0f0;margin:0 16px;"></div>
-      <div style="padding:8px 16px 14px;display:flex;align-items:center;gap:10px;">
-        <div style="width:20px;height:20px;border-radius:4px;background:#9e9e9e;flex-shrink:0;"></div>
-        <span style="font-size:15px;color:#1a1a1a;">Bedroom Cam</span>
-      </div>
-    </div>
-
-    <!-- Single Pro 1 — only 1 camera -->
-    <div style="background:#fff;border-radius:14px;border:1px solid #e8e8e8;margin-bottom:10px;overflow:hidden;">
-      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:#fff3ec;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">&#10024;</div>
-        <div>
-          <div style="font-size:17px;font-weight:700;color:#1a1a1a;">Single Pro 1</div>
-          <div style="font-size:11px;color:#aaa;margin-top:1px;">$4.99/mo</div>
-        </div>
-        <span style="margin-left:auto;font-size:12px;color:#aaa;cursor:pointer;">Edit Plan</span>
-      </div>
-      <div style="height:1px;background:#f0f0f0;margin:0 16px;"></div>
-      <div style="padding:8px 16px 14px;display:flex;align-items:center;gap:10px;">
-        <div style="width:20px;height:20px;border-radius:4px;background:#f96400;flex-shrink:0;"></div>
-        <span style="font-size:15px;color:#1a1a1a;">Office Cam</span>
-      </div>
-    </div>
-
-    <!-- Single Pro 2 — only 1 camera -->
-    <div style="background:#fff;border-radius:14px;border:1px solid #e8e8e8;margin-bottom:10px;overflow:hidden;">
-      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:#fff3ec;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">&#10024;</div>
-        <div>
-          <div style="font-size:17px;font-weight:700;color:#1a1a1a;">Single Pro 2</div>
-          <div style="font-size:11px;color:#aaa;margin-top:1px;">$4.99/mo</div>
-        </div>
-        <span style="margin-left:auto;font-size:12px;color:#aaa;cursor:pointer;">Edit Plan</span>
-      </div>
-      <div style="height:1px;background:#f0f0f0;margin:0 16px;"></div>
-      <div style="padding:8px 16px 14px;display:flex;align-items:center;gap:10px;">
-        <div style="width:20px;height:20px;border-radius:4px;background:#f96400;flex-shrink:0;"></div>
-        <span style="font-size:15px;color:#1a1a1a;">Front Door Cam</span>
-      </div>
-    </div>
-
-    <!-- Family Pro card (green border) -->
-    <div style="background:#fff;border-radius:14px;border:2px solid #27ae60;margin-bottom:10px;overflow:hidden;">
-      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">&#x1F465;</div>
-        <div>
-          <div style="font-size:17px;font-weight:700;color:#1a1a1a;">Family Pro 1</div>
-          <div style="font-size:11px;color:#27ae60;margin-top:1px;font-weight:600;">Active · $9.99/mo</div>
-        </div>
-        <span style="margin-left:auto;font-size:12px;color:#aaa;cursor:pointer;">Edit Plan</span>
-      </div>
-      <div style="height:1px;background:#f0f0f0;margin:0 16px;"></div>
-      <div style="padding:8px 16px 4px;display:flex;align-items:center;gap:10px;">
-        <div style="width:20px;height:20px;border-radius:4px;background:#27ae60;flex-shrink:0;"></div>
-        <span style="font-size:15px;color:#1a1a1a;">Living Room Cam</span>
-      </div>
-      <div style="padding:4px 16px;display:flex;align-items:center;gap:10px;">
-        <div style="width:20px;height:20px;border-radius:4px;background:#27ae60;flex-shrink:0;"></div>
-        <span style="font-size:15px;color:#1a1a1a;">Pet Cam Mochi</span>
-      </div>
-      <div style="padding:4px 16px 14px;display:flex;align-items:center;gap:10px;">
-        <div style="width:20px;height:20px;border-radius:4px;background:#27ae60;flex-shrink:0;"></div>
-        <span style="font-size:15px;color:#1a1a1a;">Baby Room Cam</span>
-      </div>
-    </div>
-
-    <!-- Billing button -->
-    <button style="width:100%;background:#fff;color:#f96400;border:1.5px solid #f96400;border-radius:24px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:16px;">Billing</button>
+    <div style="height:8px;"></div>
   </div>
   <div class="bottom-nav">
     <div class="nav-tab"><div class="nav-icon">&#x1F3E0;</div><div class="nav-label">Home</div></div>
@@ -461,7 +278,6 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
   </div>
 </div>
 
-<!-- ═══ S1b: ADD TO EXISTING FAMILY PRO (Case B) ═══ -->
 <div class="screen" id="s-add-to-existing">
   <div class="status">9:41 <span>📶 🔋</span></div>
   <div class="page-header">
