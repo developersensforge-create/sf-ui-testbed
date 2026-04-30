@@ -104,16 +104,24 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
 .dev-btn { flex-shrink:0; background:#333; color:#fff; border:none; padding:5px 9px; border-radius:6px; font-size:9px; cursor:pointer; }
 .dev-btn.orange { background:var(--orange); }
 
-  /* Step progress bar */
-  .step-progress { display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 16px 16px; background:#fff; }
-  .step-circle-done { width:32px; height:32px; border-radius:50%; background:#27ae60; color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; flex-shrink:0; }
-  .step-circle-active { width:32px; height:32px; border-radius:50%; background:var(--orange); color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; flex-shrink:0; }
-  .step-circle-pending { width:32px; height:32px; border-radius:50%; background:#e0e0e0; color:#aaa; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; flex-shrink:0; }
-  .step-label-done { font-size:10px; color:#27ae60; font-weight:600; text-align:center; max-width:60px; line-height:1.2; }
-  .step-label-active { font-size:10px; color:var(--orange); font-weight:700; text-align:center; max-width:60px; line-height:1.2; }
-  .step-label-pending { font-size:10px; color:#aaa; font-weight:600; text-align:center; max-width:60px; line-height:1.2; }
-  .step-connector { height:2px; flex:1; max-width:28px; background:#e0e0e0; border-radius:2px; }
-  .step-connector-done { background:#27ae60; }
+
+  /* Step progress bar — flat Material/iOS style */
+  .step-progress-flat { padding:8px 20px 14px; background:#fff; }
+  .step-bar-track { display:flex; align-items:center; gap:0; margin-bottom:10px; }
+  .step-bar-seg { flex:1; height:3px; border-radius:2px; }
+  .step-bar-seg.done { background:#27ae60; }
+  .step-bar-seg.active { background:var(--orange); }
+  .step-bar-seg.pending { background:#e0e0e0; }
+  .step-bar-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .step-bar-dot.done { background:#27ae60; }
+  .step-bar-dot.active { background:var(--orange); }
+  .step-bar-dot.pending { background:#e0e0e0; }
+  .step-labels { display:flex; justify-content:space-between; }
+  .step-lbl { font-size:11px; text-align:center; line-height:1.3; }
+  .step-lbl.done { color:#27ae60; font-weight:600; }
+  .step-lbl.active { color:var(--orange); font-weight:700; }
+  .step-lbl.pending { color:#aaa; }
+
 </style>
 </head>
 <body>
@@ -764,17 +772,19 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
     <div style="flex:1;text-align:center;"><div style="font-size:17px;font-weight:800;color:#1a1a1a;">Assign Cameras</div></div>
     <span style="width:24px;"></span>
   </div>
-  <div style="background:#fff;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
-    <div style="padding:8px 20px 4px;text-align:center;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;">STEP 2 OF 3</div>
-    <div style="height:3px;background:#e0e0e0;margin:0 20px;border-radius:2px;overflow:hidden;margin-bottom:12px;">
-      <div style="height:100%;width:50%;background:var(--orange);border-radius:2px;"></div>
+  <div class="step-progress-flat">
+    <div style="text-align:center;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">STEP 2 OF 3</div>
+    <div class="step-bar-track">
+      <div class="step-bar-dot done"></div>
+      <div class="step-bar-seg done"></div>
+      <div class="step-bar-dot active"></div>
+      <div class="step-bar-seg pending"></div>
+      <div class="step-bar-dot pending"></div>
     </div>
-    <div class="step-progress">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-done">&#x2713;</div><div class="step-label-done">Step 1<br>Purchased</div></div>
-      <div class="step-connector step-connector-done"></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-active">2</div><div class="step-label-active">Step 2<br>Assign</div></div>
-      <div class="step-connector"></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-pending">3</div><div class="step-label-pending">Step 3<br>Refund</div></div>
+    <div class="step-labels">
+      <span class="step-lbl done">Step 1<br>Purchased</span>
+      <span class="step-lbl active">Step 2<br>Assign</span>
+      <span class="step-lbl pending">Step 3<br>Refund</span>
     </div>
   </div>
   <div style="flex:1;overflow-y:auto;background:#fff;padding:16px;">
@@ -875,17 +885,19 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
     <div style="flex:1;text-align:center;"><div style="font-size:17px;font-weight:800;color:#1a1a1a;">Cancel Empty Plans</div></div>
     <span style="width:24px;"></span>
   </div>
-  <div style="background:#fff;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
-    <div style="padding:8px 20px 4px;text-align:center;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;">STEP 3 OF 3</div>
-    <div style="height:3px;background:#e0e0e0;margin:0 20px;border-radius:2px;overflow:hidden;margin-bottom:12px;">
-      <div style="height:100%;width:100%;background:var(--orange);border-radius:2px;"></div>
+  <div class="step-progress-flat">
+    <div style="text-align:center;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">STEP 3 OF 3</div>
+    <div class="step-bar-track">
+      <div class="step-bar-dot done"></div>
+      <div class="step-bar-seg done"></div>
+      <div class="step-bar-dot done"></div>
+      <div class="step-bar-seg active"></div>
+      <div class="step-bar-dot active"></div>
     </div>
-    <div class="step-progress">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-done">&#x2713;</div><div class="step-label-done">Step 1<br>Purchased</div></div>
-      <div class="step-connector step-connector-done"></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-done">&#x2713;</div><div class="step-label-done">Step 2<br>Assigned</div></div>
-      <div class="step-connector step-connector-done"></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-active">3</div><div class="step-label-active">Step 3<br>Refund</div></div>
+    <div class="step-labels">
+      <span class="step-lbl done">Step 1<br>Purchased</span>
+      <span class="step-lbl done">Step 2<br>Assigned</span>
+      <span class="step-lbl active">Step 3<br>Refund</span>
     </div>
   </div>
   <div style="flex:1;overflow-y:auto;background:#fff;padding:16px;">
