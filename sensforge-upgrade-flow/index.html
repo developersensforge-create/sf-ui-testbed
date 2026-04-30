@@ -906,13 +906,14 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
     <div style="font-size:16px;font-weight:800;color:#1a1a1a;margin-bottom:6px;">Cancel Empty Subscriptions</div>
     <div style="font-size:13px;color:#666;margin-bottom:16px;line-height:1.5;">Your cameras have been moved. These Single Pro plans are now empty. Cancel them to receive a prorated refund.</div>
 
-    <div style="background:#fff8f8;border:1.5px solid #ffeaea;border-radius:12px;overflow:hidden;margin-bottom:14px;">
+    <div id="refund-list" style="background:#fff8f8;border:1.5px solid #ffeaea;border-radius:12px;overflow:hidden;margin-bottom:14px;">
+      <!-- Populated by completeStepB() based on Step B selections -->
       <div style="padding:12px 14px;border-bottom:1px solid #ffeaea;display:flex;align-items:center;justify-content:space-between;">
-        <div><div style="font-size:13px;font-weight:700;color:#1a1a1a;">Single Pro — Living Room Cam slot</div><div style="font-size:11px;color:#888;margin-top:1px;">Paid May 1 &#8594; 31 &middot; Camera moved out May 8</div></div>
+        <div><div style="font-size:13px;font-weight:700;color:#1a1a1a;">Single Pro &#8212; Living Room Cam slot</div><div style="font-size:11px;color:#888;margin-top:1px;">Paid May 1 &#8594; 31 &middot; Camera moved out May 8</div></div>
         <div style="text-align:right;"><div style="font-size:14px;font-weight:800;color:#27ae60;">+$3.71</div><div style="font-size:10px;color:#aaa;">refund (23 days)</div></div>
       </div>
       <div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;">
-        <div><div style="font-size:13px;font-weight:700;color:#1a1a1a;">Single Pro — Front Door Cam slot</div><div style="font-size:11px;color:#888;margin-top:1px;">Paid Apr 22 &#8594; May 22 &middot; Camera moved out May 8</div></div>
+        <div><div style="font-size:13px;font-weight:700;color:#1a1a1a;">Single Pro &#8212; Front Door Cam slot</div><div style="font-size:11px;color:#888;margin-top:1px;">Paid Apr 22 &#8594; May 22 &middot; Camera moved out May 8</div></div>
         <div style="text-align:right;"><div style="font-size:14px;font-weight:800;color:#27ae60;">+$2.26</div><div style="font-size:10px;color:#aaa;">refund (14 days)</div></div>
       </div>
       <div style="padding:12px 14px;background:#f0fff4;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid #d4edda;">
