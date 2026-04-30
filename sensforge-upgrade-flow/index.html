@@ -1023,4 +1023,53 @@ async function submitFB() {
 }
 </script>
 </body>
-</html>
+</html
+
+<div class="screen" id="s-step-c">
+  <div style="background:#fff;display:flex;align-items:center;padding:10px 16px 10px;border-bottom:none;flex-shrink:0;">
+    <span style="font-size:24px;color:var(--orange);cursor:pointer;" onclick="showScreen('s-step-b')">&#8592;</span>
+    <div style="flex:1;text-align:center;"><div style="font-size:17px;font-weight:800;color:#1a1a1a;">Cancel Empty Plans</div></div>
+    <span style="width:24px;"></span>
+  </div>
+  <div class="step-progress-flat">
+    <div style="text-align:center;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">STEP 3 OF 3</div>
+    <div class="step-bar-track">
+      <div class="step-bar-dot done"></div>
+      <div class="step-bar-seg done"></div>
+      <div class="step-bar-dot done"></div>
+      <div class="step-bar-seg active"></div>
+      <div class="step-bar-dot active"></div>
+    </div>
+    <div class="step-labels">
+      <span class="step-lbl done">Step 1<br>Purchased</span>
+      <span class="step-lbl done">Step 2<br>Assigned</span>
+      <span class="step-lbl active">Step 3<br>Refund</span>
+    </div>
+  </div>
+  <div style="flex:1;overflow-y:auto;background:#fff;padding:16px;">
+
+
+    <div style="font-size:16px;font-weight:800;color:#1a1a1a;margin-bottom:6px;">Cancel Empty Subscriptions</div>
+    <div style="font-size:13px;color:#666;margin-bottom:16px;line-height:1.5;">Your cameras have been moved. These Single Pro plans are now empty. Cancel them to receive a prorated refund.</div>
+
+    <div id="refund-list" style="background:#fff8f8;border:1.5px solid #ffeaea;border-radius:12px;overflow:hidden;margin-bottom:14px;">
+      <!-- Populated by completeStepB() based on Step B selections -->
+      <div style="padding:12px 14px;border-bottom:1px solid #ffeaea;display:flex;align-items:center;justify-content:space-between;">
+        <div><div style="font-size:13px;font-weight:700;color:#1a1a1a;">Single Pro &#8212; Living Room Cam slot</div><div style="font-size:11px;color:#888;margin-top:1px;">Paid May 1 &#8594; 31 &middot; Camera moved out May 8</div></div>
+        <div style="text-align:right;"><div style="font-size:14px;font-weight:800;color:#27ae60;">+$3.71</div><div style="font-size:10px;color:#aaa;">refund (23 days)</div></div>
+      </div>
+      <div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;">
+        <div><div style="font-size:13px;font-weight:700;color:#1a1a1a;">Single Pro &#8212; Front Door Cam slot</div><div style="font-size:11px;color:#888;margin-top:1px;">Paid Apr 22 &#8594; May 22 &middot; Camera moved out May 8</div></div>
+        <div style="text-align:right;"><div style="font-size:14px;font-weight:800;color:#27ae60;">+$2.26</div><div style="font-size:10px;color:#aaa;">refund (14 days)</div></div>
+      </div>
+      <div style="padding:12px 14px;background:#f0fff4;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid #d4edda;">
+        <div style="font-size:14px;font-weight:800;color:#27ae60;">&#x1F4B0; Total refund estimate</div>
+        <div style="font-size:18px;font-weight:900;color:#27ae60;">$5.97</div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:#aaa;margin-bottom:14px;line-height:1.5;">Refund will be credited to your original payment method within 3&#8211;5 business days.</div>
+    <button id="step-c-confirm-btn" style="width:100%;background:#27ae60;color:#fff;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:8px;" onclick="completeStepC()">Confirm &#8212; Cancel Plans &amp; Get Refund</button>
+    <button style="width:100%;background:#fff;color:#555;border:1px solid #ddd;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;" onclick="dismissStepC()">Cancel &#8212; I&#8217;ll handle this manually</button>
+  </div>
+</div>>
