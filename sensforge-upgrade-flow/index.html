@@ -799,6 +799,33 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
   </div>
 </div>
 
+<!-- Guide Modal: 3-step upgrade overview -->
+<div class="modal-overlay" id="modal-upgrade-overview">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="text-align:center;font-size:28px;margin-bottom:10px;">&#x1F4A1;</div>
+    <div style="font-size:17px;font-weight:800;color:#1a1a1a;text-align:center;margin-bottom:6px;">Upgrade to Family Pro</div>
+    <div style="font-size:13px;color:#666;text-align:center;margin-bottom:16px;line-height:1.5;">Here&#8217;s what will happen step by step after you purchase:</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">A</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1a1a1a;">Purchase Family Pro</div><div style="font-size:12px;color:#888;margin-top:2px;">$9.99/mo &#8212; covers up to 10 cameras</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">B</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1a1a1a;">Move cameras to Family Pro</div><div style="font-size:12px;color:#888;margin-top:2px;">After purchase, we&#8217;ll guide you to transfer cameras from Single Pro</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">C</div>
+        <div><div style="font-size:14px;font-weight:700;color:#1a1a1a;">Cancel empty plans &amp; get refund</div><div style="font-size:12px;color:#888;margin-top:2px;">We&#8217;ll help you cancel Single Pro plans and receive a prorated refund</div></div>
+      </div>
+    </div>
+    <button style="width:100%;background:var(--orange);color:#fff;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:8px;" onclick="startUpgrade()">Start Upgrade &#8212; Buy Family Pro</button>
+    <button style="width:100%;background:#f5f5f5;color:#555;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;" onclick="closeModal('modal-upgrade-overview')">Maybe Later</button>
+  </div>
+</div>
+
+
 <!-- Feedback FAB -->
 <button id="feedback-fab" onclick="openFB()" style="position:absolute;bottom:76px;right:14px;width:44px;height:44px;border-radius:50%;background:var(--orange);color:#fff;border:none;box-shadow:0 4px 16px rgba(249,100,0,0.5);font-size:18px;cursor:pointer;z-index:200;">💬</button>
 <div id="feedback-modal" onclick="if(event.target===this)closeFB()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:300;align-items:flex-end;">
