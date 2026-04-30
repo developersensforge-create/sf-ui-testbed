@@ -360,6 +360,85 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
   </div>
 </div>
 
+
+<!-- Device List Screen — standalone, matching screenshot -->
+<div class="screen" id="s-device-list">
+  <div class="status" style="background:#f5f5f5;">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
+  <div style="padding:10px 14px 4px;font-size:20px;font-weight:700;color:#1a1a1a;background:#f5f5f5;">Your Plans</div>
+  <div style="flex:1;overflow-y:auto;background:#f5f5f5;padding:8px 14px;">
+
+    <!-- Basic Plan card -->
+    <div style="background:#fff;border-radius:14px;border:1px solid #e8e8e8;margin-bottom:10px;overflow:hidden;">
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;">
+        <div style="width:48px;height:48px;border-radius:50%;background:#f0f0f0;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">&#9733;</div>
+        <div style="font-size:17px;font-weight:700;color:#1a1a1a;">Basic Plan</div>
+      </div>
+      <div style="height:1px;background:#f0f0f0;margin:0 16px;"></div>
+      <div style="padding:10px 16px 6px;font-size:13px;color:#aaa;">No active basic plan</div>
+      <div style="padding:4px 16px 14px;display:flex;align-items:center;gap:10px;">
+        <div style="width:20px;height:20px;border-radius:4px;background:#9e9e9e;flex-shrink:0;"></div>
+        <span style="font-size:15px;color:#1a1a1a;">Bedroom Cam</span>
+      </div>
+    </div>
+
+    <!-- Single Pro card -->
+    <div style="background:#fff;border-radius:14px;border:1px solid #e8e8e8;margin-bottom:10px;overflow:hidden;">
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;">
+        <div style="width:48px;height:48px;border-radius:50%;background:#fff3ec;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">&#10024;</div>
+        <div style="font-size:17px;font-weight:700;color:#1a1a1a;">Single Pro</div>
+      </div>
+      <div style="height:1px;background:#f0f0f0;margin:0 16px;"></div>
+      <div style="padding:10px 16px 6px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:14px;font-weight:700;color:#f96400;">Single Pro x 2</span>
+        <span style="font-size:13px;color:#aaa;cursor:pointer;">Edit Plan</span>
+      </div>
+      <div style="padding:4px 16px;display:flex;align-items:center;gap:10px;">
+        <div style="width:20px;height:20px;border-radius:4px;background:#f96400;flex-shrink:0;"></div>
+        <span style="font-size:15px;color:#1a1a1a;">Office Cam</span>
+      </div>
+      <div style="padding:4px 16px 14px;display:flex;align-items:center;gap:10px;">
+        <div style="width:20px;height:20px;border-radius:4px;background:#f96400;flex-shrink:0;"></div>
+        <span style="font-size:15px;color:#1a1a1a;">Front Door Cam</span>
+      </div>
+    </div>
+
+    <!-- Family Pro card (green border) -->
+    <div style="background:#fff;border-radius:14px;border:2px solid #27ae60;margin-bottom:10px;overflow:hidden;">
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;">
+        <div style="width:48px;height:48px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">&#x1F465;</div>
+        <div style="font-size:17px;font-weight:700;color:#1a1a1a;">Family Pro</div>
+      </div>
+      <div style="height:1px;background:#f0f0f0;margin:0 16px;"></div>
+      <div style="padding:10px 16px 6px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:14px;font-weight:700;color:#27ae60;">Family Pro 1 - Active</span>
+        <span style="font-size:13px;color:#aaa;cursor:pointer;">Edit Plan</span>
+      </div>
+      <div style="padding:4px 16px;display:flex;align-items:center;gap:10px;">
+        <div style="width:20px;height:20px;border-radius:4px;background:#27ae60;flex-shrink:0;"></div>
+        <span style="font-size:15px;color:#1a1a1a;">Living Room Cam</span>
+      </div>
+      <div style="padding:4px 16px;display:flex;align-items:center;gap:10px;">
+        <div style="width:20px;height:20px;border-radius:4px;background:#27ae60;flex-shrink:0;"></div>
+        <span style="font-size:15px;color:#1a1a1a;">Pet Cam Mochi</span>
+      </div>
+      <div style="padding:4px 16px 14px;display:flex;align-items:center;gap:10px;">
+        <div style="width:20px;height:20px;border-radius:4px;background:#27ae60;flex-shrink:0;"></div>
+        <span style="font-size:15px;color:#1a1a1a;">Baby Room Cam</span>
+      </div>
+    </div>
+
+    <!-- Billing button -->
+    <button style="width:100%;background:#fff;color:#f96400;border:1.5px solid #f96400;border-radius:24px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:16px;">Billing</button>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab"><div class="nav-icon">&#x1F3E0;</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x2630;</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#10022;</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x1F512;</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">&#x1F6D2;</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
 <!-- ═══ S1b: ADD TO EXISTING FAMILY PRO (Case B) ═══ -->
 <div class="screen" id="s-add-to-existing">
   <div class="status">9:41 <span>📶 🔋</span></div>
