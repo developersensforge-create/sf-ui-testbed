@@ -935,6 +935,177 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
   </div>
 </div>
 
+
+<!-- ═══ BASIC-ONLY USER CASE: Explore Entry ═══ -->
+<div class="screen" id="s-basic-explore">
+  <div class="status" style="background:#f5f5f5;">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
+  <div style="padding:10px 14px 4px;font-size:20px;font-weight:700;color:var(--text);background:#f5f5f5;">Explore</div>
+  <div style="flex:1;overflow-y:auto;background:#f5f5f5;">
+    <!-- Upgrade prompt card -->
+    <div style="margin:8px 12px;background:linear-gradient(135deg,#1a1a2e,#0f2040);border-radius:16px;padding:18px;cursor:pointer;" onclick="showScreen('s-basic-plan-select')">
+      <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(249,100,0,0.2);border:1px solid rgba(249,100,0,0.4);border-radius:20px;padding:4px 10px;margin-bottom:10px;"><span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.85);text-transform:uppercase;letter-spacing:0.5px;">Upgrade Available</span></div>
+      <div style="color:#fff;font-size:18px;font-weight:800;margin-bottom:5px;line-height:1.3;">Unlock AI features<br>for your cameras</div>
+      <div style="color:rgba(255,255,255,0.7);font-size:12px;margin-bottom:14px;line-height:1.5;">Your cameras are on the Basic plan. Upgrade to Pro to unlock Weekly Highlights, Sensi AI, 60-day cloud storage, and more.</div>
+      <!-- Feature pills -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
+        <span style="background:rgba(255,255,255,0.1);border-radius:20px;padding:5px 10px;font-size:11px;color:rgba(255,255,255,0.85);">&#x1F3AC; Weekly Highlights</span>
+        <span style="background:rgba(255,255,255,0.1);border-radius:20px;padding:5px 10px;font-size:11px;color:rgba(255,255,255,0.85);">&#x1F916; Sensi AI</span>
+        <span style="background:rgba(255,255,255,0.1);border-radius:20px;padding:5px 10px;font-size:11px;color:rgba(255,255,255,0.85);">&#x2601;&#xFE0F; 60-Day Cloud</span>
+        <span style="background:rgba(255,255,255,0.1);border-radius:20px;padding:5px 10px;font-size:11px;color:rgba(255,255,255,0.85);">&#x1F43E; Pet AI</span>
+      </div>
+      <div style="background:var(--orange);border-radius:10px;padding:12px;text-align:center;">
+        <div style="color:#fff;font-size:14px;font-weight:800;">See Plans &#8594;</div>
+        <div style="color:rgba(255,255,255,0.8);font-size:11px;margin-top:2px;">From $4.99/mo per camera</div>
+      </div>
+    </div>
+    <!-- Current cameras -->
+    <div style="padding:10px 14px 6px;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.8px;">Your Cameras (Basic)</div>
+    <div style="margin:0 12px 6px;background:#fff;border-radius:12px;border:1px solid #e8e8e8;padding:12px 14px;display:flex;align-items:center;gap:10px;">
+      <div style="width:32px;height:32px;background:#f0f0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">&#128247;</div>
+      <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--text);">Living Room Cam</div><div style="font-size:11px;color:#aaa;margin-top:1px;">Basic &#xB7; Live view only</div></div>
+      <span style="background:#f0f0f0;color:#888;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;">Basic</span>
+    </div>
+    <div style="margin:0 12px 6px;background:#fff;border-radius:12px;border:1px solid #e8e8e8;padding:12px 14px;display:flex;align-items:center;gap:10px;">
+      <div style="width:32px;height:32px;background:#f0f0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">&#128682;</div>
+      <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--text);">Front Door Cam</div><div style="font-size:11px;color:#aaa;margin-top:1px;">Basic &#xB7; Live view only</div></div>
+      <span style="background:#f0f0f0;color:#888;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;">Basic</span>
+    </div>
+    <div style="height:12px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab"><div class="nav-icon">&#x1F3E0;</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x2630;</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#10022;</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x1F512;</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">&#x1F6D2;</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══ BASIC-ONLY: Plan Selection ═══ -->
+<div class="screen" id="s-basic-plan-select">
+  <div class="status" style="background:#fff;">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
+  <div style="background:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
+    <span style="font-size:22px;color:var(--orange);cursor:pointer;" onclick="showScreen('s-basic-explore')">&#8592;</span>
+    <span style="flex:1;text-align:center;font-size:17px;font-weight:800;color:#1a1a1a;">Choose a Plan</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div style="flex:1;overflow-y:auto;background:#f5f5f5;">
+    <div style="padding:14px 14px 6px;text-align:center;"><div style="font-size:13px;color:#888;line-height:1.5;">Your cameras are on Basic. Pick a plan to unlock AI features.</div></div>
+    <!-- Single Pro card -->
+    <div style="margin:8px 12px;background:#fff;border-radius:14px;border:1.5px solid var(--divider);overflow:hidden;">
+      <div style="padding:14px 16px 10px;display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--orange-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">&#10024;</div>
+        <div style="flex:1;"><div style="font-size:16px;font-weight:800;color:var(--text);">Single Pro</div><div style="font-size:11px;color:#888;margin-top:1px;">1 camera · per device</div></div>
+        <div style="font-size:18px;font-weight:900;color:var(--orange);">$4.99<span style="font-size:11px;font-weight:400;color:#888;">/mo</span></div>
+      </div>
+      <div style="padding:0 16px 10px;">
+        <div style="font-size:12px;color:#555;margin-bottom:5px;">&#x2713; Weekly Highlight video &nbsp;&#x2713; 60-day cloud</div>
+        <div style="font-size:12px;color:#555;margin-bottom:10px;">&#x2713; Sensi AI chatbot &nbsp;&#x2713; Pet AI recognition</div>
+        <button style="width:100%;background:var(--orange);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;" onclick="showScreen('s-basic-payment')">Subscribe to Single Pro</button>
+        <div style="text-align:center;font-size:10px;color:#aaa;margin-top:5px;">Best for 1&#8211;2 cameras</div>
+      </div>
+    </div>
+    <!-- Family Pro card -->
+    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1.5px solid #27ae60;overflow:hidden;">
+      <div style="padding:6px 16px;background:#e8f5e9;text-align:center;"><span style="font-size:10px;font-weight:800;color:#27ae60;text-transform:uppercase;letter-spacing:0.5px;">&#x2B50; Best value for multiple cameras</span></div>
+      <div style="padding:14px 16px 10px;display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">&#x1F46A;</div>
+        <div style="flex:1;"><div style="font-size:16px;font-weight:800;color:var(--text);">Family Pro</div><div style="font-size:11px;color:#888;margin-top:1px;">Up to 10 cameras</div></div>
+        <div style="font-size:18px;font-weight:900;color:#27ae60;">$9.99<span style="font-size:11px;font-weight:400;color:#888;">/mo</span></div>
+      </div>
+      <div style="padding:0 16px 10px;">
+        <div style="font-size:12px;color:#555;margin-bottom:5px;">&#x2713; Everything in Single Pro</div>
+        <div style="font-size:12px;color:#555;margin-bottom:10px;">&#x2713; Family member recognition &nbsp;&#x2713; Up to 10 cameras</div>
+        <button style="width:100%;background:#27ae60;color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;" onclick="showScreen('s-basic-payment')">Subscribe to Family Pro</button>
+        <div style="text-align:center;font-size:10px;color:#aaa;margin-top:5px;">Best for 3+ cameras or families</div>
+      </div>
+    </div>
+    <div style="padding:10px 20px;text-align:center;font-size:10px;color:#aaa;line-height:1.6;">Cancel anytime. Your Basic cameras will be added automatically after subscribing.</div>
+    <div style="height:12px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab"><div class="nav-icon">&#x1F3E0;</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x2630;</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#10022;</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x1F512;</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">&#x1F6D2;</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══ BASIC-ONLY: Payment (same flow, simpler — no camera migration needed) ═══ -->
+<div class="screen" id="s-basic-payment">
+  <div class="status" style="background:#fff;">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
+  <div style="background:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
+    <span style="font-size:22px;color:var(--orange);cursor:pointer;" onclick="showScreen('s-basic-plan-select')">&#8592;</span>
+    <span style="flex:1;text-align:center;font-size:17px;font-weight:800;color:#1a1a1a;">Payment</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div style="flex:1;overflow-y:auto;background:#f5f5f5;padding:14px;">
+    <!-- Order summary -->
+    <div style="background:#fff;border-radius:14px;border:1px solid #e8e8e8;overflow:hidden;margin-bottom:12px;">
+      <div style="padding:14px 16px;border-bottom:1px solid #f5f5f5;display:flex;justify-content:space-between;align-items:flex-start;">
+        <div><div style="font-size:15px;font-weight:700;color:#1a1a1a;">Family Pro</div><div style="font-size:11px;color:#888;margin-top:2px;">All cameras included &#xB7; Billed monthly</div></div>
+        <div style="font-size:16px;font-weight:800;color:var(--orange);">$9.99/mo</div>
+      </div>
+      <div style="padding:10px 16px;background:#f0fff4;">
+        <div style="font-size:12px;color:#27ae60;font-weight:600;">&#x2713; Living Room Cam and Front Door Cam automatically included</div>
+        <div style="font-size:10px;color:#aaa;margin-top:3px;">No migration needed — Basic cameras join automatically</div>
+      </div>
+      <div style="padding:10px 16px;background:#f9f9f9;display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:#1a1a1a;">
+        <span>Due today</span><span style="color:var(--orange);">$9.99</span>
+      </div>
+    </div>
+    <!-- Payment method -->
+    <div style="background:#fff;border-radius:12px;border:1px solid #e8e8e8;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;cursor:pointer;">
+      <div style="width:40px;height:26px;background:linear-gradient(135deg,#1a1f36,#2d3470);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;font-family:serif;">VISA</div>
+      <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:#1a1a1a;">Visa &#xB7;&#xB7;&#xB7;&#xB7; 4242</div><div style="font-size:11px;color:#888;">Expires 09/27</div></div>
+      <span style="color:#aaa;font-size:18px;">&#8250;</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <div style="flex:1;background:#000;border-radius:10px;padding:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;"><span style="color:#fff;font-size:13px;font-weight:600;">&#63743; Apple Pay</span></div>
+      <div style="flex:1;background:#fff;border-radius:10px;border:1px solid #eee;padding:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;"><span style="font-size:13px;font-weight:600;color:#555;">G Google Pay</span></div>
+    </div>
+    <div style="font-size:10px;color:#aaa;text-align:center;margin-bottom:14px;line-height:1.5;">By subscribing you agree to our Terms of Service. Renews at $9.99/mo until cancelled.</div>
+    <button style="width:100%;background:var(--orange);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;" onclick="showScreen('s-basic-complete')">Pay $9.99 &#8212; Subscribe Now</button>
+  </div>
+</div>
+
+<!-- ═══ BASIC-ONLY: Complete ═══ -->
+<div class="screen" id="s-basic-complete">
+  <div class="status" style="background:#fff;">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
+  <div style="background:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
+    <span style="width:22px;"></span>
+    <span style="flex:1;text-align:center;font-size:17px;font-weight:800;color:#1a1a1a;">All Set!</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div style="flex:1;overflow-y:auto;background:#f5f5f5;padding:20px 14px;">
+    <!-- Success -->
+    <div style="background:linear-gradient(135deg,#27ae60,#2ecc71);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px;">
+      <div style="font-size:44px;margin-bottom:10px;">&#x1F389;</div>
+      <div style="color:#fff;font-size:20px;font-weight:800;margin-bottom:6px;">You're on Family Pro!</div>
+      <div style="color:rgba(255,255,255,0.85);font-size:13px;line-height:1.5;">Both cameras are now upgraded. AI features are active &#x2014; start exploring your highlights.</div>
+    </div>
+    <!-- What's unlocked -->
+    <div style="background:#fff;border-radius:14px;border:1.5px solid #27ae60;overflow:hidden;margin-bottom:12px;">
+      <div style="padding:12px 14px;border-bottom:1px solid #f0f0f0;font-size:13px;font-weight:700;color:#27ae60;">&#x2728; Features now unlocked</div>
+      <div style="padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f5f5f5;"><span style="color:#27ae60;font-size:14px;">&#x2713;</span><span style="font-size:13px;color:#1a1a1a;">Weekly Highlight videos</span></div>
+      <div style="padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f5f5f5;"><span style="color:#27ae60;font-size:14px;">&#x2713;</span><span style="font-size:13px;color:#1a1a1a;">Sensi AI chatbot</span></div>
+      <div style="padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f5f5f5;"><span style="color:#27ae60;font-size:14px;">&#x2713;</span><span style="font-size:13px;color:#1a1a1a;">Pet AI recognition</span></div>
+      <div style="padding:10px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f5f5f5;"><span style="color:#27ae60;font-size:14px;">&#x2713;</span><span style="font-size:13px;color:#1a1a1a;">60-day cloud storage</span></div>
+      <div style="padding:10px 14px;display:flex;align-items:center;gap:8px;"><span style="color:#27ae60;font-size:14px;">&#x2713;</span><span style="font-size:13px;color:#1a1a1a;">Family member recognition</span></div>
+    </div>
+    <button style="width:100%;background:#fff;color:var(--orange);border:1.5px solid var(--orange);border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;" onclick="showScreen('s-basic-explore')">Go to Explore</button>
+    <div style="height:12px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab"><div class="nav-icon">&#x1F3E0;</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x2630;</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#10022;</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x1F512;</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">&#x1F6D2;</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
 <!-- Guide Modal: 3-step upgrade overview -->
 <div class="modal-overlay" id="modal-upgrade-overview">
   <div class="modal-sheet">
@@ -978,6 +1149,9 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
 
 <!-- Dev nav -->
 <div class="dev-nav">
+  <button class="dev-btn" style="background:#27ae60;" onclick="showScreen('s-basic-explore')">Basic: Explore</button>
+  <button class="dev-btn" style="background:#27ae60;" onclick="showScreen('s-basic-plan-select')">Basic: Plans</button>
+  <button class="dev-btn" style="background:#27ae60;" onclick="showScreen('s-basic-complete')">Basic: Done</button>
   <button class="dev-btn o" onclick="showScreen('s-explore-case3')">Explore</button>
   <button class="dev-btn" onclick="showScreen('s-explore-case4')">Ex:Has Family</button>
   <button class="dev-btn o" onclick="showScreen('s-device-list')">Device List</button>
