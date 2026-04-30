@@ -636,6 +636,123 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
 
 <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
 
+
+<!-- ═══ PAYMENT ERROR ═══ -->
+<div class="screen" id="s-payment-error">
+  <div class="status">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
+  <div class="page-header">
+    <span class="back" onclick="showScreen('s-payment')">&#8592;</span>
+    <span class="title">Payment Failed</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;background:#fff;">
+    <div style="font-size:44px;margin-bottom:16px;">&#x274C;</div>
+    <div style="font-size:17px;font-weight:800;color:#1a1a1a;margin-bottom:6px;text-align:center;">Payment Unsuccessful</div>
+    <div style="font-size:13px;color:#888;text-align:center;line-height:1.5;margin-bottom:24px;">Your card was declined. Please check your card details or try a different payment method.</div>
+    <button style="width:100%;background:var(--orange);color:#fff;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;" onclick="showScreen('s-payment')">Try Again</button>
+    <button style="width:100%;background:#f5f5f5;color:#555;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;" onclick="showScreen('s-memberships')">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══ MEMBERSHIPS — Step C reminder (re-entry fallback) ═══ -->
+<div class="screen" id="s-memberships-step-c">
+  <div class="status">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
+  <div class="page-header">
+    <span class="back" onclick="">&#8592;</span>
+    <span class="title">Memberships</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div class="scroll">
+    <div class="sticky-reminder" style="margin-top:12px;" onclick="showScreen('s-step-c')">
+      <div class="reminder-icon">&#x1F5D1;&#xFE0F;</div>
+      <div class="reminder-text">
+        <div class="reminder-title">Step 3 of 3: Cancel empty subscriptions</div>
+        <div class="reminder-sub">Get prorated refund on unused Single Pro plans</div>
+      </div>
+      <span class="reminder-arrow">&#8250;</span>
+    </div>
+    <div class="plan-section" style="margin-top:10px;">
+      <div class="plan-label">Family Pro &#x2705; Active</div>
+      <div class="plan-card" style="border-color:#27ae60;">
+        <div class="plan-card-header">
+          <div class="plan-badge family">&#x1F46A;</div>
+          <div><div class="plan-name" style="color:#27ae60;">Family Pro</div><div class="plan-status">2 / 10 cameras</div></div>
+          <div class="plan-price" style="color:#27ae60;">$9.99/mo</div>
+        </div>
+        <div class="device-row"><div class="device-icon">&#128247;</div><div class="device-name">Living Room Cam</div><span class="device-badge active">Active</span></div>
+        <div class="device-row"><div class="device-icon">&#128682;</div><div class="device-name">Front Door Cam</div><span class="device-badge active">Active</span></div>
+      </div>
+    </div>
+    <div class="plan-section">
+      <div class="plan-label" style="color:var(--red);">&#x26A0;&#xFE0F; Empty &#8212; Cancel to get refund</div>
+      <div class="plan-card" style="border-color:#ffeaea;background:#fff8f8;">
+        <div class="plan-card-header">
+          <div class="plan-badge single" style="background:#ffeaea;">&#10024;</div>
+          <div><div class="plan-name" style="color:var(--red);">Single Pro (empty)</div><div class="plan-status">No cameras &#8212; cancel to get refund</div></div>
+          <div class="plan-price" style="color:var(--red);">$4.99/mo</div>
+        </div>
+        <div style="padding:10px 16px;background:#fff8f8;font-size:12px;color:var(--red);">&#x1F4B0; Estimated refund: ~$3.20 prorated</div>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab"><div class="nav-icon">&#x1F3E0;</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x2630;</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#10022;</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x1F512;</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">&#x1F6D2;</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
+<!-- ═══ COMPLETE ═══ -->
+<div class="screen" id="s-complete">
+  <div class="status">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
+  <div class="page-header">
+    <span class="back" onclick="">&#8592;</span>
+    <span class="title">Upgrade Complete</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div class="scroll">
+    <div style="margin:12px 12px 0;background:linear-gradient(135deg,#27ae60,#2ecc71);border-radius:14px;padding:16px;display:flex;align-items:center;gap:12px;">
+      <span style="font-size:32px;">&#x1F389;</span>
+      <div><div style="color:#fff;font-size:16px;font-weight:800;">Upgrade Complete!</div><div style="color:rgba(255,255,255,0.85);font-size:12px;margin-top:2px;">$5.97 refund on its way &#xB7; 3&#8211;5 business days</div></div>
+    </div>
+    <div style="padding:14px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Review your Family Pro plan</div>
+    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1.5px solid #27ae60;overflow:hidden;">
+      <div style="padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f0fff4;">
+        <div style="width:42px;height:42px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">&#x1F46A;</div>
+        <div style="flex:1;"><div style="font-size:15px;font-weight:800;color:#27ae60;">Family Pro</div><div style="font-size:11px;color:#888;margin-top:1px;">3 of 10 camera slots &#xB7; $9.99/mo</div></div>
+        <div style="background:#e8f5e9;color:#27ae60;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;">Active &#x2713;</div>
+      </div>
+      <div style="padding:11px 16px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;"><span style="color:#27ae60;font-size:16px;">&#x2713;</span><div style="flex:1;"><div style="font-size:14px;font-weight:600;color:#1a1a1a;">Living Room Cam</div><div style="font-size:11px;color:#888;">Moved from Single Pro</div></div><span style="background:#e8f5e9;color:#27ae60;font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px;">In Family Pro &#x2713;</span></div>
+      <div style="padding:11px 16px;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:10px;"><span style="color:#27ae60;font-size:16px;">&#x2713;</span><div style="flex:1;"><div style="font-size:14px;font-weight:600;color:#1a1a1a;">Front Door Cam</div><div style="font-size:11px;color:#888;">Moved from Single Pro</div></div><span style="background:#e8f5e9;color:#27ae60;font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px;">In Family Pro &#x2713;</span></div>
+      <div style="padding:11px 16px;display:flex;align-items:center;gap:10px;"><span style="color:#27ae60;font-size:16px;">&#x2713;</span><div style="flex:1;"><div style="font-size:14px;font-weight:600;color:#1a1a1a;">Bedroom Cam</div><div style="font-size:11px;color:#888;">Added from Basic &#xB7; AI now unlocked</div></div><span style="background:#e8f5e9;color:#27ae60;font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px;">In Family Pro &#x2713;</span></div>
+    </div>
+    <div style="padding:12px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Cancelled plans</div>
+    <div style="margin:0 12px 8px;background:#f9f9f9;border-radius:14px;border:1px solid #eee;overflow:hidden;">
+      <div style="padding:11px 16px;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:13px;font-weight:600;color:#888;text-decoration:line-through;">Single Pro &#8212; Living Room</div><div style="font-size:11px;color:#aaa;">Cancelled May 8</div></div><span style="color:#27ae60;font-size:13px;font-weight:700;">+$3.71</span></div>
+      <div style="padding:11px 16px;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:13px;font-weight:600;color:#888;text-decoration:line-through;">Single Pro &#8212; Front Door</div><div style="font-size:11px;color:#aaa;">Cancelled May 8</div></div><span style="color:#27ae60;font-size:13px;font-weight:700;">+$2.26</span></div>
+    </div>
+    <div style="margin:0 12px;background:#e8f5e9;border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:13px;font-weight:700;color:#27ae60;">Total refund incoming</div>
+      <div style="font-size:18px;font-weight:900;color:#27ae60;">$5.97</div>
+    </div>
+    <div style="margin:8px 12px 0;background:#fff;border-radius:12px;border:1px solid var(--divider);padding:12px 14px;display:flex;align-items:center;gap:10px;">
+      <span style="font-size:20px;">&#x26A0;&#xFE0F;</span>
+      <div style="flex:1;font-size:12px;color:#555;line-height:1.4;">Camera missing from Family Pro? <strong style="color:var(--orange);">Contact support &#8594;</strong></div>
+    </div>
+    <div style="height:20px;"></div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-tab"><div class="nav-icon">&#x1F3E0;</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x2630;</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#10022;</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x1F512;</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">&#x1F6D2;</div><div class="nav-label">Explore</div></div>
+  </div>
+</div>
+
 <div class="screen" id="s-step-b">
   <div style="height:44px;background:#fff;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
     <span style="font-size:24px;color:var(--orange);cursor:pointer;" onclick="showScreen('s-memberships-post')">&#8592;</span>
