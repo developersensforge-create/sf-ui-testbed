@@ -523,97 +523,127 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
 
 <!-- ═══ PAYMENT SCREEN (missing step between guide modal and post-purchase) ═══ -->
 <div class="screen" id="s-payment">
-  <div class="status">9:41 <span>📶 🔋</span></div>
+  <div class="status">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
   <div class="page-header">
-    <span class="back" onclick="showScreen('s-memberships')">←</span>
+    <span class="back" onclick="showScreen('s-memberships')">&#8592;</span>
     <span class="title">Payment</span>
     <span style="width:22px;"></span>
   </div>
   <div class="scroll">
-
-    <!-- Order summary -->
     <div style="padding:14px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Order Summary</div>
     <div style="margin:0 12px 10px;background:#fff;border-radius:14px;border:1px solid var(--divider);overflow:hidden;">
       <div style="padding:14px 16px;border-bottom:1px solid #f5f5f5;">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-          <div style="flex:1;">
-            <div style="font-size:15px;font-weight:700;color:var(--text);">Family Pro</div>
-            <div style="font-size:11px;color:#888;margin-top:2px;">Up to 10 cameras · Billed monthly</div>
-          </div>
+          <div><div style="font-size:15px;font-weight:700;color:var(--text);">Family Pro</div><div style="font-size:11px;color:#888;margin-top:2px;">Up to 10 cameras &middot; Billed monthly</div></div>
           <div style="font-size:16px;font-weight:800;color:var(--orange);">$9.99/mo</div>
         </div>
       </div>
-      <!-- Cameras to include -->
       <div style="padding:10px 16px;border-bottom:1px solid #f5f5f5;">
         <div style="font-size:11px;font-weight:600;color:#888;margin-bottom:8px;">Cameras to include:</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:16px;">&#128247;</span><span style="font-size:13px;color:#1a1a1a;">Living Room Cam</span><span style="margin-left:auto;font-size:10px;color:#888;">Single Pro &#8594; Family Pro</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:16px;">&#128682;</span><span style="font-size:13px;color:#1a1a1a;">Front Door Cam</span><span style="margin-left:auto;font-size:10px;color:#888;">Single Pro &#8594; Family Pro</span></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="font-size:15px;">&#128247;</span><span style="font-size:13px;color:var(--text);">Living Room Cam</span><span style="margin-left:auto;font-size:10px;color:#888;">Single Pro &#8594; Family Pro</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:15px;">&#128682;</span><span style="font-size:13px;color:var(--text);">Front Door Cam</span><span style="margin-left:auto;font-size:10px;color:#888;">Single Pro &#8594; Family Pro</span></div>
       </div>
-      <!-- Selected cameras -->
-      <div style="padding:11px 16px;display:flex;justify-content:space-between;align-items:center;">
-        <div><div style="font-size:13px;font-weight:600;color:#888;text-decoration:line-through;">Single Pro — Front Door slot</div><div style="font-size:11px;color:#aaa;">Cancelled May 8</div></div>
-        <span style="color:var(--green);font-size:13px;font-weight:700;">+$2.26</span>
+      <div style="padding:10px 16px;background:#f9f9f9;">
+        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:var(--text);"><span>Due today</span><span style="color:var(--orange);">$9.99</span></div>
+        <div style="font-size:10px;color:#aaa;margin-top:3px;">After cancelling your old Single Pro plans, you&#8217;ll receive a prorated refund for unused days.</div>
       </div>
     </div>
-    <div style="margin:0 12px;background:#e8f5e9;border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-size:13px;font-weight:700;color:#27ae60;">Total refund incoming</div>
-      <div style="font-size:18px;font-weight:900;color:#27ae60;">$5.97</div>
+    <div style="padding:14px 14px 6px;font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;">Payment Method</div>
+    <div style="margin:0 12px 8px;background:#fff;border-radius:14px;border:1px solid var(--divider);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
+      <div style="width:42px;height:28px;background:linear-gradient(135deg,#1a1f36,#2d3470);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;font-family:serif;">VISA</div>
+      <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--text);">Visa &bull;&bull;&bull;&bull; 4242</div><div style="font-size:11px;color:#888;">Expires 09/27</div></div>
+      <span style="color:#aaa;font-size:16px;">&#8250;</span>
     </div>
+    <div style="margin:0 12px 8px;background:#fff;border-radius:10px;border:1px dashed #ddd;padding:12px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;">
+      <span style="font-size:20px;color:#aaa;">&#65291;</span>
+      <span style="font-size:13px;color:#888;">Add payment method</span>
+    </div>
+    <div style="margin:0 12px 10px;display:flex;gap:8px;">
+      <div style="flex:1;background:#000;border-radius:10px;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;">
+        <span style="color:#fff;font-size:13px;font-weight:600;">&#63743; Apple Pay</span>
+      </div>
+      <div style="flex:1;background:#fff;border-radius:10px;border:1px solid #eee;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;">
+        <span style="font-size:13px;font-weight:600;color:#555;">G Google Pay</span>
+      </div>
+    </div>
+    <div style="margin:0 12px;font-size:10px;color:#aaa;line-height:1.5;text-align:center;">By subscribing, you agree to our <span style="color:var(--orange);">Terms of Service</span> and <span style="color:var(--orange);">Privacy Policy</span>. Renews at $9.99/mo until cancelled.</div>
+    <div style="margin:12px 12px 0;">
+      <button style="width:100%;background:var(--orange);color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;" onclick="showPaymentProcessing()">Pay $9.99 &#8212; Subscribe to Family Pro</button>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
 
-    <!-- Problem? Contact support -->
-    <div style="margin:10px 12px 0;background:#fff;border-radius:12px;border:1px solid var(--divider);padding:12px 14px;display:flex;align-items:center;gap:10px;">
-      <span style="font-size:20px;">⚠️</span>
-      <div style="flex:1;font-size:12px;color:#555;line-height:1.4;">Camera missing from Family Pro? <strong style="color:var(--orange);">Contact support →</strong></div>
+<!-- ═══ PAYMENT PROCESSING ═══ -->
+<div class="screen" id="s-payment-processing">
+  <div class="status">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;background:#fff;">
+    <div style="width:56px;height:56px;border:4px solid #f0f0f0;border-top-color:var(--orange);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px;"></div>
+    <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;">Processing payment...</div>
+    <div style="font-size:13px;color:#888;text-align:center;">Please don&#8217;t close this screen</div>
+  </div>
+</div>
+
+<!-- ═══ MEMBERSHIPS POST-PURCHASE ═══ -->
+<div class="screen" id="s-memberships-post">
+  <div class="status">9:41 <span>&#x1F4F6; &#x1F50B;</span></div>
+  <div class="page-header">
+    <span class="back" onclick="">&#8592;</span>
+    <span class="title">Memberships</span>
+    <span style="width:22px;"></span>
+  </div>
+  <div class="scroll">
+    <div class="sticky-reminder" style="margin-top:12px;" onclick="showScreen('s-step-b')">
+      <div class="reminder-icon">&#x23F3;</div>
+      <div class="reminder-text">
+        <div class="reminder-title">Step 2 of 3: Move cameras to Family Pro</div>
+        <div class="reminder-sub">Tap to continue your upgrade</div>
+      </div>
+      <span class="reminder-arrow">&#8250;</span>
     </div>
-    <div style="height:20px;"></div>
+    <div class="plan-section" style="margin-top:10px;">
+      <div class="plan-label">New &#8212; Family Pro &#x2705;</div>
+      <div class="plan-card" style="border-color:#27ae60;">
+        <div class="plan-card-header">
+          <div class="plan-badge family">&#x1F46A;</div>
+          <div><div class="plan-name" style="color:#27ae60;">Family Pro</div><div class="plan-status">0 / 10 cameras added</div></div>
+          <div class="plan-price" style="color:#27ae60;">$9.99/mo</div>
+        </div>
+        <div style="padding:10px 16px;background:#f9fff9;font-size:12px;color:#555;">Move your cameras here &#8212; tap the reminder above to continue</div>
+      </div>
+    </div>
+    <div class="plan-section">
+      <div class="plan-label">Old &#8212; Single Pro (to be cancelled)</div>
+      <div class="plan-card" style="opacity:0.7;">
+        <div class="plan-card-header">
+          <div class="plan-badge single">&#10024;</div>
+          <div><div class="plan-name">Single Pro</div><div class="plan-status">Will cancel after migration</div></div>
+          <div class="plan-price">$4.99/mo</div>
+        </div>
+        <div class="device-row"><div class="device-icon">&#128247;</div><div class="device-name">Living Room Cam</div><span class="device-badge active">Active</span></div>
+      </div>
+      <div class="plan-card" style="opacity:0.7;">
+        <div class="plan-card-header">
+          <div class="plan-badge single">&#10024;</div>
+          <div><div class="plan-name">Single Pro</div><div class="plan-status">Will cancel after migration</div></div>
+          <div class="plan-price">$4.99/mo</div>
+        </div>
+        <div class="device-row"><div class="device-icon">&#128682;</div><div class="device-name">Front Door Cam</div><span class="device-badge active">Active</span></div>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
   </div>
   <div class="bottom-nav">
-    <div class="nav-tab"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
-    <div class="nav-tab"><div class="nav-icon">☰</div><div class="nav-label">Events</div></div>
-    <div class="nav-tab"><div class="nav-icon">✦</div><div class="nav-label">Highlights</div></div>
-    <div class="nav-tab"><div class="nav-icon">🔒</div><div class="nav-label">Security</div></div>
-    <div class="nav-tab active"><div class="nav-icon">🏪</div><div class="nav-label">Explore</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x1F3E0;</div><div class="nav-label">Home</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x2630;</div><div class="nav-label">Events</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#10022;</div><div class="nav-label">Highlights</div></div>
+    <div class="nav-tab"><div class="nav-icon">&#x1F512;</div><div class="nav-label">Security</div></div>
+    <div class="nav-tab active"><div class="nav-icon">&#x1F6D2;</div><div class="nav-label">Explore</div></div>
   </div>
 </div>
 
-<!-- ═══════════ MODALS ═══════════ -->
+<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
 
-<!-- Modal: Upgrade Overview (3-step guide) -->
-<div class="modal-overlay" id="modal-upgrade-overview">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-icon">💡</div>
-    <div class="modal-title">Upgrade to Family Pro</div>
-    <div class="modal-sub">Here's what will happen step by step after you purchase:</div>
-    <div class="step-list">
-      <div class="step-item">
-        <div class="step-num">A</div>
-        <div class="step-content">
-          <div class="step-title">Purchase Family Pro</div>
-          <div class="step-desc">$9.99/mo — covers up to 10 cameras, saving you $4.98/mo vs 2 × Single Pro</div>
-        </div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">B</div>
-        <div class="step-content">
-          <div class="step-title">Move cameras to Family Pro</div>
-          <div class="step-desc">After purchase, we'll guide you to transfer your cameras from Single Pro to the new Family Pro plan</div>
-        </div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">C</div>
-        <div class="step-content">
-          <div class="step-title">Cancel empty subscriptions &amp; get refund</div>
-          <div class="step-desc">Once cameras are moved, we'll help you cancel the now-empty Single Pro plans and receive a prorated refund</div>
-        </div>
-      </div>
-    </div>
-    <button class="modal-btn" onclick="startUpgrade()">Start Upgrade — Buy Family Pro</button>
-    <button class="modal-btn gray" onclick="closeModal('modal-upgrade-overview')">Maybe Later</button>
-  </div>
-</div>
-
-<!-- Step B: Full Screen — Camera Assignment -->
 <div class="screen" id="s-step-b">
   <div style="height:44px;background:#fff;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
     <span style="font-size:24px;color:var(--orange);cursor:pointer;" onclick="showScreen('s-memberships-post')">&#8592;</span>
