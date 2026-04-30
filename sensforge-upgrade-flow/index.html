@@ -508,7 +508,7 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
     <div style="margin:10px 12px 0;background:#fff;border-radius:14px;border:1.5px solid var(--divider);padding:14px 16px;">
       <div style="font-size:13px;color:#555;margin-bottom:4px;">After moving: Single Pro subscriptions will be <strong>empty → cancel to get refund</strong></div>
       <div style="font-size:11px;color:#aaa;margin-bottom:12px;">Estimated savings from cancelling: ~$6.40 prorated refund</div>
-      <button class="modal-btn" onclick="showModal('modal-step-b')">Move Cameras to Family Pro</button>
+      <button class="modal-btn" onclick="showScreen('s-step-b')">Move Cameras to Family Pro</button>
     </div>
     <div style="height:16px;"></div>
   </div>
@@ -631,7 +631,7 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
     <span style="width:22px;"></span>
   </div>
   <div class="scroll">
-    <div class="sticky-reminder" style="margin-top:12px;" onclick="showModal('modal-step-b')">
+    <div class="sticky-reminder" style="margin-top:12px;" onclick="showScreen('s-step-b')">
       <div class="reminder-icon">⏳</div>
       <div class="reminder-text">
         <div class="reminder-title">Step 2 of 3: Move cameras to Family Pro</div>
@@ -875,9 +875,14 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
   </div>
 </div>
 
-<!-- Modal: Step B — Camera Assignment Editor -->
-<div class="modal-overlay" id="modal-step-b">
-  <div class="modal-sheet" style="max-height:90vh;overflow-y:auto;">
+<!-- Step B: Full Screen — Camera Assignment -->
+<div class="screen" id="s-step-b">
+  <div style="height:44px;background:#fff;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
+    <span style="font-size:24px;color:var(--orange);cursor:pointer;" onclick="showScreen('s-memberships-post')">&#8592;</span>
+    <span style="flex:1;text-align:center;font-size:17px;font-weight:700;color:#1a1a1a;">Assign Cameras</span>
+    <span style="width:24px;"></span>
+  </div>
+  <div style="flex:1;overflow-y:auto;background:#fff;padding:16px;">
     <div class="modal-handle"></div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
       <div class="step-num done" style="font-size:11px;width:24px;height:24px;">✓</div>
@@ -1025,7 +1030,7 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
       <div class="step-item"><div class="step-num">B</div><div class="step-content"><div class="step-title">Move cameras to Family Pro</div><div class="step-desc">2 cameras waiting to be moved</div></div></div>
       <div class="step-item"><div class="step-num pending">C</div><div class="step-content"><div class="step-title">Cancel empty subscriptions</div></div></div>
     </div>
-    <button class="modal-btn" onclick="closeModal('modal-step-tracker'); showModal('modal-step-b');">Continue Step B</button>
+    <button class="modal-btn" onclick="closeModal('modal-step-tracker'); showScreen('s-step-b');">Continue Step B</button>
     <button class="modal-btn gray" onclick="closeModal('modal-step-tracker')">Dismiss for Now</button>
   </div>
 </div>
@@ -1058,7 +1063,7 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
   <button class="dev-btn" onclick="showScreen('s-memberships-step-c')">③Step C</button>
   <button class="dev-btn" onclick="showScreen('s-complete')">④Complete</button>
   <button class="dev-btn" onclick="showModal('modal-upgrade-overview')">Modal: Guide</button>
-  <button class="dev-btn" onclick="showModal('modal-step-b')">Modal: Step B</button>
+  <button class="dev-btn" onclick="showScreen('s-step-b')">Modal: Step B</button>
   <button class="dev-btn" onclick="showModal('modal-step-c')">Modal: Step C</button>
 </div>
 
@@ -1152,12 +1157,9 @@ function dismissStepModal(id) {
   document.getElementById('sticky-reminder').style.display = 'none';
 }
 function completeStepB() {
-  closeModal('modal-step-b');
-  showScreen('s-memberships-step-c');
-  setTimeout(() => showModal('modal-step-c'), 600);
+  showScreen('s-step-c');
 }
 function completeStepC() {
-  closeModal('modal-step-c');
   showScreen('s-complete');
 }
 
