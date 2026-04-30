@@ -103,6 +103,17 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
 .dev-nav { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.8); padding:5px; display:flex; gap:3px; z-index:500; overflow-x:auto; }
 .dev-btn { flex-shrink:0; background:#333; color:#fff; border:none; padding:5px 9px; border-radius:6px; font-size:9px; cursor:pointer; }
 .dev-btn.orange { background:var(--orange); }
+
+  /* Step progress bar */
+  .step-progress { display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 16px 16px; background:#fff; }
+  .step-circle-done { width:32px; height:32px; border-radius:50%; background:#27ae60; color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; flex-shrink:0; }
+  .step-circle-active { width:32px; height:32px; border-radius:50%; background:var(--orange); color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; flex-shrink:0; }
+  .step-circle-pending { width:32px; height:32px; border-radius:50%; background:#e0e0e0; color:#aaa; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; flex-shrink:0; }
+  .step-label-done { font-size:10px; color:#27ae60; font-weight:600; text-align:center; max-width:60px; line-height:1.2; }
+  .step-label-active { font-size:10px; color:var(--orange); font-weight:700; text-align:center; max-width:60px; line-height:1.2; }
+  .step-label-pending { font-size:10px; color:#aaa; font-weight:600; text-align:center; max-width:60px; line-height:1.2; }
+  .step-connector { height:2px; flex:1; max-width:28px; background:#e0e0e0; border-radius:2px; }
+  .step-connector-done { background:#27ae60; }
 </style>
 </head>
 <body>
@@ -754,10 +765,23 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
 </div>
 
 <div class="screen" id="s-step-b">
-  <div style="height:44px;background:#fff;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
+  <div style="background:#fff;display:flex;align-items:center;padding:10px 16px 10px;border-bottom:none;flex-shrink:0;">
     <span style="font-size:24px;color:var(--orange);cursor:pointer;" onclick="showScreen('s-memberships-post')">&#8592;</span>
-    <span style="flex:1;text-align:center;font-size:17px;font-weight:700;color:#1a1a1a;">Assign Cameras</span>
+    <div style="flex:1;text-align:center;"><div style="font-size:17px;font-weight:800;color:#1a1a1a;">Assign Cameras</div></div>
     <span style="width:24px;"></span>
+  </div>
+  <div style="background:#fff;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
+    <div style="padding:8px 20px 4px;text-align:center;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;">STEP 2 OF 3</div>
+    <div style="height:3px;background:#e0e0e0;margin:0 20px;border-radius:2px;overflow:hidden;margin-bottom:12px;">
+      <div style="height:100%;width:50%;background:var(--orange);border-radius:2px;"></div>
+    </div>
+    <div class="step-progress">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-done">&#x2713;</div><div class="step-label-done">Step 1<br>Purchased</div></div>
+      <div class="step-connector step-connector-done"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-active">2</div><div class="step-label-active">Step 2<br>Assign</div></div>
+      <div class="step-connector"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-pending">3</div><div class="step-label-pending">Step 3<br>Refund</div></div>
+    </div>
   </div>
   <div style="flex:1;overflow-y:auto;background:#fff;padding:16px;">
     <div class="modal-handle"></div>
@@ -852,19 +876,26 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
 
 <!-- Modal: Step C — Delete empty subs with itemized breakdown -->
 <div class="screen" id="s-step-c">
-  <div style="height:44px;background:#fff;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
+  <div style="background:#fff;display:flex;align-items:center;padding:10px 16px 10px;border-bottom:none;flex-shrink:0;">
     <span style="font-size:24px;color:var(--orange);cursor:pointer;" onclick="showScreen('s-step-b')">&#8592;</span>
-    <span style="flex:1;text-align:center;font-size:17px;font-weight:700;color:#1a1a1a;">Cancel Empty Plans</span>
+    <div style="flex:1;text-align:center;"><div style="font-size:17px;font-weight:800;color:#1a1a1a;">Cancel Empty Plans</div></div>
     <span style="width:24px;"></span>
   </div>
-  <div style="flex:1;overflow-y:auto;background:#fff;padding:16px;">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 14px;background:#f5f5f5;border-radius:10px;">
-      <div style="width:22px;height:22px;border-radius:50%;background:#27ae60;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800;flex-shrink:0;">&#10003;</div>
-      <span style="font-size:13px;color:#555;">Family Pro purchased</span>
-      <div style="width:22px;height:22px;border-radius:50%;background:#27ae60;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800;flex-shrink:0;margin-left:6px;">&#10003;</div>
-      <span style="font-size:13px;color:#555;">Cameras moved</span>
-      <div style="width:22px;height:22px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:800;flex-shrink:0;margin-left:6px;">3</div>
+  <div style="background:#fff;border-bottom:1px solid #f0f0f0;flex-shrink:0;">
+    <div style="padding:8px 20px 4px;text-align:center;font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;">STEP 3 OF 3</div>
+    <div style="height:3px;background:#e0e0e0;margin:0 20px;border-radius:2px;overflow:hidden;margin-bottom:12px;">
+      <div style="height:100%;width:100%;background:var(--orange);border-radius:2px;"></div>
     </div>
+    <div class="step-progress">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-done">&#x2713;</div><div class="step-label-done">Step 1<br>Purchased</div></div>
+      <div class="step-connector step-connector-done"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-done">&#x2713;</div><div class="step-label-done">Step 2<br>Assigned</div></div>
+      <div class="step-connector step-connector-done"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><div class="step-circle-active">3</div><div class="step-label-active">Step 3<br>Refund</div></div>
+    </div>
+  </div>
+  <div style="flex:1;overflow-y:auto;background:#fff;padding:16px;">
+
 
     <div style="font-size:16px;font-weight:800;color:#1a1a1a;margin-bottom:6px;">Cancel Empty Subscriptions</div>
     <div style="font-size:13px;color:#666;margin-bottom:16px;line-height:1.5;">Your cameras have been moved. These Single Pro plans are now empty. Cancel them to receive a prorated refund.</div>
@@ -917,15 +948,15 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
     <div style="font-size:13px;color:#666;text-align:center;margin-bottom:16px;line-height:1.5;">Here&#8217;s what will happen step by step after you purchase:</div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
       <div style="display:flex;align-items:flex-start;gap:12px;">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">A</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">1</div>
         <div><div style="font-size:14px;font-weight:700;color:#1a1a1a;">Purchase Family Pro</div><div style="font-size:12px;color:#888;margin-top:2px;">$9.99/mo &#8212; covers up to 10 cameras</div></div>
       </div>
       <div style="display:flex;align-items:flex-start;gap:12px;">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">B</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">2</div>
         <div><div style="font-size:14px;font-weight:700;color:#1a1a1a;">Move cameras to Family Pro</div><div style="font-size:12px;color:#888;margin-top:2px;">After purchase, we&#8217;ll guide you to transfer cameras from Single Pro</div></div>
       </div>
       <div style="display:flex;align-items:flex-start;gap:12px;">
-        <div style="width:28px;height:28px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">C</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">3</div>
         <div><div style="font-size:14px;font-weight:700;color:#1a1a1a;">Cancel empty plans &amp; get refund</div><div style="font-size:12px;color:#888;margin-top:2px;">We&#8217;ll help you cancel Single Pro plans and receive a prorated refund</div></div>
       </div>
     </div>
