@@ -922,7 +922,7 @@ body { background:#e8ecf0; display:flex; justify-content:center; align-items:fle
     </div>
 
     <div style="font-size:11px;color:#aaa;margin-bottom:14px;line-height:1.5;">Refund will be credited to your original payment method within 3&#8211;5 business days.</div>
-    <button style="width:100%;background:#27ae60;color:#fff;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:8px;" onclick="completeStepC()">Confirm &#8212; Cancel 2 Plans &amp; Get $5.97 Refund</button>
+    <button id="step-c-confirm-btn" style="width:100%;background:#27ae60;color:#fff;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:8px;" onclick="completeStepC()">Confirm &#8212; Cancel Plans &amp; Get Refund</button>
     <button style="width:100%;background:#fff;color:#555;border:1px solid #ddd;border-radius:12px;padding:13px;font-size:14px;font-weight:600;cursor:pointer;" onclick="dismissStepC()">Cancel &#8212; I&#8217;ll handle this manually</button>
   </div>
 </div>
@@ -1095,6 +1095,40 @@ function dismissStepModal(id) {
   document.getElementById('sticky-reminder').style.display = 'none';
 }
 function completeStepB() {
+  // Build refund list based on what was moved to Family Pro
+  var items = [];
+  var refundData = {
+    cam1: { name: 'Living Room Cam', plan: 'Single Pro', paid: 'May 1 → 31', moved: 'May 8', refund: 3.71, days: 23 },
+    cam2: { name: 'Front Door Cam', plan: 'Single Pro', paid: 'Apr 22 → May 22', moved: 'May 8', refund: 2.26, days: 14 }
+  };
+  ['cam1','cam2'].forEach(function(id) {
+    var sel = document.getElementById('assign-' + id);
+    if (sel && sel.value === 'family') {
+      items.push(refundData[id]);
+    }
+  });
+  // Build the refund list HTML
+  var container = document.getElementById('refund-list');
+  if (container && items.length > 0) {
+    var total = items.reduce(function(s,i){return s+i.refund;}, 0);
+    var rows = items.map(function(item, idx) {
+      var borderStyle = idx < items.length-1 ? 'border-bottom:1px solid #ffeaea;' : '';
+      return '<div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;' + borderStyle + '">' +
+        '<div><div style="font-size:13px;font-weight:700;color:#1a1a1a;">Single Pro &#8212; ' + item.name + ' slot</div>' +
+        '<div style="font-size:11px;color:#888;margin-top:1px;">Paid ' + item.paid + ' &middot; Camera moved out ' + item.moved + '</div></div>' +
+        '<div style="text-align:right;"><div style="font-size:14px;font-weight:800;color:#27ae60;">+$' + item.refund.toFixed(2) + '</div>' +
+        '<div style="font-size:10px;color:#aaa;">refund (' + item.days + ' days)</div></div></div>';
+    }).join('');
+    rows += '<div style="padding:12px 14px;background:#f0fff4;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid #d4edda;">' +
+      '<div style="font-size:14px;font-weight:800;color:#27ae60;">&#x1F4B0; Total refund estimate</div>' +
+      '<div style="font-size:18px;font-weight:900;color:#27ae60;">$' + total.toFixed(2) + '</div></div>';
+    container.innerHTML = rows;
+    // Update confirm button
+    var btn = document.getElementById('step-c-confirm-btn');
+    if (btn) btn.textContent = 'Confirm \u2014 Cancel ' + items.length + ' Plan' + (items.length > 1 ? 's' : '') + ' & Get $' + total.toFixed(2) + ' Refund';
+  } else if (container) {
+    container.innerHTML = '<div style="padding:14px;font-size:13px;color:#888;text-align:center;">No Single Pro plans to cancel based on your selections.</div>';
+  }
   showScreen('s-step-c');
 }
 function completeStepC() {
