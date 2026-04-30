@@ -928,10 +928,11 @@ function startUpgrade() {
 }
 function showPaymentProcessing() {
   showScreen('s-payment-processing');
-  // Simulate payment processing → success
+  // After payment: skip After Purchase page, go directly to Step B
+  // After Purchase page (s-memberships-post) is only shown as a fallback
+  // when user re-enters mid-flow
   setTimeout(() => {
-    showScreen('s-memberships-post');
-    setTimeout(() => showModal('modal-step-b'), 600);
+    showScreen('s-step-b');
   }, 2000);
 }
 function dismissStepModal(id) {
