@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coding Sandbox — SensForge</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f0f2f5;
+    --header: #0f1b2d;
+    --orange: #f96400;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --card-bg: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --radius: 12px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── LOGIN ─────────────────────────────────────────── */
+  #login-overlay {
+    position: fixed; inset: 0;
+    background: var(--header);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+  }
+  #login-overlay.hidden { display: none; }
+  .login-box {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 40px 36px;
+    width: 360px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+  }
+  .login-logo {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 28px;
+  }
+  .login-logo .dot {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--orange);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 16px;
+  }
+  .login-logo span { font-size: 20px; font-weight: 700; color: var(--header); }
+  .login-box h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .login-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+  .login-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; display: block; }
+  .login-quick { display: flex; gap: 8px; margin-bottom: 16px; }
+  .quick-btn {
+    flex: 1; padding: 8px 4px; border: 2px solid var(--border);
+    border-radius: 8px; background: #f8fafc; cursor: pointer;
+    font-size: 13px; font-weight: 500; color: var(--text);
+    transition: all 0.15s;
+  }
+  .quick-btn:hover { border-color: var(--orange); color: var(--orange); }
+  .quick-btn.active { border-color: var(--orange); background: #fff5ee; color: var(--orange); }
+  .login-input {
+    width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+    border-radius: 8px; font-size: 14px; outline: none;
+    transition: border-color 0.15s; margin-bottom: 14px;
+  }
+  .login-input:focus { border-color: var(--orange); }
+  .login-btn {
+    width: 100%; padding: 12px; background: var(--orange);
+    color: #fff; border: none; border-radius: 8px;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .login-btn:hover { opacity: 0.9; }
+  .login-error { color: #ef4444; font-size: 13px; margin-top: 8px; display: none; }
+
+  /* ─── HEADER ─────────────────────────────────────────── */
+  header {
+    background: var(--header);
+    color: #fff;
+    padding: 0 24px;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .header-logo {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 700; font-size: 16px; cursor: pointer;
+  }
+  .header-logo .dot {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--orange);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+  }
+  .header-title { font-size: 14px; color: rgba(255,255,255,0.5); }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .user-chip {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1); border-radius: 20px;
+    padding: 4px 12px 4px 6px; font-size: 13px; cursor: pointer;
+  }
+  .user-avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--orange);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+  }
+
+  /* ─── VIEWS ─────────────────────────────────────────── */
+  #view-list, #view-detail { display: none; }
+  #view-list.active, #view-detail.active { display: block; }
+
+  /* ─── PROJECT LIST ───────────────────────────────────── */
+  .list-container { max-width: 1200px; margin: 0 auto; padding: 28px 24px; }
+  .list-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .list-header h1 { font-size: 22px; font-weight: 700; }
+  .list-header p { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+  .btn-new {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--orange); color: #fff;
+    border: none; border-radius: 8px;
+    padding: 10px 18px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-new:hover { opacity: 0.9; }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .project-card {
+    background: var(--card-bg); border-radius: var(--radius);
+    padding: 20px; box-shadow: var(--shadow);
+    cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+    border: 1.5px solid transparent;
+    position: relative;
+  }
+  .project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    border-color: var(--orange);
+  }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .card-name { font-size: 16px; font-weight: 700; }
+  .card-version { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .badge {
+    display: inline-flex; align-items: center;
+    padding: 2px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; white-space: nowrap;
+  }
+  .badge-platform { background: #e0f2fe; color: #0369a1; }
+  .badge-android { background: #dcfce7; color: #16a34a; }
+  .badge-ios { background: #ede9fe; color: #7c3aed; }
+  .badge-web { background: #fef3c7; color: #b45309; }
+  .badge-other { background: #f1f5f9; color: #64748b; }
+  .badge-draft { background: #f1f5f9; color: #64748b; }
+  .badge-previewed { background: #fff7ed; color: #c2410c; }
+  .badge-building { background: #fef3c7; color: #b45309; }
+  .badge-done { background: #dcfce7; color: #16a34a; }
+  .card-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+  .card-updated { font-size: 12px; color: var(--text-muted); }
+  .card-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .empty-state {
+    text-align: center; padding: 80px 20px;
+    color: var(--text-muted); grid-column: 1/-1;
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state h3 { font-size: 18px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+
+  /* ─── MODAL ──────────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: #fff; border-radius: var(--radius);
+    padding: 28px; width: 480px; max-width: 95vw;
+    transform: scale(0.95); transition: transform 0.2s;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  .modal-overlay.open .modal { transform: scale(1); }
+  .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+  .modal-field { margin-bottom: 16px; }
+  .modal-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; display: block; }
+  .modal-input, .modal-select {
+    width: 100%; padding: 10px 14px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 14px; outline: none; transition: border-color 0.15s;
+    font-family: inherit;
+  }
+  .modal-input:focus, .modal-select:focus { border-color: var(--orange); }
+  .modal-actions { display: flex; gap: 10px; margin-top: 24px; justify-content: flex-end; }
+  .btn-cancel {
+    padding: 10px 20px; border: 1.5px solid var(--border);
+    background: #fff; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; color: var(--text);
+  }
+  .btn-cancel:hover { background: #f8fafc; }
+  .btn-create {
+    padding: 10px 20px; background: var(--orange);
+    color: #fff; border: none; border-radius: 8px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .btn-create:hover { opacity: 0.9; }
+
+  /* ─── DETAIL VIEW ────────────────────────────────────── */
+  #view-detail .detail-wrap {
+    display: flex; flex-direction: column;
+    height: calc(100vh - 56px);
+  }
+  .detail-topbar {
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 52px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .back-btn {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--text-muted); font-size: 14px; cursor: pointer;
+    padding: 6px 10px; border-radius: 6px; border: none; background: none;
+    transition: background 0.15s;
+  }
+  .back-btn:hover { background: #f1f5f9; color: var(--text); }
+  .detail-project-name { font-size: 16px; font-weight: 700; }
+  .detail-badges { display: flex; gap: 6px; }
+  .detail-content {
+    display: flex; flex: 1; overflow: hidden;
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    width: 60%; border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    background: #f8fafc;
+    overflow: hidden;
+  }
+  .left-scroll {
+    flex: 1; overflow-y: auto; padding: 20px;
+  }
+  .field-group { margin-bottom: 18px; }
+  .field-label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 7px;
+  }
+  .field-label svg { opacity: 0.6; }
+  .field-row { display: flex; gap: 12px; }
+  .field-row .field-group { flex: 1; }
+  .field-input {
+    width: 100%; padding: 9px 13px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 14px; font-family: inherit; outline: none;
+    background: #fff; transition: border-color 0.15s;
+    resize: none; line-height: 1.5;
+  }
+  .field-input:focus { border-color: var(--orange); }
+  .field-input.auto-resize { min-height: 40px; overflow: hidden; }
+  .repo-wrap { position: relative; }
+  .repo-wrap .gh-icon {
+    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted);
+  }
+  .repo-wrap .field-input { padding-left: 36px; }
+
+  /* ACTION BAR */
+  .action-bar {
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .action-btn {
+    padding: 10px 20px; border: none; border-radius: 8px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s; display: flex; align-items: center; gap: 7px;
+  }
+  .action-btn.save { background: #e2e8f0; color: var(--text); }
+  .action-btn.save.dirty { background: #1e293b; color: #fff; }
+  .action-btn.preview { background: var(--orange); color: #fff; }
+  .action-btn.approve { background: var(--green); color: #fff; }
+  .action-btn.publish { background: var(--blue); color: #fff; }
+  .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .action-btn .spinner {
+    width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff; border-radius: 50%;
+    animation: spin 0.6s linear infinite; display: none;
+  }
+  .action-btn.loading .spinner { display: inline-block; }
+  .action-btn.loading .btn-label { display: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* RIGHT PANEL — CHAT */
+  .right-panel {
+    width: 40%; display: flex; flex-direction: column;
+    background: #fff;
+    overflow: hidden;
+  }
+  .chat-header {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    font-size: 14px; font-weight: 600; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chat-header .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #22c55e; animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+  }
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .msg-item { display: flex; gap: 10px; align-items: flex-start; }
+  .msg-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+    color: #fff;
+  }
+  .msg-avatar.claire { background: var(--orange); }
+  .msg-avatar.user { background: #6366f1; }
+  .msg-body { flex: 1; min-width: 0; }
+  .msg-meta { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+  .msg-name { font-size: 13px; font-weight: 700; }
+  .msg-time { font-size: 11px; color: var(--text-muted); }
+  .msg-content {
+    font-size: 14px; line-height: 1.6; color: var(--text);
+    word-break: break-word;
+  }
+  .msg-content p { margin-bottom: 6px; }
+  .msg-content p:last-child { margin-bottom: 0; }
+  .msg-content code {
+    background: #f1f5f9; border-radius: 4px;
+    padding: 1px 5px; font-size: 12px; font-family: monospace;
+  }
+  .msg-content pre {
+    background: #0f1b2d; color: #e2e8f0;
+    border-radius: 8px; padding: 12px; overflow-x: auto;
+    font-size: 12px; font-family: monospace; margin: 8px 0;
+    line-height: 1.5;
+  }
+  .msg-content strong { font-weight: 700; }
+  .msg-content em { font-style: italic; }
+  .msg-content ul, .msg-content ol { padding-left: 18px; margin: 4px 0; }
+  .msg-content li { margin-bottom: 2px; }
+  .msg-content h1, .msg-content h2, .msg-content h3 {
+    font-size: 14px; font-weight: 700; margin: 8px 0 4px;
+  }
+  .chat-input-wrap {
+    border-top: 1px solid var(--border); padding: 12px;
+    display: flex; gap: 8px; align-items: flex-end;
+  }
+  .chat-input {
+    flex: 1; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 9px 13px; font-size: 14px; font-family: inherit;
+    outline: none; resize: none; max-height: 120px;
+    overflow-y: auto; line-height: 1.5; min-height: 40px;
+    transition: border-color 0.15s;
+  }
+  .chat-input:focus { border-color: var(--orange); }
+  .send-btn {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--orange); color: #fff;
+    border: none; cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.15s;
+  }
+  .send-btn:hover { opacity: 0.9; }
+
+  /* ─── TOAST ──────────────────────────────────────────── */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: #1e293b; color: #fff;
+    padding: 12px 20px; border-radius: 10px;
+    font-size: 14px; font-weight: 500;
+    opacity: 0; transform: translateY(8px);
+    transition: all 0.3s; pointer-events: none;
+    z-index: 2000; max-width: 320px;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+  #toast.error { background: #ef4444; }
+  #toast.success { background: #22c55e; }
+
+  /* ─── RESPONSIVE ─────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .detail-content { flex-direction: column; }
+    .left-panel { width: 100%; border-right: none; border-bottom: 1px solid var(--border); max-height: 50vh; }
+    .right-panel { width: 100%; }
+    .field-row { flex-direction: column; }
+  }
+  @media (max-width: 480px) {
+    .list-container { padding: 16px; }
+    .projects-grid { grid-template-columns: 1fr; }
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 6px; height: 16px;
+  }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  .status-dot {
+    display: inline-block;
+    width: 7px; height: 7px; border-radius: 50%;
+    margin-right: 5px; vertical-align: middle;
+  }
+  .status-dot.draft { background: #94a3b8; }
+  .status-dot.previewed { background: var(--orange); }
+  .status-dot.building { background: #f59e0b; }
+  .status-dot.done { background: #22c55e; }
+
+  .progress-steps {
+    display: flex; align-items: center; gap: 0; margin-left: auto;
+    font-size: 12px;
+  }
+  .step { display: flex; align-items: center; gap: 5px; color: var(--text-muted); }
+  .step.active { color: var(--orange); font-weight: 600; }
+  .step.done-step { color: var(--green); }
+  .step-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; flex-shrink: 0;
+  }
+  .step-line { width: 24px; height: 2px; background: var(--border); margin: 0 4px; }
+  .step-line.filled { background: var(--green); }
+
+  .version-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- ─── LOGIN OVERLAY ──────────────────────────────────────────── -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="dot">S</div>
+      <span>SensForge</span>
+    </div>
+    <h2>Coding Sandbox</h2>
+    <p>Internal tool — team members only</p>
+
+    <label class="login-label">Who are you?</label>
+    <div class="login-quick">
+      <button class="quick-btn" onclick="selectUser('Ruizhi')">Ruizhi</button>
+      <button class="quick-btn" onclick="selectUser('Gang')">Gang</button>
+      <button class="quick-btn" onclick="selectUser('Wenbin')">Wenbin</button>
+    </div>
+    <input class="login-input" id="login-name" type="text" placeholder="Or type your name…" oninput="onNameInput(this.value)" />
+    <input class="login-input" id="login-pw" type="password" placeholder="Team password" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button class="login-btn" onclick="doLogin()">Enter Sandbox</button>
+    <p class="login-error" id="login-error">Incorrect password. Try again.</p>
+  </div>
+</div>
+
+<!-- ─── HEADER ────────────────────────────────────────────────── -->
+<header>
+  <div class="header-left">
+    <div class="header-logo" onclick="showList()">
+      <div class="dot">S</div>
+      <span>SensForge</span>
+    </div>
+    <span class="header-title" id="header-crumb">Coding Sandbox</span>
+  </div>
+  <div class="header-right">
+    <div class="user-chip" onclick="logout()">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <span id="user-name-display">—</span>
+    </div>
+  </div>
+</header>
+
+<!-- ─── VIEW: PROJECT LIST ────────────────────────────────────── -->
+<div id="view-list">
+  <div class="list-container">
+    <div class="list-header">
+      <div>
+        <h1>Projects</h1>
+        <p>Manage coding tasks across all platforms</p>
+      </div>
+      <button class="btn-new" onclick="openNewModal()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        New Project
+      </button>
+    </div>
+    <div class="projects-grid" id="projects-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)">
+        <div class="skeleton" style="width:200px;margin:0 auto 12px"></div>
+        <div class="skeleton" style="width:140px;margin:0 auto"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── VIEW: PROJECT DETAIL ──────────────────────────────────── -->
+<div id="view-detail">
+  <div class="detail-wrap">
+    <!-- top bar -->
+    <div class="detail-topbar">
+      <button class="back-btn" onclick="showList()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        All Projects
+      </button>
+      <span style="color:var(--border)">|</span>
+      <span class="detail-project-name" id="detail-project-name">—</span>
+      <div class="detail-badges" id="detail-badges"></div>
+      <div class="progress-steps" id="progress-steps"></div>
+    </div>
+
+    <div class="detail-content">
+      <!-- LEFT PANEL -->
+      <div class="left-panel">
+        <div class="left-scroll" id="left-scroll">
+
+          <!-- Repo URL -->
+          <div class="field-group">
+            <div class="field-label">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              Repo URL
+            </div>
+            <div class="repo-wrap">
+              <svg class="gh-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              <input type="text" class="field-input" id="f-repo-url" placeholder="https://github.com/org/repo" oninput="markDirty()" />
+            </div>
+          </div>
+
+          <!-- Version row -->
+          <div class="field-row">
+            <div class="field-group">
+              <div class="field-label">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                Current Version
+              </div>
+              <input type="text" class="field-input" id="f-current-version" placeholder="e.g. 1.52.85" oninput="onCurrentVersionChange(this.value); markDirty()" />
+              <div class="version-hint" id="version-hint"></div>
+            </div>
+            <div class="field-group">
+              <div class="field-label">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                Next Version
+              </div>
+              <input type="text" class="field-input" id="f-next-version" placeholder="e.g. 1.52.86" oninput="markDirty()" />
+            </div>
+          </div>
+
+          <!-- Bug Reports -->
+          <div class="field-group">
+            <div class="field-label">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              Bug Reports
+            </div>
+            <textarea class="field-input auto-resize" id="f-bug-reports" placeholder="Paste bug descriptions or a URL to a bug tracker…" oninput="autoResize(this); markDirty()" rows="3"></textarea>
+          </div>
+
+          <!-- Feature Requests -->
+          <div class="field-group">
+            <div class="field-label">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Feature Requests
+            </div>
+            <textarea class="field-input auto-resize" id="f-feature-requests" placeholder="New features or improvements to implement…" oninput="autoResize(this); markDirty()" rows="3"></textarea>
+          </div>
+
+          <!-- Coding Prompt -->
+          <div class="field-group">
+            <div class="field-label">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              Coding Prompt
+            </div>
+            <textarea class="field-input auto-resize" id="f-coding-prompt" placeholder="What should the AI agent do? Be specific about what to build or fix…" oninput="autoResize(this); markDirty()" rows="4"></textarea>
+          </div>
+
+          <!-- Release Notes / Context -->
+          <div class="field-group">
+            <div class="field-label">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              Release Notes / Context
+            </div>
+            <textarea class="field-input auto-resize" id="f-release-notes" placeholder="Context for this release, deployment notes, links…" oninput="autoResize(this); markDirty()" rows="3"></textarea>
+          </div>
+
+        </div><!-- end left-scroll -->
+
+        <!-- ACTION BAR -->
+        <div class="action-bar">
+          <button class="action-btn save" id="btn-save" onclick="saveProject()">
+            <span class="btn-label">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save
+            </span>
+            <div class="spinner"></div>
+          </button>
+          <button class="action-btn preview" id="btn-preview" onclick="runPreview()">
+            <span class="btn-label">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Preview
+            </span>
+            <div class="spinner"></div>
+          </button>
+          <button class="action-btn approve" id="btn-approve" disabled onclick="runApprove()">
+            <span class="btn-label">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Approve
+            </span>
+            <div class="spinner"></div>
+          </button>
+          <button class="action-btn publish" id="btn-publish" disabled onclick="runPublish()">
+            <span class="btn-label">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Publish
+            </span>
+            <div class="spinner"></div>
+          </button>
+        </div>
+      </div><!-- end left-panel -->
+
+      <!-- RIGHT PANEL: CHAT -->
+      <div class="right-panel">
+        <div class="chat-header">
+          <div class="dot"></div>
+          Team Chat
+          <span style="color:var(--text-muted);font-weight:400;font-size:13px;margin-left:auto" id="chat-subtitle">Live updates</span>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div style="text-align:center;color:var(--text-muted);font-size:13px;margin-top:40px">
+            <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="opacity:0.3;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            No messages yet.<br>Run Preview to get started.
+          </div>
+        </div>
+        <div class="chat-input-wrap">
+          <textarea class="chat-input" id="chat-input" placeholder="Message the team…" rows="1"
+            oninput="autoResize(this)"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg()}"
+          ></textarea>
+          <button class="send-btn" onclick="sendChatMsg()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div><!-- end right-panel -->
+    </div><!-- end detail-content -->
+  </div><!-- end detail-wrap -->
+</div>
+
+<!-- ─── NEW PROJECT MODAL ──────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-new">
+  <div class="modal">
+    <h3>New Project</h3>
+    <div class="modal-field">
+      <label class="modal-label">Project Name</label>
+      <input type="text" class="modal-input" id="new-name" placeholder="e.g. NextSport iOS Release" />
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Repo URL</label>
+      <input type="text" class="modal-input" id="new-repo" placeholder="https://github.com/org/repo" />
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Platform</label>
+      <select class="modal-select" id="new-platform">
+        <option value="Android">Android</option>
+        <option value="iOS">iOS</option>
+        <option value="Web">Web</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeNewModal()">Cancel</button>
+      <button class="btn-create" onclick="createProject()">Create Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOAST ─────────────────────────────────────────────────── -->
+<div id="toast"></div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://noimrtzeawmameegpusz.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vaW1ydHplYXdtYW1lZWdwdXN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NzM1ODUsImV4cCI6MjA5MzE0OTU4NX0.Md_q-3TcXzg3e3Zk8RA_Ix7zU0vgODq1sfTXVZDU-nM';
+const SERVER_URL = 'http://167.88.44.27:3002';
+
+// ─── STATE ───────────────────────────────────────────────────────
+let currentUser = null;
+let currentProject = null;
+let isDirty = false;
+let previewDoneThisSession = false;
+let pollInterval = null;
+let lastMsgId = null;
+
+// ─── SUPABASE HELPERS ────────────────────────────────────────────
+async function sbFetch(path, opts = {}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...opts,
+    headers: {
+      'apikey': SUPABASE_ANON,
+      'Authorization': `Bearer ${SUPABASE_ANON}`,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+      ...(opts.headers || {})
+    }
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Supabase ${res.status}: ${err}`);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+// ─── LOGIN ───────────────────────────────────────────────────────
+function selectUser(name) {
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('login-name').value = name;
+}
+function onNameInput(val) {
+  document.querySelectorAll('.quick-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === val);
+  });
+}
+function doLogin() {
+  const name = document.getElementById('login-name').value.trim();
+  const pw = document.getElementById('login-pw').value;
+  const err = document.getElementById('login-error');
+  if (!name) { err.textContent = 'Please enter your name.'; err.style.display = 'block'; return; }
+  if (pw !== 'sf2026') { err.style.display = 'block'; err.textContent = 'Incorrect password. Try again.'; return; }
+  err.style.display = 'none';
+  currentUser = { name };
+  sessionStorage.setItem('sandbox_user', JSON.stringify(currentUser));
+  document.getElementById('login-overlay').classList.add('hidden');
+  document.getElementById('user-name-display').textContent = name;
+  document.getElementById('user-avatar').textContent = name[0].toUpperCase();
+  showList();
+}
+function logout() {
+  sessionStorage.removeItem('sandbox_user');
+  currentUser = null;
+  location.reload();
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = ''; }, 3200);
+}
+
+// ─── VIEWS ───────────────────────────────────────────────────────
+function showList() {
+  document.getElementById('view-list').classList.add('active');
+  document.getElementById('view-detail').classList.remove('active');
+  document.getElementById('header-crumb').textContent = 'Coding Sandbox';
+  clearInterval(pollInterval);
+  currentProject = null;
+  loadProjects();
+}
+
+function showDetail(project) {
+  currentProject = project;
+  isDirty = false;
+  previewDoneThisSession = false;
+  document.getElementById('view-list').classList.remove('active');
+  document.getElementById('view-detail').classList.add('active');
+  document.getElementById('header-crumb').textContent = project.name;
+  document.getElementById('detail-project-name').textContent = project.name;
+
+  // Fill fields
+  document.getElementById('f-repo-url').value = project.repo_url || '';
+  document.getElementById('f-current-version').value = project.current_version || '';
+  document.getElementById('f-next-version').value = project.next_version || '';
+  document.getElementById('f-bug-reports').value = project.bug_reports || '';
+  document.getElementById('f-feature-requests').value = project.feature_requests || '';
+  document.getElementById('f-coding-prompt').value = project.coding_prompt || '';
+  document.getElementById('f-release-notes').value = project.release_notes || '';
+
+  // Auto-resize textareas
+  ['f-bug-reports','f-feature-requests','f-coding-prompt','f-release-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    setTimeout(() => autoResize(el), 0);
+  });
+
+  updateVersionHint();
+  updateDetailBadges(project);
+  updateProgressSteps(project.status || 'draft');
+  updateActionButtons(project.status || 'draft');
+
+  // Messages
+  lastMsgId = null;
+  loadMessages();
+  clearInterval(pollInterval);
+  pollInterval = setInterval(pollMessages, 3000);
+}
+
+// ─── VERSION AUTO-COMPUTE ────────────────────────────────────────
+function bumpPatch(version) {
+  if (!version) return '';
+  const parts = version.trim().split('.');
+  const last = parseInt(parts[parts.length - 1], 10);
+  if (isNaN(last)) return version;
+  parts[parts.length - 1] = String(last + 1);
+  return parts.join('.');
+}
+
+function onCurrentVersionChange(val) {
+  const next = bumpPatch(val);
+  document.getElementById('f-next-version').value = next;
+  updateVersionHint();
+}
+
+function updateVersionHint() {
+  const cur = document.getElementById('f-current-version').value.trim();
+  const nxt = document.getElementById('f-next-version').value.trim();
+  const hint = document.getElementById('version-hint');
+  if (cur && nxt && cur !== nxt) {
+    hint.textContent = `${cur} → ${nxt}`;
+  } else {
+    hint.textContent = '';
+  }
+}
+
+// ─── BADGES & STATUS ─────────────────────────────────────────────
+function platformBadgeClass(platform) {
+  const m = { Android: 'badge-android', iOS: 'badge-ios', Web: 'badge-web' };
+  return m[platform] || 'badge-other';
+}
+
+function statusBadgeClass(status) {
+  const m = { draft: 'badge-draft', previewed: 'badge-previewed', building: 'badge-building', done: 'badge-done' };
+  return m[status] || 'badge-draft';
+}
+
+function updateDetailBadges(project) {
+  const el = document.getElementById('detail-badges');
+  el.innerHTML = `
+    <span class="badge ${platformBadgeClass(project.platform)}">${project.platform || 'Other'}</span>
+    <span class="badge ${statusBadgeClass(project.status || 'draft')}">
+      <span class="status-dot ${project.status || 'draft'}"></span>${project.status || 'draft'}
+    </span>
+  `;
+}
+
+function updateProgressSteps(status) {
+  const steps = ['draft','previewed','building','done'];
+  const labels = ['Draft','Previewed','Building','Done'];
+  const idx = steps.indexOf(status);
+  const el = document.getElementById('progress-steps');
+  el.innerHTML = steps.map((s, i) => {
+    const cls = i < idx ? 'done-step' : (i === idx ? 'active' : '');
+    const lineClass = i < idx ? 'filled' : '';
+    const icon = i < idx ? '✓' : (i + 1);
+    return `
+      ${i > 0 ? `<div class="step-line ${lineClass}"></div>` : ''}
+      <div class="step ${cls}">
+        <div class="step-dot">${icon}</div>
+        <span style="display:none" class="step-label">${labels[i]}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateActionButtons(status) {
+  const btnApprove = document.getElementById('btn-approve');
+  const btnPublish = document.getElementById('btn-publish');
+  btnApprove.disabled = !previewDoneThisSession;
+  btnPublish.disabled = status !== 'done';
+  const btnSave = document.getElementById('btn-save');
+  btnSave.classList.toggle('dirty', isDirty);
+}
+
+function markDirty() {
+  isDirty = true;
+  document.getElementById('btn-save').classList.add('dirty');
+  updateVersionHint();
+}
+
+// ─── PROJECTS CRUD ───────────────────────────────────────────────
+async function loadProjects() {
+  const grid = document.getElementById('projects-grid');
+  try {
+    const projects = await sbFetch('coding_sandbox_projects?order=updated_at.desc&select=*');
+    renderProjectGrid(projects || []);
+  } catch(e) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:#ef4444">
+      Failed to load projects: ${e.message}</div>`;
+  }
+}
+
+function renderProjectGrid(projects) {
+  const grid = document.getElementById('projects-grid');
+  if (!projects.length) {
+    grid.innerHTML = `<div class="empty-state">
+      <div class="icon">🧑‍💻</div>
+      <h3>No projects yet</h3>
+      <p>Click "+ New Project" to get started</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = projects.map(p => {
+    const updated = p.updated_at ? new Date(p.updated_at).toLocaleDateString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+    const versionLine = (p.current_version || p.next_version)
+      ? `<div class="card-version">${p.current_version ? 'v' + p.current_version : ''}${p.current_version && p.next_version ? ' → ' : ''}${p.next_version ? 'v' + p.next_version : ''}</div>`
+      : '';
+    return `<div class="project-card" onclick="openProject('${p.id}')">
+      <div class="card-top">
+        <div>
+          <div class="card-name">${escHtml(p.name)}</div>
+          ${versionLine}
+        </div>
+        <span class="badge ${platformBadgeClass(p.platform)}">${p.platform || 'Other'}</span>
+      </div>
+      <div class="card-meta">
+        <span class="card-updated">Updated ${updated}</span>
+        <span class="badge ${statusBadgeClass(p.status || 'draft')}">
+          <span class="status-dot ${p.status || 'draft'}"></span>${p.status || 'draft'}
+        </span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function openProject(id) {
+  try {
+    const rows = await sbFetch(`coding_sandbox_projects?id=eq.${id}&select=*`);
+    if (rows && rows[0]) showDetail(rows[0]);
+  } catch(e) {
+    toast('Failed to load project: ' + e.message, 'error');
+  }
+}
+
+// ─── NEW PROJECT MODAL ───────────────────────────────────────────
+function openNewModal() {
+  document.getElementById('modal-new').classList.add('open');
+  setTimeout(() => document.getElementById('new-name').focus(), 100);
+}
+function closeNewModal() {
+  document.getElementById('modal-new').classList.remove('open');
+  document.getElementById('new-name').value = '';
+  document.getElementById('new-repo').value = '';
+}
+document.getElementById('modal-new').addEventListener('click', function(e) {
+  if (e.target === this) closeNewModal();
+});
+
+async function createProject() {
+  const name = document.getElementById('new-name').value.trim();
+  const repo = document.getElementById('new-repo').value.trim();
+  const platform = document.getElementById('new-platform').value;
+  if (!name) { toast('Project name is required', 'error'); return; }
+
+  try {
+    const rows = await sbFetch('coding_sandbox_projects', {
+      method: 'POST',
+      body: JSON.stringify({ name, repo_url: repo, platform, status: 'draft' }),
+      prefer: 'return=representation'
+    });
+    closeNewModal();
+    if (rows && rows[0]) {
+      toast('Project created!', 'success');
+      showDetail(rows[0]);
+    }
+  } catch(e) {
+    toast('Create failed: ' + e.message, 'error');
+  }
+}
+
+// ─── SAVE ────────────────────────────────────────────────────────
+async function saveProject() {
+  if (!currentProject) return;
+  const btn = document.getElementById('btn-save');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  const payload = {
+    repo_url: document.getElementById('f-repo-url').value.trim(),
+    current_version: document.getElementById('f-current-version').value.trim(),
+    next_version: document.getElementById('f-next-version').value.trim(),
+    bug_reports: document.getElementById('f-bug-reports').value.trim(),
+    feature_requests: document.getElementById('f-feature-requests').value.trim(),
+    coding_prompt: document.getElementById('f-coding-prompt').value.trim(),
+    release_notes: document.getElementById('f-release-notes').value.trim(),
+    updated_at: new Date().toISOString()
+  };
+
+  try {
+    await sbFetch(`coding_sandbox_projects?id=eq.${currentProject.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+      prefer: 'return=minimal'
+    });
+    // log it
+    await sbFetch('coding_sandbox_log', {
+      method: 'POST',
+      body: JSON.stringify({ project_id: currentProject.id, action: 'save', author: currentUser.name }),
+      prefer: 'return=minimal'
+    });
+    Object.assign(currentProject, payload);
+    isDirty = false;
+    btn.classList.remove('dirty');
+    toast('Saved ✓', 'success');
+  } catch(e) {
+    toast('Save failed: ' + e.message, 'error');
+  }
+  btn.classList.remove('loading'); btn.disabled = false;
+}
+
+// ─── MESSAGES ────────────────────────────────────────────────────
+async function loadMessages() {
+  try {
+    const msgs = await sbFetch(`coding_sandbox_messages?project_id=eq.${currentProject.id}&order=created_at.asc&select=*`);
+    renderMessages(msgs || [], true);
+  } catch(e) { /* silent */ }
+}
+
+async function pollMessages() {
+  if (!currentProject) return;
+  try {
+    let url = `coding_sandbox_messages?project_id=eq.${currentProject.id}&order=created_at.asc&select=*`;
+    if (lastMsgId) url += `&id=gt.${lastMsgId}`;
+    const msgs = await sbFetch(url);
+    if (msgs && msgs.length) {
+      renderMessages(msgs, false);
+    }
+  } catch(e) { /* silent */ }
+}
+
+function renderMessages(msgs, replace) {
+  const container = document.getElementById('chat-messages');
+  if (replace) {
+    if (!msgs.length) {
+      container.innerHTML = `<div style="text-align:center;color:var(--text-muted);font-size:13px;margin-top:40px">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="opacity:0.3;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        No messages yet.<br>Run Preview to get started.
+      </div>`;
+      return;
+    }
+    container.innerHTML = '';
+  }
+  msgs.forEach(m => {
+    lastMsgId = Math.max(lastMsgId || 0, m.id || 0);
+    const isClaire = m.author === 'Claire';
+    const avatarClass = isClaire ? 'claire' : 'user';
+    const initials = (m.author || 'U')[0].toUpperCase();
+    const time = m.created_at ? new Date(m.created_at).toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' }) : '';
+    const div = document.createElement('div');
+    div.className = 'msg-item';
+    div.innerHTML = `
+      <div class="msg-avatar ${avatarClass}">${initials}</div>
+      <div class="msg-body">
+        <div class="msg-meta">
+          <span class="msg-name">${escHtml(m.author || 'Unknown')}</span>
+          <span class="msg-time">${time}</span>
+        </div>
+        <div class="msg-content">${renderMarkdown(m.content || '')}</div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+  container.scrollTop = container.scrollHeight;
+}
+
+async function sendChatMsg() {
+  const input = document.getElementById('chat-input');
+  const content = input.value.trim();
+  if (!content || !currentProject) return;
+  input.value = '';
+  autoResize(input);
+  try {
+    await sbFetch('coding_sandbox_messages', {
+      method: 'POST',
+      body: JSON.stringify({ project_id: currentProject.id, author: currentUser.name, content }),
+      prefer: 'return=minimal'
+    });
+    await pollMessages();
+  } catch(e) {
+    toast('Failed to send: ' + e.message, 'error');
+  }
+}
+
+// ─── SERVER ACTIONS ──────────────────────────────────────────────
+async function runPreview() {
+  if (!currentProject) return;
+  const btn = document.getElementById('btn-preview');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  // Save first
+  if (isDirty) await saveProject();
+
+  try {
+    const res = await fetch(SERVER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'preview', project_id: currentProject.id, author: currentUser.name })
+    });
+    const data = await res.json().catch(() => ({}));
+
+    // Post a message in chat with version reference
+    const nextVer = document.getElementById('f-next-version').value.trim();
+    const versionRef = nextVer ? `**v${nextVer}**` : 'next version';
+    const msgContent = `📋 Coding Plan for ${versionRef}\n\n${data.message || data.result || 'Preview initiated. Waiting for agent response…'}`;
+
+    await sbFetch('coding_sandbox_messages', {
+      method: 'POST',
+      body: JSON.stringify({ project_id: currentProject.id, author: 'Claire', content: msgContent }),
+      prefer: 'return=minimal'
+    });
+
+    // Update status to previewed
+    await sbFetch(`coding_sandbox_projects?id=eq.${currentProject.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: 'previewed', updated_at: new Date().toISOString() }),
+      prefer: 'return=minimal'
+    });
+    await sbFetch('coding_sandbox_log', {
+      method: 'POST',
+      body: JSON.stringify({ project_id: currentProject.id, action: 'preview', author: currentUser.name }),
+      prefer: 'return=minimal'
+    });
+
+    currentProject.status = 'previewed';
+    previewDoneThisSession = true;
+    updateDetailBadges(currentProject);
+    updateProgressSteps('previewed');
+    updateActionButtons('previewed');
+    await pollMessages();
+    toast('Preview sent!', 'success');
+  } catch(e) {
+    // Even if server is unreachable, record and enable approve
+    const nextVer = document.getElementById('f-next-version').value.trim();
+    const versionRef = nextVer ? `**v${nextVer}**` : 'next version';
+    const errMsg = `📋 Coding Plan for ${versionRef}\n\n⚠️ Could not reach build server (${e.message}). Check that the server at ${SERVER_URL} is running.`;
+    try {
+      await sbFetch('coding_sandbox_messages', {
+        method: 'POST',
+        body: JSON.stringify({ project_id: currentProject.id, author: 'Claire', content: errMsg }),
+        prefer: 'return=minimal'
+      });
+      await pollMessages();
+    } catch(_) {}
+    toast('Server unreachable — preview logged', 'error');
+    previewDoneThisSession = true;
+    document.getElementById('btn-approve').disabled = false;
+  }
+  btn.classList.remove('loading'); btn.disabled = false;
+}
+
+async function runApprove() {
+  if (!currentProject || !previewDoneThisSession) return;
+  const btn = document.getElementById('btn-approve');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  try {
+    const res = await fetch(SERVER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'approve', project_id: currentProject.id, author: currentUser.name })
+    });
+    const data = await res.json().catch(() => ({}));
+
+    const nextVer = document.getElementById('f-next-version').value.trim();
+    const msgContent = `✅ Approved by **${currentUser.name}**${nextVer ? ` — build for v${nextVer} queued` : ''}.\n\n${data.message || ''}`.trim();
+    await sbFetch('coding_sandbox_messages', {
+      method: 'POST',
+      body: JSON.stringify({ project_id: currentProject.id, author: currentUser.name, content: msgContent }),
+      prefer: 'return=minimal'
+    });
+    await sbFetch(`coding_sandbox_projects?id=eq.${currentProject.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: 'building', updated_at: new Date().toISOString() }),
+      prefer: 'return=minimal'
+    });
+    await sbFetch('coding_sandbox_log', {
+      method: 'POST',
+      body: JSON.stringify({ project_id: currentProject.id, action: 'approve', author: currentUser.name }),
+      prefer: 'return=minimal'
+    });
+    currentProject.status = 'building';
+    updateDetailBadges(currentProject);
+    updateProgressSteps('building');
+    updateActionButtons('building');
+    await pollMessages();
+    toast('Approved — build started!', 'success');
+  } catch(e) {
+    toast('Approve failed: ' + e.message, 'error');
+  }
+  btn.classList.remove('loading'); btn.disabled = false;
+}
+
+async function runPublish() {
+  if (!currentProject || currentProject.status !== 'done') return;
+  const btn = document.getElementById('btn-publish');
+  btn.classList.add('loading'); btn.disabled = true;
+  try {
+    const res = await fetch(SERVER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'save', project_id: currentProject.id, author: currentUser.name })
+    });
+    const data = await res.json().catch(() => ({}));
+    const link = data.link || data.url || data.apk_url || data.testflight_url || '';
+    const nextVer = document.getElementById('f-next-version').value.trim();
+    const msgContent = `🚀 Published${nextVer ? ` v${nextVer}` : ''}!\n\n${link ? `Download: ${link}` : (data.message || 'Build artifacts are ready.')}`;
+    await sbFetch('coding_sandbox_messages', {
+      method: 'POST',
+      body: JSON.stringify({ project_id: currentProject.id, author: 'Claire', content: msgContent }),
+      prefer: 'return=minimal'
+    });
+    await pollMessages();
+    toast('Published!', 'success');
+  } catch(e) {
+    toast('Publish failed: ' + e.message, 'error');
+  }
+  btn.classList.remove('loading'); btn.disabled = false;
+}
+
+// ─── MARKDOWN RENDERER ───────────────────────────────────────────
+function renderMarkdown(text) {
+  // Escape HTML first (except we'll re-add markdown formatting)
+  let out = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Code blocks
+  out = out.replace(/```[\w]*\n?([\s\S]*?)```/g, (_, code) =>
+    `<pre>${code.trim()}</pre>`);
+
+  // Inline code
+  out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Bold
+  out = out.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  // Italic
+  out = out.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  // Headers
+  out = out.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  out = out.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  out = out.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  // Unordered list
+  out = out.replace(/^[-*] (.+)$/gm, '<li>$1</li>');
+  out = out.replace(/(<li>.*<\/li>)/gs, (m) => `<ul>${m}</ul>`);
+
+  // Line breaks to paragraphs
+  out = out.split(/\n\n+/).map(para => {
+    para = para.trim();
+    if (!para) return '';
+    if (para.startsWith('<h') || para.startsWith('<ul') || para.startsWith('<ol') || para.startsWith('<pre')) return para;
+    return `<p>${para.replace(/\n/g, '<br>')}</p>`;
+  }).join('');
+
+  return out;
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.max(40, el.scrollHeight) + 'px';
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────
+(function init() {
+  const saved = sessionStorage.getItem('sandbox_user');
+  if (saved) {
+    try {
+      currentUser = JSON.parse(saved);
+      document.getElementById('login-overlay').classList.add('hidden');
+      document.getElementById('user-name-display').textContent = currentUser.name;
+      document.getElementById('user-avatar').textContent = currentUser.name[0].toUpperCase();
+      showList();
+    } catch(e) {
+      sessionStorage.removeItem('sandbox_user');
+    }
+  }
+})();
+</script>
+</body>
+</html>
