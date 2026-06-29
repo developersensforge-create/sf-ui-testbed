@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Skills Activity Log — SensForge</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; max-width: 375px; margin: 0 auto; min-height: 100vh; }
+  .page-label { position: fixed; top: 10px; left: 12px; font-size: 11px; color: #aaa; z-index: 100; }
+
+  /* Top nav */
+  .top-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; background: #fff; border-bottom: 1px solid #eee;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .nav-back { font-size: 22px; color: #f96400; cursor: pointer; text-decoration: none; line-height: 1; }
+  .nav-title { font-size: 17px; font-weight: 600; color: #1a1a1a; }
+  .nav-right { font-size: 13px; color: #f96400; cursor: pointer; }
+
+  /* Tab bar */
+  .tab-bar {
+    display: flex; background: #fff; border-bottom: 1px solid #eee;
+    position: sticky; top: 53px; z-index: 9;
+  }
+  .tab-item {
+    flex: 1; text-align: center; padding: 12px 8px 11px;
+    font-size: 14px; font-weight: 600; color: #999;
+    cursor: pointer; border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s; user-select: none;
+  }
+  .tab-item.active { color: #1a1a1a; border-bottom-color: #f96400; }
+  .tab-badge {
+    display: inline-block; background: #f96400; color: #fff;
+    font-size: 10px; font-weight: 700; border-radius: 10px;
+    padding: 1px 6px; margin-left: 4px; vertical-align: middle;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── Skill list tab ── */
+  .skills-list { padding: 12px 12px 20px; }
+  .skill-card {
+    background: #fff; border-radius: 12px; padding: 14px 16px;
+    margin-bottom: 10px; border: 1px solid #eee;
+  }
+  .skill-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .skill-name { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+  .toggle { position: relative; width: 44px; height: 24px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; inset: 0; background: #ddd; border-radius: 12px; cursor: pointer; transition: 0.2s; }
+  .toggle-slider:before { content: ''; position: absolute; width: 18px; height: 18px; background: #fff; border-radius: 50%; left: 3px; top: 3px; transition: 0.2s; }
+  .toggle input:checked + .toggle-slider { background: #f96400; }
+  .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+  .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .tag { font-size: 11px; color: #f96400; background: #fff3ec; border-radius: 8px; padding: 3px 8px; }
+  .skill-footer { display: flex; align-items: center; justify-content: space-between; }
+  .skill-meta { display: flex; flex-direction: column; gap: 2px; }
+  .skill-detail { font-size: 12px; color: #999; }
+  .skill-last-triggered { font-size: 11px; color: #aaa; }
+  .skill-last-triggered.recent { color: #f96400; }
+  .edit-link { font-size: 13px; color: #f96400; text-decoration: none; font-weight: 600; }
+
+  /* ── Activity Log tab ── */
+  .filter-bar {
+    padding: 10px 12px 6px; display: flex; gap: 8px; overflow-x: auto;
+    scrollbar-width: none; background: #fff; border-bottom: 1px solid #f0f0f0;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    flex-shrink: 0; font-size: 12px; font-weight: 600;
+    padding: 5px 12px; border-radius: 16px; cursor: pointer;
+    border: 1.5px solid #eee; background: #fff; color: #666;
+    transition: all 0.15s; user-select: none;
+  }
+  .filter-chip.active { background: #f96400; border-color: #f96400; color: #fff; }
+
+  .log-list { padding: 0 12px 80px; }
+  .log-date-header {
+    font-size: 12px; font-weight: 700; color: #999;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 16px 4px 8px;
+  }
+
+  .log-item {
+    background: #fff; border-radius: 12px; margin-bottom: 10px;
+    border: 1px solid #eee; overflow: hidden;
+    display: flex; cursor: pointer; transition: box-shadow 0.15s;
+  }
+  .log-item:active { box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+
+  .log-thumb {
+    width: 76px; min-width: 76px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; background: #f9f0e8;
+  }
+  .log-thumb.green-bg  { background: #e8f5e9; }
+  .log-thumb.blue-bg   { background: #e3f2fd; }
+  .log-thumb.purple-bg { background: #f3e5f5; }
+  .log-thumb.red-bg    { background: #fce4ec; }
+
+  .log-body { flex: 1; padding: 10px 12px; min-width: 0; }
+
+  .log-skill-name {
+    font-size: 14px; font-weight: 600; color: #1a1a1a;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 4px;
+  }
+  .log-trigger-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; color: #f96400; background: #fff3ec;
+    border-radius: 8px; padding: 2px 8px; margin-bottom: 5px;
+  }
+  .log-actions {
+    font-size: 12px; color: #555;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 6px;
+  }
+  .log-meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .log-time { font-size: 11px; color: #aaa; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .status-badge {
+    font-size: 10px; font-weight: 700; border-radius: 6px;
+    padding: 2px 8px; white-space: nowrap; flex-shrink: 0;
+  }
+  .status-badge.success  { background: #e8f5e9; color: #2e7d32; }
+  .status-badge.partial  { background: #fff8e1; color: #e65100; }
+  .status-badge.failed   { background: #fce4ec; color: #c62828; }
+
+  /* Detail sheet */
+  .detail-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.4); align-items: flex-end; justify-content: center;
+  }
+  .detail-overlay.open { display: flex; }
+  .detail-sheet {
+    background: #fff; border-radius: 20px 20px 0 0;
+    width: 100%; max-width: 375px; padding: 0 0 32px;
+    max-height: 80vh; overflow-y: auto;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .sheet-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 12px auto 16px; }
+  .sheet-header { padding: 0 16px 14px; border-bottom: 1px solid #f0f0f0; }
+  .sheet-title { font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+  .sheet-subtitle { font-size: 13px; color: #999; }
+  .sheet-body { padding: 16px; }
+  .sheet-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+  .sheet-row:last-child { border-bottom: none; }
+  .sheet-row-label { font-size: 13px; color: #999; }
+  .sheet-row-value { font-size: 13px; color: #1a1a1a; font-weight: 500; text-align: right; max-width: 60%; }
+  .sheet-row-value.success { color: #2e7d32; }
+  .sheet-row-value.failed { color: #c62828; }
+  .sheet-actions-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .sheet-action-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; padding: 8px 12px;
+    background: #f9f9f9; border-radius: 8px;
+  }
+  .sheet-action-item .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-success { background: #4caf50; }
+  .dot-failed  { background: #ef5350; }
+  .sheet-close-btn {
+    display: block; width: calc(100% - 32px); margin: 16px 16px 0;
+    background: #f5f5f5; color: #1a1a1a; border: none;
+    border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 600;
+    cursor: pointer; text-align: center;
+  }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 56px 24px; color: #bbb; }
+  .empty-state .empty-icon { font-size: 44px; margin-bottom: 14px; }
+  .empty-state p { font-size: 14px; line-height: 1.6; }
+
+  /* Dev tools */
+  .dev-tools-outer { border-top: 1px dashed #e0e0e0; margin-top: 32px; text-align: center; padding: 16px 16px 40px; }
+  .dev-tools-label { font-size: 11px; color: #bbb; margin-bottom: 10px; }
+  .dev-request-btn { border: 1px solid #ddd; color: #888; background: white; font-size: 13px; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+  .dev-panel { text-align: left; margin-top: 12px; display: none; }
+  .dev-disclaimer { background: #fffbeb; border-left: 3px solid #f96400; border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; font-size: 13px; color: #7a5c00; line-height: 1.5; }
+  .dev-textarea { width: 100%; border: 1.5px solid #eee; border-radius: 8px; padding: 10px 12px; font-size: 13px; color: #1a1a1a; font-family: inherit; outline: none; resize: vertical; min-height: 70px; background: #fafafa; margin-bottom: 8px; }
+  .dev-textarea:focus { border-color: #f96400; background: #fff; }
+  .dev-submit-btn { background: #f96400; color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 12px; }
+  .dev-prev-toggle { background: none; border: none; color: #aaa; font-size: 12px; cursor: pointer; padding: 4px 0; text-decoration: underline; }
+  .dev-prev-list { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+  .dev-prev-item { background: #fafafa; border: 1px solid #eee; border-radius: 8px; padding: 10px 12px; position: relative; }
+  .dev-prev-text { font-size: 13px; color: #333; margin-bottom: 2px; }
+  .dev-prev-meta { font-size: 11px; color: #aaa; }
+  .dev-prev-delete { position: absolute; top: 8px; right: 10px; background: none; border: none; font-size: 14px; cursor: pointer; color: #ccc; }
+  .dev-prev-delete:hover { color: #ff4466; }
+  .page-toast {
+    position: fixed; bottom: 100px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #0f1b2d; color: #fff; padding: 12px 20px;
+    border-radius: 10px; font-size: 13px; font-weight: 600;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.3); border-left: 3px solid #f96400;
+    z-index: 3000; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+    opacity: 0; white-space: nowrap;
+  }
+  .page-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<span class="page-label">Skills · Activity Log</span>
+
+<!-- Top nav -->
+<div class="top-nav">
+  <a href="index.html" class="nav-back">‹</a>
+  <span class="nav-title">Skills</span>
+  <span class="nav-right" onclick="switchTab('log')">Log</span>
+</div>
+
+<!-- Tab bar -->
+<div class="tab-bar">
+  <div class="tab-item active" id="tab-skills" onclick="switchTab('skills')">My Skills</div>
+  <div class="tab-item" id="tab-log" onclick="switchTab('log')">
+    Activity Log <span class="tab-badge">7</span>
+  </div>
+</div>
+
+<!-- ══ PANEL: MY SKILLS ══ -->
+<div class="panel active" id="panel-skills">
+  <div class="skills-list">
+
+    <div class="skill-card">
+      <div class="skill-card-header">
+        <span class="skill-name">My Dog Kitchen Alarm</span>
+        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+      </div>
+      <div class="skill-tags">
+        <span class="tag">Person Detected</span>
+        <span class="tag">Living Room Cam</span>
+        <span class="tag">Send Notification</span>
+        <span class="tag">Turn on Light</span>
+      </div>
+      <div class="skill-footer">
+        <div class="skill-meta">
+          <span class="skill-detail">Active since 01/09/2021</span>
+          <span class="skill-last-triggered recent">Last triggered: 2 hours ago</span>
+        </div>
+        <a href="#" class="edit-link">Edit</a>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <div class="skill-card-header">
+        <span class="skill-name">Driveway Delivery Message</span>
+        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+      </div>
+      <div class="skill-tags">
+        <span class="tag">Package Delivered</span>
+        <span class="tag">FrontYard-Sentinel-01</span>
+        <span class="tag">Play Voice Memo</span>
+      </div>
+      <div class="skill-footer">
+        <div class="skill-meta">
+          <span class="skill-detail">Active since 03/14/2022</span>
+          <span class="skill-last-triggered">Last triggered: Yesterday</span>
+        </div>
+        <a href="#" class="edit-link">Edit</a>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <div class="skill-card-header">
+        <span class="skill-name">Night Guard Alert</span>
+        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+      </div>
+      <div class="skill-tags">
+        <span class="tag">Person Detected</span>
+        <span class="tag">FrontYard-Sentinel-01</span>
+        <span class="tag">Trigger Siren</span>
+        <span class="tag">Send Notification</span>
+      </div>
+      <div class="skill-footer">
+        <div class="skill-meta">
+          <span class="skill-detail">Active since 06/01/2026</span>
+          <span class="skill-last-triggered">Last triggered: 3 days ago</span>
+        </div>
+        <a href="#" class="edit-link">Edit</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ PANEL: ACTIVITY LOG ══ -->
+<div class="panel" id="panel-log">
+
+  <div class="filter-bar">
+    <div class="filter-chip active" onclick="filterLog(this,'all')">All</div>
+    <div class="filter-chip" onclick="filterLog(this,'person')">👤 Person</div>
+    <div class="filter-chip" onclick="filterLog(this,'package')">📦 Package</div>
+    <div class="filter-chip" onclick="filterLog(this,'motion')">🏃 Motion</div>
+    <div class="filter-chip" onclick="filterLog(this,'sound')">🔊 Sound</div>
+  </div>
+
+  <div class="log-list">
+
+    <!-- Today -->
+    <div class="log-date-header">Today</div>
+
+    <div class="log-item" data-cat="person" onclick="openDetail('dog-alarm-1')">
+      <div class="log-thumb green-bg">👤</div>
+      <div class="log-body">
+        <div class="log-skill-name">My Dog Kitchen Alarm</div>
+        <div class="log-trigger-tag">👤 Person Detected</div>
+        <div class="log-actions">🔔 Notification · 💡 Light on</div>
+        <div class="log-meta">
+          <span class="log-time">9:41 AM · Living Room Cam</span>
+          <span class="status-badge success">Success</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="log-item" data-cat="person" onclick="openDetail('dog-alarm-2')">
+      <div class="log-thumb green-bg">👤</div>
+      <div class="log-body">
+        <div class="log-skill-name">My Dog Kitchen Alarm</div>
+        <div class="log-trigger-tag">👤 Person Detected</div>
+        <div class="log-actions">🔔 Notification · 💡 Light on</div>
+        <div class="log-meta">
+          <span class="log-time">7:14 AM · Living Room Cam</span>
+          <span class="status-badge success">Success</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Yesterday -->
+    <div class="log-date-header">Yesterday</div>
+
+    <div class="log-item" data-cat="package" onclick="openDetail('delivery-1')">
+      <div class="log-thumb blue-bg">📦</div>
+      <div class="log-body">
+        <div class="log-skill-name">Driveway Delivery Message</div>
+        <div class="log-trigger-tag">📦 Package Delivered</div>
+        <div class="log-actions">🎙️ Voice memo played</div>
+        <div class="log-meta">
+          <span class="log-time">3:41 PM · FrontYard-Sentinel-01</span>
+          <span class="status-badge success">Success</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="log-item" data-cat="person" onclick="openDetail('dog-alarm-3')">
+      <div class="log-thumb green-bg">👤</div>
+      <div class="log-body">
+        <div class="log-skill-name">My Dog Kitchen Alarm</div>
+        <div class="log-trigger-tag">👤 Person Detected</div>
+        <div class="log-actions">🔔 Notification · 💡 Light failed</div>
+        <div class="log-meta">
+          <span class="log-time">11:22 AM · Living Room Cam</span>
+          <span class="status-badge partial">Partial</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="log-item" data-cat="motion" onclick="openDetail('nightguard-1')">
+      <div class="log-thumb purple-bg">🌙</div>
+      <div class="log-body">
+        <div class="log-skill-name">Night Guard Alert</div>
+        <div class="log-trigger-tag">👤 Person Detected (Night)</div>
+        <div class="log-actions">🚨 Siren triggered · 🔔 Notification</div>
+        <div class="log-meta">
+          <span class="log-time">2:08 AM · FrontYard-Sentinel-01</span>
+          <span class="status-badge success">Success</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jun 27 -->
+    <div class="log-date-header">Jun 27</div>
+
+    <div class="log-item" data-cat="sound" onclick="openDetail('dog-alarm-4')">
+      <div class="log-thumb red-bg">🔊</div>
+      <div class="log-body">
+        <div class="log-skill-name">My Dog Kitchen Alarm</div>
+        <div class="log-trigger-tag">🔊 Unusual Sound</div>
+        <div class="log-actions">🔔 Notification</div>
+        <div class="log-meta">
+          <span class="log-time">4:55 PM · Living Room Cam</span>
+          <span class="status-badge success">Success</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="log-item" data-cat="package" onclick="openDetail('delivery-2')">
+      <div class="log-thumb blue-bg">📦</div>
+      <div class="log-body">
+        <div class="log-skill-name">Driveway Delivery Message</div>
+        <div class="log-trigger-tag">📦 Package Delivered</div>
+        <div class="log-actions">🎙️ Voice memo failed</div>
+        <div class="log-meta">
+          <span class="log-time">10:13 AM · FrontYard-Sentinel-01</span>
+          <span class="status-badge failed">Failed</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /panel-log -->
+
+<!-- ══ DETAIL SHEET ══ -->
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetailOutside(event)">
+  <div class="detail-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+      <div class="sheet-title" id="sheetTitle">Skill Triggered</div>
+      <div class="sheet-subtitle" id="sheetSubtitle"></div>
+    </div>
+    <div class="sheet-body" id="sheetBody"></div>
+    <button class="sheet-close-btn" onclick="closeDetail()">Close</button>
+  </div>
+</div>
+
+<script>
+// ── Tab switching ──
+window.switchTab = function(tab) {
+  ['skills','log'].forEach(function(t) {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('panel-'+t).classList.toggle('active', t===tab);
+  });
+};
+
+// ── Filter ──
+window.filterLog = function(chip, cat) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  document.querySelectorAll('.log-item').forEach(function(item) {
+    const show = cat === 'all' || item.dataset.cat === cat;
+    item.style.display = show ? 'flex' : 'none';
+  });
+};
+
+// ── Detail data ──
+const DETAILS = {
+  'dog-alarm-1': {
+    title: 'My Dog Kitchen Alarm',
+    subtitle: 'Today · 9:41 AM',
+    trigger: 'Person Detected',
+    camera: 'Living Room Cam',
+    condition: 'Any person, anytime',
+    status: 'success',
+    actions: [
+      { icon: '🔔', label: 'Send Notification', status: 'success', note: 'Delivered to your phone' },
+      { icon: '💡', label: 'Turn on Light', status: 'success', note: 'Light on for 30 seconds' }
+    ]
+  },
+  'dog-alarm-2': {
+    title: 'My Dog Kitchen Alarm',
+    subtitle: 'Today · 7:14 AM',
+    trigger: 'Person Detected',
+    camera: 'Living Room Cam',
+    condition: 'Any person, anytime',
+    status: 'success',
+    actions: [
+      { icon: '🔔', label: 'Send Notification', status: 'success', note: 'Delivered to your phone' },
+      { icon: '💡', label: 'Turn on Light', status: 'success', note: 'Light on for 30 seconds' }
+    ]
+  },
+  'dog-alarm-3': {
+    title: 'My Dog Kitchen Alarm',
+    subtitle: 'Yesterday · 11:22 AM',
+    trigger: 'Person Detected',
+    camera: 'Living Room Cam',
+    condition: 'Any person, anytime',
+    status: 'partial',
+    actions: [
+      { icon: '🔔', label: 'Send Notification', status: 'success', note: 'Delivered to your phone' },
+      { icon: '💡', label: 'Turn on Light', status: 'failed', note: 'Camera offline — light could not be reached' }
+    ]
+  },
+  'dog-alarm-4': {
+    title: 'My Dog Kitchen Alarm',
+    subtitle: 'Jun 27 · 4:55 PM',
+    trigger: 'Unusual Sound Detected',
+    camera: 'Living Room Cam',
+    condition: 'Any sound, anytime',
+    status: 'success',
+    actions: [
+      { icon: '🔔', label: 'Send Notification', status: 'success', note: 'Delivered to your phone' }
+    ]
+  },
+  'delivery-1': {
+    title: 'Driveway Delivery Message',
+    subtitle: 'Yesterday · 3:41 PM',
+    trigger: 'Package Delivered',
+    camera: 'FrontYard-Sentinel-01',
+    condition: 'Any package, anytime',
+    status: 'success',
+    actions: [
+      { icon: '🎙️', label: 'Play Voice Memo', status: 'success', note: '"Package has arrived!" played for 5 seconds' }
+    ]
+  },
+  'delivery-2': {
+    title: 'Driveway Delivery Message',
+    subtitle: 'Jun 27 · 10:13 AM',
+    trigger: 'Package Delivered',
+    camera: 'FrontYard-Sentinel-01',
+    condition: 'Any package, anytime',
+    status: 'failed',
+    actions: [
+      { icon: '🎙️', label: 'Play Voice Memo', status: 'failed', note: 'Audio file not found — please re-record your memo' }
+    ]
+  },
+  'nightguard-1': {
+    title: 'Night Guard Alert',
+    subtitle: 'Yesterday · 2:08 AM',
+    trigger: 'Person Detected (Night)',
+    camera: 'FrontYard-Sentinel-01',
+    condition: 'Stranger only, between 10 PM – 6 AM',
+    status: 'success',
+    actions: [
+      { icon: '🚨', label: 'Trigger Siren', status: 'success', note: 'Siren played for 10 seconds' },
+      { icon: '🔔', label: 'Send Notification', status: 'success', note: 'Delivered to your phone' }
+    ]
+  }
+};
+
+window.openDetail = function(id) {
+  const d = DETAILS[id];
+  if (!d) return;
+  document.getElementById('sheetTitle').textContent = d.title;
+  document.getElementById('sheetSubtitle').textContent = d.subtitle;
+
+  const statusLabel = d.status === 'success' ? 'All actions succeeded' : d.status === 'partial' ? 'Some actions failed' : 'All actions failed';
+  const statusClass = d.status;
+
+  let html = `
+    <div class="sheet-row"><span class="sheet-row-label">Triggered by</span><span class="sheet-row-value">${d.trigger}</span></div>
+    <div class="sheet-row"><span class="sheet-row-label">Camera</span><span class="sheet-row-value">${d.camera}</span></div>
+    <div class="sheet-row"><span class="sheet-row-label">Condition</span><span class="sheet-row-value">${d.condition}</span></div>
+    <div class="sheet-row"><span class="sheet-row-label">Result</span><span class="sheet-row-value ${statusClass}">${statusLabel}</span></div>
+    <div style="padding: 12px 0 4px; font-size: 13px; font-weight: 600; color: #1a1a1a;">Actions taken</div>
+    <div class="sheet-actions-list">`;
+
+  d.actions.forEach(function(a) {
+    html += `<div class="sheet-action-item">
+      <div class="dot ${a.status === 'success' ? 'dot-success' : 'dot-failed'}"></div>
+      <span style="font-size:16px">${a.icon}</span>
+      <div><div style="font-size:13px;font-weight:600;color:#1a1a1a">${a.label}</div><div style="font-size:11px;color:#888;margin-top:1px">${a.note}</div></div>
+    </div>`;
+  });
+  html += '</div>';
+
+  document.getElementById('sheetBody').innerHTML = html;
+  document.getElementById('detailOverlay').classList.add('open');
+};
+
+window.closeDetail = function() {
+  document.getElementById('detailOverlay').classList.remove('open');
+};
+window.closeDetailOutside = function(e) {
+  if (e.target === document.getElementById('detailOverlay')) closeDetail();
+};
+</script>
+
+<!-- Dev tools -->
+<div class="dev-tools-outer">
+  <div class="dev-tools-label">— Design Feedback —</div>
+  <button class="dev-request-btn" onclick="toggleDevPanel()">💬 Leave Feedback on This Page</button>
+  <div class="dev-panel" id="devPanel">
+    <div class="dev-disclaimer">📝 <strong>Design review notes</strong><br>Share thoughts on layout, flow, or anything that could be improved. Please include your <strong>name</strong>.</div>
+    <textarea class="dev-textarea" id="devFeedback" rows="4" placeholder="e.g. Ruizhi — The partial status design is clear. Consider adding a retry button for failed actions."></textarea>
+    <textarea class="dev-textarea" id="devNotes" rows="2" placeholder="Which part of this page?"></textarea>
+    <button class="dev-submit-btn" onclick="submitFeedback()">Submit Feedback →</button>
+    <button class="dev-prev-toggle" onclick="togglePrevRequests()" id="prevToggle">View my past feedback (0)</button>
+    <div class="dev-prev-list" id="devPrevList" style="display:none;"></div>
+  </div>
+</div>
+<div class="page-toast" id="pageToast"></div>
+
+<script>
+(function() {
+  const PAGE_ID = 'skills-log';
+  const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+
+  window.toggleDevPanel = function() {
+    const p = document.getElementById('devPanel');
+    p.style.display = p.style.display === 'block' ? 'none' : 'block';
+    if (p.style.display === 'block') loadPrev();
+  };
+  window.submitFeedback = async function() {
+    const fb = document.getElementById('devFeedback').value.trim();
+    const notes = document.getElementById('devNotes').value.trim();
+    if (!fb) { showToast('Please enter your feedback.', true); return; }
+    const t = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+    let msg = '💬 **Design Feedback** — Skills Activity Log\n' + t + ' ET\n' + fb + (notes ? '\nContext: ' + notes : '');
+    try { await fetch(WEBHOOK, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({content: msg}) }); } catch(e) {}
+    localStorage.setItem('fb_' + PAGE_ID + '_' + Date.now(), JSON.stringify({ fb, notes, t }));
+    document.getElementById('devFeedback').value = '';
+    document.getElementById('devNotes').value = '';
+    document.getElementById('devPanel').style.display = 'none';
+    showToast('Feedback saved ✅');
+  };
+  function loadPrev() {
+    const list = document.getElementById('devPrevList');
+    const toggle = document.getElementById('prevToggle');
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('fb_' + PAGE_ID + '_')).sort().reverse();
+    toggle.textContent = 'View my past feedback (' + keys.length + ')';
+    list.innerHTML = keys.map(function(k) {
+      const d = JSON.parse(localStorage.getItem(k)||'{}');
+      return '<div class="dev-prev-item"><div class="dev-prev-text">'+esc(d.fb||'')+'</div>'+(d.notes?'<div class="dev-prev-text" style="color:#888">'+esc(d.notes)+'</div>':'')+'<div class="dev-prev-meta">'+(d.t||'')+'</div><button class="dev-prev-delete" onclick="deleteFb(\''+k+'\')">🗑️</button></div>';
+    }).join('');
+  }
+  window.togglePrevRequests = function() {
+    const l = document.getElementById('devPrevList');
+    l.style.display = l.style.display === 'none' ? 'block' : 'none';
+    loadPrev();
+  };
+  window.deleteFb = function(k) { localStorage.removeItem(k); loadPrev(); };
+  function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  window.showToast = function(msg, isError) {
+    const t = document.getElementById('pageToast');
+    t.textContent = msg; t.style.borderLeftColor = isError ? '#ff4466' : '#f96400';
+    t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3500);
+  };
+})();
+</script>
+</body>
+</html>
