@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <!-- v1782842211 -->
+  <!-- v1782845684 -->
   <title>SensForge UI Testbed</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
@@ -489,11 +489,18 @@
     // Saved name override
     const savedName = localStorage.getItem('card-name-' + feature.key) || feature.name;
 
+    // Only show Preview in card footer for built-in default features (guaranteed to exist)
+    const isBuiltIn = DEFAULT_FEATURES.find(d => d.key === feature.key);
     let previewLink = '';
     const previewUrl = feature.previewUrl || localStorage.getItem('previewUrl_' + feature.key);
-    if (previewUrl) {
+    if (previewUrl && isBuiltIn) {
       previewLink = `<a href="${previewUrl}" class="preview-btn">Preview →</a>`;
     }
+
+    // User-created features: Preview goes in output panel (shown after build completes)
+    const previewOutputBtn = (previewUrl && !isBuiltIn)
+      ? `<a href="${previewUrl}" class="output-btn" style="text-decoration:none;">👁 Preview</a>`
+      : '';
 
     let deleteBtn = '';
     if (feature.key !== 'camera-skills' && feature.key !== 'jira-ui-flow') {
@@ -519,6 +526,7 @@
       </div>
       <div class="output-panel" id="output-${feature.key}">
         <div class="output-btns">
+          ${previewOutputBtn}
           <button class="output-btn" onclick="downloadFeature('${feature.key}')">⬇ Download</button>
           <button class="output-btn" onclick="toggleFigmaPopover('${feature.key}')">🎨 Output to Figma</button>
           <button class="output-btn" id="prd-btn-${feature.key}" onclick="generatePRD('${feature.key}')">📄 Generate PRD</button>
