@@ -46,11 +46,29 @@
   .panel.active { display: block; }
 
   /* ── My Skills tab ── */
-  .skills-list { padding: 12px 12px 20px; }
+  .skills-list { padding: 0 12px 20px; }
+
+  .skills-section-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 18px 0 10px;
+  }
+  .skills-section-title {
+    font-size: 12px; font-weight: 700; color: #999;
+    text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .skills-section-count {
+    font-size: 11px; font-weight: 700; background: #f0f0f0; color: #888;
+    border-radius: 20px; padding: 2px 8px;
+  }
+  .skills-section-count.active-count { background: #fff3ec; color: #f96400; }
+
   .skill-card {
     background: #fff; border-radius: 12px; padding: 14px 16px;
     margin-bottom: 10px; border: 1px solid #eee;
+    transition: opacity 0.2s;
   }
+  .skill-card.inactive-card { opacity: 0.55; }
+
   .skill-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
   .skill-name { font-size: 15px; font-weight: 600; color: #1a1a1a; }
   .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
@@ -66,11 +84,15 @@
   .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
   .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
   .tag { font-size: 11px; color: #f96400; background: #fff3ec; border-radius: 8px; padding: 3px 8px; }
+  .tag.tag-once   { color: #1565c0; background: #e3f2fd; }
+  .tag.tag-repeat { color: #e65100; background: #fff3ec; }
   .skill-footer { display: flex; align-items: center; justify-content: space-between; }
   .skill-last-triggered { font-size: 11px; }
   .skill-last-triggered.recent { color: #f96400; }
   .skill-last-triggered.old { color: #aaa; }
+  .skill-inactive-note { font-size: 11px; color: #aaa; font-style: italic; }
   .edit-link { font-size: 13px; color: #f96400; text-decoration: none; font-weight: 600; }
+  .reactivate-link { font-size: 13px; color: #888; text-decoration: none; font-weight: 600; }
   .add-btn {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     margin: 4px 12px 20px; background: #f96400; color: #fff;
@@ -242,58 +264,106 @@
 <!-- ══ My Skills ══ -->
 <div class="panel" id="panel-skills">
   <div class="skills-list">
+
+    <!-- Active skills -->
+    <div class="skills-section-header">
+      <span class="skills-section-title">Active</span>
+      <span class="skills-section-count active-count">3</span>
+    </div>
+
+    <!-- Repeat → always stays active -->
     <div class="skill-card">
       <div class="skill-card-header">
         <span class="skill-name">My Dog Kitchen Alarm</span>
         <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
       </div>
       <div class="skill-tags">
-        <span class="tag">👤 Person</span><span class="tag">🔔 Notify</span><span class="tag">💡 Light</span><span class="tag">Repeat</span>
+        <span class="tag">👤 Person</span>
+        <span class="tag">🔔 Notify</span>
+        <span class="tag">💡 Light</span>
+        <span class="tag tag-repeat">Repeat</span>
       </div>
       <div class="skill-footer">
         <span class="skill-last-triggered recent">Last triggered: 2 hours ago</span>
         <a href="#" class="edit-link">Edit</a>
       </div>
     </div>
-    <div class="skill-card">
-      <div class="skill-card-header">
-        <span class="skill-name">Package Alert</span>
-        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
-      </div>
-      <div class="skill-tags">
-        <span class="tag">📦 Package</span><span class="tag">🔔 Notify</span><span class="tag">🎙️ Voice Memo</span><span class="tag">Once</span>
-      </div>
-      <div class="skill-footer">
-        <span class="skill-last-triggered old">Last triggered: Yesterday</span>
-        <a href="#" class="edit-link">Edit</a>
-      </div>
-    </div>
+
+    <!-- Repeat, not yet triggered → still active -->
     <div class="skill-card">
       <div class="skill-card-header">
         <span class="skill-name">Night Motion Watch</span>
-        <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
       </div>
       <div class="skill-tags">
-        <span class="tag">🏃 Motion</span><span class="tag">🔔 Notify</span><span class="tag">Repeat</span>
+        <span class="tag">🏃 Motion</span>
+        <span class="tag">🔔 Notify</span>
+        <span class="tag tag-repeat">Repeat</span>
       </div>
       <div class="skill-footer">
         <span class="skill-last-triggered old">Not triggered yet</span>
         <a href="#" class="edit-link">Edit</a>
       </div>
     </div>
+
+    <!-- Once, not yet triggered → still active -->
     <div class="skill-card">
       <div class="skill-card-header">
-        <span class="skill-name">Loud Sound Alert</span>
+        <span class="skill-name">Front Door Greeting</span>
         <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
       </div>
       <div class="skill-tags">
-        <span class="tag">🔊 Sound</span><span class="tag">🔔 Notify</span><span class="tag">Once</span>
+        <span class="tag">📦 Package</span>
+        <span class="tag">🎙️ Voice Memo</span>
+        <span class="tag tag-once">Once</span>
       </div>
       <div class="skill-footer">
-        <span class="skill-last-triggered old">Last triggered: 3 days ago</span>
+        <span class="skill-last-triggered old">Not triggered yet</span>
         <a href="#" class="edit-link">Edit</a>
       </div>
     </div>
+
+    <!-- Inactive skills — Once skills that have already fired -->
+    <div class="skills-section-header">
+      <span class="skills-section-title">Inactive</span>
+      <span class="skills-section-count">2</span>
+    </div>
+
+    <!-- Once, already triggered → inactive -->
+    <div class="skill-card inactive-card">
+      <div class="skill-card-header">
+        <span class="skill-name">Package Alert</span>
+        <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="skill-tags">
+        <span class="tag">📦 Package</span>
+        <span class="tag">🔔 Notify</span>
+        <span class="tag">🎙️ Voice Memo</span>
+        <span class="tag tag-once">Once</span>
+      </div>
+      <div class="skill-footer">
+        <span class="skill-inactive-note">Triggered once · auto-disabled</span>
+        <a href="#" class="reactivate-link">Reset</a>
+      </div>
+    </div>
+
+    <!-- Once, already triggered → inactive -->
+    <div class="skill-card inactive-card">
+      <div class="skill-card-header">
+        <span class="skill-name">Loud Sound Alert</span>
+        <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+      </div>
+      <div class="skill-tags">
+        <span class="tag">🔊 Sound</span>
+        <span class="tag">🔔 Notify</span>
+        <span class="tag tag-once">Once</span>
+      </div>
+      <div class="skill-footer">
+        <span class="skill-inactive-note">Triggered once · auto-disabled</span>
+        <a href="#" class="reactivate-link">Reset</a>
+      </div>
+    </div>
+
   </div>
   <button class="add-btn">＋ Create New Skill</button>
 </div>
