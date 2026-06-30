@@ -71,7 +71,6 @@
   .skill-last-triggered.recent { color: #f96400; }
   .skill-last-triggered.old { color: #aaa; }
   .edit-link { font-size: 13px; color: #f96400; text-decoration: none; font-weight: 600; }
-
   .add-btn {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     margin: 4px 12px 20px; background: #f96400; color: #fff;
@@ -82,21 +81,6 @@
   .add-btn:active { opacity: 0.85; }
 
   /* ── Activity Log tab ── */
-  .filter-chips {
-    display: flex; gap: 8px; padding: 12px 12px 8px;
-    overflow-x: auto; background: #fff; border-bottom: 1px solid #f0f0f0;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .filter-chips::-webkit-scrollbar { display: none; }
-  .chip {
-    flex-shrink: 0; display: inline-flex; align-items: center; gap: 4px;
-    padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
-    border: 1.5px solid #e0e0e0; background: #fff; color: #666;
-    cursor: pointer; transition: all 0.15s; white-space: nowrap;
-  }
-  .chip.active { background: #f96400; border-color: #f96400; color: #fff; }
-
   .log-list { padding: 0 12px 100px; }
   .log-date-header {
     font-size: 12px; font-weight: 700; color: #999;
@@ -104,36 +88,47 @@
     padding: 16px 4px 8px;
   }
 
-  /* Event card */
+  /* ── Event card ── */
   .event-card {
-    background: #fff; border-radius: 12px; padding: 0;
+    background: #fff; border-radius: 12px;
     margin-bottom: 10px; border: 1px solid #eee; overflow: hidden;
     cursor: pointer; transition: box-shadow 0.15s;
   }
-  .event-card:active { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-  .event-card-inner { display: flex; }
+  .event-card:active { box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
 
-  /* Left colour strip */
-  .event-strip {
-    width: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
+  /* Thumbnail row */
+  .event-thumb-wrap {
+    position: relative; width: 100%; height: 140px;
+    background: #111; overflow: hidden;
   }
-  .event-strip.person  { background: #e8f5e9; }
-  .event-strip.package { background: #e3f2fd; }
-  .event-strip.motion  { background: #fce4ec; }
-  .event-strip.sound   { background: #f3e5f5; }
-  .event-strip.night   { background: #ede7f6; }
+  .event-thumb {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block; transition: opacity 0.2s;
+  }
+  .thumb-play-btn {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+  .thumb-play-btn svg { width: 20px; height: 20px; fill: #fff; margin-left: 3px; }
+  .thumb-time-badge {
+    position: absolute; bottom: 8px; right: 8px;
+    background: rgba(0,0,0,0.6); color: #fff; font-size: 11px; font-weight: 600;
+    border-radius: 6px; padding: 2px 7px;
+  }
+  .thumb-repeat-badge {
+    position: absolute; top: 8px; left: 8px;
+    font-size: 11px; font-weight: 700; border-radius: 20px; padding: 3px 10px;
+  }
+  .thumb-repeat-badge.once   { background: #e3f2fd; color: #1565c0; }
+  .thumb-repeat-badge.repeat { background: #fff3ec; color: #e65100; }
 
-  .event-body { flex: 1; padding: 12px 14px 12px 10px; }
+  /* Text body below thumbnail */
+  .event-body { padding: 10px 14px 12px; }
   .event-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 5px; }
   .event-name { font-size: 14px; font-weight: 700; color: #1a1a1a; line-height: 1.25; }
-  .status-badge {
-    flex-shrink: 0; font-size: 11px; font-weight: 700; border-radius: 8px;
-    padding: 3px 8px; margin-left: 8px; margin-top: 1px;
-  }
-  .status-badge.success  { background: #e8f5e9; color: #2e7d32; }
-  .status-badge.partial  { background: #fff8e1; color: #f57f17; }
-  .status-badge.failed   { background: #ffebee; color: #c62828; }
 
   .event-trigger-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
   .event-trigger-tag {
@@ -142,6 +137,43 @@
   }
   .event-actions-row { font-size: 12px; color: #666; margin-bottom: 4px; }
   .event-meta { font-size: 11px; color: #aaa; }
+
+  /* ── Video overlay ── */
+  .video-overlay {
+    display: none; position: fixed; inset: 0;
+    background: #000; z-index: 100;
+    flex-direction: column; align-items: center; justify-content: center;
+  }
+  .video-overlay.open { display: flex; }
+  .video-close {
+    position: absolute; top: 16px; right: 18px;
+    font-size: 28px; color: #fff; cursor: pointer; line-height: 1;
+    background: rgba(255,255,255,0.12); border: none; border-radius: 50%;
+    width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+  }
+  .video-mock {
+    width: 100%; max-width: 375px; position: relative; background: #111;
+  }
+  .video-mock-img { width: 100%; display: block; }
+  .video-controls {
+    background: #111; padding: 12px 16px 20px;
+  }
+  .video-progress-track {
+    width: 100%; height: 3px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-bottom: 10px; cursor: pointer;
+    position: relative;
+  }
+  .video-progress-fill {
+    height: 100%; background: #f96400; border-radius: 2px; width: 0%;
+    transition: width 0.1s linear;
+  }
+  .video-ctrl-row { display: flex; align-items: center; justify-content: space-between; }
+  .video-play-btn {
+    width: 40px; height: 40px; border-radius: 50%; background: #f96400;
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .video-play-btn svg { width: 18px; height: 18px; fill: #fff; }
+  .video-time { font-size: 13px; color: rgba(255,255,255,0.7); font-variant-numeric: tabular-nums; }
+  .video-meta { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 12px; padding: 0 16px; }
 
   /* ── Bottom Sheet ── */
   .sheet-overlay {
@@ -156,25 +188,11 @@
     padding: 0 0 40px;
     animation: sheetUp 0.25s ease;
   }
-  @keyframes sheetUp {
-    from { transform: translateY(100%); }
-    to   { transform: translateY(0); }
-  }
-  .sheet-handle {
-    width: 36px; height: 4px; background: #ddd; border-radius: 2px;
-    margin: 12px auto 16px;
-  }
+  @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .sheet-handle { width: 36px; height: 4px; background: #ddd; border-radius: 2px; margin: 12px auto 16px; }
   .sheet-body { padding: 0 20px 20px; }
   .sheet-title { font-size: 18px; font-weight: 800; color: #1a1a1a; margin-bottom: 4px; }
   .sheet-timestamp { font-size: 13px; color: #999; margin-bottom: 20px; }
-
-  .sheet-status-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 14px; font-weight: 700; border-radius: 10px; padding: 8px 16px; margin-bottom: 20px;
-  }
-  .sheet-status-pill.success { background: #e8f5e9; color: #2e7d32; }
-  .sheet-status-pill.partial { background: #fff8e1; color: #f57f17; }
-  .sheet-status-pill.failed  { background: #ffebee; color: #c62828; }
 
   .detail-section { margin-bottom: 18px; }
   .detail-label {
@@ -190,9 +208,16 @@
   .detail-text { flex: 1; }
   .detail-text-main { font-size: 14px; color: #1a1a1a; font-weight: 500; }
   .detail-text-sub { font-size: 12px; color: #999; margin-top: 1px; }
-  .detail-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .detail-dot.ok   { background: #4caf50; }
-  .detail-dot.fail { background: #f44336; }
+
+  .sheet-thumb-wrap {
+    position: relative; border-radius: 12px; overflow: hidden; margin-bottom: 20px; cursor: pointer;
+  }
+  .sheet-thumb { width: 100%; display: block; border-radius: 12px; }
+  .sheet-thumb-play {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.25);
+  }
+  .sheet-thumb-play svg { width: 44px; height: 44px; fill: rgba(255,255,255,0.9); }
 </style>
 </head>
 <body>
@@ -212,7 +237,7 @@
   </div>
 </div>
 
-<!-- ══ My Skills Panel ══ -->
+<!-- ══ My Skills ══ -->
 <div class="panel" id="panel-skills">
   <div class="skills-list">
     <div class="skill-card">
@@ -221,7 +246,7 @@
         <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
       </div>
       <div class="skill-tags">
-        <span class="tag">👤 Person</span><span class="tag">🔔 Notify</span><span class="tag">💡 Light</span>
+        <span class="tag">👤 Person</span><span class="tag">🔔 Notify</span><span class="tag">💡 Light</span><span class="tag">Repeat</span>
       </div>
       <div class="skill-footer">
         <span class="skill-last-triggered recent">Last triggered: 2 hours ago</span>
@@ -234,7 +259,7 @@
         <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
       </div>
       <div class="skill-tags">
-        <span class="tag">📦 Package</span><span class="tag">🔔 Notify</span><span class="tag">🎙️ Voice Memo</span>
+        <span class="tag">📦 Package</span><span class="tag">🔔 Notify</span><span class="tag">🎙️ Voice Memo</span><span class="tag">Once</span>
       </div>
       <div class="skill-footer">
         <span class="skill-last-triggered old">Last triggered: Yesterday</span>
@@ -247,7 +272,7 @@
         <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
       </div>
       <div class="skill-tags">
-        <span class="tag">🏃 Motion</span><span class="tag">🔔 Notify</span>
+        <span class="tag">🏃 Motion</span><span class="tag">🔔 Notify</span><span class="tag">Repeat</span>
       </div>
       <div class="skill-footer">
         <span class="skill-last-triggered old">Not triggered yet</span>
@@ -260,7 +285,7 @@
         <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
       </div>
       <div class="skill-tags">
-        <span class="tag">🔊 Sound</span><span class="tag">🔔 Notify</span>
+        <span class="tag">🔊 Sound</span><span class="tag">🔔 Notify</span><span class="tag">Once</span>
       </div>
       <div class="skill-footer">
         <span class="skill-last-triggered old">Last triggered: 3 days ago</span>
@@ -271,16 +296,34 @@
   <button class="add-btn">＋ Create New Skill</button>
 </div>
 
-<!-- ══ Activity Log Panel ══ -->
+<!-- ══ Activity Log ══ -->
 <div class="panel active" id="panel-log">
-  <div class="filter-chips" id="filterChips">
-    <div class="chip active" onclick="setFilter(this,'all')">All</div>
-    <div class="chip" onclick="setFilter(this,'person')">👤 Person</div>
-    <div class="chip" onclick="setFilter(this,'package')">📦 Package</div>
-    <div class="chip" onclick="setFilter(this,'motion')">🏃 Motion</div>
-    <div class="chip" onclick="setFilter(this,'sound')">🔊 Sound</div>
-  </div>
   <div class="log-list" id="logList"></div>
+</div>
+
+<!-- ══ Video Player Overlay ══ -->
+<div class="video-overlay" id="videoOverlay">
+  <button class="video-close" onclick="closeVideo()">×</button>
+  <div class="video-mock">
+    <img class="video-mock-img" id="videoThumb" src="" alt="Event clip" />
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;" id="videoBigPlay">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 24 24" style="width:28px;height:28px;fill:#fff;margin-left:4px;"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="video-controls">
+    <div class="video-progress-track" id="progressTrack" onclick="seekVideo(event)">
+      <div class="video-progress-fill" id="progressFill"></div>
+    </div>
+    <div class="video-ctrl-row">
+      <button class="video-play-btn" id="playBtn" onclick="togglePlay()">
+        <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <span class="video-time" id="videoTimeEl">0:00 / 0:18</span>
+    </div>
+  </div>
+  <div class="video-meta" id="videoMetaEl"></div>
 </div>
 
 <!-- ══ Detail Bottom Sheet ══ -->
@@ -292,6 +335,7 @@
 </div>
 
 <script>
+  // ── Tab switching ──
   function switchTab(tab) {
     document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -300,63 +344,63 @@
     if (tab === 'log') document.getElementById('logBadge').style.display = 'none';
   }
 
+  // ── Placeholder thumbnails (camera-style dark stills) ──
+  // Using picsum with a fixed seed per event so they're consistent
+  const THUMBS = {
+    person:  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=375&h=140&fit=crop&q=60',
+    package: 'https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=375&h=140&fit=crop&q=60',
+    motion:  'https://images.unsplash.com/photo-1505816014357-96b5ff457e9a?w=375&h=140&fit=crop&q=60',
+    sound:   'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=375&h=140&fit=crop&q=60',
+  };
+
   const EVENTS = [
     { id:1, skill:'My Dog Kitchen Alarm', trigger:'person', triggerLabel:'👤 Person Detected',
-      actions:'🔔 Notification · 💡 Light on', time:'9:41 AM', camera:'Kitchen Cam', status:'success',
-      condition:'Stranger only, between 10PM–6AM',
+      actions:'🔔 Notification · 💡 Light on', time:'9:41 AM', camera:'Kitchen Cam',
+      repeat:'repeat', condition:'Stranger only, between 10PM–6AM', duration:'0:18',
       actionDetails:[
-        {icon:'🔔',name:'Push Notification',result:'ok',note:'Delivered to iPhone'},
-        {icon:'💡',name:'Turn on Kitchen Light',result:'ok',note:'Light responded in 0.4s'}]},
+        {icon:'🔔',name:'Push Notification',note:'Delivered to iPhone'},
+        {icon:'💡',name:'Turn on Kitchen Light',note:'Light responded in 0.4s'}]},
     { id:2, skill:'Package Alert', trigger:'package', triggerLabel:'📦 Package Detected',
-      actions:'🔔 Notification · 🎙️ Voice Memo', time:'8:12 AM', camera:'Front Door Cam', status:'partial',
-      condition:'Any time of day',
+      actions:'🔔 Notification · 🎙️ Voice Memo', time:'8:12 AM', camera:'Front Door Cam',
+      repeat:'once', condition:'Any time of day', duration:'0:12',
       actionDetails:[
-        {icon:'🔔',name:'Push Notification',result:'ok',note:'Delivered to iPhone'},
-        {icon:'🎙️',name:'Play Voice Memo',result:'fail',note:'Audio file not found — please re-record your voice memo'}]},
+        {icon:'🔔',name:'Push Notification',note:'Delivered to iPhone'},
+        {icon:'🎙️',name:'Play Voice Memo',note:'Played for 4s'}]},
     { id:3, skill:'My Dog Kitchen Alarm', trigger:'person', triggerLabel:'👤 Person Detected',
-      actions:'🔔 Notification · 💡 Light on', time:'7:03 AM', camera:'Living Room Cam', status:'success',
-      condition:'Stranger only, between 10PM–6AM',
+      actions:'🔔 Notification · 💡 Light on', time:'7:03 AM', camera:'Living Room Cam',
+      repeat:'repeat', condition:'Stranger only, between 10PM–6AM', duration:'0:22',
       actionDetails:[
-        {icon:'🔔',name:'Push Notification',result:'ok',note:'Delivered to iPhone'},
-        {icon:'💡',name:'Turn on Kitchen Light',result:'ok',note:'Light responded in 0.6s'}]},
+        {icon:'🔔',name:'Push Notification',note:'Delivered to iPhone'},
+        {icon:'💡',name:'Turn on Kitchen Light',note:'Light responded in 0.6s'}]},
     { id:4, skill:'Loud Sound Alert', trigger:'sound', triggerLabel:'🔊 Sound Detected',
-      actions:'🔔 Notification', time:'1:22 AM', camera:'Garage Cam', status:'failed',
-      condition:'Loud sound above threshold',
+      actions:'🔔 Notification', time:'1:22 AM', camera:'Garage Cam',
+      repeat:'once', condition:'Loud sound above threshold', duration:'0:09',
       actionDetails:[
-        {icon:'🔔',name:'Push Notification',result:'fail',note:'Notification delivery failed — check your phone settings'}]},
+        {icon:'🔔',name:'Push Notification',note:'Delivered to iPhone'}]},
     { id:5, skill:'My Dog Kitchen Alarm', trigger:'person', triggerLabel:'👤 Person Detected',
-      actions:'🔔 Notification · 💡 Light on', time:'11:58 PM', camera:'Kitchen Cam', status:'partial',
-      condition:'Stranger only, between 10PM–6AM',
+      actions:'🔔 Notification · 💡 Light on', time:'11:58 PM', camera:'Kitchen Cam',
+      repeat:'repeat', condition:'Stranger only, between 10PM–6AM', duration:'0:15',
       actionDetails:[
-        {icon:'🔔',name:'Push Notification',result:'ok',note:'Delivered to iPhone'},
-        {icon:'💡',name:'Turn on Kitchen Light',result:'fail',note:'Camera offline — light could not be reached'}]},
+        {icon:'🔔',name:'Push Notification',note:'Delivered to iPhone'},
+        {icon:'💡',name:'Turn on Kitchen Light',note:'Light responded in 0.5s'}]},
     { id:6, skill:'Package Alert', trigger:'package', triggerLabel:'📦 Package Detected',
-      actions:'🔔 Notification · 🎙️ Voice Memo', time:'3:40 PM', camera:'Front Door Cam', status:'success',
-      condition:'Any time of day',
+      actions:'🔔 Notification · 🎙️ Voice Memo', time:'3:40 PM', camera:'Front Door Cam',
+      repeat:'once', condition:'Any time of day', duration:'0:11',
       actionDetails:[
-        {icon:'🔔',name:'Push Notification',result:'ok',note:'Delivered to iPhone'},
-        {icon:'🎙️',name:'Play Voice Memo',result:'ok',note:'Played for 4s'}]},
+        {icon:'🔔',name:'Push Notification',note:'Delivered to iPhone'},
+        {icon:'🎙️',name:'Play Voice Memo',note:'Played for 4s'}]},
     { id:7, skill:'My Dog Kitchen Alarm', trigger:'person', triggerLabel:'👤 Person Detected',
-      actions:'🔔 Notification · 💡 Light on', time:'9:14 AM', camera:'Kitchen Cam', status:'success',
-      condition:'Stranger only, between 10PM–6AM',
+      actions:'🔔 Notification · 💡 Light on', time:'9:14 AM', camera:'Kitchen Cam',
+      repeat:'repeat', condition:'Stranger only, between 10PM–6AM', duration:'0:20',
       actionDetails:[
-        {icon:'🔔',name:'Push Notification',result:'ok',note:'Delivered to iPhone'},
-        {icon:'💡',name:'Turn on Kitchen Light',result:'ok',note:'Light responded in 0.3s'}]}
+        {icon:'🔔',name:'Push Notification',note:'Delivered to iPhone'},
+        {icon:'💡',name:'Turn on Kitchen Light',note:'Light responded in 0.3s'}]}
   ];
 
   const GROUPS = [
     { label:'Today',     ids:[1,2,3,4] },
     { label:'Yesterday', ids:[5,6,7] }
   ];
-
-  let activeFilter = 'all';
-
-  function setFilter(el, filter) {
-    activeFilter = filter;
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    el.classList.add('active');
-    renderLog();
-  }
 
   function esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -365,54 +409,141 @@
   function renderLog() {
     const list = document.getElementById('logList');
     list.innerHTML = '';
-    const stripIcon = {person:'👤',package:'📦',motion:'🏃',sound:'🔊'};
-    const statusLabel = {success:'Success',partial:'Partial',failed:'Failed'};
 
     GROUPS.forEach(group => {
-      const filtered = group.ids.map(id => EVENTS.find(e => e.id===id))
-        .filter(e => activeFilter==='all' || e.trigger===activeFilter);
-      if (!filtered.length) return;
+      const evs = group.ids.map(id => EVENTS.find(e => e.id === id));
 
       const hdr = document.createElement('div');
       hdr.className = 'log-date-header';
       hdr.textContent = group.label;
       list.appendChild(hdr);
 
-      filtered.forEach(ev => {
+      evs.forEach(ev => {
+        const repeatClass = ev.repeat; // 'once' or 'repeat'
+        const repeatLabel = ev.repeat === 'once' ? 'Once' : 'Repeat';
+        const thumbUrl = THUMBS[ev.trigger] || THUMBS.person;
+
         const card = document.createElement('div');
         card.className = 'event-card';
-        card.onclick = () => openDetail(ev.id);
         card.innerHTML = `
-          <div class="event-card-inner">
-            <div class="event-strip ${ev.trigger}">${stripIcon[ev.trigger]||'🔔'}</div>
-            <div class="event-body">
-              <div class="event-header">
-                <span class="event-name">${esc(ev.skill)}</span>
-                <span class="status-badge ${ev.status}">${statusLabel[ev.status]}</span>
-              </div>
-              <div class="event-trigger-row"><span class="event-trigger-tag">${esc(ev.triggerLabel)}</span></div>
-              <div class="event-actions-row">${esc(ev.actions)}</div>
-              <div class="event-meta">${ev.time} · ${ev.camera}</div>
+          <div class="event-thumb-wrap" onclick="openVideo(${ev.id}, event)">
+            <img class="event-thumb" src="${thumbUrl}" alt="Event clip" loading="lazy" />
+            <div class="thumb-play-btn">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
+            <span class="thumb-repeat-badge ${repeatClass}">${repeatLabel}</span>
+            <span class="thumb-time-badge">${ev.duration}</span>
+          </div>
+          <div class="event-body" onclick="openDetail(${ev.id})">
+            <div class="event-header">
+              <span class="event-name">${esc(ev.skill)}</span>
+            </div>
+            <div class="event-trigger-row">
+              <span class="event-trigger-tag">${esc(ev.triggerLabel)}</span>
+            </div>
+            <div class="event-actions-row">${esc(ev.actions)}</div>
+            <div class="event-meta">${ev.time} · ${ev.camera}</div>
           </div>`;
         list.appendChild(card);
       });
     });
-
-    if (!list.innerHTML) {
-      list.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#bbb;font-size:14px;">No events for this filter</div>';
-    }
   }
 
+  // ── Video player ──
+  let videoTimer = null;
+  let videoPlaying = false;
+  let videoProgress = 0; // 0–100
+  let videoDuration = 18; // seconds (mock)
+
+  function openVideo(id, e) {
+    e.stopPropagation();
+    const ev = EVENTS.find(e => e.id === id);
+    document.getElementById('videoThumb').src = THUMBS[ev.trigger] || THUMBS.person;
+    document.getElementById('videoMetaEl').textContent = ev.time + ' · ' + ev.camera + ' · ' + ev.triggerLabel;
+    const parts = ev.duration.split(':');
+    videoDuration = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    videoProgress = 0;
+    videoPlaying = false;
+    updateVideoUI();
+    document.getElementById('videoOverlay').classList.add('open');
+    // Auto-play
+    startPlay();
+  }
+
+  function closeVideo() {
+    stopPlay();
+    document.getElementById('videoOverlay').classList.remove('open');
+    videoProgress = 0;
+  }
+
+  function togglePlay() {
+    if (videoPlaying) stopPlay(); else startPlay();
+  }
+
+  function startPlay() {
+    if (videoPlaying) return;
+    videoPlaying = true;
+    document.getElementById('videoBigPlay').style.display = 'none';
+    updateVideoUI();
+    videoTimer = setInterval(() => {
+      videoProgress += (100 / videoDuration) * 0.1;
+      if (videoProgress >= 100) {
+        videoProgress = 100;
+        stopPlay();
+        document.getElementById('videoBigPlay').style.display = 'flex';
+        videoProgress = 0;
+      }
+      updateVideoUI();
+    }, 100);
+  }
+
+  function stopPlay() {
+    videoPlaying = false;
+    clearInterval(videoTimer);
+    updateVideoUI();
+  }
+
+  function updateVideoUI() {
+    const fill = document.getElementById('progressFill');
+    const timeEl = document.getElementById('videoTimeEl');
+    const playIcon = document.getElementById('playIcon');
+    fill.style.width = videoProgress + '%';
+    const elapsed = Math.floor((videoProgress / 100) * videoDuration);
+    const totalMins = Math.floor(videoDuration / 60);
+    const totalSecs = videoDuration % 60;
+    const elMins = Math.floor(elapsed / 60);
+    const elSecs = elapsed % 60;
+    timeEl.textContent = `${elMins}:${String(elSecs).padStart(2,'0')} / ${totalMins}:${String(totalSecs).padStart(2,'0')}`;
+    playIcon.innerHTML = videoPlaying
+      ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'  // pause
+      : '<path d="M8 5v14l11-7z"/>';                      // play
+  }
+
+  function seekVideo(e) {
+    const track = document.getElementById('progressTrack');
+    const rect = track.getBoundingClientRect();
+    videoProgress = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    updateVideoUI();
+  }
+
+  // ── Detail bottom sheet ──
   function openDetail(id) {
-    const ev = EVENTS.find(e => e.id===id);
-    if (!ev) return;
-    const statusMap = {success:'✅ Success', partial:'⚠️ Partial', failed:'❌ Failed'};
+    const ev = EVENTS.find(e => e.id === id);
+    const thumbUrl = THUMBS[ev.trigger] || THUMBS.person;
+    const repeatLabel = ev.repeat === 'once' ? 'Once' : 'Repeat';
     const stripIcon = {person:'👤',package:'📦',motion:'🏃',sound:'🔊'};
+
     document.getElementById('sheetBody').innerHTML = `
       <div class="sheet-title">${esc(ev.skill)}</div>
       <div class="sheet-timestamp">${ev.time} · ${ev.camera}</div>
-      <span class="sheet-status-pill ${ev.status}">${statusMap[ev.status]}</span>
+
+      <div class="sheet-thumb-wrap" onclick="openVideo(${ev.id}, event)">
+        <img class="sheet-thumb" src="${thumbUrl}" alt="Event clip" />
+        <div class="sheet-thumb-play">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+
       <div class="detail-section">
         <div class="detail-label">Trigger</div>
         <div class="detail-row">
@@ -423,25 +554,40 @@
           </div>
         </div>
       </div>
+
+      <div class="detail-section">
+        <div class="detail-label">Repeat Logic</div>
+        <div class="detail-row">
+          <div class="detail-icon">🔁</div>
+          <div class="detail-text">
+            <div class="detail-text-main">${repeatLabel}</div>
+            <div class="detail-text-sub">${ev.repeat === 'once' ? 'Triggers once per event, then resets' : 'Re-triggers every time condition is met'}</div>
+          </div>
+        </div>
+      </div>
+
       <div class="detail-section">
         <div class="detail-label">Condition</div>
         <div class="detail-row">
           <div class="detail-icon">⚙️</div>
-          <div class="detail-text"><div class="detail-text-main">${esc(ev.condition)}</div></div>
+          <div class="detail-text">
+            <div class="detail-text-main">${esc(ev.condition)}</div>
+          </div>
         </div>
       </div>
+
       <div class="detail-section">
         <div class="detail-label">Actions</div>
-        ${ev.actionDetails.map(a=>`
+        ${ev.actionDetails.map(a => `
           <div class="detail-row">
             <div class="detail-icon">${a.icon}</div>
             <div class="detail-text">
               <div class="detail-text-main">${esc(a.name)}</div>
               <div class="detail-text-sub">${esc(a.note)}</div>
             </div>
-            <div class="detail-dot ${a.result}"></div>
           </div>`).join('')}
       </div>`;
+
     document.getElementById('sheetOverlay').classList.add('open');
   }
 
