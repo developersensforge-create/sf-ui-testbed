@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <!-- v1782842280 -->
+  <!-- v1784833200 -->
   <title>SensForge UI Testbed</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
@@ -416,6 +416,19 @@
   // Format: "[Feature] Description of change" e.g. "[Skills] Add two-device tabs to P4"
 
   const WEBHOOK = 'https://discord.com/api/webhooks/1488974369911996528/IKxfq6IL__bjiM6EtkNaTw5cFGup3rAVa8IlWiu1g4cEMShKMiILUlE06lcYPpGLS1Ey';
+
+  // ===== localStorage version migration =====
+  // Bump this when DEFAULT_FEATURES changes — forces all browsers to reset cached feature lists
+  const LS_VERSION = '20260723';
+  (function migrateLocalStorage() {
+    const stored = localStorage.getItem('sf_ls_version');
+    if (stored !== LS_VERSION) {
+      // Clear stale feature list and hidden keys so DEFAULT_FEATURES takes full effect
+      localStorage.removeItem('sf_features');
+      localStorage.removeItem('sf_hidden_keys');
+      localStorage.setItem('sf_ls_version', LS_VERSION);
+    }
+  })();
 
   // Default features list — Camera Skills is always the first, cannot be deleted
   const DEFAULT_FEATURES = [
